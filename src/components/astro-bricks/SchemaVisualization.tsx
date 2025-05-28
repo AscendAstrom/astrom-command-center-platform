@@ -123,7 +123,7 @@ export const SchemaVisualization = () => {
         </div>
       </div>
 
-      <div className="relative bg-slate-900/30 rounded-lg border border-slate-700 h-96 overflow-hidden">
+      <div className="relative bg-background/30 rounded-lg border border-border h-96 overflow-hidden">
         <div 
           className="absolute inset-0 p-4"
           style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
@@ -132,7 +132,7 @@ export const SchemaVisualization = () => {
           {tables.map((table) => (
             <div
               key={table.id}
-              className={`absolute bg-slate-800/80 border rounded-lg shadow-lg transition-all cursor-pointer ${
+              className={`absolute bg-card/80 border rounded-lg shadow-lg transition-all cursor-pointer ${
                 selectedTable === table.id
                   ? 'border-purple-500 shadow-purple-500/20'
                   : table.type === 'fact'
@@ -158,7 +158,7 @@ export const SchemaVisualization = () => {
                   ) : (
                     <Table className="h-4 w-4 text-green-400" />
                   )}
-                  <span className="font-medium text-white text-sm">{table.name}</span>
+                  <span className="font-medium text-foreground text-sm">{table.name}</span>
                   <Badge 
                     variant="outline" 
                     className={`text-xs ${
@@ -182,12 +182,12 @@ export const SchemaVisualization = () => {
                         ? 'bg-yellow-500/10 text-yellow-300' 
                         : field.isForeignKey
                         ? 'bg-blue-500/10 text-blue-300'
-                        : 'text-slate-300'
+                        : 'text-muted-foreground'
                     }`}
                   >
                     {getFieldIcon(field)}
                     <span className="font-mono">{field.name}</span>
-                    <span className="text-slate-500 ml-auto">{field.type}</span>
+                    <span className="text-muted-foreground ml-auto">{field.type}</span>
                   </div>
                 ))}
               </div>
@@ -214,7 +214,7 @@ export const SchemaVisualization = () => {
                   y1={fromY}
                   x2={toX}
                   y2={toY}
-                  stroke="#64748b"
+                  stroke="hsl(var(--muted-foreground))"
                   strokeWidth="2"
                   strokeDasharray="5,5"
                 />
@@ -226,22 +226,22 @@ export const SchemaVisualization = () => {
 
       {/* Table Details */}
       {selectedTable && (
-        <Card className="bg-slate-800/30 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white">
+            <CardTitle className="text-foreground">
               Table Details: {tables.find(t => t.id === selectedTable)?.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="font-medium text-slate-300 mb-2">Fields</h4>
+                <h4 className="font-medium text-foreground mb-2">Fields</h4>
                 <div className="space-y-1">
                   {tables.find(t => t.id === selectedTable)?.fields.map((field) => (
                     <div key={field.id} className="flex items-center gap-2 text-sm">
                       {getFieldIcon(field)}
-                      <span className="text-slate-300">{field.name}</span>
-                      <span className="text-slate-500">({field.type})</span>
+                      <span className="text-foreground">{field.name}</span>
+                      <span className="text-muted-foreground">({field.type})</span>
                       {field.isRequired && (
                         <Badge variant="outline" className="text-xs">Required</Badge>
                       )}
@@ -250,14 +250,14 @@ export const SchemaVisualization = () => {
                 </div>
               </div>
               <div>
-                <h4 className="font-medium text-slate-300 mb-2">Relationships</h4>
+                <h4 className="font-medium text-foreground mb-2">Relationships</h4>
                 <div className="space-y-1">
                   {relationships
                     .filter(r => r.fromTableId === selectedTable || r.toTableId === selectedTable)
                     .map((rel) => (
-                      <div key={rel.id} className="text-sm text-slate-400">
+                      <div key={rel.id} className="text-sm text-muted-foreground">
                         {rel.fromTableId === selectedTable ? 'References' : 'Referenced by'}{' '}
-                        <span className="text-slate-300">
+                        <span className="text-foreground">
                           {rel.fromTableId === selectedTable 
                             ? tables.find(t => t.id === rel.toTableId)?.name
                             : tables.find(t => t.id === rel.fromTableId)?.name

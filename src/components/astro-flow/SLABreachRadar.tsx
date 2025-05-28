@@ -67,19 +67,19 @@ const SLABreachRadar = ({ userRole }: SLABreachRadarProps) => {
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'HIGH': return 'bg-red-600 border-red-500';
-      case 'MEDIUM': return 'bg-yellow-600 border-yellow-500';
-      case 'LOW': return 'bg-green-600 border-green-500';
-      default: return 'bg-gray-600 border-gray-500';
+      case 'HIGH': return 'bg-red-600 border-red-500 dark:bg-red-600 dark:border-red-500';
+      case 'MEDIUM': return 'bg-orange-600 border-orange-500 dark:bg-yellow-600 dark:border-yellow-500';
+      case 'LOW': return 'bg-green-600 border-green-500 dark:bg-green-600 dark:border-green-500';
+      default: return 'bg-muted border-border';
     }
   };
 
   const getRiskTextColor = (risk: string) => {
     switch (risk) {
       case 'HIGH': return 'text-red-400';
-      case 'MEDIUM': return 'text-yellow-400';
+      case 'MEDIUM': return 'text-orange-400 dark:text-yellow-400';
       case 'LOW': return 'text-green-400';
-      default: return 'text-gray-400';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -172,7 +172,7 @@ const SLABreachRadar = ({ userRole }: SLABreachRadarProps) => {
               <div className="text-sm text-muted-foreground">High Risk Zones</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-yellow-500">
+              <div className="text-2xl font-bold text-orange-500 dark:text-yellow-500">
                 {zoneAlerts.filter(z => z.riskLevel === 'MEDIUM').length}
               </div>
               <div className="text-sm text-muted-foreground">Medium Risk Zones</div>

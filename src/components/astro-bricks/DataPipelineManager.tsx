@@ -66,7 +66,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
       case 'active': return 'text-green-400 border-green-400';
       case 'draft': return 'text-yellow-400 border-yellow-400';
       case 'deprecated': return 'text-red-400 border-red-400';
-      default: return 'text-slate-400 border-slate-400';
+      default: return 'text-muted-foreground border-border';
     }
   };
 
@@ -75,7 +75,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
       case 'extract': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'transform': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       case 'load': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      default: return 'bg-muted/20 text-muted-foreground border-border';
     }
   };
 
@@ -115,10 +115,10 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Pipeline List */}
-      <Card className="bg-slate-800/30 border-slate-700">
+      <Card className="bg-card border-border">
         <CardHeader className="pb-3">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-white text-lg">Data Pipelines</CardTitle>
+            <CardTitle className="text-foreground text-lg">Data Pipelines</CardTitle>
             {!readOnly && (
               <Button size="sm" onClick={handleCreatePipeline}>
                 <Plus className="h-4 w-4" />
@@ -133,22 +133,22 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
               className={`p-3 rounded-lg border cursor-pointer transition-all ${
                 selectedPipeline?.id === pipeline.id
                   ? 'bg-cyan-500/20 border-cyan-500/50'
-                  : 'bg-slate-700/30 border-slate-600 hover:border-slate-500'
+                  : 'bg-muted/30 border-border hover:border-muted-foreground'
               }`}
               onClick={() => setSelectedPipeline(pipeline)}
             >
               <div className="flex justify-between items-start mb-2">
-                <span className="font-medium text-white text-sm">{pipeline.name}</span>
+                <span className="font-medium text-foreground text-sm">{pipeline.name}</span>
                 <Badge variant="outline" className={`text-xs ${getStatusColor(pipeline.status)}`}>
                   {pipeline.status.toUpperCase()}
                 </Badge>
               </div>
               
-              <p className="text-xs text-slate-400 mb-2 line-clamp-2">
+              <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
                 {pipeline.description}
               </p>
               
-              <div className="flex justify-between items-center text-xs text-slate-500">
+              <div className="flex justify-between items-center text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <GitBranch className="h-3 w-3" />
                   <span>v{pipeline.version}</span>
@@ -160,7 +160,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
               </div>
               
               <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-muted-foreground">
                   {pipeline.steps.length} steps
                 </span>
                 {!readOnly && pipeline.status === 'active' && (
@@ -200,12 +200,12 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
         {selectedPipeline ? (
           <div className="space-y-4">
             {/* Pipeline Header */}
-            <Card className="bg-slate-800/30 border-slate-700">
+            <Card className="bg-card border-border">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-white">{selectedPipeline.name}</CardTitle>
-                    <p className="text-slate-400 mt-1">{selectedPipeline.description}</p>
+                    <CardTitle className="text-foreground">{selectedPipeline.name}</CardTitle>
+                    <p className="text-muted-foreground mt-1">{selectedPipeline.description}</p>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => setShowVersionHistory(!showVersionHistory)}>
@@ -236,7 +236,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
-                    <span className="text-slate-400">Status:</span>
+                    <span className="text-muted-foreground">Status:</span>
                     <div className="mt-1">
                       <Badge variant="outline" className={getStatusColor(selectedPipeline.status)}>
                         {selectedPipeline.status.toUpperCase()}
@@ -244,27 +244,27 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
                     </div>
                   </div>
                   <div>
-                    <span className="text-slate-400">Version:</span>
-                    <div className="mt-1 text-white">v{selectedPipeline.version}</div>
+                    <span className="text-muted-foreground">Version:</span>
+                    <div className="mt-1 text-foreground">v{selectedPipeline.version}</div>
                   </div>
                   <div>
-                    <span className="text-slate-400">Schedule:</span>
-                    <div className="mt-1 text-white font-mono text-xs">
+                    <span className="text-muted-foreground">Schedule:</span>
+                    <div className="mt-1 text-foreground font-mono text-xs">
                       {selectedPipeline.schedule || 'Manual execution'}
                     </div>
                   </div>
                   <div>
-                    <span className="text-slate-400">Created by:</span>
-                    <div className="mt-1 text-white text-xs">{selectedPipeline.createdBy}</div>
+                    <span className="text-muted-foreground">Created by:</span>
+                    <div className="mt-1 text-foreground text-xs">{selectedPipeline.createdBy}</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Pipeline Steps */}
-            <Card className="bg-slate-800/30 border-slate-700">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white">Pipeline Steps</CardTitle>
+                <CardTitle className="text-foreground">Pipeline Steps</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -273,7 +273,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
                     .map((step, index) => (
                       <div key={step.id} className="flex items-center gap-4">
                         <div className="flex-shrink-0">
-                          <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-sm font-medium text-white">
+                          <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-sm font-medium text-foreground">
                             {index + 1}
                           </div>
                         </div>
@@ -288,7 +288,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
                           </div>
                         </div>
                         {index < selectedPipeline.steps.length - 1 && (
-                          <div className="flex-shrink-0 text-slate-600">
+                          <div className="flex-shrink-0 text-muted-foreground">
                             →
                           </div>
                         )}
@@ -300,22 +300,22 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
 
             {/* Version History */}
             {showVersionHistory && (
-              <Card className="bg-slate-800/30 border-slate-700">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-white">Version History</CardTitle>
+                  <CardTitle className="text-foreground">Version History</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {[...Array(selectedPipeline.version)].map((_, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                      <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                         <div>
-                          <span className="font-medium text-white">Version {selectedPipeline.version - i}</span>
-                          <p className="text-sm text-slate-400">
+                          <span className="font-medium text-foreground">Version {selectedPipeline.version - i}</span>
+                          <p className="text-sm text-muted-foreground">
                             {i === 0 ? 'Current version' : 'Previous version'}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500">
+                          <span className="text-xs text-muted-foreground">
                             {new Date(Date.now() - i * 86400000).toISOString().split('T')[0]}
                           </span>
                           <Button size="sm" variant="outline">
@@ -330,11 +330,11 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
             )}
           </div>
         ) : (
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardContent className="flex items-center justify-center h-64">
               <div className="text-center">
-                <GitBranch className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-400">Select a pipeline to view details</p>
+                <GitBranch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Select a pipeline to view details</p>
               </div>
             </CardContent>
           </Card>

@@ -107,9 +107,9 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
 
       <div className="grid grid-cols-2 gap-8">
         {/* Source Fields */}
-        <Card className="bg-slate-800/30 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Database className="h-5 w-5 text-blue-400" />
               Source Fields
             </CardTitle>
@@ -122,21 +122,21 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
                 onDragStart={() => handleDragStart(field.id)}
                 className={`p-3 rounded-lg border transition-all ${
                   readOnly 
-                    ? 'bg-slate-700/30 border-slate-600 cursor-default' 
-                    : 'bg-slate-700/50 border-slate-600 hover:border-blue-400 cursor-grab active:cursor-grabbing'
+                    ? 'bg-muted border-border cursor-default' 
+                    : 'bg-muted/50 border-border hover:border-blue-400 cursor-grab active:cursor-grabbing'
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <span className="font-medium text-white">{field.name}</span>
+                  <span className="font-medium text-foreground">{field.name}</span>
                   <Badge variant="secondary" className="text-xs">
                     {field.type}
                   </Badge>
                 </div>
                 {field.description && (
-                  <p className="text-sm text-slate-400 mb-1">{field.description}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{field.description}</p>
                 )}
                 {field.sample && (
-                  <p className="text-xs text-slate-500">Sample: {field.sample}</p>
+                  <p className="text-xs text-muted-foreground/80">Sample: {field.sample}</p>
                 )}
               </div>
             ))}
@@ -144,9 +144,9 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
         </Card>
 
         {/* Target Fields */}
-        <Card className="bg-slate-800/30 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Target className="h-5 w-5 text-green-400" />
               Target Schema
             </CardTitle>
@@ -164,11 +164,11 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
                   className={`p-3 rounded-lg border transition-all ${
                     mapping 
                       ? 'bg-green-500/10 border-green-500/30' 
-                      : 'bg-slate-700/30 border-slate-600 border-dashed'
+                      : 'bg-muted border-border border-dashed'
                   }`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="font-medium text-white">{field.name}</span>
+                    <span className="font-medium text-foreground">{field.name}</span>
                     <div className="flex gap-1">
                       <Badge variant="secondary" className="text-xs">
                         {field.type}
@@ -181,11 +181,11 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
                     </div>
                   </div>
                   {field.description && (
-                    <p className="text-sm text-slate-400 mb-2">{field.description}</p>
+                    <p className="text-sm text-muted-foreground mb-2">{field.description}</p>
                   )}
                   
                   {mapping && sourceField && (
-                    <div className="bg-slate-800/50 rounded p-2 flex items-center justify-between">
+                    <div className="bg-muted/50 rounded p-2 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <ArrowRight className="h-4 w-4 text-green-400" />
                         <span className="text-sm text-green-400">{sourceField.name}</span>
@@ -210,7 +210,7 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
                   
                   {!mapping && !readOnly && (
                     <div className="text-center py-2">
-                      <span className="text-xs text-slate-500">Drop source field here</span>
+                      <span className="text-xs text-muted-foreground">Drop source field here</span>
                     </div>
                   )}
                 </div>
