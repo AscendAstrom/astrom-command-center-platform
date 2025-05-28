@@ -16,11 +16,11 @@ import {
   BarChart3,
   ArrowRight
 } from "lucide-react";
-import DataMappingCanvas from "@/components/astro-bricks/DataMappingCanvas";
-import SchemaVisualization from "@/components/astro-bricks/SchemaVisualization";
-import DataPipelineManager from "@/components/astro-bricks/DataPipelineManager";
-import TransformationRulesEditor from "@/components/astro-bricks/TransformationRulesEditor";
-import TimestampTools from "@/components/astro-bricks/TimestampTools";
+import { DataMappingCanvas } from "@/components/astro-bricks/DataMappingCanvas";
+import { SchemaVisualization } from "@/components/astro-bricks/SchemaVisualization";
+import { DataPipelineManager } from "@/components/astro-bricks/DataPipelineManager";
+import { TransformationRulesEditor } from "@/components/astro-bricks/TransformationRulesEditor";
+import { TimestampTools } from "@/components/astro-bricks/TimestampTools";
 import BedManagementTable from "@/components/shared/BedManagementTable";
 import { mockBedData } from "@/data/mockBedData";
 
