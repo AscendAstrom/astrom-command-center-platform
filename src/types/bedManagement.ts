@@ -14,11 +14,13 @@ export interface BedData {
   unassignedPatients: number;
   transferOrders: number;
   netAvailableBeds: number;
+  availableBeds?: number; // Calculated field
   occupancyRate: number;
   projectedRate: number;
   arabicName?: string;
   mohCompliance?: boolean;
   sehaCluster?: string;
+  lastUpdated?: string; // For real-time simulation
   // New fields for Epic 3.1
   rooms?: RoomData[];
   patients?: PatientData[];

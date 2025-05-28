@@ -101,6 +101,8 @@ const mockRooms: RoomData[] = [
   }
 ];
 
+const currentTimestamp = new Date().toISOString();
+
 export const mockHierarchicalBedData: BedData[] = [
   // Organization Level
   {
@@ -120,10 +122,12 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 8,
     transferOrders: 12,
     netAvailableBeds: 155,
+    availableBeds: 188, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 78,
     projectedRate: 83,
     hasChildren: true,
-    isExpanded: true
+    isExpanded: true,
+    lastUpdated: currentTimestamp
   },
   // Hospital Level
   {
@@ -144,11 +148,13 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 4,
     transferOrders: 6,
     netAvailableBeds: 68,
+    availableBeds: 93, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 81,
     projectedRate: 87,
     arabicName: "مدينة الملك عبدالعزيز الطبية",
     hasChildren: true,
-    isExpanded: true
+    isExpanded: true,
+    lastUpdated: currentTimestamp
   },
   {
     id: "h2",
@@ -168,10 +174,12 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 2,
     transferOrders: 3,
     netAvailableBeds: 49,
+    availableBeds: 78, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 78,
     projectedRate: 82,
     arabicName: "مستشفى الملك فيصل التخصصي",
-    hasChildren: true
+    hasChildren: true,
+    lastUpdated: currentTimestamp
   },
   // Department Level
   {
@@ -192,10 +200,12 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 1,
     transferOrders: 2,
     netAvailableBeds: 7,
+    availableBeds: 15, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 84,
     projectedRate: 91,
     hasChildren: true,
-    isExpanded: true
+    isExpanded: true,
+    lastUpdated: currentTimestamp
   },
   {
     id: "d2",
@@ -215,11 +225,13 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 2,
     transferOrders: 2,
     netAvailableBeds: 17,
+    availableBeds: 27, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 77,
     projectedRate: 85,
-    hasChildren: true
+    hasChildren: true,
+    lastUpdated: currentTimestamp
   },
-  // Ward Level (Default expanded level)
+  // Ward Level
   {
     id: "w1",
     org: "Saudi Health Authority",
@@ -238,12 +250,15 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 0,
     transferOrders: 1,
     netAvailableBeds: 3,
+    availableBeds: 4, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 83,
     projectedRate: 92,
     patients: mockPatients.filter(p => p.bedLocation.ward === "ED-1"),
     beds: mockBeds.filter(b => ["r101", "r102"].includes(b.roomId)),
     rooms: mockRooms.filter(r => r.wardId === "w1"),
-    hasChildren: true
+    hasChildren: true,
+    isExpanded: true,
+    lastUpdated: currentTimestamp
   },
   {
     id: "w2",
@@ -263,12 +278,93 @@ export const mockHierarchicalBedData: BedData[] = [
     unassignedPatients: 1,
     transferOrders: 1,
     netAvailableBeds: 4,
+    availableBeds: 7, // totalBeds - occupiedBeds - dirtyBeds
     occupancyRate: 79,
     projectedRate: 89,
     patients: mockPatients.filter(p => p.bedLocation.ward === "IM-2"),
     beds: mockBeds.filter(b => b.roomId === "r201"),
     rooms: mockRooms.filter(r => r.wardId === "w2"),
-    hasChildren: true
+    hasChildren: true,
+    lastUpdated: currentTimestamp
+  },
+  // Room Level (NEW)
+  {
+    id: "room101",
+    org: "Saudi Health Authority",
+    hospital: "King Abdulaziz Medical City",
+    department: "Emergency Department",
+    ward: "ED-1 (Acute Care)",
+    level: "room",
+    parentId: "w1",
+    totalBeds: 2,
+    plannedBeds: 2,
+    occupiedBeds: 1,
+    assignedBeds: 1,
+    dirtyBeds: 0,
+    confirmedDischarge: 0,
+    potentialDischarge: 1,
+    unassignedPatients: 0,
+    transferOrders: 0,
+    netAvailableBeds: 1,
+    availableBeds: 1, // totalBeds - occupiedBeds - dirtyBeds
+    occupancyRate: 50,
+    projectedRate: 50,
+    beds: mockBeds.filter(b => b.roomId === "r101"),
+    patients: mockPatients.filter(p => p.bedLocation.room === "101"),
+    hasChildren: false,
+    lastUpdated: currentTimestamp
+  },
+  {
+    id: "room102",
+    org: "Saudi Health Authority",
+    hospital: "King Abdulaziz Medical City",
+    department: "Emergency Department",
+    ward: "ED-1 (Acute Care)",
+    level: "room",
+    parentId: "w1",
+    totalBeds: 2,
+    plannedBeds: 2,
+    occupiedBeds: 0,
+    assignedBeds: 0,
+    dirtyBeds: 1,
+    confirmedDischarge: 1,
+    potentialDischarge: 0,
+    unassignedPatients: 0,
+    transferOrders: 0,
+    netAvailableBeds: 1,
+    availableBeds: 1, // totalBeds - occupiedBeds - dirtyBeds
+    occupancyRate: 0,
+    projectedRate: 0,
+    beds: mockBeds.filter(b => b.roomId === "r102"),
+    patients: mockPatients.filter(p => p.bedLocation.room === "102"),
+    hasChildren: false,
+    lastUpdated: currentTimestamp
+  },
+  {
+    id: "room201",
+    org: "Saudi Health Authority",
+    hospital: "King Abdulaziz Medical City",
+    department: "Internal Medicine",
+    ward: "IM-2 (General Medicine)",
+    level: "room",
+    parentId: "w2",
+    totalBeds: 2,
+    plannedBeds: 2,
+    occupiedBeds: 1,
+    assignedBeds: 1,
+    dirtyBeds: 1,
+    confirmedDischarge: 0,
+    potentialDischarge: 1,
+    unassignedPatients: 0,
+    transferOrders: 0,
+    netAvailableBeds: 0,
+    availableBeds: 0, // totalBeds - occupiedBeds - dirtyBeds
+    occupancyRate: 50,
+    projectedRate: 100,
+    beds: mockBeds.filter(b => b.roomId === "r201"),
+    patients: mockPatients.filter(p => p.bedLocation.room === "201"),
+    hasChildren: false,
+    lastUpdated: currentTimestamp
   }
 ];
 
