@@ -1,43 +1,27 @@
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  Zap, 
-  GitBranch, 
-  BarChart3, 
-  Bot, 
-  Brain, 
   Workflow, 
-  Target,
-  Activity,
-  TrendingUp,
-  AlertTriangle,
-  MessageSquare,
-  FileText,
+  Bot, 
   Settings,
-  Bell,
-  Hospital,
-  CheckCircle
+  AlertTriangle,
+  TrendingUp,
+  Brain,
+  Bell
 } from "lucide-react";
 import RuleBuilder from "@/components/astro-flow/RuleBuilder";
-import RulesList from "@/components/astro-flow/RulesList";
-import RuleExecutions from "@/components/astro-flow/RuleExecutions";
 import SLABreachRadar from "@/components/astro-flow/SLABreachRadar";
 import SurgePredictor from "@/components/astro-flow/SurgePredictor";
 import NLPAssistant from "@/components/astro-flow/NLPAssistant";
-import DailySummaries from "@/components/astro-flow/DailySummaries";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSection";
+import AstroFlowHeader from "@/components/astro-flow/AstroFlowHeader";
+import WorkflowOverview from "@/components/astro-flow/WorkflowOverview";
+import BedManagementDemo from "@/components/astro-flow/BedManagementDemo";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
-import BedManagementTable from "@/components/shared/BedManagementTable";
-import { mockBedData } from "@/data/mockBedData";
 
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
@@ -80,19 +64,7 @@ const AstroFlow = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
-              <Zap className="h-5 w-5 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground">ASTRO-FLOW</h1>
-            <span className="text-sm text-pink-400 font-medium">AI Automation & Workflow Intelligence</span>
-          </div>
-          <p className="text-muted-foreground max-w-2xl">
-            Intelligent automation platform with AI-powered monitoring, predictive analytics, and workflow management for healthcare operations.
-          </p>
-        </div>
+        <AstroFlowHeader />
 
         <Tabs defaultValue="workflow" className="space-y-6">
           <TabsList className="grid w-full grid-cols-8 bg-muted/50">
@@ -112,153 +84,8 @@ const AstroFlow = () => {
           </TabsList>
 
           <TabsContent value="workflow" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-pink-400" />
-                  AI-Powered Monitoring & Automation Workflow
-                </CardTitle>
-                <CardDescription>
-                  Intelligent automation with predictive insights, trigger engines, and workflow management
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">AI Trigger Engine</h3>
-                      <ul className="list-disc pl-4 space-y-2 text-muted-foreground">
-                        <li><strong className="text-foreground">SLA Breach Detection:</strong> Real-time monitoring for service level violations using AI models</li>
-                        <li><strong className="text-foreground">ETA Conflict Analysis:</strong> Predict and prevent estimated time conflicts</li>
-                        <li><strong className="text-foreground">Census Drop Alerts:</strong> Early warning system for capacity changes</li>
-                        <li><strong className="text-foreground">Pattern Recognition:</strong> Machine learning-based anomaly detection</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">Predictive Models</h3>
-                      <div className="space-y-3">
-                        <div className="p-3 bg-muted/50 rounded-lg border border-pink-500/20">
-                          <div className="flex items-center gap-2 mb-1">
-                            <TrendingUp className="h-4 w-4 text-pink-400" />
-                            <span className="text-foreground font-medium">ETTB (ETA to Bay)</span>
-                          </div>
-                          <p className="text-muted-foreground text-sm">Predict patient arrival to bay assignment times</p>
-                        </div>
-                        
-                        <div className="p-3 bg-muted/50 rounded-lg border border-red-500/20">
-                          <div className="flex items-center gap-2 mb-1">
-                            <AlertTriangle className="h-4 w-4 text-red-400" />
-                            <span className="text-foreground font-medium">SLA Risk Scorer</span>
-                          </div>
-                          <p className="text-muted-foreground text-sm">Risk assessment for SLA violations</p>
-                        </div>
-                        
-                        <div className="p-3 bg-muted/50 rounded-lg border border-blue-500/20">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Activity className="h-4 w-4 text-blue-400" />
-                            <span className="text-foreground font-medium">Surge Predictor</span>
-                          </div>
-                          <p className="text-muted-foreground text-sm">LSTM/Prophet models for demand forecasting</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">Workflow Automation</h3>
-                      <ul className="list-disc pl-4 space-y-2 text-muted-foreground">
-                        <li><strong className="text-foreground">Auto-alerts:</strong> Intelligent notification system</li>
-                        <li><strong className="text-foreground">Staff Assignments:</strong> AI-driven resource allocation</li>
-                        <li><strong className="text-foreground">Dashboard Updates:</strong> Real-time visual updates</li>
-                        <li><strong className="text-foreground">Escalation Protocols:</strong> Automated escalation workflows</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">AI Intelligence Features</h3>
-                      <ul className="list-disc pl-4 space-y-2 text-muted-foreground">
-                        <li><strong className="text-foreground">NLP Assistant:</strong> Natural language commands like "Show SLA breaches"</li>
-                        <li><strong className="text-foreground">Insight Generator:</strong> LLM-powered performance summaries for leadership</li>
-                        <li><strong className="text-foreground">Contextual Analysis:</strong> AI-driven root cause analysis</li>
-                        <li><strong className="text-foreground">Adaptive Learning:</strong> Self-improving algorithms</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Bed Management Example Section */}
-                  <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Hospital className="h-5 w-5 text-green-400" />
-                      <h3 className="text-lg font-semibold text-foreground">Saudi Hospital Bed Management Example</h3>
-                      <Badge className="bg-green-500/10 text-green-600 border-green-500/20">AI Automation Demo</Badge>
-                    </div>
-                    <p className="text-muted-foreground mb-4">
-                      Real-time AI workflow automation for Saudi healthcare facilities with cultural considerations and MOH compliance.
-                    </p>
-                    
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                      <div className="p-4 bg-muted/50 rounded-lg border border-pink-500/20">
-                        <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-pink-400" />
-                          Automated Triggers
-                        </h4>
-                        <ul className="text-muted-foreground text-sm space-y-1">
-                          <li>• High occupancy alerts (&gt;90%)</li>
-                          <li>• Discharge delay notifications</li>
-                          <li>• Transfer bottleneck detection</li>
-                          <li>• MOH compliance violations</li>
-                        </ul>
-                      </div>
-                      
-                      <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
-                        <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <Bot className="h-4 w-4 text-blue-400" />
-                          AI Workflow Actions
-                        </h4>
-                        <ul className="text-muted-foreground text-sm space-y-1">
-                          <li>• Auto-assign incoming patients</li>
-                          <li>• Optimize bed cleaning schedules</li>
-                          <li>• Generate discharge summaries</li>
-                          <li>• Update MOH dashboards</li>
-                        </ul>
-                      </div>
-                      
-                      <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
-                        <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-400" />
-                          Cultural Automation
-                        </h4>
-                        <ul className="text-muted-foreground text-sm space-y-1">
-                          <li>• Gender-separated ward assignments</li>
-                          <li>• Family accommodation priority</li>
-                          <li>• Prayer time scheduling</li>
-                          <li>• Hajj season surge handling</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <BedManagementTable data={mockBedData.slice(0, 2)} showArabicNames={true} showCompliance={true} />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <Button className="bg-pink-600 hover:bg-pink-700">
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                      Configure AI Triggers
-                    </Button>
-                    <Button variant="outline">
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      View Workflow Rules
-                    </Button>
-                    <Button variant="outline">
-                      <Brain className="h-4 w-4 mr-2" />
-                      AI Model Specs
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <WorkflowOverview />
+            <BedManagementDemo />
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">
