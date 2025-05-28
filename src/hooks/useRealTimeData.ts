@@ -23,7 +23,8 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
         
         console.log(`Fetching data from table: ${table}`);
         
-        let query = supabase.from(table).select('*');
+        // Use any to bypass strict typing for dynamic table queries
+        let query = (supabase as any).from(table).select('*');
         
         if (filter) {
           query = query.eq(filter.column, filter.value);
@@ -37,7 +38,7 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
         }
         
         console.log(`Fetched ${result?.length || 0} records from ${table}`);
-        setData((result as T[]) || []);
+        setData(result as T[] || []);
       } catch (err) {
         console.error(`Error in useRealTimeData for ${table}:`, err);
         setError(err);

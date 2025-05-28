@@ -42,11 +42,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        if (event === 'SIGNED_IN') {
+          console.log('User signed in successfully');
+        } else if (event === 'SIGNED_OUT') {
+          console.log('User signed out');
+        }
       }
     );
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email || 'No session');
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -58,24 +65,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('Attempting sign in for:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error('Sign in error:', error);
         throw error;
       }
 
+      console.log('Sign in successful for:', data.user?.email);
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
     } catch (error: any) {
       console.error('Sign in error:', error);
+      
+      let errorMessage = "An error occurred during sign in";
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      } else if (error.message?.includes('Email not confirmed')) {
+        errorMessage = "Please check your email and click the confirmation link before signing in.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Sign in failed",
-        description: error.message || "An error occurred during sign in",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -87,7 +108,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signUp = async (email: string, password: string, metadata = {}) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({
+      console.log('Attempting sign up for:', email);
+      
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -96,18 +119,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (error) {
+        console.error('Sign up error:', error);
         throw error;
       }
 
+      console.log('Sign up successful for:', data.user?.email);
       toast({
         title: "Account created!",
         description: "Please check your email to verify your account.",
       });
     } catch (error: any) {
       console.error('Sign up error:', error);
+      
+      let errorMessage = "An error occurred during sign up";
+      if (error.message?.includes('already registered')) {
+        errorMessage = "An account with this email already exists. Please try signing in instead.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Sign up failed",
-        description: error.message || "An error occurred during sign up",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -118,10 +151,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = async () => {
     try {
+      console.log('Attempting sign out');
       const { error } = await supabase.auth.signOut();
       if (error) {
+        console.error('Sign out error:', error);
         throw error;
       }
+      console.log('Sign out successful');
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
@@ -140,6 +176,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       if (!user) throw new Error('No user logged in');
 
+      console.log('Updating profile for user:', user.id);
       const { error } = await supabase
         .from('profiles')
         .update(updates)
