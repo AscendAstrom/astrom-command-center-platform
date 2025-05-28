@@ -13,7 +13,7 @@ import {
   Plus,
   ArrowRight
 } from "lucide-react";
-import DataSourceList from "@/components/astro-scan/DataSourceList";
+import { DataSourceList } from "@/components/astro-scan/DataSourceList";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import IngestionDashboard from "@/components/astro-scan/IngestionDashboard";
 import BedManagementTable from "@/components/shared/BedManagementTable";
@@ -208,14 +208,14 @@ const AstroScan = () => {
                           <span className="font-medium text-foreground">Data Freshness</span>
                           <Badge className="bg-green-500/10 text-green-600">Active</Badge>
                         </div>
-                        <div className="text-sm text-muted-foreground">Alert if data > 15 minutes old</div>
+                        <div className="text-sm text-muted-foreground">Alert if data greater than 15 minutes old</div>
                       </div>
                       <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-foreground">Quality Threshold</span>
                           <Badge className="bg-blue-500/10 text-blue-600">Active</Badge>
                         </div>
-                        <div className="text-sm text-muted-foreground">Alert if quality < 95%</div>
+                        <div className="text-sm text-muted-foreground">Alert if quality less than 95%</div>
                       </div>
                     </div>
                   </div>
