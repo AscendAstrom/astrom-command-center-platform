@@ -1,3 +1,4 @@
+
 import { 
   Layers,
   Target,
@@ -138,7 +139,13 @@ export function AppSidebar() {
     >
       <SidebarContent className="flex flex-col h-full overflow-y-auto">
         {/* Header */}
-        {!collapsed && (
+        {collapsed ? (
+          <div className="flex-shrink-0 p-4 mb-2 flex justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <LayoutDashboard className="h-6 w-6 text-white" />
+            </div>
+          </div>
+        ) : (
           <div className="flex-shrink-0 p-4 mb-2">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -171,8 +178,8 @@ export function AppSidebar() {
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
-                        <item.icon className="h-5 w-5 text-white" />
+                      <div className={`${collapsed ? 'p-4' : 'p-3'} rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105 ${collapsed ? 'mx-auto' : ''}`}>
+                        <item.icon className={`${collapsed ? 'h-6 w-6' : 'h-5 w-5'} text-white`} />
                       </div>
                       {!collapsed && (
                         <div className="flex flex-col flex-1 min-w-0 ml-3">
@@ -214,8 +221,8 @@ export function AppSidebar() {
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
-                        <item.icon className="h-5 w-5 text-white" />
+                      <div className={`${collapsed ? 'p-4' : 'p-3'} rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105 ${collapsed ? 'mx-auto' : ''}`}>
+                        <item.icon className={`${collapsed ? 'h-6 w-6' : 'h-5 w-5'} text-white`} />
                       </div>
                       {!collapsed && (
                         <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>
@@ -236,7 +243,13 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Footer */}
-        {!collapsed && (
+        {collapsed ? (
+          <div className="flex-shrink-0 mt-4 mx-3 mb-4 flex justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
+              <Sparkles className="h-6 w-6 text-white animate-pulse" />
+            </div>
+          </div>
+        ) : (
           <div className="flex-shrink-0 mt-4 mx-3 mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
