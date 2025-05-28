@@ -21,7 +21,7 @@ export const kpiService = {
     const { data, error } = await supabase
       .from('kpis')
       .select('*')
-      .eq('category', category)
+      .eq('category', category as KPI['category'])
       .order('name');
 
     return { data, error };
