@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -127,10 +126,12 @@ export default {
 				},
 				'pulse-glow': {
 					'0%, 100%': {
-						boxShadow: '0 0 5px hsl(var(--astrom-blue) / 0.5)'
+						filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.3))',
+						transform: 'scale(1)'
 					},
 					'50%': {
-						boxShadow: '0 0 20px hsl(var(--astrom-blue) / 0.8)'
+						filter: 'drop-shadow(0 0 16px rgba(147, 51, 234, 0.5))',
+						transform: 'scale(1.05)'
 					}
 				},
 				'gradient-shift': {
@@ -152,7 +153,7 @@ export default {
 				'fade-in': 'fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
 				'scale-in': 'scale-in 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
 				'bounce-subtle': 'bounce-subtle 2s infinite',
-				'pulse-glow': 'pulse-glow 3s infinite',
+				'pulse-glow': 'pulse-glow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
 				'gradient-shift': 'gradient-shift 6s ease infinite'
 			},
 			backdropBlur: {

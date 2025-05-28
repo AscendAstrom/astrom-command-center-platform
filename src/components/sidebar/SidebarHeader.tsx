@@ -1,6 +1,6 @@
 
-import { LayoutDashboard } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
+import LogoIcon from "@/components/ui/LogoIcon";
 
 export function SidebarHeader() {
   const { state } = useSidebar();
@@ -9,8 +9,8 @@ export function SidebarHeader() {
   if (collapsed) {
     return (
       <div className="flex-shrink-0 p-2 mb-2 flex justify-center">
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-          <LayoutDashboard className="h-5 w-5 text-white" />
+        <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:scale-105 transition-transform duration-300">
+          <LogoIcon size="sm" animate={true} />
         </div>
       </div>
     );
@@ -19,8 +19,8 @@ export function SidebarHeader() {
   return (
     <div className="flex-shrink-0 p-4 mb-2">
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
-          <LayoutDashboard className="h-6 w-6 text-white" />
+        <div className="w-12 h-12 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0 border border-border/50 hover:scale-105 transition-transform duration-300">
+          <LogoIcon size="md" animate={true} />
         </div>
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">

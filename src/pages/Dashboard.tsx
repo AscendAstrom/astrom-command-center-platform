@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
+import LogoIcon from "@/components/ui/LogoIcon";
 
 const Dashboard = () => {
   const modules = [
@@ -67,8 +68,8 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <LayoutDashboard className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-border/50">
+              <LogoIcon size="sm" animate={true} />
             </div>
             <h1 className="text-3xl font-bold text-foreground">ASTROM</h1>
             <span className="text-sm text-blue-400 font-medium">Intelligence Platform Dashboard</span>
