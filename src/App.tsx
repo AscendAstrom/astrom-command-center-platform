@@ -13,6 +13,7 @@ import AstroScan from "./pages/AstroScan";
 import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
 import AstroView from "./pages/AstroView";
+import AstroFlow from "./pages/AstroFlow";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
