@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -237,14 +236,14 @@ const SecurityComplianceIntelligence = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium text-sm">{alert.type}</span>
-                      <Badge variant="outline" className={getSeverityColor(alert.severity)} size="sm">
+                      <Badge variant="outline" className={getSeverityColor(alert.severity)}>
                         {alert.severity}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">{alert.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">{alert.timestamp}</span>
-                      <Badge variant="outline" size="sm">
+                      <Badge variant="outline">
                         {alert.status}
                       </Badge>
                     </div>

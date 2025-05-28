@@ -213,7 +213,7 @@ const ExecutiveCommandCenterNew = () => {
                     </div>
                     <div>
                       <h4 className="font-medium text-foreground">{insight.title}</h4>
-                      <Badge variant="outline" className={getPriorityColor(insight.priority)} size="sm">
+                      <Badge variant="outline" className={getPriorityColor(insight.priority)}>
                         {insight.priority} priority
                       </Badge>
                     </div>
