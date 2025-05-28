@@ -23,7 +23,7 @@ export function SidebarHeader() {
           <LogoIcon size="md" animate={true} />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold text-white">
             ASTROM
           </h1>
           <p className="text-sm text-muted-foreground font-medium">
