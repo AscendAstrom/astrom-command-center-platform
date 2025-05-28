@@ -8,7 +8,8 @@ import {
   Settings,
   Shield,
   LayoutDashboard,
-  ChevronRight
+  ChevronRight,
+  Activity
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -25,16 +26,77 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-  { title: "Sources", subtitle: "ASTRO-SCAN", url: "/astro-scan", icon: Scan, color: "text-astrom-blue", bg: "bg-astrom-blue/10" },
-  { title: "Modeling", subtitle: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers, color: "text-astrom-orange", bg: "bg-astrom-orange/10" },
-  { title: "Metrics", subtitle: "ASTRO-METRICS", url: "/astro-metrics", icon: Target, color: "text-astrom-green", bg: "bg-astrom-green/10" },
-  { title: "Visuals", subtitle: "ASTRO-VIEW", url: "/astro-view", icon: Eye, color: "text-astrom-purple", bg: "bg-astrom-purple/10" },
-  { title: "Automation", subtitle: "ASTRO-FLOW", url: "/astro-flow", icon: Zap, color: "text-astrom-pink", bg: "bg-astrom-pink/10" },
+  { 
+    title: "Sources", 
+    subtitle: "ASTRO-SCAN", 
+    url: "/astro-scan", 
+    icon: Scan, 
+    color: "text-blue-600 dark:text-blue-400", 
+    bg: "bg-blue-50 dark:bg-blue-950/50",
+    activeBg: "bg-blue-100 dark:bg-blue-900/30",
+    iconBg: "bg-gradient-to-br from-blue-500 to-blue-600"
+  },
+  { 
+    title: "Modeling", 
+    subtitle: "ASTRO-BRICKS", 
+    url: "/astro-bricks", 
+    icon: Layers, 
+    color: "text-orange-600 dark:text-orange-400", 
+    bg: "bg-orange-50 dark:bg-orange-950/50",
+    activeBg: "bg-orange-100 dark:bg-orange-900/30",
+    iconBg: "bg-gradient-to-br from-orange-500 to-orange-600"
+  },
+  { 
+    title: "Metrics", 
+    subtitle: "ASTRO-METRICS", 
+    url: "/astro-metrics", 
+    icon: Target, 
+    color: "text-green-600 dark:text-green-400", 
+    bg: "bg-green-50 dark:bg-green-950/50",
+    activeBg: "bg-green-100 dark:bg-green-900/30",
+    iconBg: "bg-gradient-to-br from-green-500 to-green-600"
+  },
+  { 
+    title: "Visuals", 
+    subtitle: "ASTRO-VIEW", 
+    url: "/astro-view", 
+    icon: Eye, 
+    color: "text-purple-600 dark:text-purple-400", 
+    bg: "bg-purple-50 dark:bg-purple-950/50",
+    activeBg: "bg-purple-100 dark:bg-purple-900/30",
+    iconBg: "bg-gradient-to-br from-purple-500 to-purple-600"
+  },
+  { 
+    title: "Automation", 
+    subtitle: "ASTRO-FLOW", 
+    url: "/astro-flow", 
+    icon: Zap, 
+    color: "text-pink-600 dark:text-pink-400", 
+    bg: "bg-pink-50 dark:bg-pink-950/50",
+    activeBg: "bg-pink-100 dark:bg-pink-900/30",
+    iconBg: "bg-gradient-to-br from-pink-500 to-pink-600"
+  },
 ];
 
 const systemItems = [
-  { title: "Settings", url: "/settings", icon: Settings, color: "text-astrom-grey", bg: "bg-astrom-grey/10" },
-  { title: "Admin Panel", url: "/admin", icon: Shield, color: "text-astrom-grey", bg: "bg-astrom-grey/10" },
+  { 
+    title: "Settings", 
+    url: "/settings", 
+    icon: Settings, 
+    color: "text-slate-600 dark:text-slate-400", 
+    bg: "bg-slate-50 dark:bg-slate-800/50",
+    activeBg: "bg-slate-100 dark:bg-slate-700/50",
+    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
+  },
+  { 
+    title: "Admin Panel", 
+    url: "/admin", 
+    icon: Shield, 
+    color: "text-slate-600 dark:text-slate-400", 
+    bg: "bg-slate-50 dark:bg-slate-800/50",
+    activeBg: "bg-slate-100 dark:bg-slate-700/50",
+    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
+  },
 ];
 
 export function AppSidebar() {
@@ -45,67 +107,71 @@ export function AppSidebar() {
   const isActive = (path: string) => location.pathname === path || (path === "/astro-scan" && location.pathname === "/");
   
   const getNavCls = (item: any, active: boolean) => {
-    const baseClasses = "group flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 relative overflow-hidden";
+    const baseClasses = "group relative flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 ease-out hover:shadow-sm";
     
     if (active) {
-      return `${baseClasses} ${item.bg} ${item.color} shadow-lg border border-border/30 hover-glow`;
+      return `${baseClasses} ${item.activeBg} ${item.color} shadow-sm border border-border/20`;
     }
     
-    return `${baseClasses} text-sidebar-foreground hover:${item.bg} hover:${item.color} hover:shadow-md hover-lift`;
+    return `${baseClasses} text-muted-foreground hover:${item.bg} hover:${item.color} hover:shadow-sm`;
   };
 
   return (
     <Sidebar 
-      className={`${collapsed ? "w-16" : "w-72"} glass-card border-r border-border/30 transition-all duration-300`}
+      className={`${collapsed ? "w-16" : "w-80"} bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300`}
       collapsible="icon"
     >
-      <SidebarContent className="p-4 space-y-6">
+      <SidebarContent className="p-6 space-y-8">
         {/* Header */}
         {!collapsed && (
-          <div className="px-3 py-2 animate-fade-in">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 gradient-bg-blue rounded-xl flex items-center justify-center">
-                <LayoutDashboard className="h-4 w-4 text-white" />
+          <div className="px-2 py-4">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <LayoutDashboard className="h-6 w-6 text-white" />
               </div>
-              <span className="font-bold text-lg bg-gradient-to-r from-astrom-blue to-astrom-purple bg-clip-text text-transparent">
-                ASTROM
-              </span>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  ASTROM
+                </h1>
+                <p className="text-sm text-muted-foreground font-medium">
+                  Healthcare Intelligence Platform
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground opacity-70">
-              Healthcare Intelligence Platform
-            </p>
           </div>
         )}
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/70 font-semibold text-xs uppercase tracking-wider mb-4 px-3">
+          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-6 px-2">
             {!collapsed && "Platform Modules"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-3">
               {navigationItems.map((item, index) => (
-                <SidebarMenuItem key={item.title} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-2 rounded-xl ${item.bg} ${item.color} flex-shrink-0 transition-all duration-300 group-hover:scale-110`}>
-                        <item.icon className="h-5 w-5" />
+                      <div className={`p-2.5 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                        <item.icon className="h-5 w-5 text-white" />
                       </div>
                       {!collapsed && (
                         <div className="flex flex-col flex-1 min-w-0">
-                          <span className="font-semibold text-sm truncate">{item.title}</span>
-                          <span className="text-xs opacity-70 truncate">{item.subtitle}</span>
+                          <span className="font-semibold text-sm truncate leading-tight">{item.title}</span>
+                          <span className="text-xs opacity-75 truncate font-medium">{item.subtitle}</span>
                         </div>
                       )}
                       {!collapsed && isActive(item.url) && (
-                        <ChevronRight className="h-4 w-4 opacity-50" />
+                        <div className="flex items-center">
+                          <ChevronRight className="h-4 w-4 opacity-60" />
+                        </div>
                       )}
                       {/* Active indicator */}
                       {isActive(item.url) && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-transparent via-current to-transparent rounded-r-full"></div>
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-10 bg-gradient-to-b from-current/0 via-current to-current/0 rounded-r-full"></div>
                       )}
                     </NavLink>
                   </SidebarMenuButton>
@@ -115,34 +181,34 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator className="bg-gradient-to-r from-transparent via-border to-transparent my-6" />
+        <SidebarSeparator className="bg-gradient-to-r from-transparent via-border/50 to-transparent my-8" />
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/70 font-semibold text-xs uppercase tracking-wider mb-4 px-3">
+          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-6 px-2">
             {!collapsed && "System"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-3">
               {systemItems.map((item, index) => (
-                <SidebarMenuItem key={item.title} className="animate-slide-up" style={{ animationDelay: `${(index + navigationItems.length) * 0.1}s` }}>
+                <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-2 rounded-xl ${item.bg} ${item.color} flex-shrink-0 transition-all duration-300 group-hover:scale-110`}>
-                        <item.icon className="h-5 w-5" />
+                      <div className={`p-2.5 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                        <item.icon className="h-5 w-5 text-white" />
                       </div>
                       {!collapsed && (
                         <span className="font-semibold text-sm truncate">{item.title}</span>
                       )}
                       {!collapsed && isActive(item.url) && (
-                        <ChevronRight className="h-4 w-4 opacity-50" />
+                        <ChevronRight className="h-4 w-4 opacity-60" />
                       )}
                       {/* Active indicator */}
                       {isActive(item.url) && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-transparent via-current to-transparent rounded-r-full"></div>
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-10 bg-gradient-to-b from-current/0 via-current to-current/0 rounded-r-full"></div>
                       )}
                     </NavLink>
                   </SidebarMenuButton>
@@ -154,14 +220,14 @@ export function AppSidebar() {
 
         {/* Footer */}
         {!collapsed && (
-          <div className="mt-auto px-3 py-4 glass rounded-2xl animate-fade-in">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 gradient-bg-green rounded-xl flex items-center justify-center">
-                <Zap className="h-4 w-4 text-white" />
+          <div className="mt-auto px-4 py-5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
+                <Activity className="h-5 w-5 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium">AI Powered</span>
-                <span className="text-xs text-muted-foreground">Healthcare Analytics</span>
+                <span className="text-sm font-semibold text-green-700 dark:text-green-300">AI Powered</span>
+                <span className="text-xs text-green-600/80 dark:text-green-400/80 font-medium">Healthcare Analytics</span>
               </div>
             </div>
           </div>
