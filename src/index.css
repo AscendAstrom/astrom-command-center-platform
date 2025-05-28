@@ -1,11 +1,534 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import all modular CSS files */
-@import './styles/theme-variables.css';
-@import './styles/base-styles.css';
-@import './styles/utility-classes.css';
-@import './styles/animations.css';
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 214 84% 56%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 94%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 94%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 94%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 87%;
+    --input: 214.3 31.8% 87%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.75rem;
+
+    /* ASTROM Modern Color Palette - Light Mode - Enhanced for Better Visibility */
+    --astrom-blue: 214 84% 46%;
+    --astrom-blue-light: 214 84% 60%;
+    --astrom-blue-dark: 214 84% 32%;
+    
+    --astrom-green: 142 76% 26%;
+    --astrom-green-light: 142 76% 40%;
+    --astrom-green-dark: 142 76% 16%;
+    
+    --astrom-orange: 25 95% 43%;
+    --astrom-orange-light: 25 95% 57%;
+    --astrom-orange-dark: 25 95% 29%;
+    
+    --astrom-purple: 271 81% 46%;
+    --astrom-purple-light: 271 81% 60%;
+    --astrom-purple-dark: 271 81% 32%;
+    
+    --astrom-pink: 330 81% 50%;
+    --astrom-pink-light: 330 81% 64%;
+    --astrom-pink-dark: 330 81% 36%;
+    
+    --astrom-grey: 215 16% 37%;
+    --astrom-grey-light: 215 16% 51%;
+    --astrom-grey-dark: 215 16% 23%;
+    
+    --astrom-surface: 0 0% 99%;
+    --astrom-surface-elevated: 0 0% 100%;
+    --astrom-overlay: 255 255 255 / 0.95;
+    
+    /* Modern Glass Effects - Light Mode Enhanced for Visibility */
+    --glass-bg: 255 255 255 / 0.85;
+    --glass-border: 0 0 0 / 0.12;
+    --backdrop-blur: 8px;
+    
+    /* Zone Colors - Light Mode Enhanced */
+    --zone-a: 142 76% 26%;
+    --zone-b: 25 95% 43%;
+    --zone-c: 0 84% 50%;
+    --zone-d: 271 81% 46%;
+    
+    /* Status Colors - Enhanced Contrast for Light Mode */
+    --status-success: 142 76% 26%;
+    --status-warning: 38 92% 40%;
+    --status-error: 0 84% 50%;
+    --status-info: 214 84% 46%;
+    
+    /* Sidebar Variables - Light Mode Enhanced */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 214 84% 46%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 87%;
+    --sidebar-ring: 214 84% 46%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 214 84% 56%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* ASTROM Modern Color Palette - Dark Mode - Enhanced */
+    --astrom-blue: 214 84% 66%;
+    --astrom-blue-light: 214 84% 80%;
+    --astrom-blue-dark: 214 84% 52%;
+    
+    --astrom-green: 142 76% 46%;
+    --astrom-green-light: 142 76% 60%;
+    --astrom-green-dark: 142 76% 32%;
+    
+    --astrom-orange: 25 95% 63%;
+    --astrom-orange-light: 25 95% 77%;
+    --astrom-orange-dark: 25 95% 49%;
+    
+    --astrom-purple: 271 81% 66%;
+    --astrom-purple-light: 271 81% 80%;
+    --astrom-purple-dark: 271 81% 52%;
+    
+    --astrom-pink: 330 81% 70%;
+    --astrom-pink-light: 330 81% 84%;
+    --astrom-pink-dark: 330 81% 56%;
+    
+    --astrom-grey: 215 16% 57%;
+    --astrom-grey-light: 215 16% 71%;
+    --astrom-grey-dark: 215 16% 43%;
+    
+    --astrom-surface: 222.2 84% 3%;
+    --astrom-surface-elevated: 217.2 32.6% 8%;
+    --astrom-overlay: 222.2 84% 4.9% / 0.95;
+    
+    /* Modern Glass Effects - Dark - Fixed */
+    --glass-bg: 0 0 0 / 0.4;
+    --glass-border: 255 255 255 / 0.08;
+    --backdrop-blur: 20px;
+    
+    /* Zone Colors - Dark Mode */
+    --zone-a: 142 76% 46%;
+    --zone-b: 25 95% 63%;
+    --zone-c: 0 84% 70%;
+    --zone-d: 271 81% 66%;
+    
+    /* Status Colors - Dark Mode - Enhanced */
+    --status-success: 142 76% 46%;
+    --status-warning: 38 92% 60%;
+    --status-error: 0 84% 70%;
+    --status-info: 214 84% 66%;
+
+    /* Sidebar Variables - Dark Mode */
+    --sidebar-background: 240 5.9% 6%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 214 84% 66%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 12%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 12%;
+    --sidebar-ring: 214 84% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  .font-display {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 3.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.05em;
+  }
+
+  .font-heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 2.25rem;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  .font-subheading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+}
+
+@layer utilities {
+  /* Modern ASTROM Color Classes */
+  .bg-astrom-blue { background-color: hsl(var(--astrom-blue)); }
+  .bg-astrom-blue-light { background-color: hsl(var(--astrom-blue-light)); }
+  .bg-astrom-blue-dark { background-color: hsl(var(--astrom-blue-dark)); }
+  
+  .bg-astrom-green { background-color: hsl(var(--astrom-green)); }
+  .bg-astrom-green-light { background-color: hsl(var(--astrom-green-light)); }
+  .bg-astrom-green-dark { background-color: hsl(var(--astrom-green-dark)); }
+  
+  .bg-astrom-orange { background-color: hsl(var(--astrom-orange)); }
+  .bg-astrom-orange-light { background-color: hsl(var(--astrom-orange-light)); }
+  .bg-astrom-orange-dark { background-color: hsl(var(--astrom-orange-dark)); }
+  
+  .bg-astrom-purple { background-color: hsl(var(--astrom-purple)); }
+  .bg-astrom-purple-light { background-color: hsl(var(--astrom-purple-light)); }
+  .bg-astrom-purple-dark { background-color: hsl(var(--astrom-purple-dark)); }
+  
+  .bg-astrom-pink { background-color: hsl(var(--astrom-pink)); }
+  .bg-astrom-pink-light { background-color: hsl(var(--astrom-pink-light)); }
+  .bg-astrom-pink-dark { background-color: hsl(var(--astrom-pink-dark)); }
+  
+  .text-astrom-blue { color: hsl(var(--astrom-blue)); }
+  .text-astrom-green { color: hsl(var(--astrom-green)); }
+  .text-astrom-orange { color: hsl(var(--astrom-orange)); }
+  .text-astrom-purple { color: hsl(var(--astrom-purple)); }
+  .text-astrom-pink { color: hsl(var(--astrom-pink)); }
+  
+  .border-astrom-blue { border-color: hsl(var(--astrom-blue)); }
+  .border-astrom-green { border-color: hsl(var(--astrom-green)); }
+  .border-astrom-orange { border-color: hsl(var(--astrom-orange)); }
+  .border-astrom-purple { border-color: hsl(var(--astrom-purple)); }
+  .border-astrom-pink { border-color: hsl(var(--astrom-pink)); }
+  
+  /* Zone Colors */
+  .bg-zone-a { background-color: hsl(var(--zone-a)); }
+  .bg-zone-b { background-color: hsl(var(--zone-b)); }
+  .bg-zone-c { background-color: hsl(var(--zone-c)); }
+  .bg-zone-d { background-color: hsl(var(--zone-d)); }
+  
+  /* Status Colors */
+  .bg-status-success { background-color: hsl(var(--status-success)); }
+  .bg-status-warning { background-color: hsl(var(--status-warning)); }
+  .bg-status-error { background-color: hsl(var(--status-error)); }
+  .bg-status-info { background-color: hsl(var(--status-info)); }
+  
+  /* Modern Glass Effects - Enhanced for Better Light Mode Visibility */
+  .glass {
+    background: rgba(var(--glass-bg));
+    backdrop-filter: blur(var(--backdrop-blur));
+    border: 1px solid rgba(var(--glass-border));
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 2px 16px rgba(0, 0, 0, 0.05);
+  }
+  
+  .glass-card {
+    background: rgba(var(--glass-bg));
+    backdrop-filter: blur(var(--backdrop-blur));
+    border: 1px solid rgba(var(--glass-border));
+    box-shadow: 
+      0 4px 6px -1px rgb(0 0 0 / 0.1),
+      0 2px 4px -2px rgb(0 0 0 / 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Light Theme Specific Glass Enhancement */
+  .light .glass,
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 
+      0 4px 6px -1px rgb(0 0 0 / 0.05),
+      0 2px 4px -2px rgb(0 0 0 / 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  /* Modern Elevated Surfaces - Enhanced */
+  .surface-elevated {
+    background-color: hsl(var(--astrom-surface-elevated));
+    box-shadow: 
+      0 4px 6px -1px rgb(0 0 0 / 0.1), 
+      0 2px 4px -2px rgb(0 0 0 / 0.1),
+      0 0 0 1px rgb(0 0 0 / 0.05);
+  }
+  
+  .surface-elevated-lg {
+    background-color: hsl(var(--astrom-surface-elevated));
+    box-shadow: 
+      0 10px 15px -3px rgb(0 0 0 / 0.1), 
+      0 4px 6px -4px rgb(0 0 0 / 0.1),
+      0 0 0 1px rgb(0 0 0 / 0.05);
+  }
+  
+  /* Modern Gradient Backgrounds - Enhanced for Light Mode */
+  .gradient-bg-blue {
+    background: linear-gradient(135deg, hsl(var(--astrom-blue) / 0.1) 0%, hsl(var(--astrom-blue-dark) / 0.05) 100%);
+  }
+  
+  .gradient-bg-green {
+    background: linear-gradient(135deg, hsl(var(--astrom-green) / 0.1) 0%, hsl(var(--astrom-green-dark) / 0.05) 100%);
+  }
+  
+  .gradient-bg-orange {
+    background: linear-gradient(135deg, hsl(var(--astrom-orange) / 0.1) 0%, hsl(var(--astrom-orange-dark) / 0.05) 100%);
+  }
+  
+  .gradient-bg-purple {
+    background: linear-gradient(135deg, hsl(var(--astrom-purple) / 0.1) 0%, hsl(var(--astrom-purple-dark) / 0.05) 100%);
+  }
+  
+  /* Light Theme Specific Enhancements */
+  .light .gradient-bg-blue {
+    background: linear-gradient(135deg, hsl(var(--astrom-blue) / 0.08) 0%, hsl(var(--astrom-blue-light) / 0.04) 100%);
+    border: 1px solid hsl(var(--astrom-blue) / 0.2);
+  }
+  
+  .light .gradient-bg-green {
+    background: linear-gradient(135deg, hsl(var(--astrom-green) / 0.08) 0%, hsl(var(--astrom-green-light) / 0.04) 100%);
+    border: 1px solid hsl(var(--astrom-green) / 0.2);
+  }
+  
+  .light .gradient-bg-orange {
+    background: linear-gradient(135deg, hsl(var(--astrom-orange) / 0.08) 0%, hsl(var(--astrom-orange-light) / 0.04) 100%);
+    border: 1px solid hsl(var(--astrom-orange) / 0.2);
+  }
+  
+  .light .gradient-bg-purple {
+    background: linear-gradient(135deg, hsl(var(--astrom-purple) / 0.08) 0%, hsl(var(--astrom-purple-light) / 0.04) 100%);
+    border: 1px solid hsl(var(--astrom-purple) / 0.2);
+  }
+  
+  /* Modern Hover Effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 20px 25px -5px rgb(0 0 0 / 0.1), 
+      0 10px 10px -5px rgb(0 0 0 / 0.04);
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 
+      0 0 20px hsl(var(--astrom-blue) / 0.3),
+      0 0 40px hsl(var(--astrom-blue) / 0.1);
+  }
+  
+  /* Modern Animation Classes */
+  .animate-slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .animate-bounce-subtle {
+    animation: bounceSubtle 2s infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulseGlow 3s infinite;
+  }
+  
+  .animate-gradient {
+    animation: gradientShift 6s ease infinite;
+    background-size: 200% 200%;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px hsl(var(--astrom-blue) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px hsl(var(--astrom-blue) / 0.8);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--astrom-blue) / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--astrom-blue) / 0.8);
+}
+
+/* Focus States */
+.focus-ring {
+  outline: 2px solid hsl(var(--astrom-blue));
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: hsl(var(--astrom-blue) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* Modern Typography */
+.text-display {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.text-heading {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.text-subheading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-caption {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}

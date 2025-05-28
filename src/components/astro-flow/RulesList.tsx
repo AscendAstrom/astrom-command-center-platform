@@ -20,24 +20,24 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-600 text-white';
-      case 'high': return 'bg-orange-600 text-white';
-      case 'medium': return 'bg-yellow-600 text-white';
-      case 'low': return 'bg-green-600 text-white';
-      default: return 'bg-muted text-muted-foreground';
+      case 'critical': return 'bg-red-600';
+      case 'high': return 'bg-orange-600';
+      case 'medium': return 'bg-yellow-600';
+      case 'low': return 'bg-green-600';
+      default: return 'bg-gray-600';
     }
   };
 
   return (
-    <Card className="bg-card border-border">
+    <Card className="bg-card/80 border-border backdrop-blur-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-cyan-500" />
+            <Zap className="h-5 w-5 text-cyan-400" />
             <CardTitle className="text-foreground">Automation Rules</CardTitle>
           </div>
           {canEdit && (
-            <Button onClick={onCreateRule} size="sm" className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg">
+            <Button onClick={onCreateRule} size="sm" className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg">
               <Plus className="h-4 w-4" />
             </Button>
           )}
@@ -57,11 +57,11 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400 animate-pulse' : 'bg-muted-foreground'}`} />
+                <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-500'}`} />
                 <h3 className="font-medium text-foreground">{rule.name}</h3>
               </div>
               <div className="flex items-center gap-2">
-                <Badge className={getPriorityColor(rule.priority)}>
+                <Badge className={getPriorityColor(rule.priority)} variant="secondary">
                   {rule.priority}
                 </Badge>
                 {canEdit && (
@@ -76,9 +76,9 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground capitalize">{rule.triggerType.replace('_', ' ')}</span>
               <div className="flex items-center gap-3">
-                <span className="text-cyan-500">{rule.conditions.length} conditions</span>
-                <span className="text-purple-500">{rule.actions.length} actions</span>
-                <span className="text-green-500">{rule.executionCount} runs</span>
+                <span className="text-cyan-400">{rule.conditions.length} conditions</span>
+                <span className="text-purple-400">{rule.actions.length} actions</span>
+                <span className="text-green-400">{rule.executionCount} runs</span>
               </div>
             </div>
           </div>
