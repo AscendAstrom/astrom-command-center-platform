@@ -77,10 +77,8 @@ const EntityTimerWidget = () => {
   return (
     <Card className="bg-slate-900 border-slate-800">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
-          <div className="w-12 h-12 gradient-bg-blue rounded-xl flex items-center justify-center shadow-lg">
-            <Clock className="h-6 w-6 text-white" />
-          </div>
+        <CardTitle className="text-white flex items-center gap-2">
+          <Clock className="h-5 w-5 text-cyan-400" />
           Entity Processing Times
         </CardTitle>
       </CardHeader>
@@ -95,7 +93,7 @@ const EntityTimerWidget = () => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-slate-400" />
-                    <span className="text-base font-medium text-white">{entity.patientId}</span>
+                    <span className="font-medium text-white">{entity.patientId}</span>
                   </div>
                   
                   <Badge className={getPriorityColor(entity.priority)}>

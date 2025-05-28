@@ -1,151 +1,199 @@
 
-import { useState } from "react";
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Monitor, Eye, TrendingUp, Activity, CheckCircle, BarChart3 } from "lucide-react";
-import { DashboardBuilder } from "@/components/astro-view/DashboardBuilder";
-import { DashboardManager } from "@/components/astro-view/DashboardManager";
-import { RealtimeDashboard } from "@/components/astro-view/RealtimeDashboard";
-import { SemanticLayerBuilder } from "@/components/astro-view/SemanticLayerBuilder";
+import { ViewUserRole } from '@/components/astro-view/types';
+import SemanticLayerBuilder from '@/components/astro-view/SemanticLayerBuilder';
+import DashboardManager from '@/components/astro-view/DashboardManager';
+import RealtimeDashboard from '@/components/astro-view/RealtimeDashboard';
+import { BarChart3, Eye, Settings, Sparkles, TrendingUp, Zap, Activity, Users } from 'lucide-react';
 
 const AstroView = () => {
-  const [showBuilder, setShowBuilder] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  // Simulate user role - in real app this would come from auth context
+  const [currentUserRole] = useState<ViewUserRole>('ANALYST');
 
-  const handleDashboardAdded = () => {
-    setShowBuilder(false);
-    setRefreshTrigger(prev => prev + 1);
-  };
+  const canCreateDashboards = currentUserRole === 'ADMIN' || currentUserRole === 'ANALYST';
+  const canEditSemanticLayer = currentUserRole === 'ADMIN' || currentUserRole === 'ANALYST';
 
   return (
-    <div className="p-6 space-y-6 bg-background min-h-full animate-fade-in">
-      {/* Header Section */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-3">
+    <div className="p-6 space-y-8 min-h-screen animate-fade-in">
+      {/* Hero Header */}
+      <div className="relative">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 gradient-bg-blue rounded-2xl flex items-center justify-center animate-pulse-glow shadow-lg">
-              <Monitor className="h-8 w-8 text-white" />
+            <div className="w-14 h-14 gradient-bg-purple rounded-3xl flex items-center justify-center shadow-lg hover-glow animate-pulse-glow">
+              <Eye className="h-7 w-7 text-white" />
             </div>
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-astrom-blue via-astrom-purple to-astrom-blue bg-clip-text text-transparent font-display">
-                ASTRO-VIEW
-              </h1>
-              <p className="text-xl text-muted-foreground font-medium mt-1">
-                Visual Analytics & Dashboard Platform
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-heading bg-gradient-to-r from-astrom-purple to-astrom-pink bg-clip-text text-transparent">
+                  ASTRO-VIEW
+                </h1>
+                <Badge className="gradient-bg-purple text-white border-0 animate-bounce-subtle">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  AI Powered
+                </Badge>
+              </div>
+              <p className="text-subheading text-muted-foreground">
+                Data Visualization & Dashboard Management
               </p>
+              <div className="flex items-center gap-4 mt-3">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-astrom-green animate-bounce-subtle" />
+                  <span className="text-sm text-muted-foreground">Real-time Analytics</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-astrom-blue" />
+                  <span className="text-sm text-muted-foreground">Predictive Insights</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-astrom-orange" />
+                  <span className="text-sm text-muted-foreground">Role-based Access</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="text-status-success border-status-success bg-status-success/10 px-6 py-3 text-sm font-medium">
-            <CheckCircle className="h-4 w-4 mr-2" />
-            Dashboards Live
-          </Badge>
-          <Button 
-            onClick={() => setShowBuilder(true)}
-            className="gradient-bg-blue hover:shadow-xl hover-lift transition-all duration-300 px-8 py-4 text-base font-semibold"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Create Dashboard
-          </Button>
+          
+          <div className="flex items-center gap-3">
+            <Button className="gradient-bg-purple hover:shadow-lg hover-lift">
+              <Zap className="h-4 w-4 mr-2" />
+              Generate Report
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Overview Stats */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Dashboards</p>
-                <p className="text-4xl font-bold text-foreground">12</p>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-status-success" />
-                  <p className="text-sm text-status-success font-semibold">+2 this week</p>
+        {[
+          { title: "Active Dashboards", value: "12", change: "+3", icon: BarChart3, color: "text-astrom-blue", bg: "bg-astrom-blue/10" },
+          { title: "Real-time Viewers", value: "847", change: "+12%", icon: Eye, color: "text-astrom-green", bg: "bg-astrom-green/10" },
+          { title: "Data Sources", value: "24", change: "+2", icon: Activity, color: "text-astrom-orange", bg: "bg-astrom-orange/10" },
+          { title: "Alert Rules", value: "156", change: "+8", icon: Zap, color: "text-astrom-purple", bg: "bg-astrom-purple/10" },
+        ].map((stat, index) => (
+          <Card 
+            key={stat.title} 
+            className="surface-elevated border-border/30 hover-lift animate-scale-in" 
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-caption text-muted-foreground">{stat.title}</p>
+                  <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+                  <p className={`text-xs ${stat.color} flex items-center gap-1`}>
+                    <TrendingUp className="h-3 w-3" />
+                    {stat.change} this week
+                  </p>
+                </div>
+                <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center ${stat.color}`}>
+                  <stat.icon className="h-6 w-6" />
                 </div>
               </div>
-              <div className="w-12 h-12 gradient-bg-blue rounded-xl flex items-center justify-center shadow-lg">
-                <Monitor className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.1s' }}>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Views</p>
-                <p className="text-4xl font-bold text-foreground">8.4K</p>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-status-success" />
-                  <p className="text-sm text-status-success font-semibold">+24% this month</p>
+      {/* Main Content */}
+      <Tabs defaultValue="dashboards" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 glass-card p-1 h-12">
+          <TabsTrigger 
+            value="dashboards" 
+            className="data-[state=active]:gradient-bg-purple data-[state=active]:text-white transition-all duration-300 rounded-xl"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Live Dashboards
+          </TabsTrigger>
+          <TabsTrigger 
+            value="builder" 
+            disabled={!canCreateDashboards} 
+            className="data-[state=active]:gradient-bg-blue data-[state=active]:text-white transition-all duration-300 rounded-xl"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Dashboard Builder
+          </TabsTrigger>
+          <TabsTrigger 
+            value="semantic" 
+            disabled={!canEditSemanticLayer} 
+            className="data-[state=active]:gradient-bg-green data-[state=active]:text-white transition-all duration-300 rounded-xl"
+          >
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Semantic Layer
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="dashboards" className="space-y-6 mt-8">
+          <Card className="surface-elevated-lg border-border/30 animate-slide-up">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-foreground flex items-center gap-2">
+                    <div className="w-2 h-2 bg-astrom-green rounded-full animate-bounce-subtle"></div>
+                    Live Dashboards
+                  </CardTitle>
+                  <CardDescription>Real-time operational dashboards with auto-refresh capabilities</CardDescription>
                 </div>
+                <Badge className="gradient-bg-green text-white border-0">
+                  <Activity className="h-3 w-3 mr-1 animate-bounce-subtle" />
+                  Live
+                </Badge>
               </div>
-              <div className="w-12 h-12 gradient-bg-green rounded-xl flex items-center justify-center shadow-lg">
-                <Eye className="h-6 w-6 text-white" />
+            </CardHeader>
+            <CardContent>
+              <RealtimeDashboard userRole={currentUserRole} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="builder" className="space-y-6 mt-8">
+          <Card className="surface-elevated-lg border-border/30 animate-slide-up">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-foreground flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-astrom-blue" />
+                    Dashboard Builder
+                  </CardTitle>
+                  <CardDescription>Create and manage custom dashboards with drag-and-drop interface</CardDescription>
+                </div>
+                <Badge className="gradient-bg-blue text-white border-0">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  AI Assisted
+                </Badge>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <DashboardManager userRole={currentUserRole} />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.2s' }}>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Real-time Widgets</p>
-                <p className="text-4xl font-bold text-foreground">47</p>
-                <p className="text-sm text-astrom-blue font-semibold">Live data streaming</p>
+        <TabsContent value="semantic" className="space-y-6 mt-8">
+          <Card className="surface-elevated-lg border-border/30 animate-slide-up">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-foreground flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-astrom-green" />
+                    Semantic Layer Builder
+                  </CardTitle>
+                  <CardDescription>Define business terms, calculations, and data relationships</CardDescription>
+                </div>
+                <Badge className="gradient-bg-orange text-white border-0">
+                  <Zap className="h-3 w-3 mr-1" />
+                  Advanced
+                </Badge>
               </div>
-              <div className="w-12 h-12 gradient-bg-green rounded-xl flex items-center justify-center shadow-lg">
-                <Activity className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.3s' }}>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Data Sources</p>
-                <p className="text-4xl font-bold text-foreground">6</p>
-                <p className="text-sm text-status-success font-semibold">All connected</p>
-              </div>
-              <div className="w-12 h-12 gradient-bg-purple rounded-xl flex items-center justify-center shadow-lg">
-                <BarChart3 className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Dashboard Manager */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
-          <DashboardManager key={refreshTrigger} />
-        </div>
-
-        {/* Real-time Dashboard */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.5s' }}>
-          <RealtimeDashboard />
-        </div>
-      </div>
-
-      {/* Semantic Layer Builder */}
-      <div className="animate-slide-up" style={{ animationDelay: '0.6s' }}>
-        <SemanticLayerBuilder />
-      </div>
-
-      {/* Dashboard Builder Modal */}
-      {showBuilder && (
-        <DashboardBuilder 
-          onClose={() => setShowBuilder(false)}
-          onDashboardAdded={handleDashboardAdded}
-        />
-      )}
+            </CardHeader>
+            <CardContent>
+              <SemanticLayerBuilder userRole={currentUserRole} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

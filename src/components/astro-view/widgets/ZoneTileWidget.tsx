@@ -63,10 +63,8 @@ const ZoneTileWidget = () => {
   return (
     <Card className="bg-slate-900 border-slate-800">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
-          <div className="w-12 h-12 gradient-bg-blue rounded-xl flex items-center justify-center shadow-lg">
-            <MapPin className="h-6 w-6 text-white" />
-          </div>
+        <CardTitle className="text-white flex items-center gap-2">
+          <MapPin className="h-5 w-5 text-cyan-400" />
           Zone Status Overview
         </CardTitle>
       </CardHeader>
@@ -79,7 +77,7 @@ const ZoneTileWidget = () => {
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h4 className="text-base font-semibold text-white">{zone.zoneName}</h4>
+                  <h4 className="font-medium text-white">{zone.zoneName}</h4>
                   <p className="text-xs text-slate-400">Zone ID: {zone.zoneId}</p>
                 </div>
                 <div className="flex items-center gap-2">

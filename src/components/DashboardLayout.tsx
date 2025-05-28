@@ -26,7 +26,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Input
                 type="text"
                 placeholder="Search..."
-                className="pl-10 bg-background/50 border-border/50 focus:border-primary/50 transition-colors text-base"
+                className="pl-10 bg-background/50 border-border/50 focus:border-primary/50 transition-colors"
               />
             </div>
           </div>
@@ -37,7 +37,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 bg-astrom-green rounded-full animate-bounce-subtle shadow-sm"></div>
               <span className="text-sm text-muted-foreground font-medium">System Operational</span>
-              <Activity className="h-4 w-4 text-astrom-green" />
+              <Activity className="h-3 w-3 text-astrom-green" />
             </div>
             
             {/* Notifications */}
