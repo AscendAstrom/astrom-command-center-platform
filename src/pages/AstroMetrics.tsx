@@ -45,16 +45,16 @@ const AstroMetrics = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="metrics-builder" className="mt-6">
-          <MetricBuilder userRole="admin" />
+          <MetricBuilder userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="kpi-dictionary" className="mt-6">
-          <KPIDictionary userRole="admin" />
+          <KPIDictionary userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="sla-configuration" className="mt-6">
-          <SLAConfiguration userRole="admin" />
+          <SLAConfiguration userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="alerts-manager" className="mt-6">
-          <AlertsManager userRole="admin" />
+          <AlertsManager userRole="ADMIN" />
         </TabsContent>
       </Tabs>
 
