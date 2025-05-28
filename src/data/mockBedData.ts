@@ -101,3 +101,33 @@ export const occupancyThresholds = {
   warning: 90,
   critical: 95
 };
+
+export const mockKPIs = [
+  {
+    id: "kpi1",
+    name: "Bed Occupancy Rate",
+    value: 83,
+    target: 85,
+    unit: "%",
+    trend: "up",
+    hospital: "King Abdulaziz Medical City"
+  },
+  {
+    id: "kpi2",
+    name: "Average Length of Stay",
+    value: 4.2,
+    target: 4.0,
+    unit: "days",
+    trend: "stable",
+    hospital: "King Abdulaziz Medical City"
+  },
+  {
+    id: "kpi3",
+    name: "Discharge Efficiency",
+    value: 92,
+    target: 90,
+    unit: "%",
+    trend: "up",
+    hospital: "King Faisal Specialist Hospital"
+  }
+];
