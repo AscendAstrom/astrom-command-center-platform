@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
+import AIRolesSection from "@/components/astro-scan/sections/AIRolesSection";
 import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSection";
 import IntelligentBedManagementSection from "@/components/astro-scan/sections/IntelligentBedManagementSection";
 import AdvancedMonitoringSection from "@/components/astro-scan/sections/AdvancedMonitoringSection";
@@ -26,6 +27,8 @@ const IngestionTabContent = () => {
           <IngestionDashboard />
         </CardContent>
       </Card>
+
+      <AIRolesSection />
 
       <PhaseThreeSection />
 
