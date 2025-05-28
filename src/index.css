@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 214 84% 56%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -32,23 +33,50 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
+    /* ASTROM Color Palette - Light Mode */
+    --astrom-blue: 214 84% 56%;
+    --astrom-blue-light: 214 84% 70%;
+    --astrom-blue-dark: 214 84% 42%;
+    
+    --astrom-green: 142 76% 36%;
+    --astrom-green-light: 142 76% 50%;
+    --astrom-green-dark: 142 76% 22%;
+    
+    --astrom-orange: 25 95% 53%;
+    --astrom-orange-light: 25 95% 67%;
+    --astrom-orange-dark: 25 95% 39%;
+    
+    --astrom-grey: 215 16% 47%;
+    --astrom-grey-light: 215 16% 61%;
+    --astrom-grey-dark: 215 16% 33%;
+    
+    --astrom-surface: 0 0% 98%;
+    --astrom-surface-elevated: 0 0% 100%;
+    --astrom-overlay: 0 0% 100% / 0.9;
+    
+    /* Zone Colors */
+    --zone-a: 142 76% 36%;
+    --zone-b: 25 95% 53%;
+    --zone-c: 0 84% 60%;
+    --zone-d: 271 81% 56%;
+    
+    /* Status Colors */
+    --status-success: 142 76% 36%;
+    --status-warning: 38 92% 50%;
+    --status-error: 0 84% 60%;
+    --status-info: 214 84% 56%;
+    
+    /* Sidebar Variables */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-primary: 214 84% 56%;
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 214 84% 56%;
   }
 
   .dark {
@@ -61,7 +89,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 214 84% 56%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -79,14 +107,49 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* ASTROM Color Palette - Dark Mode */
+    --astrom-blue: 214 84% 66%;
+    --astrom-blue-light: 214 84% 80%;
+    --astrom-blue-dark: 214 84% 52%;
+    
+    --astrom-green: 142 76% 46%;
+    --astrom-green-light: 142 76% 60%;
+    --astrom-green-dark: 142 76% 32%;
+    
+    --astrom-orange: 25 95% 63%;
+    --astrom-orange-light: 25 95% 77%;
+    --astrom-orange-dark: 25 95% 49%;
+    
+    --astrom-grey: 215 16% 57%;
+    --astrom-grey-light: 215 16% 71%;
+    --astrom-grey-dark: 215 16% 43%;
+    
+    --astrom-surface: 222.2 84% 6%;
+    --astrom-surface-elevated: 217.2 32.6% 17.5%;
+    --astrom-overlay: 222.2 84% 4.9% / 0.95;
+    
+    /* Zone Colors - Dark Mode */
+    --zone-a: 142 76% 46%;
+    --zone-b: 25 95% 63%;
+    --zone-c: 0 84% 70%;
+    --zone-d: 271 81% 66%;
+    
+    /* Status Colors - Dark Mode */
+    --status-success: 142 76% 46%;
+    --status-warning: 38 92% 60%;
+    --status-error: 0 84% 70%;
+    --status-info: 214 84% 66%;
+
+    /* Sidebar Variables - Dark Mode */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 214 84% 66%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 214 84% 66%;
   }
 }
 
@@ -96,6 +159,55 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+}
+
+@layer utilities {
+  /* ASTROM Color Classes */
+  .bg-astrom-blue { background-color: hsl(var(--astrom-blue)); }
+  .bg-astrom-blue-light { background-color: hsl(var(--astrom-blue-light)); }
+  .bg-astrom-blue-dark { background-color: hsl(var(--astrom-blue-dark)); }
+  
+  .bg-astrom-green { background-color: hsl(var(--astrom-green)); }
+  .bg-astrom-green-light { background-color: hsl(var(--astrom-green-light)); }
+  .bg-astrom-green-dark { background-color: hsl(var(--astrom-green-dark)); }
+  
+  .bg-astrom-orange { background-color: hsl(var(--astrom-orange)); }
+  .bg-astrom-orange-light { background-color: hsl(var(--astrom-orange-light)); }
+  .bg-astrom-orange-dark { background-color: hsl(var(--astrom-orange-dark)); }
+  
+  .text-astrom-blue { color: hsl(var(--astrom-blue)); }
+  .text-astrom-green { color: hsl(var(--astrom-green)); }
+  .text-astrom-orange { color: hsl(var(--astrom-orange)); }
+  
+  .border-astrom-blue { border-color: hsl(var(--astrom-blue)); }
+  .border-astrom-green { border-color: hsl(var(--astrom-green)); }
+  .border-astrom-orange { border-color: hsl(var(--astrom-orange)); }
+  
+  /* Zone Colors */
+  .bg-zone-a { background-color: hsl(var(--zone-a)); }
+  .bg-zone-b { background-color: hsl(var(--zone-b)); }
+  .bg-zone-c { background-color: hsl(var(--zone-c)); }
+  .bg-zone-d { background-color: hsl(var(--zone-d)); }
+  
+  /* Status Colors */
+  .bg-status-success { background-color: hsl(var(--status-success)); }
+  .bg-status-warning { background-color: hsl(var(--status-warning)); }
+  .bg-status-error { background-color: hsl(var(--status-error)); }
+  .bg-status-info { background-color: hsl(var(--status-info)); }
+  
+  /* Glass Effect */
+  .glass {
+    background: hsl(var(--astrom-overlay));
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+  }
+  
+  /* Elevated Surfaces */
+  .surface-elevated {
+    background-color: hsl(var(--astrom-surface-elevated));
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 }

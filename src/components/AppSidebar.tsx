@@ -6,7 +6,8 @@ import {
   Zap,
   Scan,
   Settings,
-  Shield
+  Shield,
+  LayoutDashboard
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -23,16 +24,16 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-  { title: "ASTRO-SCAN", url: "/astro-scan", icon: Scan },
-  { title: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers },
-  { title: "ASTRO-METRICS", url: "/astro-metrics", icon: Target },
-  { title: "ASTRO-VIEW", url: "/astro-view", icon: Eye },
-  { title: "ASTRO-FLOW", url: "/astro-flow", icon: Zap },
+  { title: "Sources", subtitle: "ASTRO-SCAN", url: "/astro-scan", icon: Scan },
+  { title: "Modeling", subtitle: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers },
+  { title: "Metrics", subtitle: "ASTRO-METRICS", url: "/astro-metrics", icon: Target },
+  { title: "Visuals", subtitle: "ASTRO-VIEW", url: "/astro-view", icon: Eye },
+  { title: "Automation", subtitle: "ASTRO-FLOW", url: "/astro-flow", icon: Zap },
 ];
 
 const systemItems = [
-  { title: "SETTINGS", url: "/settings", icon: Settings },
-  { title: "ADMIN PANEL", url: "/admin", icon: Shield },
+  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Admin Panel", url: "/admin", icon: Shield },
 ];
 
 export function AppSidebar() {
@@ -41,16 +42,20 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
 
   const isActive = (path: string) => location.pathname === path || (path === "/astro-scan" && location.pathname === "/");
+  
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-cyan-500/20 text-cyan-400 border-r-2 border-cyan-400" 
-      : "text-slate-300 hover:text-cyan-400 hover:bg-slate-800/50";
+      ? "bg-astrom-blue/20 text-astrom-blue border-r-2 border-astrom-blue shadow-sm" 
+      : "text-sidebar-foreground hover:text-astrom-blue hover:bg-sidebar-accent transition-all duration-200";
 
   return (
-    <Sidebar className={`${collapsed ? "w-14" : "w-64"} bg-slate-900 border-r border-slate-800`} collapsible="icon">
-      <SidebarContent className="bg-slate-900">
+    <Sidebar 
+      className={`${collapsed ? "w-14" : "w-64"} bg-sidebar-background border-r border-sidebar-border`} 
+      collapsible="icon"
+    >
+      <SidebarContent className="bg-sidebar-background">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-slate-400 font-semibold">
+          <SidebarGroupLabel className="text-sidebar-foreground/70 font-semibold text-xs uppercase tracking-wider">
             {!collapsed && "ASTROM Platform"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -62,11 +67,16 @@ export function AppSidebar() {
                       to={item.url} 
                       end 
                       className={({ isActive: navIsActive }) => 
-                        getNavCls({ isActive: isActive(item.url) })
+                        `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${getNavCls({ isActive: isActive(item.url) })}`
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!collapsed && (
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">{item.title}</span>
+                          <span className="text-xs opacity-70">{item.subtitle}</span>
+                        </div>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -75,10 +85,10 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator className="bg-slate-700" />
+        <SidebarSeparator className="bg-sidebar-border my-4" />
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-slate-400 font-semibold">
+          <SidebarGroupLabel className="text-sidebar-foreground/70 font-semibold text-xs uppercase tracking-wider">
             {!collapsed && "System"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -90,11 +100,11 @@ export function AppSidebar() {
                       to={item.url} 
                       end 
                       className={({ isActive: navIsActive }) => 
-                        getNavCls({ isActive: isActive(item.url) })
+                        `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${getNavCls({ isActive: isActive(item.url) })}`
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!collapsed && <span className="font-medium text-sm">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
