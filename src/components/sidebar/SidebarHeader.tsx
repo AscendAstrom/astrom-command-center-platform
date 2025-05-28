@@ -8,9 +8,9 @@ export function SidebarHeader() {
 
   if (collapsed) {
     return (
-      <div className="flex-shrink-0 p-3 mb-2 flex justify-center">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-          <LayoutDashboard className="h-6 w-6 text-white" />
+      <div className="flex-shrink-0 p-4 mb-2 flex justify-center">
+        <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <LayoutDashboard className="h-8 w-8 text-white" />
         </div>
       </div>
     );
