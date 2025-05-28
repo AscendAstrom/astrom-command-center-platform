@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,9 @@ import {
   MessageSquare,
   FileText,
   Settings,
-  Bell
+  Bell,
+  Hospital,
+  CheckCircle
 } from "lucide-react";
 import RuleBuilder from "@/components/astro-flow/RuleBuilder";
 import RulesList from "@/components/astro-flow/RulesList";
@@ -90,7 +91,7 @@ const AstroFlow = () => {
         </div>
 
         <Tabs defaultValue="workflow" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-8 bg-muted/50">
             <TabsTrigger value="workflow" className="data-[state=active]:bg-pink-500/20">
               <Workflow className="h-4 w-4 mr-2" />
               AI Workflow
@@ -98,6 +99,10 @@ const AstroFlow = () => {
             <TabsTrigger value="aiRoles" className="data-[state=active]:bg-cyan-500/20">
               <Bot className="h-4 w-4 mr-2" />
               AI Roles
+            </TabsTrigger>
+            <TabsTrigger value="bedautomation" className="data-[state=active]:bg-green-500/20">
+              <Hospital className="h-4 w-4 mr-2" />
+              Bed Management AI
             </TabsTrigger>
             <TabsTrigger value="rules">Rule Builder</TabsTrigger>
             <TabsTrigger value="monitoring">SLA Monitoring</TabsTrigger>
@@ -269,6 +274,158 @@ const AstroFlow = () => {
                       <Settings className="h-4 w-4 mr-2" />
                       Advanced Settings
                     </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="bedautomation" className="space-y-6">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Hospital className="h-5 w-5 text-green-400" />
+                  AI-Powered Bed Management Automation
+                </CardTitle>
+                <CardDescription>
+                  Intelligent bed assignment optimization and predictive analytics for Saudi healthcare facilities
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-foreground">AI Bed Assignment Engine</h3>
+                      <p className="text-muted-foreground">
+                        Machine learning algorithms optimize bed assignments based on patient acuity, 
+                        cultural preferences, gender requirements, and hospital capacity constraints.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Brain className="h-5 w-5 text-green-400" />
+                            <span className="text-foreground font-medium">Smart Bed Allocation</span>
+                          </div>
+                          <ul className="text-muted-foreground text-sm space-y-1">
+                            <li>• Gender-specific ward assignments</li>
+                            <li>• Family room proximity optimization</li>
+                            <li>• Acuity-based bed matching</li>
+                            <li>• VIP patient prioritization</li>
+                          </ul>
+                        </div>
+                        
+                        <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Target className="h-5 w-5 text-blue-400" />
+                            <span className="text-foreground font-medium">Discharge Prediction</span>
+                          </div>
+                          <ul className="text-muted-foreground text-sm space-y-1">
+                            <li>• ML-based length of stay prediction</li>
+                            <li>• Automated discharge planning</li>
+                            <li>• Bed availability forecasting</li>
+                            <li>• Transfer order optimization</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-foreground">Surge Prediction Models</h3>
+                      <div className="space-y-3">
+                        <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <TrendingUp className="h-5 w-5 text-orange-400" />
+                            <span className="text-foreground font-medium">Hajj Season Analytics</span>
+                          </div>
+                          <p className="text-muted-foreground text-sm">
+                            LSTM models predict patient surge patterns during Hajj season for Mecca hospitals
+                          </p>
+                          <div className="mt-3 flex items-center gap-2">
+                            <Badge variant="outline" className="text-orange-600 border-orange-600">95% Accuracy</Badge>
+                            <Badge variant="outline" className="text-blue-600 border-blue-600">7-day Forecast</Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="p-4 bg-muted/50 rounded-lg border border-purple-500/20">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Activity className="h-5 w-5 text-purple-400" />
+                            <span className="text-foreground font-medium">Real-time Capacity Management</span>
+                          </div>
+                          <p className="text-muted-foreground text-sm">
+                            Prophet forecasting models for daily capacity planning and resource allocation
+                          </p>
+                          <div className="mt-3 flex items-center gap-2">
+                            <Badge variant="outline" className="text-purple-600 border-purple-600">Real-time</Badge>
+                            <Badge variant="outline" className="text-green-600 border-green-600">Auto-scaling</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-4">Current Bed Status with AI Predictions</h3>
+                    <BedManagementTable data={mockBedData} showArabicNames={true} showCompliance={true} />
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-pink-500/20">
+                      <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-pink-400" />
+                        Automated Alerts
+                      </h4>
+                      <ul className="text-muted-foreground text-sm space-y-1">
+                        <li>• High occupancy warnings (>90%)</li>
+                        <li>• Discharge delay notifications</li>
+                        <li>• Transfer bottleneck alerts</li>
+                        <li>• MOH compliance violations</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
+                      <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <Bot className="h-4 w-4 text-blue-400" />
+                        AI Workflow Actions
+                      </h4>
+                      <ul className="text-muted-foreground text-sm space-y-1">
+                        <li>• Auto-assign incoming patients</li>
+                        <li>• Optimize bed cleaning schedules</li>
+                        <li>• Generate discharge summaries</li>
+                        <li>• Update MOH dashboards</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
+                      <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-400" />
+                        Cultural Considerations
+                      </h4>
+                      <ul className="text-muted-foreground text-sm space-y-1">
+                        <li>• Gender-separated ward management</li>
+                        <li>• Family accommodation priority</li>
+                        <li>• Prayer time scheduling</li>
+                        <li>• Ramadan fasting considerations</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Button className="w-full bg-pink-600 hover:bg-pink-700">
+                      <Brain className="h-4 w-4 mr-2" />
+                      Activate AI Bed Management
+                    </Button>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button variant="outline" className="w-full">
+                        Configure AI Rules
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        Train Models
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        View Predictions
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>

@@ -3,10 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Database, Settings, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, Eye, Workflow } from "lucide-react";
+import { Plus, Database, Settings, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, Eye, Workflow, Hospital } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
 import { DataSourceList } from "@/components/astro-scan/DataSourceList";
+import BedManagementTable from "@/components/shared/BedManagementTable";
+import { mockBedData, mockDataSources } from "@/data/mockBedData";
 
 const AstroScan = () => {
   const [showWizard, setShowWizard] = useState(false);
@@ -34,10 +36,14 @@ const AstroScan = () => {
         </div>
 
         <Tabs defaultValue="workflow" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-6 bg-slate-800/50">
             <TabsTrigger value="workflow" className="data-[state=active]:bg-cyan-500/20">
               <Workflow className="h-4 w-4 mr-2" />
               Source Mapping Workflow
+            </TabsTrigger>
+            <TabsTrigger value="bedmgmt" className="data-[state=active]:bg-green-500/20">
+              <Hospital className="h-4 w-4 mr-2" />
+              Bed Management Demo
             </TabsTrigger>
             <TabsTrigger value="sources" className="data-[state=active]:bg-blue-500/20">
               Data Sources
@@ -156,6 +162,128 @@ const AstroScan = () => {
                       </Button>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="bedmgmt" className="space-y-6">
+            <Card className="bg-slate-900/50 border-slate-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Hospital className="h-5 w-5 text-green-400" />
+                  Saudi Hospital Bed Management - Data Source Mapping
+                </CardTitle>
+                <CardDescription>
+                  Live demonstration of bed management data ingestion from Saudi healthcare facilities
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {mockDataSources.map((source) => (
+                    <div key={source.id} className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-white">{source.name}</h4>
+                        <Badge variant={source.status === 'active' ? 'default' : 'destructive'}>
+                          {source.status}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-400 text-sm mb-2">{source.hospital}</p>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Badge variant="outline" className="text-blue-400 border-blue-400">
+                          {source.type}
+                        </Badge>
+                        <span className="text-slate-300">{source.recordsPerHour}/hr</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-slate-800/30 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-white mb-4">Real-time Bed Status Data</h3>
+                  <BedManagementTable data={mockBedData} showArabicNames={true} />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="text-white font-semibold">Data Source Configuration</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                          <Database className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">HL7 FHIR Gateway</p>
+                          <p className="text-slate-400 text-sm">Real-time bed status messages</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">Hospital Information System</p>
+                          <p className="text-slate-400 text-sm">Patient admissions and discharges</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                          <Zap className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">EMS Integration</p>
+                          <p className="text-slate-400 text-sm">Emergency department arrivals</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="text-white font-semibold">Saudi Healthcare Context</h4>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-slate-800/50 rounded-lg border border-green-500/20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <CheckCircle className="h-4 w-4 text-green-400" />
+                          <span className="text-white font-medium">MOH Compliance</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">Ministry of Health reporting standards</p>
+                      </div>
+                      
+                      <div className="p-3 bg-slate-800/50 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Database className="h-4 w-4 text-blue-400" />
+                          <span className="text-white font-medium">Seha Cluster Integration</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">Regional health cluster data sharing</p>
+                      </div>
+                      
+                      <div className="p-3 bg-slate-800/50 rounded-lg border border-purple-500/20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <TrendingUp className="h-4 w-4 text-purple-400" />
+                          <span className="text-white font-medium">Hajj Season Preparation</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">Surge capacity planning and monitoring</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={() => setShowWizard(true)}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Bed Management Source
+                  </Button>
+                  <Button variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800">
+                    Simulate Data Flow
+                  </Button>
+                  <Button variant="outline" className="border-slate-600 text-slate-200 hover:bg-slate-800">
+                    Export Schema
+                  </Button>
                 </div>
               </CardContent>
             </Card>
