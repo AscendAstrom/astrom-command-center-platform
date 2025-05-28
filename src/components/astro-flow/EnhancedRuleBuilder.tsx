@@ -22,7 +22,7 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
   return (
     <div className="space-y-6">
       {/* AI-Powered Status Header */}
-      <Card className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-purple-500/30">
+      <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -38,15 +38,15 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">94%</div>
+                <div className="text-2xl font-bold text-green-500">94%</div>
                 <div className="text-sm text-muted-foreground">AI Accuracy</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400">247</div>
+                <div className="text-2xl font-bold text-blue-500">247</div>
                 <div className="text-sm text-muted-foreground">Predictions Today</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400">12</div>
+                <div className="text-2xl font-bold text-purple-500">12</div>
                 <div className="text-sm text-muted-foreground">Active AI Rules</div>
               </div>
             </div>
@@ -119,10 +119,10 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                 <div className="space-y-4">
                   <h3 className="font-semibold text-foreground">Active Automations</h3>
                   
-                  <div className="p-4 border border-border rounded-lg">
+                  <div className="p-4 border border-border rounded-lg bg-card">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-foreground">SLA Breach Prevention</span>
-                      <Badge className="bg-green-600">ACTIVE</Badge>
+                      <Badge className="bg-green-500 text-white">ACTIVE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
                       Auto-alerts staff when AI predicts SLA breach risk greater than 85%
@@ -132,10 +132,10 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                     </div>
                   </div>
 
-                  <div className="p-4 border border-border rounded-lg">
+                  <div className="p-4 border border-border rounded-lg bg-card">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-foreground">Surge Response</span>
-                      <Badge className="bg-blue-600">ACTIVE</Badge>
+                      <Badge className="bg-blue-500 text-white">ACTIVE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
                       Pre-allocates resources when surge prediction confidence greater than 90%
@@ -145,10 +145,10 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                     </div>
                   </div>
 
-                  <div className="p-4 border border-border rounded-lg">
+                  <div className="p-4 border border-border rounded-lg bg-card">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-foreground">Patient Routing Optimizer</span>
-                      <Badge className="bg-purple-600">ACTIVE</Badge>
+                      <Badge className="bg-purple-500 text-white">ACTIVE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
                       AI suggests optimal zone assignment based on capacity and wait times
@@ -164,21 +164,21 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                   
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-green-400">94%</div>
+                      <div className="text-3xl font-bold text-green-500">94%</div>
                       <div className="text-sm text-muted-foreground">Overall Automation Success</div>
                     </div>
                   </div>
 
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-blue-400">247</div>
+                      <div className="text-3xl font-bold text-blue-500">247</div>
                       <div className="text-sm text-muted-foreground">Automated Actions Today</div>
                     </div>
                   </div>
 
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-purple-400">18min</div>
+                      <div className="text-3xl font-bold text-purple-500">18min</div>
                       <div className="text-sm text-muted-foreground">Avg Response Time Saved</div>
                     </div>
                   </div>
