@@ -6,12 +6,12 @@ import { mockEpicDataSources } from '@/data/mockEpicDataSources';
 
 export const useDataSources = () => {
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchDataSources = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       setError(null);
 
       const { data, error: fetchError } = await supabase
@@ -47,7 +47,57 @@ export const useDataSources = () => {
       // Fallback to mock data on error
       setDataSources(mockEpicDataSources);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const updateDataSourceStatus = async (id: string, status: string) => {
+    try {
+      // Update local state immediately for better UX
+      setDataSources(prev => 
+        prev.map(source => 
+          source.id === id ? { ...source, status: status as any } : source
+        )
+      );
+
+      // Update in database (if using real data)
+      const { error: updateError } = await supabase
+        .from('data_sources')
+        .update({ status })
+        .eq('id', id);
+
+      if (updateError) {
+        console.error('Error updating data source status:', updateError);
+        // Revert local state on error
+        fetchDataSources();
+      }
+    } catch (err) {
+      console.error('Error updating data source status:', err);
+      // Revert local state on error
+      fetchDataSources();
+    }
+  };
+
+  const deleteDataSource = async (id: string) => {
+    try {
+      // Update local state immediately for better UX
+      setDataSources(prev => prev.filter(source => source.id !== id));
+
+      // Delete from database (if using real data)
+      const { error: deleteError } = await supabase
+        .from('data_sources')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) {
+        console.error('Error deleting data source:', deleteError);
+        // Revert local state on error
+        fetchDataSources();
+      }
+    } catch (err) {
+      console.error('Error deleting data source:', err);
+      // Revert local state on error
+      fetchDataSources();
     }
   };
 
@@ -61,8 +111,10 @@ export const useDataSources = () => {
 
   return {
     dataSources,
-    isLoading,
+    loading,
     error,
-    refetch
+    refetch,
+    updateDataSourceStatus,
+    deleteDataSource
   };
 };
