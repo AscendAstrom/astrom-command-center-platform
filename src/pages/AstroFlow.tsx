@@ -89,7 +89,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+            <Card className="bg-card border-border backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Bot className="h-5 w-5 text-cyan-400" />
@@ -106,7 +106,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="rules" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5 text-pink-400" />
@@ -123,7 +123,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-pink-400" />
@@ -140,7 +140,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="predictions" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-pink-400" />
@@ -157,7 +157,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="nlp" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5 text-pink-400" />
@@ -174,7 +174,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="alerts" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bell className="h-5 w-5 text-pink-400" />
