@@ -17,23 +17,23 @@ const AstroFlow = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
               <Workflow className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">ASTRO-FLOW</h1>
-            <span className="text-sm text-pink-400 font-medium">Automation & Workflow Management</span>
+            <h1 className="text-3xl font-bold text-foreground">ASTRO-FLOW</h1>
+            <span className="text-sm text-pink-500 font-medium">Automation & Workflow Management</span>
           </div>
-          <p className="text-slate-400 max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl">
             Create and manage automated workflows with rule-based triggers and intelligent data processing pipelines.
           </p>
         </div>
 
         <Tabs defaultValue="rules" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="rules" className="data-[state=active]:bg-pink-500/20">
               Rules Management
             </TabsTrigger>
@@ -46,12 +46,12 @@ const AstroFlow = () => {
           </TabsList>
           
           <TabsContent value="rules" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-white flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-pink-400" />
+                    <CardTitle className="text-foreground flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-pink-500" />
                       Automation Rules
                     </CardTitle>
                     <CardDescription>
@@ -81,10 +81,10 @@ const AstroFlow = () => {
           </TabsContent>
           
           <TabsContent value="executions" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Play className="h-5 w-5 text-green-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Play className="h-5 w-5 text-green-500" />
                   Rule Executions
                 </CardTitle>
                 <CardDescription>
@@ -98,10 +98,10 @@ const AstroFlow = () => {
           </TabsContent>
           
           <TabsContent value="alerts" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-orange-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-orange-500" />
                   Alert Subscriptions
                 </CardTitle>
                 <CardDescription>
@@ -119,9 +119,9 @@ const AstroFlow = () => {
         {isRuleBuilderOpen && (
           <div className="fixed inset-0 z-50 overflow-auto bg-black/50">
             <div className="container flex items-center justify-center min-h-screen">
-              <Card className="max-w-4xl w-full mx-auto my-24 bg-slate-900/50 border-slate-800">
+              <Card className="max-w-4xl w-full mx-auto my-24 bg-card/80 border-border backdrop-blur-sm">
                 <CardHeader>
-                  <CardTitle className="text-white">Rule Builder</CardTitle>
+                  <CardTitle className="text-foreground">Rule Builder</CardTitle>
                   <CardDescription>Define the conditions and actions for your automation rule.</CardDescription>
                 </CardHeader>
                 <CardContent>

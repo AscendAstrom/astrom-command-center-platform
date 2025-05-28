@@ -34,23 +34,23 @@ const AstroView = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
               <BarChart3 className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">ASTRO-VIEW</h1>
-            <span className="text-sm text-purple-400 font-medium">Data Visualization & Analytics</span>
+            <h1 className="text-3xl font-bold text-foreground">ASTRO-VIEW</h1>
+            <span className="text-sm text-purple-500 font-medium">Data Visualization & Analytics</span>
           </div>
-          <p className="text-slate-400 max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl">
             Create interactive dashboards and visualizations with real-time data connections and advanced analytics capabilities.
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger value="dashboards" className="data-[state=active]:bg-purple-500/20">
               Dashboard Manager
             </TabsTrigger>
@@ -66,10 +66,10 @@ const AstroView = () => {
           </TabsList>
           
           <TabsContent value="dashboards" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Monitor className="h-5 w-5 text-purple-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Monitor className="h-5 w-5 text-purple-500" />
                   Dashboard Manager
                 </CardTitle>
                 <CardDescription>
@@ -83,10 +83,10 @@ const AstroView = () => {
           </TabsContent>
           
           <TabsContent value="realtime" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-green-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-green-500" />
                   Real-time Dashboard
                 </CardTitle>
                 <CardDescription>
@@ -100,10 +100,10 @@ const AstroView = () => {
           </TabsContent>
           
           <TabsContent value="semantic" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-blue-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Layers className="h-5 w-5 text-blue-500" />
                   Semantic Layer Builder
                 </CardTitle>
                 <CardDescription>
@@ -117,10 +117,10 @@ const AstroView = () => {
           </TabsContent>
           
           <TabsContent value="reports" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <PieChart className="h-5 w-5 text-orange-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <PieChart className="h-5 w-5 text-orange-500" />
                   Report Builder
                 </CardTitle>
                 <CardDescription>

@@ -13,23 +13,23 @@ const AstroMetrics = () => {
   const [activeTab, setActiveTab] = useState("metrics-builder");
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
               <Target className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">ASTRO-METRICS</h1>
-            <span className="text-sm text-green-400 font-medium">Performance & KPI Management</span>
+            <h1 className="text-3xl font-bold text-foreground">ASTRO-METRICS</h1>
+            <span className="text-sm text-green-500 font-medium">Performance & KPI Management</span>
           </div>
-          <p className="text-slate-400 max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl">
             Define and track key performance indicators with advanced SLA monitoring and automated alerting systems.
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger value="metrics-builder" className="data-[state=active]:bg-green-500/20">
               Metric Builder
             </TabsTrigger>
@@ -45,10 +45,10 @@ const AstroMetrics = () => {
           </TabsList>
           
           <TabsContent value="metrics-builder" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Target className="h-5 w-5 text-green-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Target className="h-5 w-5 text-green-500" />
                   Metric Builder
                 </CardTitle>
                 <CardDescription>
@@ -62,10 +62,10 @@ const AstroMetrics = () => {
           </TabsContent>
           
           <TabsContent value="kpi-dictionary" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-blue-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
                   KPI Dictionary
                 </CardTitle>
                 <CardDescription>
@@ -79,10 +79,10 @@ const AstroMetrics = () => {
           </TabsContent>
           
           <TabsContent value="sla-configuration" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-500" />
                   SLA Configuration
                 </CardTitle>
                 <CardDescription>
@@ -96,10 +96,10 @@ const AstroMetrics = () => {
           </TabsContent>
           
           <TabsContent value="alerts-manager" className="space-y-6">
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-red-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-red-500" />
                   Alerts Manager
                 </CardTitle>
                 <CardDescription>
@@ -114,45 +114,45 @@ const AstroMetrics = () => {
         </Tabs>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className="bg-card/80 border-border backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-white">
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
                 <Users className="h-5 w-5" />
                 User Engagement
               </CardTitle>
               <CardDescription>Track user activity and engagement metrics.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-white">4,567 Active Users</p>
-              <p className="text-sm text-green-400 font-medium">30% increase from last month</p>
+              <p className="text-3xl font-bold text-foreground">4,567 Active Users</p>
+              <p className="text-sm text-green-500 font-medium">30% increase from last month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className="bg-card/80 border-border backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-white">
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
                 <Activity className="h-5 w-5" />
                 System Performance
               </CardTitle>
               <CardDescription>Monitor system health and performance metrics.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-white">99.99% Uptime</p>
-              <p className="text-sm text-green-400 font-medium">No downtime incidents reported</p>
+              <p className="text-3xl font-bold text-foreground">99.99% Uptime</p>
+              <p className="text-sm text-green-500 font-medium">No downtime incidents reported</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className="bg-card/80 border-border backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-white">
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
                 <TrendingUp className="h-5 w-5" />
                 Conversion Rates
               </CardTitle>
               <CardDescription>Analyze conversion rates across different stages.</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-white">15% Conversion Rate</p>
-              <p className="text-sm text-green-400 font-medium">5% increase from last quarter</p>
+              <p className="text-3xl font-bold text-foreground">15% Conversion Rate</p>
+              <p className="text-sm text-green-500 font-medium">5% increase from last quarter</p>
             </CardContent>
           </Card>
         </div>
