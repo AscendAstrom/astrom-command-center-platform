@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +16,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 
 const Dashboard = () => {
   const modules = [
@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-8">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -150,6 +150,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Real-Time Analytics Dashboard */}
+        <DashboardAnalytics />
 
         {/* Platform Modules */}
         <div className="space-y-4">
