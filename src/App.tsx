@@ -33,6 +33,7 @@ const App = () => (
                 <Route path="/astro-bricks" element={<AstroBricks />} />
                 <Route path="/astro-metrics" element={<AstroMetrics />} />
                 <Route path="/astro-view" element={<AstroView />} />
+                <Route path="/astro-flow" element={<AstroFlow />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/automation" element={<Automation />} />
                 <Route path="/admin" element={<TenantAdmin />} />

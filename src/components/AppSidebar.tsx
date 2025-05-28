@@ -32,6 +32,7 @@ const navigationItems = [
   { title: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers },
   { title: "ASTRO-METRICS", url: "/astro-metrics", icon: Target },
   { title: "ASTRO-VIEW", url: "/astro-view", icon: Eye },
+  { title: "ASTRO-FLOW", url: "/astro-flow", icon: Zap },
   { title: "Data Sources", url: "/data-sources", icon: Database },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Automation", url: "/automation", icon: Zap },
