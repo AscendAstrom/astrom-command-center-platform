@@ -1,4 +1,3 @@
-
 import { 
   Layers,
   Target,
@@ -123,6 +122,14 @@ export function AppSidebar() {
   };
   
   const getNavCls = (item: any, active: boolean) => {
+    if (collapsed) {
+      return `group relative flex items-center justify-center w-full p-2 rounded-xl transition-all duration-300 ease-out hover:shadow-sm ${
+        active 
+          ? `${item.activeBg} ${item.color} shadow-sm border border-border/20`
+          : `text-muted-foreground hover:${item.bg} hover:${item.color} hover:shadow-sm`
+      }`;
+    }
+    
     const baseClasses = "group relative flex items-center w-full p-3 rounded-xl transition-all duration-300 ease-out hover:shadow-sm";
     
     if (active) {
@@ -134,15 +141,17 @@ export function AppSidebar() {
 
   return (
     <Sidebar 
-      className="bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300 min-h-screen"
+      className={`bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300 min-h-screen ${
+        collapsed ? 'w-14' : 'w-64'
+      }`}
       collapsible="icon"
     >
       <SidebarContent className="flex flex-col h-full overflow-y-auto">
         {/* Header */}
         {collapsed ? (
-          <div className="flex-shrink-0 p-4 mb-2 flex justify-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <LayoutDashboard className="h-6 w-6 text-white" />
+          <div className="flex-shrink-0 p-2 mb-2 flex justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <LayoutDashboard className="h-5 w-5 text-white" />
             </div>
           </div>
         ) : (
@@ -164,7 +173,7 @@ export function AppSidebar() {
         )}
 
         {/* Platform Modules */}
-        <SidebarGroup className="flex-1 px-3">
+        <SidebarGroup className={`flex-1 ${collapsed ? 'px-1' : 'px-3'}`}>
           <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-4 px-2">
             {!collapsed && "PLATFORM MODULES"}
           </SidebarGroupLabel>
@@ -178,19 +187,25 @@ export function AppSidebar() {
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`${collapsed ? 'p-4' : 'p-3'} rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105 ${collapsed ? 'mx-auto' : ''}`}>
-                        <item.icon className={`${collapsed ? 'h-6 w-6' : 'h-5 w-5'} text-white`} />
-                      </div>
-                      {!collapsed && (
-                        <div className="flex flex-col flex-1 min-w-0 ml-3">
-                          <span className="font-semibold text-sm leading-tight">{item.title}</span>
-                          <span className="text-xs opacity-75 font-medium">{item.subtitle}</span>
+                      {collapsed ? (
+                        <div className={`p-2 rounded-lg ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-105`}>
+                          <item.icon className="h-5 w-5 text-white" />
                         </div>
-                      )}
-                      {!collapsed && isActive(item.url) && (
-                        <div className="flex items-center flex-shrink-0 mr-2">
-                          <ChevronRight className="h-4 w-4 opacity-60" />
-                        </div>
+                      ) : (
+                        <>
+                          <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                            <item.icon className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="flex flex-col flex-1 min-w-0 ml-3">
+                            <span className="font-semibold text-sm leading-tight">{item.title}</span>
+                            <span className="text-xs opacity-75 font-medium">{item.subtitle}</span>
+                          </div>
+                          {isActive(item.url) && (
+                            <div className="flex items-center flex-shrink-0 mr-2">
+                              <ChevronRight className="h-4 w-4 opacity-60" />
+                            </div>
+                          )}
+                        </>
                       )}
                       {/* Active indicator */}
                       {isActive(item.url) && (
@@ -207,7 +222,7 @@ export function AppSidebar() {
         <SidebarSeparator className="bg-gradient-to-r from-transparent via-border/50 to-transparent my-4 mx-3" />
 
         {/* System Section */}
-        <SidebarGroup className="flex-shrink-0 px-3">
+        <SidebarGroup className={`flex-shrink-0 ${collapsed ? 'px-1' : 'px-3'}`}>
           <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-4 px-2">
             {!collapsed && "SYSTEM"}
           </SidebarGroupLabel>
@@ -221,14 +236,20 @@ export function AppSidebar() {
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`${collapsed ? 'p-4' : 'p-3'} rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105 ${collapsed ? 'mx-auto' : ''}`}>
-                        <item.icon className={`${collapsed ? 'h-6 w-6' : 'h-5 w-5'} text-white`} />
-                      </div>
-                      {!collapsed && (
-                        <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>
-                      )}
-                      {!collapsed && isActive(item.url) && (
-                        <ChevronRight className="h-4 w-4 opacity-60 flex-shrink-0 mr-2" />
+                      {collapsed ? (
+                        <div className={`p-2 rounded-lg ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-105`}>
+                          <item.icon className="h-5 w-5 text-white" />
+                        </div>
+                      ) : (
+                        <>
+                          <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                            <item.icon className="h-5 w-5 text-white" />
+                          </div>
+                          <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>
+                          {isActive(item.url) && (
+                            <ChevronRight className="h-4 w-4 opacity-60 flex-shrink-0 mr-2" />
+                          )}
+                        </>
                       )}
                       {/* Active indicator */}
                       {isActive(item.url) && (
@@ -244,9 +265,9 @@ export function AppSidebar() {
 
         {/* Footer */}
         {collapsed ? (
-          <div className="flex-shrink-0 mt-4 mx-3 mb-4 flex justify-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
-              <Sparkles className="h-6 w-6 text-white animate-pulse" />
+          <div className="flex-shrink-0 mt-4 mx-1 mb-4 flex justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Sparkles className="h-5 w-5 text-white animate-pulse" />
             </div>
           </div>
         ) : (
