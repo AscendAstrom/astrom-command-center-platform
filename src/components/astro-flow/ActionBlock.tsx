@@ -142,8 +142,8 @@ const ActionBlock = ({ action, onUpdate, onDelete, canEdit }: ActionBlockProps) 
             <div>
               <label className="text-sm text-slate-400 mb-1 block">Banner Severity</label>
               <Select
-                value={action.config.severity || 'info'}
-                onValueChange={(value) => onUpdate({
+                value={action.config.severity || 'medium'}
+                onValueChange={(value: 'low' | 'medium' | 'high' | 'critical') => onUpdate({
                   ...action,
                   config: { ...action.config, severity: value }
                 })}
@@ -153,8 +153,9 @@ const ActionBlock = ({ action, onUpdate, onDelete, canEdit }: ActionBlockProps) 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-600">
-                  <SelectItem value="info">Info</SelectItem>
-                  <SelectItem value="warning">Warning</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
                   <SelectItem value="critical">Critical</SelectItem>
                 </SelectContent>
               </Select>
