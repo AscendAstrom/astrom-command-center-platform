@@ -2,30 +2,32 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { 
   Zap, 
+  GitBranch, 
+  BarChart3, 
+  Bot, 
   Brain, 
-  AlertTriangle, 
-  TrendingUp, 
-  Bell, 
-  Users, 
-  Settings,
-  Workflow,
-  Bot,
+  Workflow, 
+  Target,
   Activity,
-  MessageSquare
+  TrendingUp,
+  AlertTriangle,
+  MessageSquare,
+  FileText,
+  Settings
 } from "lucide-react";
-import { RuleBuilder } from "@/components/astro-flow/RuleBuilder";
-import { RulesList } from "@/components/astro-flow/RulesList";
-import { RuleExecutions } from "@/components/astro-flow/RuleExecutions";
-import { SLABreachRadar } from "@/components/astro-flow/SLABreachRadar";
-import { SurgePredictor } from "@/components/astro-flow/SurgePredictor";
-import { NLPAssistant } from "@/components/astro-flow/NLPAssistant";
-import { DailySummaries } from "@/components/astro-flow/DailySummaries";
-import { AlertSubscriptions } from "@/components/astro-flow/AlertSubscriptions";
+import RuleBuilder from "@/components/astro-flow/RuleBuilder";
+import RulesList from "@/components/astro-flow/RulesList";
+import RuleExecutions from "@/components/astro-flow/RuleExecutions";
+import SLABreachRadar from "@/components/astro-flow/SLABreachRadar";
+import SurgePredictor from "@/components/astro-flow/SurgePredictor";
+import NLPAssistant from "@/components/astro-flow/NLPAssistant";
+import DailySummaries from "@/components/astro-flow/DailySummaries";
+import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 
 const AstroFlow = () => {
   return (

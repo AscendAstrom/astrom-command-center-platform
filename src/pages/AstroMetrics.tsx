@@ -15,11 +15,11 @@ import {
   Activity,
   FileText
 } from "lucide-react";
-import { MetricBuilder } from "@/components/astro-metrics/MetricBuilder";
-import { SLAConfiguration } from "@/components/astro-metrics/SLAConfiguration";
-import { KPIDictionary } from "@/components/astro-metrics/KPIDictionary";
-import { AlertsManager } from "@/components/astro-metrics/AlertsManager";
-import { AccessControl } from "@/components/astro-metrics/AccessControl";
+import MetricBuilder from "@/components/astro-metrics/MetricBuilder";
+import SLAConfiguration from "@/components/astro-metrics/SLAConfiguration";
+import KPIDictionary from "@/components/astro-metrics/KPIDictionary";
+import AlertsManager from "@/components/astro-metrics/AlertsManager";
+import AccessControl from "@/components/astro-metrics/AccessControl";
 
 const AstroMetrics = () => {
   return (

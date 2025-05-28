@@ -15,10 +15,10 @@ import {
   Monitor,
   Layers
 } from "lucide-react";
-import { DashboardBuilder } from "@/components/astro-view/DashboardBuilder";
-import { DashboardManager } from "@/components/astro-view/DashboardManager";
-import { RealtimeDashboard } from "@/components/astro-view/RealtimeDashboard";
-import { SemanticLayerBuilder } from "@/components/astro-view/SemanticLayerBuilder";
+import DashboardBuilder from "@/components/astro-view/DashboardBuilder";
+import DashboardManager from "@/components/astro-view/DashboardManager";
+import RealtimeDashboard from "@/components/astro-view/RealtimeDashboard";
+import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
 
 const AstroView = () => {
   return (
