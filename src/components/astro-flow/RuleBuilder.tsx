@@ -9,7 +9,9 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AutomationRule, RuleCondition, RuleAction, TriggerType, ActionType, ConditionOperator, FlowUserRole } from './types';
-import { Plus, Trash2, Save, Play, Pause, Copy } from 'lucide-react';
+import { Plus, Trash2, Save, Play, Pause, Copy, Zap, AlertTriangle } from 'lucide-react';
+import ConditionBlock from './ConditionBlock';
+import ActionBlock from './ActionBlock';
 
 interface RuleBuilderProps {
   userRole: FlowUserRole;
@@ -167,32 +169,39 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Rules List */}
       <div className="lg:col-span-1">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-slate-900/80 border-slate-800 backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-white">Automation Rules</CardTitle>
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-cyan-400" />
+                <CardTitle className="text-white">Automation Rules</CardTitle>
+              </div>
               {canEdit && (
-                <Button onClick={handleCreateRule} size="sm" className="bg-cyan-600 hover:bg-cyan-700">
+                <Button onClick={handleCreateRule} size="sm" className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg">
                   <Plus className="h-4 w-4" />
                 </Button>
               )}
             </div>
+            <CardDescription>Click to configure automation rules</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {rules.map((rule) => (
               <div
                 key={rule.id}
-                className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
                   selectedRule?.id === rule.id
-                    ? 'border-cyan-500 bg-cyan-500/10'
-                    : 'border-slate-700 hover:border-slate-600'
+                    ? 'border-cyan-500 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 shadow-lg'
+                    : 'border-slate-700 hover:border-slate-600 hover:bg-slate-800/50'
                 }`}
                 onClick={() => setSelectedRule(rule)}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-white">{rule.name}</h3>
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Badge className={getPriorityColor(rule.priority)}>
+                    <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-500'}`} />
+                    <h3 className="font-medium text-white">{rule.name}</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={getPriorityColor(rule.priority)} variant="secondary">
                       {rule.priority}
                     </Badge>
                     {canEdit && (
@@ -203,10 +212,14 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
                     )}
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 mb-2">{rule.description}</p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>{rule.triggerType.replace('_', ' ')}</span>
-                  <span>{rule.executionCount} runs</span>
+                <p className="text-xs text-slate-400 mb-3 line-clamp-2">{rule.description}</p>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 capitalize">{rule.triggerType.replace('_', ' ')}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-cyan-400">{rule.conditions.length} conditions</span>
+                    <span className="text-purple-400">{rule.actions.length} actions</span>
+                    <span className="text-green-400">{rule.executionCount} runs</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -217,72 +230,79 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       {/* Rule Editor */}
       <div className="lg:col-span-2">
         {selectedRule ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-slate-900/80 border-slate-800 backdrop-blur-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-white">
-                  {isCreating ? 'Create Rule' : 'Edit Rule'}
-                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="h-5 w-5 text-orange-400" />
+                  <CardTitle className="text-white">
+                    {isCreating ? 'Create Automation Rule' : 'Edit Rule Configuration'}
+                  </CardTitle>
+                </div>
                 {canEdit && (
                   <div className="flex items-center gap-2">
-                    <Button onClick={handleSaveRule} size="sm" className="bg-green-600 hover:bg-green-700">
+                    <Button onClick={handleSaveRule} size="sm" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg">
                       <Save className="h-4 w-4 mr-1" />
-                      Save
+                      Save Rule
                     </Button>
                   </div>
                 )}
               </div>
+              <CardDescription>Configure conditions and actions for automated responses</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Basic Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-slate-300">Rule Name</Label>
+                  <Label className="text-slate-300 text-sm font-medium">Rule Name</Label>
                   <Input
                     value={selectedRule.name}
                     onChange={(e) => setSelectedRule({ ...selectedRule, name: e.target.value })}
-                    className="bg-slate-800 border-slate-700"
+                    className="bg-slate-800/50 border-slate-700 text-white mt-1"
                     disabled={!canEdit}
+                    placeholder="Descriptive rule name"
                   />
                 </div>
                 <div>
-                  <Label className="text-slate-300">Priority</Label>
+                  <Label className="text-slate-300 text-sm font-medium">Priority Level</Label>
                   <Select
                     value={selectedRule.priority}
                     onValueChange={(value: any) => setSelectedRule({ ...selectedRule, priority: value })}
                     disabled={!canEdit}
                   >
-                    <SelectTrigger className="bg-slate-800 border-slate-700">
+                    <SelectTrigger className="bg-slate-800/50 border-slate-700 text-white mt-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="critical">Critical</SelectItem>
+                      <SelectItem value="low">Low Priority</SelectItem>
+                      <SelectItem value="medium">Medium Priority</SelectItem>
+                      <SelectItem value="high">High Priority</SelectItem>
+                      <SelectItem value="critical">Critical Priority</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div>
-                <Label className="text-slate-300">Description</Label>
+                <Label className="text-slate-300 text-sm font-medium">Description</Label>
                 <Textarea
                   value={selectedRule.description}
                   onChange={(e) => setSelectedRule({ ...selectedRule, description: e.target.value })}
-                  className="bg-slate-800 border-slate-700"
+                  className="bg-slate-800/50 border-slate-700 text-white mt-1"
                   disabled={!canEdit}
+                  placeholder="Describe what this rule monitors and when it triggers"
+                  rows={3}
                 />
               </div>
 
               <div>
-                <Label className="text-slate-300">Trigger Type</Label>
+                <Label className="text-slate-300 text-sm font-medium">Trigger Type</Label>
                 <Select
                   value={selectedRule.triggerType}
                   onValueChange={(value: TriggerType) => setSelectedRule({ ...selectedRule, triggerType: value })}
                   disabled={!canEdit}
                 >
-                  <SelectTrigger className="bg-slate-800 border-slate-700">
+                  <SelectTrigger className="bg-slate-800/50 border-slate-700 text-white mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-slate-700">
@@ -297,212 +317,114 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
 
               <Separator className="bg-slate-700" />
 
-              {/* Conditions */}
+              {/* IF Conditions Section */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-slate-300">Conditions</Label>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-cyan-400 border-cyan-400 bg-cyan-400/10">
+                      IF
+                    </Badge>
+                    <Label className="text-slate-300 text-sm font-medium">Conditions (All must be true)</Label>
+                  </div>
                   {canEdit && (
-                    <Button onClick={addCondition} size="sm" variant="outline" className="border-slate-600">
+                    <Button onClick={addCondition} size="sm" variant="outline" className="border-slate-600 text-cyan-400 hover:bg-cyan-400/10">
                       <Plus className="h-4 w-4 mr-1" />
                       Add Condition
                     </Button>
                   )}
                 </div>
                 <div className="space-y-3">
-                  {selectedRule.conditions.map((condition, index) => (
-                    <div key={condition.id} className="grid grid-cols-12 gap-2 items-center">
-                      <div className="col-span-3">
-                        <Input
-                          placeholder="Field name"
-                          value={condition.field}
-                          onChange={(e) => {
-                            const updatedConditions = [...selectedRule.conditions];
-                            updatedConditions[index].field = e.target.value;
-                            setSelectedRule({ ...selectedRule, conditions: updatedConditions });
-                          }}
-                          className="bg-slate-800 border-slate-700"
-                          disabled={!canEdit}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <Select
-                          value={condition.operator}
-                          onValueChange={(value: ConditionOperator) => {
-                            const updatedConditions = [...selectedRule.conditions];
-                            updatedConditions[index].operator = value;
-                            setSelectedRule({ ...selectedRule, conditions: updatedConditions });
-                          }}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger className="bg-slate-800 border-slate-700">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-slate-800 border-slate-700">
-                            {operators.map((op) => (
-                              <SelectItem key={op.value} value={op.value}>
-                                {op.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="col-span-5">
-                        <Input
-                          placeholder="Value"
-                          value={condition.value.toString()}
-                          onChange={(e) => {
-                            const updatedConditions = [...selectedRule.conditions];
-                            updatedConditions[index].value = e.target.value;
-                            setSelectedRule({ ...selectedRule, conditions: updatedConditions });
-                          }}
-                          className="bg-slate-800 border-slate-700"
-                          disabled={!canEdit}
-                        />
-                      </div>
-                      {canEdit && (
-                        <div className="col-span-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
+                  {selectedRule.conditions.length === 0 ? (
+                    <div className="text-center py-8 text-slate-500 border-2 border-dashed border-slate-700 rounded-lg">
+                      <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No conditions defined</p>
+                      <p className="text-xs">Add conditions to trigger this rule</p>
+                    </div>
+                  ) : (
+                    selectedRule.conditions.map((condition, index) => (
+                      <div key={condition.id} className="flex items-center gap-3">
+                        {index > 0 && (
+                          <Badge variant="outline" className="text-slate-400 border-slate-600 bg-slate-800/50">
+                            AND
+                          </Badge>
+                        )}
+                        <div className="flex-1">
+                          <ConditionBlock
+                            condition={condition}
+                            onUpdate={(updatedCondition) => {
+                              const updatedConditions = [...selectedRule.conditions];
+                              updatedConditions[index] = updatedCondition;
+                              setSelectedRule({ ...selectedRule, conditions: updatedConditions });
+                            }}
+                            onDelete={() => {
                               const updatedConditions = selectedRule.conditions.filter(c => c.id !== condition.id);
                               setSelectedRule({ ...selectedRule, conditions: updatedConditions });
                             }}
-                            className="text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                            canEdit={canEdit}
+                          />
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
               <Separator className="bg-slate-700" />
 
-              {/* Actions */}
+              {/* THEN Actions Section */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <Label className="text-slate-300">Actions</Label>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-purple-400 border-purple-400 bg-purple-400/10">
+                      THEN
+                    </Badge>
+                    <Label className="text-slate-300 text-sm font-medium">Actions (All will execute)</Label>
+                  </div>
                   {canEdit && (
-                    <Button onClick={addAction} size="sm" variant="outline" className="border-slate-600">
+                    <Button onClick={addAction} size="sm" variant="outline" className="border-slate-600 text-purple-400 hover:bg-purple-400/10">
                       <Plus className="h-4 w-4 mr-1" />
                       Add Action
                     </Button>
                   )}
                 </div>
                 <div className="space-y-4">
-                  {selectedRule.actions.map((action, index) => (
-                    <div key={action.id} className="p-4 border border-slate-700 rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <Select
-                          value={action.type}
-                          onValueChange={(value: ActionType) => {
-                            const updatedActions = [...selectedRule.actions];
-                            updatedActions[index].type = value;
-                            setSelectedRule({ ...selectedRule, actions: updatedActions });
-                          }}
-                          disabled={!canEdit}
-                        >
-                          <SelectTrigger className="w-48 bg-slate-800 border-slate-700">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-slate-800 border-slate-700">
-                            {actionTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {canEdit && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              const updatedActions = selectedRule.actions.filter(a => a.id !== action.id);
-                              setSelectedRule({ ...selectedRule, actions: updatedActions });
-                            }}
-                            className="text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {(action.type === 'email_alert' || action.type === 'sms_alert') && (
-                          <div>
-                            <Label className="text-slate-400 text-xs">Recipients (comma-separated)</Label>
-                            <Input
-                              value={action.config.recipients?.join(', ') || ''}
-                              onChange={(e) => {
-                                const updatedActions = [...selectedRule.actions];
-                                updatedActions[index].config.recipients = e.target.value.split(',').map(r => r.trim());
-                                setSelectedRule({ ...selectedRule, actions: updatedActions });
-                              }}
-                              className="bg-slate-800 border-slate-700"
-                              disabled={!canEdit}
-                            />
-                          </div>
-                        )}
-                        {action.type === 'slack_notification' && (
-                          <div>
-                            <Label className="text-slate-400 text-xs">Channel</Label>
-                            <Input
-                              value={action.config.channel || ''}
-                              onChange={(e) => {
-                                const updatedActions = [...selectedRule.actions];
-                                updatedActions[index].config.channel = e.target.value;
-                                setSelectedRule({ ...selectedRule, actions: updatedActions });
-                              }}
-                              className="bg-slate-800 border-slate-700"
-                              disabled={!canEdit}
-                            />
-                          </div>
-                        )}
-                        {(action.type === 'api_call' || action.type === 'webhook') && (
-                          <div>
-                            <Label className="text-slate-400 text-xs">URL</Label>
-                            <Input
-                              value={action.config.url || ''}
-                              onChange={(e) => {
-                                const updatedActions = [...selectedRule.actions];
-                                updatedActions[index].config.url = e.target.value;
-                                setSelectedRule({ ...selectedRule, actions: updatedActions });
-                              }}
-                              className="bg-slate-800 border-slate-700"
-                              disabled={!canEdit}
-                            />
-                          </div>
-                        )}
-                        <div className="md:col-span-2">
-                          <Label className="text-slate-400 text-xs">Message Template</Label>
-                          <Textarea
-                            value={action.config.message || ''}
-                            onChange={(e) => {
-                              const updatedActions = [...selectedRule.actions];
-                              updatedActions[index].config.message = e.target.value;
-                              setSelectedRule({ ...selectedRule, actions: updatedActions });
-                            }}
-                            className="bg-slate-800 border-slate-700"
-                            disabled={!canEdit}
-                          />
-                        </div>
-                      </div>
+                  {selectedRule.actions.length === 0 ? (
+                    <div className="text-center py-8 text-slate-500 border-2 border-dashed border-slate-700 rounded-lg">
+                      <Zap className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No actions defined</p>
+                      <p className="text-xs">Add actions to execute when conditions are met</p>
                     </div>
-                  ))}
+                  ) : (
+                    selectedRule.actions.map((action, index) => (
+                      <ActionBlock
+                        key={action.id}
+                        action={action}
+                        onUpdate={(updatedAction) => {
+                          const updatedActions = [...selectedRule.actions];
+                          updatedActions[index] = updatedAction;
+                          setSelectedRule({ ...selectedRule, actions: updatedActions });
+                        }}
+                        onDelete={() => {
+                          const updatedActions = selectedRule.actions.filter(a => a.id !== action.id);
+                          setSelectedRule({ ...selectedRule, actions: updatedActions });
+                        }}
+                        canEdit={canEdit}
+                      />
+                    ))
+                  )}
                 </div>
               </div>
             </CardContent>
           </Card>
         ) : (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-slate-900/80 border-slate-800 backdrop-blur-sm">
             <CardContent className="flex items-center justify-center h-96">
               <div className="text-center">
-                <p className="text-slate-400 mb-4">Select a rule to edit or create a new one</p>
+                <Zap className="h-16 w-16 mx-auto mb-4 text-slate-600" />
+                <p className="text-slate-400 mb-4 text-lg">Select a rule to configure automation</p>
+                <p className="text-slate-500 mb-6 text-sm">Create intelligent if/then workflows to automate your operations</p>
                 {canEdit && (
-                  <Button onClick={handleCreateRule} className="bg-cyan-600 hover:bg-cyan-700">
+                  <Button onClick={handleCreateRule} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg">
                     <Plus className="h-4 w-4 mr-2" />
                     Create New Rule
                   </Button>
