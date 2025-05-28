@@ -13,10 +13,10 @@ import AIDecisionEngineSection from "@/components/astro-scan/sections/AIDecision
 const IngestionTabContent = () => {
   return (
     <div className="space-y-6">
-      <Card className="bg-card/80 border-border backdrop-blur-sm">
+      <Card className="bg-card border-border backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-foreground flex items-center gap-2">
-            <Activity className="h-5 w-5 text-green-400" />
+            <Activity className="h-5 w-5 text-primary" />
             Data Ingestion Dashboard
           </CardTitle>
           <CardDescription>
