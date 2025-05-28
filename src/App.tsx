@@ -1,5 +1,6 @@
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/ThemeProvider"
 import Dashboard from "./pages/Dashboard";
 import CommandCenter from "./pages/CommandCenter";
 import AstroScan from "./pages/AstroScan";
