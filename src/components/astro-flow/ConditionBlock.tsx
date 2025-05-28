@@ -37,7 +37,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
   const currentOperator = operators.find(op => op.value === condition.operator);
 
   return (
-    <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+    <Card className="bg-card border-border backdrop-blur-sm">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           {/* Field Section */}
@@ -48,7 +48,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
                 value={condition.field}
                 onChange={(e) => onUpdate({ ...condition, field: e.target.value })}
                 placeholder="Field name (e.g., wait_time_minutes)"
-                className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-400"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
                 disabled={!canEdit}
               />
             </div>
@@ -61,15 +61,15 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
               onValueChange={(value: ConditionOperator) => onUpdate({ ...condition, operator: value })}
               disabled={!canEdit}
             >
-              <SelectTrigger className="w-32 bg-slate-900/50 border-slate-600 text-white">
+              <SelectTrigger className="w-32 bg-background border-border text-foreground">
                 <SelectValue>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-cyan-400">{currentOperator?.symbol}</span>
-                    <span className="text-xs text-slate-400">{currentOperator?.label}</span>
+                    <span className="text-xs text-muted-foreground">{currentOperator?.label}</span>
                   </div>
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-popover border-border">
                 {operators.map((op) => (
                   <SelectItem key={op.value} value={op.value}>
                     <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
               value={condition.value.toString()}
               onChange={(e) => onUpdate({ ...condition, value: e.target.value })}
               placeholder="Value"
-              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-400"
+              className="bg-background border-border text-foreground placeholder:text-muted-foreground"
               disabled={!canEdit}
             />
           </div>

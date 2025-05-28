@@ -67,7 +67,7 @@ const AstroFlow = () => {
         <AstroFlowHeader />
 
         <Tabs defaultValue="workflow" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-7 bg-muted/50">
             <TabsTrigger value="workflow" className="data-[state=active]:bg-pink-500/20">
               <Workflow className="h-4 w-4 mr-2" />
               AI Workflow
@@ -76,11 +76,26 @@ const AstroFlow = () => {
               <Bot className="h-4 w-4 mr-2" />
               AI Roles
             </TabsTrigger>
-            <TabsTrigger value="rules">Rule Builder</TabsTrigger>
-            <TabsTrigger value="monitoring">SLA Monitoring</TabsTrigger>
-            <TabsTrigger value="predictions">Surge Prediction</TabsTrigger>
-            <TabsTrigger value="nlp">NLP Assistant</TabsTrigger>
-            <TabsTrigger value="alerts">Alert Manager</TabsTrigger>
+            <TabsTrigger value="rules" className="data-[state=active]:bg-orange-500/20">
+              <Settings className="h-4 w-4 mr-2" />
+              Rules
+            </TabsTrigger>
+            <TabsTrigger value="monitoring" className="data-[state=active]:bg-red-500/20">
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              SLA Monitor
+            </TabsTrigger>
+            <TabsTrigger value="predictions" className="data-[state=active]:bg-blue-500/20">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Predictions
+            </TabsTrigger>
+            <TabsTrigger value="nlp" className="data-[state=active]:bg-green-500/20">
+              <Brain className="h-4 w-4 mr-2" />
+              NLP
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="data-[state=active]:bg-purple-500/20">
+              <Bell className="h-4 w-4 mr-2" />
+              Alerts
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="workflow" className="space-y-6">
@@ -89,7 +104,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+            <Card className="bg-card border-border backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Bot className="h-5 w-5 text-cyan-400" />
@@ -106,7 +121,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="rules" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5 text-pink-400" />
@@ -123,7 +138,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-pink-400" />
@@ -140,7 +155,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="predictions" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-pink-400" />
@@ -157,7 +172,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="nlp" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5 text-pink-400" />
@@ -174,7 +189,7 @@ const AstroFlow = () => {
           </TabsContent>
 
           <TabsContent value="alerts" className="space-y-6">
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bell className="h-5 w-5 text-pink-400" />

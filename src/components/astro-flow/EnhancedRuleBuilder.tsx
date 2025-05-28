@@ -104,7 +104,7 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
         </TabsContent>
 
         <TabsContent value="automation">
-          <Card className="bg-card/80 border-border backdrop-blur-sm">
+          <Card className="bg-card border-border backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <Brain className="h-5 w-5 text-cyan-500" />
@@ -162,21 +162,21 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                 <div className="space-y-4">
                   <h3 className="font-semibold text-foreground">Workflow Performance</h3>
                   
-                  <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="p-4 bg-muted rounded-lg">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-green-500">94%</div>
                       <div className="text-sm text-muted-foreground">Overall Automation Success</div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="p-4 bg-muted rounded-lg">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-blue-500">247</div>
                       <div className="text-sm text-muted-foreground">Automated Actions Today</div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="p-4 bg-muted rounded-lg">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-purple-500">18min</div>
                       <div className="text-sm text-muted-foreground">Avg Response Time Saved</div>

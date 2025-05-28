@@ -24,12 +24,12 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
       case 'high': return 'bg-orange-600';
       case 'medium': return 'bg-yellow-600';
       case 'low': return 'bg-green-600';
-      default: return 'bg-gray-600';
+      default: return 'bg-muted';
     }
   };
 
   return (
-    <Card className="bg-card/80 border-border backdrop-blur-sm">
+    <Card className="bg-card border-border backdrop-blur-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -51,13 +51,13 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
             className={`p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
               selectedRule?.id === rule.id
                 ? 'border-cyan-500 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 shadow-lg'
-                : 'border-border hover:border-muted-foreground hover:bg-muted/50'
+                : 'border-border hover:border-muted-foreground hover:bg-accent'
             }`}
             onClick={() => onSelectRule(rule)}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400 animate-pulse' : 'bg-gray-500'}`} />
+                <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400 animate-pulse' : 'bg-muted-foreground'}`} />
                 <h3 className="font-medium text-foreground">{rule.name}</h3>
               </div>
               <div className="flex items-center gap-2">
