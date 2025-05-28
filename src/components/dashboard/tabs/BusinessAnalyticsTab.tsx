@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analyticsDataService';
 import { DollarSign, TrendingUp, Star, Target, Users, BarChart3 } from 'lucide-react';
+import RealtimeLineChart from '../charts/RealtimeLineChart';
+import RealtimeAreaChart from '../charts/RealtimeAreaChart';
 
 interface BusinessAnalyticsTabProps {
   data: AnalyticsData;
@@ -100,23 +102,35 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Revenue Trends</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-green-400" />
+              Revenue Trends
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Revenue trend visualization</p>
-            </div>
+            <RealtimeAreaChart
+              data={data.chartData.revenue}
+              dataKeys={['revenue', 'target']}
+              colors={['#10b981', '#6366f1']}
+              height={200}
+            />
           </CardContent>
         </Card>
 
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Performance Metrics</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Target className="h-5 w-5 text-blue-400" />
+              Performance Metrics
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">KPI dashboard</p>
-            </div>
+            <RealtimeLineChart
+              data={data.chartData.revenue}
+              dataKeys={['revenue']}
+              colors={['#3b82f6']}
+              height={200}
+            />
           </CardContent>
         </Card>
       </div>

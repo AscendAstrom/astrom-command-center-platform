@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analyticsDataService';
 import { Database, Zap, AlertCircle, CheckCircle, TrendingUp } from 'lucide-react';
+import RealtimeLineChart from '../charts/RealtimeLineChart';
+import RealtimeAreaChart from '../charts/RealtimeAreaChart';
 
 interface DataPipelineTabProps {
   data: AnalyticsData;
@@ -113,23 +115,35 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Processing Throughput</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Zap className="h-5 w-5 text-green-400" />
+              Processing Throughput
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Throughput metrics chart</p>
-            </div>
+            <RealtimeAreaChart
+              data={data.chartData.processingThroughput}
+              dataKeys={['throughput', 'target']}
+              colors={['#10b981', '#6366f1']}
+              height={200}
+            />
           </CardContent>
         </Card>
 
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Data Quality Trends</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-purple-400" />
+              Data Quality Trends
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Quality score visualization</p>
-            </div>
+            <RealtimeLineChart
+              data={data.chartData.dataQuality}
+              dataKeys={['quality', 'completeness']}
+              colors={['#8b5cf6', '#06b6d4']}
+              height={200}
+            />
           </CardContent>
         </Card>
       </div>

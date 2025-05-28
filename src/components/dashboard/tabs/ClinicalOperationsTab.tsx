@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analyticsDataService';
 import { Stethoscope, Users, Calendar, Activity, Settings, CheckCircle } from 'lucide-react';
+import RealtimeBarChart from '../charts/RealtimeBarChart';
+import RealtimePieChart from '../charts/RealtimePieChart';
 
 interface ClinicalOperationsTabProps {
   data: AnalyticsData;
@@ -109,23 +111,36 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Staff Allocation</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Users className="h-5 w-5 text-blue-400" />
+              Staff Allocation
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Staff distribution chart</p>
-            </div>
+            <RealtimeBarChart
+              data={data.chartData.staffAllocation}
+              dataKeys={['value']}
+              colors={['#3b82f6']}
+              height={200}
+            />
           </CardContent>
         </Card>
 
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Procedure Schedule</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Activity className="h-5 w-5 text-green-400" />
+              Resource Distribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Timeline visualization</p>
-            </div>
+            <RealtimePieChart
+              data={data.chartData.staffAllocation}
+              dataKey="value"
+              nameKey="category"
+              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+              height={200}
+            />
           </CardContent>
         </Card>
       </div>

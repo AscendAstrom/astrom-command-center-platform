@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analyticsDataService';
 import { Heart, Users, Clock, Bed, AlertTriangle, TrendingUp } from 'lucide-react';
+import RealtimeLineChart from '../charts/RealtimeLineChart';
+import RealtimeAreaChart from '../charts/RealtimeAreaChart';
+import RealtimePieChart from '../charts/RealtimePieChart';
 
 interface EmergencyDepartmentTabProps {
   data: AnalyticsData;
@@ -127,9 +130,12 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Live chart visualization</p>
-            </div>
+            <RealtimeLineChart
+              data={data.chartData.waitTimes}
+              dataKeys={['waitTime', 'targetTime']}
+              colors={['#3b82f6', '#ef4444']}
+              height={200}
+            />
           </CardContent>
         </Card>
 
@@ -141,9 +147,49 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Real-time flow visualization</p>
-            </div>
+            <RealtimeAreaChart
+              data={data.chartData.patientFlow}
+              dataKeys={['admissions', 'discharges']}
+              colors={['#10b981', '#f59e0b']}
+              height={200}
+              stacked={false}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Bed className="h-5 w-5 text-purple-400" />
+              Bed Utilization
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RealtimePieChart
+              data={data.chartData.bedUtilization}
+              dataKey="value"
+              nameKey="name"
+              colors={['#8b5cf6', '#e5e7eb']}
+              height={200}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Heart className="h-5 w-5 text-red-400" />
+              Staff Distribution
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RealtimePieChart
+              data={data.chartData.staffAllocation}
+              dataKey="value"
+              nameKey="category"
+              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+              height={200}
+            />
           </CardContent>
         </Card>
       </div>

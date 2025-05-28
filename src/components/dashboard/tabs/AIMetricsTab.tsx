@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analyticsDataService';
 import { Brain, Zap, Target, Activity, TrendingUp, CheckCircle } from 'lucide-react';
+import RealtimeLineChart from '../charts/RealtimeLineChart';
+import RealtimeAreaChart from '../charts/RealtimeAreaChart';
 
 interface AIMetricsTabProps {
   data: AnalyticsData;
@@ -116,23 +118,35 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Model Performance</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Brain className="h-5 w-5 text-pink-400" />
+              Model Performance
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">ML model metrics visualization</p>
-            </div>
+            <RealtimeLineChart
+              data={data.chartData.modelPerformance}
+              dataKeys={['accuracy', 'confidence']}
+              colors={['#ec4899', '#f59e0b']}
+              height={200}
+            />
           </CardContent>
         </Card>
 
         <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-foreground">Automation Trends</CardTitle>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Zap className="h-5 w-5 text-green-400" />
+              Automation Trends
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-32 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg flex items-center justify-center">
-              <p className="text-sm text-muted-foreground">Automation efficiency charts</p>
-            </div>
+            <RealtimeAreaChart
+              data={data.chartData.modelPerformance}
+              dataKeys={['accuracy']}
+              colors={['#10b981']}
+              height={200}
+            />
           </CardContent>
         </Card>
       </div>
