@@ -1,11 +1,10 @@
 
 import { useState } from "react";
-import { Plus, Play, Pause, Zap, Bell, TrendingUp, AlertTriangle, Workflow, Eye } from "lucide-react";
+import { Plus, Play, Pause, Zap, Bell, TrendingUp, AlertTriangle, Workflow, Eye, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import RuleBuilder from "@/components/astro-flow/RuleBuilder";
-import RulesList from "@/components/astro-flow/RulesList";
+import EnhancedRuleBuilder from "@/components/astro-flow/EnhancedRuleBuilder";
 import RuleExecutions from "@/components/astro-flow/RuleExecutions";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 
@@ -25,17 +24,23 @@ const AstroFlow = () => {
               <Workflow className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">ASTRO-FLOW</h1>
-            <span className="text-sm text-pink-500 font-medium">Automation & Workflow Management</span>
+            <span className="text-sm text-pink-500 font-medium">AI-Powered Automation & Workflow Management</span>
+            <div className="flex items-center gap-2 ml-4">
+              <Brain className="h-4 w-4 text-purple-400" />
+              <span className="text-xs text-muted-foreground">Enhanced with AI Intelligence</span>
+            </div>
           </div>
-          <p className="text-muted-foreground max-w-2xl">
-            Create and manage automated workflows with rule-based triggers and intelligent data processing pipelines.
+          <p className="text-muted-foreground max-w-3xl">
+            Create and manage AI-powered automated workflows with intelligent rule-based triggers, real-time predictions, 
+            surge forecasting, and natural language control for seamless healthcare operations.
           </p>
         </div>
 
-        <Tabs defaultValue="rules" className="space-y-6">
+        <Tabs defaultValue="ai-automation" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-            <TabsTrigger value="rules" className="data-[state=active]:bg-pink-500/20">
-              Rules Management
+            <TabsTrigger value="ai-automation" className="data-[state=active]:bg-pink-500/20">
+              <Brain className="h-4 w-4 mr-2" />
+              AI Automation Hub
             </TabsTrigger>
             <TabsTrigger value="executions" className="data-[state=active]:bg-pink-500/20">
               Execution History
@@ -45,39 +50,8 @@ const AstroFlow = () => {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="rules" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-foreground flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-pink-500" />
-                      Automation Rules
-                    </CardTitle>
-                    <CardDescription>
-                      Manage and configure your automation rules and workflows
-                    </CardDescription>
-                  </div>
-                  <Button 
-                    onClick={() => setIsRuleBuilderOpen(true)}
-                    className="bg-pink-600 hover:bg-pink-700"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Rule
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <RulesList 
-                  rules={[]}
-                  selectedRule={null}
-                  onSelectRule={() => {}}
-                  onCreateRule={() => {}}
-                  onToggleRule={handleToggleRule}
-                  userRole="ADMIN"
-                />
-              </CardContent>
-            </Card>
+          <TabsContent value="ai-automation" className="space-y-6">
+            <EnhancedRuleBuilder userRole="ADMIN" />
           </TabsContent>
           
           <TabsContent value="executions" className="space-y-6">
@@ -85,10 +59,10 @@ const AstroFlow = () => {
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Play className="h-5 w-5 text-green-500" />
-                  Rule Executions
+                  Rule Executions & AI Performance
                 </CardTitle>
                 <CardDescription>
-                  Monitor rule execution history and performance
+                  Monitor rule execution history, AI predictions accuracy, and automated workflow performance
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -102,10 +76,10 @@ const AstroFlow = () => {
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Bell className="h-5 w-5 text-orange-500" />
-                  Alert Subscriptions
+                  Smart Alert Subscriptions
                 </CardTitle>
                 <CardDescription>
-                  Configure alerts and notifications for your workflows
+                  Configure AI-driven alerts, notifications, and intelligent escalation workflows
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -115,27 +89,83 @@ const AstroFlow = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Rule Builder Modal */}
-        {isRuleBuilderOpen && (
-          <div className="fixed inset-0 z-50 overflow-auto bg-black/50">
-            <div className="container flex items-center justify-center min-h-screen">
-              <Card className="max-w-4xl w-full mx-auto my-24 bg-card/80 border-border backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-foreground">Rule Builder</CardTitle>
-                  <CardDescription>Define the conditions and actions for your automation rule.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RuleBuilder userRole="ADMIN" />
-                  <div className="flex justify-end mt-4">
-                    <Button onClick={() => setIsRuleBuilderOpen(false)} variant="outline">
-                      Close
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
+        {/* AI Insights Footer */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/30">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                <Brain className="h-5 w-5 text-purple-400" />
+                AI Model Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">SLA Breach Predictor</span>
+                  <span className="text-green-400 font-bold">94.1%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Surge Forecaster</span>
+                  <span className="text-green-400 font-bold">91.7%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">ETTB Estimator</span>
+                  <span className="text-green-400 font-bold">89.3%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border-green-500/30">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                <Zap className="h-5 w-5 text-green-400" />
+                Automation Impact
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Actions Automated Today</span>
+                  <span className="text-green-400 font-bold">247</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Time Saved</span>
+                  <span className="text-green-400 font-bold">4.2 hrs</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">SLA Breaches Prevented</span>
+                  <span className="text-green-400 font-bold">18</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-900/20 to-red-900/20 border-orange-500/30">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
+                <AlertTriangle className="h-5 w-5 text-orange-400" />
+                Live AI Alerts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">High Risk Zones</span>
+                  <span className="text-red-400 font-bold">1</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Surge Predictions</span>
+                  <span className="text-yellow-400 font-bold">2</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Anomalies Detected</span>
+                  <span className="text-orange-400 font-bold">0</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
