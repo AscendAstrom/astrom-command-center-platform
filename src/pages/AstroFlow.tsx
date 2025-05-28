@@ -31,6 +31,22 @@ import NLPAssistant from "@/components/astro-flow/NLPAssistant";
 import DailySummaries from "@/components/astro-flow/DailySummaries";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
+import { UserRole } from "@/components/astro-bricks/types";
+import { FlowUserRole } from "@/components/astro-flow/types";
+
+// Helper function to map UserRole to FlowUserRole
+const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
+  switch (userRole) {
+    case 'ADMIN':
+      return 'ADMIN';
+    case 'DATA_ENGINEER':
+      return 'OPS_MANAGER'; // Map DATA_ENGINEER to OPS_MANAGER as closest equivalent
+    case 'ANALYST':
+      return 'VIEWER'; // Map ANALYST to VIEWER as closest equivalent
+    default:
+      return 'VIEWER';
+  }
+};
 
 const AstroFlow = () => {
   const { userRole, isLoading } = useUserRole();
@@ -52,8 +68,9 @@ const AstroFlow = () => {
     );
   }
 
-  // Default to ANALYST if userRole is null
+  // Default to ANALYST if userRole is null, then map to FlowUserRole
   const effectiveUserRole = userRole || 'ANALYST';
+  const flowUserRole = mapUserRoleToFlowUserRole(effectiveUserRole);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -270,7 +287,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RuleBuilder userRole={effectiveUserRole} />
+                <RuleBuilder userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -287,7 +304,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SLABreachRadar userRole={effectiveUserRole} />
+                <SLABreachRadar userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -304,7 +321,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SurgePredictor userRole={effectiveUserRole} />
+                <SurgePredictor userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -321,7 +338,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <NLPAssistant userRole={effectiveUserRole} />
+                <NLPAssistant userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -338,7 +355,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AlertSubscriptions userRole={effectiveUserRole} />
+                <AlertSubscriptions userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
