@@ -11,17 +11,19 @@ interface FieldMappingStepProps {
   updateFormData: (updates: any) => void;
 }
 
-const COMMON_HEALTHCARE_FIELDS = [
-  { key: 'patient_id', label: 'Patient ID', type: 'string' },
-  { key: 'mrn', label: 'Medical Record Number', type: 'string' },
-  { key: 'triage_time', label: 'Triage Time', type: 'datetime' },
-  { key: 'chief_complaint', label: 'Chief Complaint', type: 'string' },
-  { key: 'ems_status', label: 'EMS Status', type: 'string' },
-  { key: 'acuity_level', label: 'Acuity Level', type: 'integer' },
-  { key: 'bed_assignment', label: 'Bed Assignment', type: 'string' },
-  { key: 'provider_id', label: 'Provider ID', type: 'string' },
-  { key: 'discharge_time', label: 'Discharge Time', type: 'datetime' },
-  { key: 'diagnosis_code', label: 'Diagnosis Code (ICD-10)', type: 'string' }
+const COMMON_BUSINESS_FIELDS = [
+  { key: 'entity_id', label: 'Entity ID', type: 'string' },
+  { key: 'record_number', label: 'Record Number', type: 'string' },
+  { key: 'timestamp', label: 'Timestamp', type: 'datetime' },
+  { key: 'description', label: 'Description', type: 'string' },
+  { key: 'status', label: 'Status', type: 'string' },
+  { key: 'priority_level', label: 'Priority Level', type: 'integer' },
+  { key: 'assignment', label: 'Assignment', type: 'string' },
+  { key: 'user_id', label: 'User ID', type: 'string' },
+  { key: 'completion_time', label: 'Completion Time', type: 'datetime' },
+  { key: 'category_code', label: 'Category Code', type: 'string' },
+  { key: 'location', label: 'Location', type: 'string' },
+  { key: 'department', label: 'Department', type: 'string' }
 ];
 
 export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepProps) => {
@@ -77,7 +79,7 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
     updateFormData({ fieldMappings });
   };
 
-  const addCommonField = (field: typeof COMMON_HEALTHCARE_FIELDS[0]) => {
+  const addCommonField = (field: typeof COMMON_BUSINESS_FIELDS[0]) => {
     const newMappings = [...mappings, {
       sourceField: '',
       targetField: field.key,
@@ -98,14 +100,14 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
       </div>
       
       <p className="text-muted-foreground">
-        Map source fields from your {formData.type} data to standardized healthcare fields.
+        Map source fields from your {formData.type} data to standardized business fields.
       </p>
 
       {/* Quick Add Common Fields */}
       <div>
         <Label className="text-foreground mb-3 block font-semibold">Quick Add Common Fields</Label>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {COMMON_HEALTHCARE_FIELDS.map((field) => (
+          {COMMON_BUSINESS_FIELDS.map((field) => (
             <Button
               key={field.key}
               variant="outline"
@@ -148,7 +150,7 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
                   <Input
                     value={mapping.sourceField}
                     onChange={(e) => updateMapping(index, { sourceField: e.target.value })}
-                    placeholder="e.g., PID.3.1"
+                    placeholder="e.g., field.value.1"
                     className="mt-1 bg-background border-border text-foreground"
                   />
                 </div>
@@ -158,7 +160,7 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
                   <Input
                     value={mapping.targetField}
                     onChange={(e) => updateMapping(index, { targetField: e.target.value })}
-                    placeholder="e.g., patient_id"
+                    placeholder="e.g., entity_id"
                     className="mt-1 bg-background border-border text-foreground"
                   />
                 </div>

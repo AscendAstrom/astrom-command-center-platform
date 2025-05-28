@@ -7,8 +7,8 @@ import { MapPin, Users, Clock, AlertTriangle } from 'lucide-react';
 const ZoneTileWidget = () => {
   const zoneData: ZoneTileData[] = [
     {
-      zoneId: 'ed_1',
-      zoneName: 'Emergency Department',
+      zoneId: 'zone_a',
+      zoneName: 'Processing Center A',
       status: 'warning',
       occupancy: 42,
       capacity: 50,
@@ -16,8 +16,8 @@ const ZoneTileWidget = () => {
       alertCount: 2
     },
     {
-      zoneId: 'icu_1',
-      zoneName: 'ICU',
+      zoneId: 'zone_b',
+      zoneName: 'High Priority Zone',
       status: 'critical',
       occupancy: 18,
       capacity: 20,
@@ -25,8 +25,8 @@ const ZoneTileWidget = () => {
       alertCount: 1
     },
     {
-      zoneId: 'ward_1',
-      zoneName: 'General Ward',
+      zoneId: 'zone_c',
+      zoneName: 'General Processing',
       status: 'normal',
       occupancy: 156,
       capacity: 200,
@@ -34,8 +34,8 @@ const ZoneTileWidget = () => {
       alertCount: 0
     },
     {
-      zoneId: 'or_1',
-      zoneName: 'Operating Room',
+      zoneId: 'zone_d',
+      zoneName: 'Service Center',
       status: 'normal',
       occupancy: 8,
       capacity: 12,

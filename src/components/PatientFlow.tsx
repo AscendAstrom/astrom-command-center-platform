@@ -2,15 +2,15 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { time: '00:00', arrivals: 12, discharges: 8, waiting: 4 },
-  { time: '04:00', arrivals: 8, discharges: 6, waiting: 2 },
-  { time: '08:00', arrivals: 24, discharges: 18, waiting: 8 },
-  { time: '12:00', arrivals: 32, discharges: 28, waiting: 12 },
-  { time: '16:00', arrivals: 28, discharges: 24, waiting: 9 },
-  { time: '20:00', arrivals: 18, discharges: 15, waiting: 6 },
+  { time: '00:00', arrivals: 12, completions: 8, pending: 4 },
+  { time: '04:00', arrivals: 8, completions: 6, pending: 2 },
+  { time: '08:00', arrivals: 24, completions: 18, pending: 8 },
+  { time: '12:00', arrivals: 32, completions: 28, pending: 12 },
+  { time: '16:00', arrivals: 28, completions: 24, pending: 9 },
+  { time: '20:00', arrivals: 18, completions: 15, pending: 6 },
 ];
 
-const PatientFlow = () => {
+const EntityFlow = () => {
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
@@ -31,23 +31,23 @@ const PatientFlow = () => {
             stroke="#22D3EE" 
             strokeWidth={3}
             dot={{ fill: '#22D3EE', strokeWidth: 2, r: 4 }}
-            name="Arrivals"
+            name="New Entries"
           />
           <Line 
             type="monotone" 
-            dataKey="discharges" 
+            dataKey="completions" 
             stroke="#10B981" 
             strokeWidth={3}
             dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-            name="Discharges"
+            name="Completed"
           />
           <Line 
             type="monotone" 
-            dataKey="waiting" 
+            dataKey="pending" 
             stroke="#F59E0B" 
             strokeWidth={3}
             dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
-            name="Waiting"
+            name="Pending"
           />
         </LineChart>
       </ResponsiveContainer>
@@ -55,19 +55,19 @@ const PatientFlow = () => {
       <div className="flex justify-center gap-6 mt-4">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
-          <span className="text-slate-300 text-sm">Arrivals</span>
+          <span className="text-slate-300 text-sm">New Entries</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-          <span className="text-slate-300 text-sm">Discharges</span>
+          <span className="text-slate-300 text-sm">Completed</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-          <span className="text-slate-300 text-sm">Waiting</span>
+          <span className="text-slate-300 text-sm">Pending</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default PatientFlow;
+export default EntityFlow;

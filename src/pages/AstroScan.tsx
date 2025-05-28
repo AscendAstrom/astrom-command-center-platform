@@ -31,7 +31,7 @@ const AstroScan = () => {
                 ASTRO-SCAN
               </h1>
               <p className="text-muted-foreground text-xl font-medium mt-1">
-                Healthcare Data Ingestion & Source Management
+                Data Ingestion & Source Management Platform
               </p>
             </div>
           </div>

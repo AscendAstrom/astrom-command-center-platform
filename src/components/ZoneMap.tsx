@@ -1,9 +1,9 @@
 
 const zones = [
-  { id: 'A', name: 'Triage', patients: 8, capacity: 12, status: 'normal' },
-  { id: 'B', name: 'Fast Track', patients: 15, capacity: 18, status: 'busy' },
-  { id: 'C', name: 'Acute Care', patients: 22, capacity: 24, status: 'critical' },
-  { id: 'D', name: 'Observation', patients: 6, capacity: 10, status: 'normal' },
+  { id: 'A', name: 'Processing Center', entities: 8, capacity: 12, status: 'normal' },
+  { id: 'B', name: 'Express Lane', entities: 15, capacity: 18, status: 'busy' },
+  { id: 'C', name: 'Main Service Area', entities: 22, capacity: 24, status: 'critical' },
+  { id: 'D', name: 'Quality Control', entities: 6, capacity: 10, status: 'normal' },
 ];
 
 const ZoneMap = () => {
@@ -20,8 +20,8 @@ const ZoneMap = () => {
     }
   };
 
-  const getOccupancyPercentage = (patients: number, capacity: number) => {
-    return Math.round((patients / capacity) * 100);
+  const getOccupancyPercentage = (entities: number, capacity: number) => {
+    return Math.round((entities / capacity) * 100);
   };
 
   return (
@@ -38,10 +38,10 @@ const ZoneMap = () => {
             </div>
             <div className="text-right">
               <div className="text-sm font-medium">
-                {zone.patients}/{zone.capacity}
+                {zone.entities}/{zone.capacity}
               </div>
               <div className="text-xs opacity-75">
-                {getOccupancyPercentage(zone.patients, zone.capacity)}%
+                {getOccupancyPercentage(zone.entities, zone.capacity)}%
               </div>
             </div>
           </div>
@@ -52,13 +52,13 @@ const ZoneMap = () => {
                 zone.status === 'normal' ? 'bg-green-500' :
                 zone.status === 'busy' ? 'bg-yellow-500' : 'bg-red-500'
               }`}
-              style={{ width: `${getOccupancyPercentage(zone.patients, zone.capacity)}%` }}
+              style={{ width: `${getOccupancyPercentage(zone.entities, zone.capacity)}%` }}
             />
           </div>
           
           <div className="flex justify-between items-center mt-2 text-xs opacity-75">
             <span>Status: {zone.status.charAt(0).toUpperCase() + zone.status.slice(1)}</span>
-            <span>Available: {zone.capacity - zone.patients}</span>
+            <span>Available: {zone.capacity - zone.entities}</span>
           </div>
         </div>
       ))}
