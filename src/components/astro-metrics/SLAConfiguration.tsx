@@ -73,11 +73,11 @@ const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-white">SLA Configuration</CardTitle>
+              <CardTitle className="text-foreground">SLA Configuration</CardTitle>
               <CardDescription>Configure service level agreements and thresholds per zone</CardDescription>
             </div>
             <SLACreateDialog onCreateSLA={handleCreateSLA} canEdit={canEdit} />

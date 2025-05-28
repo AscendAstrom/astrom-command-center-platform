@@ -86,10 +86,10 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
               const updatedStep = { ...step, config: { ...step.config, source: value } };
               setLogicSteps(logicSteps.map(s => s.id === step.id ? updatedStep : s));
             }}>
-              <SelectTrigger className="bg-slate-800 border-slate-700">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder="Select data source" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="patient_visits">Patient Visits</SelectItem>
                 <SelectItem value="bed_management">Bed Management</SelectItem>
                 <SelectItem value="lab_results">Lab Results</SelectItem>
@@ -103,10 +103,10 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
         return (
           <div className="grid grid-cols-3 gap-2">
             <Select value={step.config.field}>
-              <SelectTrigger className="bg-slate-800 border-slate-700">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder="Field" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="status">Status</SelectItem>
                 <SelectItem value="zone">Zone</SelectItem>
                 <SelectItem value="priority">Priority</SelectItem>
@@ -115,10 +115,10 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
             </Select>
             
             <Select value={step.config.operator}>
-              <SelectTrigger className="bg-slate-800 border-slate-700">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder="Operator" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="equals">Equals</SelectItem>
                 <SelectItem value="not_equals">Not Equals</SelectItem>
                 <SelectItem value="greater_than">Greater Than</SelectItem>
@@ -134,7 +134,7 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
                 const updatedStep = { ...step, config: { ...step.config, value: e.target.value } };
                 setLogicSteps(logicSteps.map(s => s.id === step.id ? updatedStep : s));
               }}
-              className="bg-slate-800 border-slate-700"
+              className="bg-background border-border"
             />
           </div>
         );
@@ -143,10 +143,10 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
         return (
           <div className="grid grid-cols-2 gap-2">
             <Select value={step.config.function}>
-              <SelectTrigger className="bg-slate-800 border-slate-700">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder="Function" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="count">Count</SelectItem>
                 <SelectItem value="sum">Sum</SelectItem>
                 <SelectItem value="average">Average</SelectItem>
@@ -156,10 +156,10 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
             </Select>
             
             <Select value={step.config.field}>
-              <SelectTrigger className="bg-slate-800 border-slate-700">
+              <SelectTrigger className="bg-background border-border">
                 <SelectValue placeholder="Field" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="wait_time_minutes">Wait Time</SelectItem>
                 <SelectItem value="length_of_stay">Length of Stay</SelectItem>
                 <SelectItem value="patient_count">Patient Count</SelectItem>
@@ -170,26 +170,26 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
         );
       
       default:
-        return <div className="text-slate-400">Configure step parameters</div>;
+        return <div className="text-muted-foreground">Configure step parameters</div>;
     }
   };
 
   return (
     <div className="space-y-6">
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-white">Visual Logic Builder</CardTitle>
+          <CardTitle className="text-foreground">Visual Logic Builder</CardTitle>
           <CardDescription>Build metrics using drag-and-drop logic steps</CardDescription>
         </CardHeader>
         <CardContent>
           {canEdit && (
-            <div className="flex items-center gap-4 mb-6 p-4 bg-slate-800 rounded-lg">
-              <Label className="text-slate-300">Add Step:</Label>
+            <div className="flex items-center gap-4 mb-6 p-4 bg-muted rounded-lg">
+              <Label className="text-foreground">Add Step:</Label>
               <Select value={selectedStepType} onValueChange={setSelectedStepType}>
-                <SelectTrigger className="w-48 bg-slate-700 border-slate-600">
+                <SelectTrigger className="w-48 bg-background border-border">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectContent className="bg-background border-border">
                   <SelectItem value="data_source">Data Source</SelectItem>
                   <SelectItem value="filter">Filter</SelectItem>
                   <SelectItem value="aggregate">Aggregate</SelectItem>
@@ -206,7 +206,7 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
           <div className="space-y-4">
             {logicSteps.map((step, index) => (
               <div key={step.id}>
-                <Card className="bg-slate-800 border-slate-700">
+                <Card className="bg-muted border-border">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -214,14 +214,14 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
                           {getStepIcon(step.type)}
                         </div>
                         <div>
-                          <div className="font-medium text-white capitalize">
+                          <div className="font-medium text-foreground capitalize">
                             {step.type.replace('_', ' ')} Step
                           </div>
-                          <div className="text-sm text-slate-400">{step.description}</div>
+                          <div className="text-sm text-muted-foreground">{step.description}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-slate-300">
+                        <Badge variant="outline" className="text-foreground">
                           Step {step.order}
                         </Badge>
                         {canEdit && (
@@ -238,7 +238,7 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
                     </div>
                     
                     {canEdit ? renderStepConfig(step) : (
-                      <div className="text-sm text-slate-300">
+                      <div className="text-sm text-foreground">
                         {JSON.stringify(step.config, null, 2)}
                       </div>
                     )}
@@ -247,7 +247,7 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
                 
                 {index < logicSteps.length - 1 && (
                   <div className="flex justify-center py-2">
-                    <ArrowDown className="h-5 w-5 text-slate-500" />
+                    <ArrowDown className="h-5 w-5 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -255,20 +255,20 @@ const MetricBuilder = ({ userRole }: MetricBuilderProps) => {
           </div>
 
           {logicSteps.length === 0 && (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8 text-muted-foreground">
               No logic steps defined. Add steps to build your metric calculation.
             </div>
           )}
         </CardContent>
       </Card>
 
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-white">Generated SQL Preview</CardTitle>
+          <CardTitle className="text-foreground">Generated SQL Preview</CardTitle>
           <CardDescription>Preview of the SQL query that will be generated</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="bg-slate-800 p-4 rounded-lg">
+          <div className="bg-muted p-4 rounded-lg">
             <code className="text-sm text-green-400">
               {`SELECT AVG(wait_time_minutes) as avg_wait_time
 FROM patient_visits.ed_visits 

@@ -66,7 +66,7 @@ const AstroView = () => {
   const viewUserRole = mapUserRoleToViewUserRole(effectiveUserRole);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -74,16 +74,16 @@ const AstroView = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center">
               <Eye className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">ASTRO-VIEW</h1>
+            <h1 className="text-3xl font-bold text-foreground">ASTRO-VIEW</h1>
             <span className="text-sm text-cyan-400 font-medium">Dashboard Builder & Real-time Visualization</span>
           </div>
-          <p className="text-slate-400 max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl">
             Advanced dashboard creation platform with real-time data visualization, semantic layer management, and interactive analytics for healthcare operations.
           </p>
         </div>
 
         <Tabs defaultValue="realtime" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger value="realtime" className="data-[state=active]:bg-cyan-500/20">
               <Play className="h-4 w-4 mr-2" />
               Real-time Dashboard
@@ -103,13 +103,13 @@ const AstroView = () => {
           </TabsList>
 
           <TabsContent value="realtime" className="space-y-6">
-            <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-sm">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Play className="h-5 w-5 text-cyan-400" />
                   Real-time Operations Dashboard
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-muted-foreground">
                   Live dashboard with real-time updates, customizable widgets, and interactive analytics
                 </CardDescription>
               </CardHeader>
@@ -120,58 +120,58 @@ const AstroView = () => {
                 <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
                   <div className="flex items-center gap-2 mb-4">
                     <Hospital className="h-5 w-5 text-green-400" />
-                    <h3 className="text-lg font-semibold text-white">Bed Management Dashboard Example</h3>
+                    <h3 className="text-lg font-semibold text-foreground">Bed Management Dashboard Example</h3>
                     <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Live Saudi Data</Badge>
                   </div>
-                  <p className="text-slate-400 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     Real-time bed management dashboard for Saudi hospitals with cultural considerations and MOH compliance tracking.
                   </p>
 
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="p-4 bg-slate-800/50 rounded-lg border border-cyan-500/20">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-cyan-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <Activity className="h-4 w-4 text-cyan-400" />
-                        <span className="text-white font-medium text-sm">Total Beds</span>
+                        <span className="text-foreground font-medium text-sm">Total Beds</span>
                       </div>
                       <div className="text-2xl font-bold text-cyan-400">
                         {mockBedData.reduce((sum, item) => sum + item.totalBeds, 0)}
                       </div>
-                      <div className="text-xs text-slate-400">Across all facilities</div>
+                      <div className="text-xs text-muted-foreground">Across all facilities</div>
                     </div>
 
-                    <div className="p-4 bg-slate-800/50 rounded-lg border border-green-500/20">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <TrendingUp className="h-4 w-4 text-green-400" />
-                        <span className="text-white font-medium text-sm">Occupancy Rate</span>
+                        <span className="text-foreground font-medium text-sm">Occupancy Rate</span>
                       </div>
                       <div className="text-2xl font-bold text-green-400">
                         {Math.round(
                           mockBedData.reduce((sum, item) => sum + item.occupancyRate, 0) / mockBedData.length
                         )}%
                       </div>
-                      <div className="text-xs text-slate-400">Average across hospitals</div>
+                      <div className="text-xs text-muted-foreground">Average across hospitals</div>
                     </div>
 
-                    <div className="p-4 bg-slate-800/50 rounded-lg border border-orange-500/20">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <MapPin className="h-4 w-4 text-orange-400" />
-                        <span className="text-white font-medium text-sm">Available Beds</span>
+                        <span className="text-foreground font-medium text-sm">Available Beds</span>
                       </div>
                       <div className="text-2xl font-bold text-orange-400">
                         {mockBedData.reduce((sum, item) => sum + item.netAvailableBeds, 0)}
                       </div>
-                      <div className="text-xs text-slate-400">Ready for admission</div>
+                      <div className="text-xs text-muted-foreground">Ready for admission</div>
                     </div>
 
-                    <div className="p-4 bg-slate-800/50 rounded-lg border border-purple-500/20">
+                    <div className="p-4 bg-muted/50 rounded-lg border border-purple-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <Hospital className="h-4 w-4 text-purple-400" />
-                        <span className="text-white font-medium text-sm">Pending Discharge</span>
+                        <span className="text-foreground font-medium text-sm">Pending Discharge</span>
                       </div>
                       <div className="text-2xl font-bold text-purple-400">
                         {mockBedData.reduce((sum, item) => sum + item.confirmedDischarge + item.potentialDischarge, 0)}
                       </div>
-                      <div className="text-xs text-slate-400">Expected releases</div>
+                      <div className="text-xs text-muted-foreground">Expected releases</div>
                     </div>
                   </div>
 
@@ -182,13 +182,13 @@ const AstroView = () => {
           </TabsContent>
 
           <TabsContent value="builder" className="space-y-6">
-            <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-sm">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Layout className="h-5 w-5 text-purple-400" />
                   Dashboard Builder Studio
                 </CardTitle>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-muted-foreground">
                   Drag-and-drop dashboard builder with customizable widgets and layout management
                 </CardDescription>
               </CardHeader>
@@ -203,9 +203,9 @@ const AstroView = () => {
                 ) : (
                   <div className="space-y-6">
                     <div className="text-center py-12">
-                      <Layout className="h-16 w-16 mx-auto text-slate-600 mb-4" />
-                      <h3 className="text-xl font-semibold text-white mb-2">Create New Dashboard</h3>
-                      <p className="text-slate-400 mb-6">
+                      <Layout className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-xl font-semibold text-foreground mb-2">Create New Dashboard</h3>
+                      <p className="text-muted-foreground mb-6">
                         Build interactive dashboards with drag-and-drop widgets
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
@@ -241,7 +241,7 @@ const AstroView = () => {
                             updatedAt: ''
                           })}
                           variant="outline" 
-                          className="border-slate-600 text-slate-300"
+                          className="border-border text-muted-foreground"
                         >
                           <BarChart3 className="h-4 w-4 mr-2" />
                           Operations
@@ -260,7 +260,7 @@ const AstroView = () => {
                             updatedAt: ''
                           })}
                           variant="outline" 
-                          className="border-slate-600 text-slate-300"
+                          className="border-border text-muted-foreground"
                         >
                           <Users className="h-4 w-4 mr-2" />
                           Executive
@@ -272,36 +272,45 @@ const AstroView = () => {
                     <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
                       <div className="flex items-center gap-2 mb-4">
                         <Hospital className="h-5 w-5 text-green-400" />
-                        <h3 className="text-lg font-semibold text-white">Bed Management Builder Example</h3>
-                        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Saudi Template</Badge>
+                        <h3 className="text-lg font-semibold text-foreground">Bed Management Builder Example</h3>
+                        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Saudi Hospitals</Badge>
                       </div>
-                      <p className="text-slate-400 mb-4">
-                        Pre-built dashboard templates for Saudi hospital bed management with MOH compliance widgets.
+                      <p className="text-muted-foreground mb-4">
+                        Pre-built dashboard template specifically designed for Saudi hospital bed management with MOH compliance features.
                       </p>
 
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="p-4 bg-slate-800/50 rounded-lg border border-border/50">
-                          <h4 className="font-medium text-white mb-2">Zone Occupancy Widget</h4>
-                          <p className="text-sm text-slate-400 mb-3">Real-time bed occupancy by hospital zone with gender segregation indicators</p>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full">
-                            Add Widget
-                          </Button>
+                        <div className="p-4 bg-muted rounded-lg border border-border">
+                          <h4 className="font-semibold text-foreground mb-2">Widget Types Available</h4>
+                          <ul className="space-y-1 text-sm text-muted-foreground">
+                            <li>• Real-time bed occupancy charts</li>
+                            <li>• Arabic/English patient tables</li>
+                            <li>• MOH compliance indicators</li>
+                            <li>• Ward-specific KPI cards</li>
+                            <li>• Patient flow timelines</li>
+                          </ul>
                         </div>
-
-                        <div className="p-4 bg-slate-800/50 rounded-lg border border-border/50">
-                          <h4 className="font-medium text-white mb-2">MOH Compliance Tracker</h4>
-                          <p className="text-sm text-slate-400 mb-3">Ministry of Health reporting compliance status and submission tracking</p>
-                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 w-full">
-                            Add Widget
-                          </Button>
+                        
+                        <div className="p-4 bg-muted rounded-lg border border-border">
+                          <h4 className="font-semibold text-foreground mb-2">Data Sources</h4>
+                          <ul className="space-y-1 text-sm text-muted-foreground">
+                            <li>• Hospital Management System</li>
+                            <li>• Patient Administration</li>
+                            <li>• Nurse Station Updates</li>
+                            <li>• Discharge Planning</li>
+                            <li>• Emergency Department</li>
+                          </ul>
                         </div>
-
-                        <div className="p-4 bg-slate-800/50 rounded-lg border border-border/50">
-                          <h4 className="font-medium text-white mb-2">Hajj Surge Monitor</h4>
-                          <p className="text-sm text-slate-400 mb-3">Special widget for Mecca hospitals during Hajj season patient surges</p>
-                          <Button size="sm" className="bg-purple-600 hover:bg-purple-700 w-full">
-                            Add Widget
-                          </Button>
+                        
+                        <div className="p-4 bg-muted rounded-lg border border-border">
+                          <h4 className="font-semibold text-foreground mb-2">Features</h4>
+                          <ul className="space-y-1 text-sm text-muted-foreground">
+                            <li>• 15-second auto-refresh</li>
+                            <li>• Mobile-responsive layout</li>
+                            <li>• Role-based access control</li>
+                            <li>• Export to PDF/Excel</li>
+                            <li>• Alert notifications</li>
+                          </ul>
                         </div>
                       </div>
                     </div>
@@ -312,37 +321,11 @@ const AstroView = () => {
           </TabsContent>
 
           <TabsContent value="manager" className="space-y-6">
-            <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Users className="h-5 w-5 text-green-400" />
-                  Dashboard Management
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Manage, organize, and share dashboards across teams with version control
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <DashboardManager userRole={viewUserRole} />
-              </CardContent>
-            </Card>
+            <DashboardManager userRole={viewUserRole} />
           </TabsContent>
 
           <TabsContent value="semantic" className="space-y-6">
-            <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-orange-400" />
-                  Semantic Layer Builder
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Define business logic, relationships, and semantic terms for consistent analytics
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SemanticLayerBuilder userRole={viewUserRole} />
-              </CardContent>
-            </Card>
+            <SemanticLayerBuilder userRole={viewUserRole} />
           </TabsContent>
         </Tabs>
       </div>

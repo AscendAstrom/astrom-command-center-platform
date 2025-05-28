@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,12 +60,12 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
           <div className="space-y-1">
-            <label className="text-sm text-slate-400">Dashboard</label>
+            <label className="text-sm text-muted-foreground">Dashboard</label>
             <Select value={selectedDashboard} onValueChange={setSelectedDashboard}>
-              <SelectTrigger className="w-48 bg-slate-800 border-slate-600 text-white">
+              <SelectTrigger className="w-48 bg-background border-border text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-background border-border">
                 {dashboardOptions
                   .filter(option => canViewDashboard(option.audience))
                   .map(option => (
@@ -77,15 +78,15 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm text-slate-400">Auto Refresh</label>
+            <label className="text-sm text-muted-foreground">Auto Refresh</label>
             <Select 
               value={autoRefresh.toString()} 
               onValueChange={(value) => setAutoRefresh(parseInt(value) as RefreshInterval)}
             >
-              <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-white">
+              <SelectTrigger className="w-32 bg-background border-border text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-background border-border">
                 <SelectItem value="15">15s</SelectItem>
                 <SelectItem value="30">30s</SelectItem>
                 <SelectItem value="60">1m</SelectItem>
@@ -100,7 +101,7 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setIsRefreshing(!isRefreshing)}
-            className="border-slate-600 text-slate-300"
+            className="border-border text-foreground"
           >
             {isRefreshing ? <Pause className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1" />}
             {isRefreshing ? 'Pause' : 'Resume'}
@@ -110,17 +111,17 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setLastUpdated(new Date())}
-            className="border-slate-600 text-slate-300"
+            className="border-border text-foreground"
           >
             <RefreshCw className="h-4 w-4 mr-1" />
             Refresh Now
           </Button>
 
           <Select onValueChange={(value: ExportFormat) => handleExport(value)}>
-            <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-white">
+            <SelectTrigger className="w-32 bg-background border-border text-foreground">
               <SelectValue placeholder="Export" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-800 border-slate-600">
+            <SelectContent className="bg-background border-border">
               <SelectItem value="pdf">
                 <Download className="h-4 w-4 mr-1 inline" />
                 PDF
@@ -139,15 +140,15 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
       </div>
 
       {/* Status Bar */}
-      <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+      <div className="flex items-center justify-between p-3 bg-card rounded-lg">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${isRefreshing ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
-            <span className="text-sm text-slate-300">
+            <span className="text-sm text-foreground">
               {isRefreshing ? 'Live' : 'Paused'}
             </span>
           </div>
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-muted-foreground">
             Last updated: {lastUpdated.toLocaleTimeString()}
           </div>
         </div>
