@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
@@ -36,61 +35,61 @@
 
     --radius: 0.75rem;
 
-    /* ASTROM Modern Color Palette - Light Mode - Enhanced */
-    --astrom-blue: 214 84% 56%;
-    --astrom-blue-light: 214 84% 70%;
-    --astrom-blue-dark: 214 84% 42%;
+    /* ASTROM Modern Color Palette - Light Mode - Enhanced for Better Visibility */
+    --astrom-blue: 214 84% 46%;
+    --astrom-blue-light: 214 84% 60%;
+    --astrom-blue-dark: 214 84% 32%;
     
-    --astrom-green: 142 76% 36%;
-    --astrom-green-light: 142 76% 50%;
-    --astrom-green-dark: 142 76% 22%;
+    --astrom-green: 142 76% 26%;
+    --astrom-green-light: 142 76% 40%;
+    --astrom-green-dark: 142 76% 16%;
     
-    --astrom-orange: 25 95% 53%;
-    --astrom-orange-light: 25 95% 67%;
-    --astrom-orange-dark: 25 95% 39%;
+    --astrom-orange: 25 95% 43%;
+    --astrom-orange-light: 25 95% 57%;
+    --astrom-orange-dark: 25 95% 29%;
     
-    --astrom-purple: 271 81% 56%;
-    --astrom-purple-light: 271 81% 70%;
-    --astrom-purple-dark: 271 81% 42%;
+    --astrom-purple: 271 81% 46%;
+    --astrom-purple-light: 271 81% 60%;
+    --astrom-purple-dark: 271 81% 32%;
     
-    --astrom-pink: 330 81% 60%;
-    --astrom-pink-light: 330 81% 74%;
-    --astrom-pink-dark: 330 81% 46%;
+    --astrom-pink: 330 81% 50%;
+    --astrom-pink-light: 330 81% 64%;
+    --astrom-pink-dark: 330 81% 36%;
     
-    --astrom-grey: 215 16% 47%;
-    --astrom-grey-light: 215 16% 61%;
-    --astrom-grey-dark: 215 16% 33%;
+    --astrom-grey: 215 16% 37%;
+    --astrom-grey-light: 215 16% 51%;
+    --astrom-grey-dark: 215 16% 23%;
     
     --astrom-surface: 0 0% 99%;
     --astrom-surface-elevated: 0 0% 100%;
     --astrom-overlay: 255 255 255 / 0.95;
     
-    /* Modern Glass Effects - Light Mode Enhanced */
-    --glass-bg: 255 255 255 / 0.7;
-    --glass-border: 0 0 0 / 0.15;
-    --backdrop-blur: 12px;
+    /* Modern Glass Effects - Light Mode Enhanced for Visibility */
+    --glass-bg: 255 255 255 / 0.85;
+    --glass-border: 0 0 0 / 0.12;
+    --backdrop-blur: 8px;
     
     /* Zone Colors - Light Mode Enhanced */
-    --zone-a: 142 76% 36%;
-    --zone-b: 25 95% 53%;
-    --zone-c: 0 84% 60%;
-    --zone-d: 271 81% 56%;
+    --zone-a: 142 76% 26%;
+    --zone-b: 25 95% 43%;
+    --zone-c: 0 84% 50%;
+    --zone-d: 271 81% 46%;
     
-    /* Status Colors - Enhanced Contrast */
-    --status-success: 142 76% 36%;
-    --status-warning: 38 92% 50%;
-    --status-error: 0 84% 60%;
-    --status-info: 214 84% 56%;
+    /* Status Colors - Enhanced Contrast for Light Mode */
+    --status-success: 142 76% 26%;
+    --status-warning: 38 92% 40%;
+    --status-error: 0 84% 50%;
+    --status-info: 214 84% 46%;
     
-    /* Sidebar Variables */
-    --sidebar-background: 0 0% 98%;
+    /* Sidebar Variables - Light Mode Enhanced */
+    --sidebar-background: 0 0% 99%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 214 84% 56%;
+    --sidebar-primary: 214 84% 46%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 87%;
-    --sidebar-ring: 214 84% 56%;
+    --sidebar-ring: 214 84% 46%;
   }
 
   .dark {
@@ -274,7 +273,7 @@
   .bg-status-error { background-color: hsl(var(--status-error)); }
   .bg-status-info { background-color: hsl(var(--status-info)); }
   
-  /* Modern Glass Effects - Enhanced for Light Mode */
+  /* Modern Glass Effects - Enhanced for Better Light Mode Visibility */
   .glass {
     background: rgba(var(--glass-bg));
     backdrop-filter: blur(var(--backdrop-blur));
@@ -292,6 +291,17 @@
       0 4px 6px -1px rgb(0 0 0 / 0.1),
       0 2px 4px -2px rgb(0 0 0 / 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Light Theme Specific Glass Enhancement */
+  .light .glass,
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 
+      0 4px 6px -1px rgb(0 0 0 / 0.05),
+      0 2px 4px -2px rgb(0 0 0 / 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   
   /* Modern Elevated Surfaces - Enhanced */

@@ -25,15 +25,15 @@ const AstroScan = () => {
 
         <Tabs defaultValue="sources" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">
-            <TabsTrigger value="sources" className="data-[state=active]:bg-blue-500/20">
+            <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
               Data Sources
             </TabsTrigger>
-            <TabsTrigger value="ingestion" className="data-[state=active]:bg-green-500/20">
+            <TabsTrigger value="ingestion" className="data-[state=active]:bg-astrom-green/20">
               <Activity className="h-4 w-4 mr-2" />
               Ingestion
             </TabsTrigger>
-            <TabsTrigger value="monitoring" className="data-[state=active]:bg-purple-500/20">
+            <TabsTrigger value="monitoring" className="data-[state=active]:bg-astrom-purple/20">
               <Settings className="h-4 w-4 mr-2" />
               Monitoring
             </TabsTrigger>

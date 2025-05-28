@@ -18,13 +18,13 @@ import { DataSovereigntyTab } from "./global-health/DataSovereigntyTab";
 
 const GlobalHealthCommandCenter = () => {
   return (
-    <div className="p-6 bg-gradient-to-r from-slate-900/50 to-blue-900/50 rounded-lg border border-cyan-500/30">
+    <div className="p-6 glass-card border border-border/50 rounded-lg">
       <div className="flex items-center gap-2 mb-6">
-        <Globe className="h-6 w-6 text-cyan-400" />
+        <Globe className="h-6 w-6 text-primary" />
         <h3 className="text-xl font-bold text-foreground">Global Health Command Center</h3>
         <div className="ml-auto flex items-center gap-2">
-          <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-          <span className="text-sm text-green-400 font-medium">Worldwide Network Active</span>
+          <div className="w-3 h-3 bg-astrom-green rounded-full animate-pulse"></div>
+          <span className="text-sm text-astrom-green font-medium">Worldwide Network Active</span>
         </div>
       </div>
 

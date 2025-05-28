@@ -17,7 +17,7 @@ import AIEcosystem from "./pages/AIEcosystem";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <Router>
         <Routes>
           <Route path="/" element={<SidebarProvider><DashboardLayout><Dashboard /></DashboardLayout></SidebarProvider>} />
