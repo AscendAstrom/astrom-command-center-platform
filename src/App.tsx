@@ -11,6 +11,7 @@ import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
 import AstroView from "./pages/AstroView";
 import AstroFlow from "./pages/AstroFlow";
+import CommandCenter from "./pages/CommandCenter";
 import Settings from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import DashboardLayout from "./components/DashboardLayout";
@@ -29,6 +30,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/command-center" element={<CommandCenter />} />
                   <Route path="/astro-scan" element={<AstroScan />} />
                   <Route path="/astro-bricks" element={<AstroBricks />} />
                   <Route path="/astro-metrics" element={<AstroMetrics />} />
