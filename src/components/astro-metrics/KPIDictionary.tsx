@@ -128,11 +128,11 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-white">KPI Dictionary</CardTitle>
+              <CardTitle className="text-foreground">KPI Dictionary</CardTitle>
               <CardDescription>Manage and define key performance indicators</CardDescription>
             </div>
             {canCreate && (
@@ -143,7 +143,7 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
                     Add KPI
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-slate-900 border-slate-800 text-white">
+                <DialogContent className="bg-card border-border text-foreground">
                   <DialogHeader>
                     <DialogTitle>Create New KPI</DialogTitle>
                     <DialogDescription>Define a new key performance indicator</DialogDescription>
@@ -155,7 +155,7 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
                         id="name"
                         value={newKPI.name || ''}
                         onChange={(e) => setNewKPI({...newKPI, name: e.target.value})}
-                        className="bg-slate-800 border-slate-700"
+                        className="bg-background border-border"
                         placeholder="e.g., Average Wait Time"
                       />
                     </div>
@@ -165,17 +165,17 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
                         id="description"
                         value={newKPI.description || ''}
                         onChange={(e) => setNewKPI({...newKPI, description: e.target.value})}
-                        className="bg-slate-800 border-slate-700"
+                        className="bg-background border-border"
                         placeholder="Describe what this KPI measures"
                       />
                     </div>
                     <div>
                       <Label htmlFor="category">Category</Label>
                       <Select value={newKPI.category} onValueChange={(value) => setNewKPI({...newKPI, category: value as any})}>
-                        <SelectTrigger className="bg-slate-800 border-slate-700">
+                        <SelectTrigger className="bg-background border-border">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-800 border-slate-700">
+                        <SelectContent className="bg-card border-border">
                           <SelectItem value="operational">Operational</SelectItem>
                           <SelectItem value="clinical">Clinical</SelectItem>
                           <SelectItem value="financial">Financial</SelectItem>
@@ -189,7 +189,7 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
                         id="unit"
                         value={newKPI.unit || ''}
                         onChange={(e) => setNewKPI({...newKPI, unit: e.target.value})}
-                        className="bg-slate-800 border-slate-700"
+                        className="bg-background border-border"
                         placeholder="e.g., minutes, count, percentage"
                       />
                     </div>
@@ -199,7 +199,7 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
                         id="formula"
                         value={newKPI.formula || ''}
                         onChange={(e) => setNewKPI({...newKPI, formula: e.target.value})}
-                        className="bg-slate-800 border-slate-700"
+                        className="bg-background border-border"
                         placeholder="Define the calculation logic"
                       />
                     </div>
@@ -220,10 +220,10 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
         <CardContent>
           <div className="flex items-center gap-4 mb-4">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-48 bg-slate-800 border-slate-700">
+              <SelectTrigger className="w-48 bg-background border-border">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-card border-border">
                 <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="operational">Operational</SelectItem>
                 <SelectItem value="clinical">Clinical</SelectItem>
@@ -235,37 +235,37 @@ const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
 
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-800">
-                <TableHead className="text-slate-300">Name</TableHead>
-                <TableHead className="text-slate-300">Category</TableHead>
-                <TableHead className="text-slate-300">Unit</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300">Created By</TableHead>
-                {(canEdit || canApprove) && <TableHead className="text-slate-300">Actions</TableHead>}
+              <TableRow className="border-border">
+                <TableHead className="text-foreground">Name</TableHead>
+                <TableHead className="text-foreground">Category</TableHead>
+                <TableHead className="text-foreground">Unit</TableHead>
+                <TableHead className="text-foreground">Status</TableHead>
+                <TableHead className="text-foreground">Created By</TableHead>
+                {(canEdit || canApprove) && <TableHead className="text-foreground">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredKPIs.map((kpi) => (
-                <TableRow key={kpi.id} className="border-slate-800">
+                <TableRow key={kpi.id} className="border-border">
                   <TableCell>
                     <div>
-                      <div className="font-medium text-white">{kpi.name}</div>
-                      <div className="text-sm text-slate-400">{kpi.description}</div>
+                      <div className="font-medium text-foreground">{kpi.name}</div>
+                      <div className="text-sm text-muted-foreground">{kpi.description}</div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getCategoryIcon(kpi.category)}
-                      <span className="text-slate-300 capitalize">{kpi.category}</span>
+                      <span className="text-foreground capitalize">{kpi.category}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-slate-300">{kpi.unit}</TableCell>
+                  <TableCell className="text-foreground">{kpi.unit}</TableCell>
                   <TableCell>
                     <Badge className={getStatusColor(kpi.status)}>
                       {kpi.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-slate-300">{kpi.createdBy}</TableCell>
+                  <TableCell className="text-foreground">{kpi.createdBy}</TableCell>
                   {(canEdit || canApprove) && (
                     <TableCell>
                       <div className="flex items-center gap-2">

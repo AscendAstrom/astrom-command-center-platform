@@ -116,18 +116,18 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-white">Alert Management</CardTitle>
+          <CardTitle className="text-foreground">Alert Management</CardTitle>
           <CardDescription>Manage KPI breaches and SLA violations</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4 mb-6">
             <Select value={severityFilter} onValueChange={setSeverityFilter}>
-              <SelectTrigger className="w-48 bg-slate-800 border-slate-700">
+              <SelectTrigger className="w-48 bg-background border-border">
                 <SelectValue placeholder="Filter by severity" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-card border-border">
                 <SelectItem value="all">All Severities</SelectItem>
                 <SelectItem value="critical">Critical</SelectItem>
                 <SelectItem value="warning">Warning</SelectItem>
@@ -136,10 +136,10 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
             </Select>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-48 bg-slate-800 border-slate-700">
+              <SelectTrigger className="w-48 bg-background border-border">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className="bg-card border-border">
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="unacknowledged">Unacknowledged</SelectItem>
                 <SelectItem value="unresolved">Unresolved</SelectItem>
@@ -150,35 +150,35 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
 
           <Table>
             <TableHeader>
-              <TableRow className="border-slate-800">
-                <TableHead className="text-slate-300">Alert</TableHead>
-                <TableHead className="text-slate-300">KPI</TableHead>
-                <TableHead className="text-slate-300">Values</TableHead>
-                <TableHead className="text-slate-300">Severity</TableHead>
-                <TableHead className="text-slate-300">Timestamp</TableHead>
-                <TableHead className="text-slate-300">Status</TableHead>
-                {canAcknowledge && <TableHead className="text-slate-300">Actions</TableHead>}
+              <TableRow className="border-border">
+                <TableHead className="text-foreground">Alert</TableHead>
+                <TableHead className="text-foreground">KPI</TableHead>
+                <TableHead className="text-foreground">Values</TableHead>
+                <TableHead className="text-foreground">Severity</TableHead>
+                <TableHead className="text-foreground">Timestamp</TableHead>
+                <TableHead className="text-foreground">Status</TableHead>
+                {canAcknowledge && <TableHead className="text-foreground">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredAlerts.map((alert) => (
-                <TableRow key={alert.id} className="border-slate-800">
+                <TableRow key={alert.id} className="border-border">
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getSeverityIcon(alert.severity)}
                       <div>
-                        <div className="font-medium text-white">KPI Breach</div>
-                        <div className="text-sm text-slate-400">
+                        <div className="font-medium text-foreground">KPI Breach</div>
+                        <div className="text-sm text-muted-foreground">
                           {alert.acknowledged ? 'Acknowledged' : 'Needs Attention'}
                         </div>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-slate-300">{alert.kpiName}</TableCell>
+                  <TableCell className="text-foreground">{alert.kpiName}</TableCell>
                   <TableCell>
-                    <div className="text-slate-300">
+                    <div className="text-foreground">
                       <div>Current: <span className="font-medium">{alert.currentValue}</span></div>
-                      <div>Threshold: <span className="text-slate-400">{alert.thresholdValue}</span></div>
+                      <div>Threshold: <span className="text-muted-foreground">{alert.thresholdValue}</span></div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -186,7 +186,7 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
                       {alert.severity}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-slate-300">
+                  <TableCell className="text-foreground">
                     {formatTimestamp(alert.timestamp)}
                   </TableCell>
                   <TableCell>
@@ -237,9 +237,9 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Mail className="h-5 w-5 text-cyan-400" />
               Email Notifications
             </CardTitle>
@@ -247,17 +247,17 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <div className="text-white font-medium">ED Manager</div>
-                  <div className="text-sm text-slate-400">ed-manager@hospital.com</div>
+                  <div className="text-foreground font-medium">ED Manager</div>
+                  <div className="text-sm text-muted-foreground">ed-manager@hospital.com</div>
                 </div>
                 <Badge className="bg-green-600">Active</Badge>
               </div>
-              <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <div className="text-white font-medium">Chief Medical Officer</div>
-                  <div className="text-sm text-slate-400">cmo@hospital.com</div>
+                  <div className="text-foreground font-medium">Chief Medical Officer</div>
+                  <div className="text-sm text-muted-foreground">cmo@hospital.com</div>
                 </div>
                 <Badge className="bg-green-600">Active</Badge>
               </div>
@@ -265,9 +265,9 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Webhook className="h-5 w-5 text-cyan-400" />
               Webhook Integration
             </CardTitle>
@@ -275,17 +275,17 @@ const AlertsManager = ({ userRole }: AlertsManagerProps) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <div className="text-white font-medium">Slack Integration</div>
-                  <div className="text-sm text-slate-400">https://hooks.slack.com/...</div>
+                  <div className="text-foreground font-medium">Slack Integration</div>
+                  <div className="text-sm text-muted-foreground">https://hooks.slack.com/...</div>
                 </div>
                 <Badge className="bg-green-600">Connected</Badge>
               </div>
-              <div className="flex items-center justify-between p-3 bg-slate-800 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <div className="text-white font-medium">Teams Integration</div>
-                  <div className="text-sm text-slate-400">https://hooks.teams.com/...</div>
+                  <div className="text-foreground font-medium">Teams Integration</div>
+                  <div className="text-sm text-muted-foreground">https://hooks.teams.com/...</div>
                 </div>
                 <Badge variant="outline">Configured</Badge>
               </div>
