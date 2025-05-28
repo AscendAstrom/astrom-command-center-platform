@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,9 +42,15 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
   ];
 
   const canViewDashboard = (audience: string) => {
-    if (userRole === 'ADMIN') return true;
-    if (userRole === 'ANALYST') return true;
-    return audience !== 'executives' || userRole === 'ADMIN';
+    // ADMIN and ANALYST can view all dashboards
+    if (userRole === 'ADMIN' || userRole === 'ANALYST') return true;
+    
+    // VIEWER and DATA_ENGINEER can view non-executive dashboards
+    if (userRole === 'VIEWER' || userRole === 'DATA_ENGINEER') {
+      return audience !== 'executives';
+    }
+    
+    return false;
   };
 
   return (
