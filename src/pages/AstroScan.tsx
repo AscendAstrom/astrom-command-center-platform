@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Database, Settings, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, Eye } from "lucide-react";
+import { Plus, Database, Settings, Activity, Zap, AlertTriangle, CheckCircle, TrendingUp, Eye, Workflow } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
 import { DataSourceList } from "@/components/astro-scan/DataSourceList";
@@ -34,8 +33,12 @@ const AstroScan = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="sources" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+        <Tabs defaultValue="workflow" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 bg-slate-800/50">
+            <TabsTrigger value="workflow" className="data-[state=active]:bg-cyan-500/20">
+              <Workflow className="h-4 w-4 mr-2" />
+              Source Mapping Workflow
+            </TabsTrigger>
             <TabsTrigger value="sources" className="data-[state=active]:bg-blue-500/20">
               Data Sources
             </TabsTrigger>
@@ -49,6 +52,114 @@ const AstroScan = () => {
               Configuration
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="workflow" className="space-y-6">
+            <Card className="bg-slate-900/50 border-slate-800">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Workflow className="h-5 w-5 text-cyan-400" />
+                  Source Mapping + Ingestion Setup Workflow
+                </CardTitle>
+                <CardDescription>
+                  End-to-end workflow for mapping and configuring EMS, ETOC, HL7, and triage data sources
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">Data Source Configuration</h3>
+                    <p className="text-slate-300">
+                      Map and configure healthcare data sources including EMS feeds, ETOC systems, HL7 gateways, and triage platforms. 
+                      Choose between real-time streaming and batch processing modes, preview schemas, and validate data quality.
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                          <Database className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">EMS Data Feeds</p>
+                          <p className="text-slate-400 text-sm">Emergency Medical Services real-time data</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">ETOC Systems</p>
+                          <p className="text-slate-400 text-sm">Emergency Department Operations Center</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                          <Zap className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">HL7 Gateway</p>
+                          <p className="text-slate-400 text-sm">Health Level 7 message processing</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg">
+                        <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                          <Eye className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">Triage Platforms</p>
+                          <p className="text-slate-400 text-sm">Patient triage and prioritization systems</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">Ingestion Modes & Processing</h3>
+                    <div className="space-y-3">
+                      <div className="p-4 bg-slate-800/50 rounded-lg border border-green-500/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <CheckCircle className="h-5 w-5 text-green-400" />
+                          <span className="text-white font-medium">Real-time Streaming</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">
+                          Live data ingestion with sub-second latency for critical healthcare operations
+                        </p>
+                      </div>
+                      
+                      <div className="p-4 bg-slate-800/50 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Database className="h-5 w-5 text-blue-400" />
+                          <span className="text-white font-medium">Batch Processing</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">
+                          Scheduled bulk data processing for historical analysis and reporting
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => setShowWizard(true)}
+                        className="w-full bg-cyan-600 hover:bg-cyan-700"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Configure New Source
+                      </Button>
+                      <Button variant="outline" className="w-full border-slate-600 text-slate-200 hover:bg-slate-800">
+                        Preview Schema Mapping
+                      </Button>
+                      <Button variant="outline" className="w-full border-slate-600 text-slate-200 hover:bg-slate-800">
+                        Validate Data Quality
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="sources" className="space-y-6">
             <Card className="bg-slate-900/50 border-slate-800">

@@ -1,114 +1,183 @@
-
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DataMappingCanvas } from '@/components/astro-bricks/DataMappingCanvas';
-import { TransformationRulesEditor } from '@/components/astro-bricks/TransformationRulesEditor';
-import { SchemaVisualization } from '@/components/astro-bricks/SchemaVisualization';
-import { DataPipelineManager } from '@/components/astro-bricks/DataPipelineManager';
-import { TimestampTools } from '@/components/astro-bricks/TimestampTools';
-import { useUserRole } from '@/components/astro-bricks/hooks/useUserRole';
-import { Shield, Database, Workflow, Timer, Eye } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Layers, 
+  Database, 
+  Code, 
+  GitBranch, 
+  Clock, 
+  Users, 
+  Settings,
+  Workflow,
+  Wrench,
+  Table,
+  Boxes
+} from "lucide-react";
+import { DataMappingCanvas } from "@/components/astro-bricks/DataMappingCanvas";
+import { SchemaVisualization } from "@/components/astro-bricks/SchemaVisualization";
+import { TransformationRulesEditor } from "@/components/astro-bricks/TransformationRulesEditor";
+import { TimestampTools } from "@/components/astro-bricks/TimestampTools";
+import { DataPipelineManager } from "@/components/astro-bricks/DataPipelineManager";
 
 const AstroBricks = () => {
-  const { userRole, isLoading } = useUserRole();
-  const isReadOnly = userRole === 'ANALYST';
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
-          <div className="h-4 bg-muted rounded w-1/2"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
-              <Database className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+              <Layers className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">ASTRO-BRICKS</h1>
-            <span className="text-sm text-purple-500 font-medium">Data Normalization & Modeling</span>
+            <span className="text-sm text-orange-400 font-medium">Data Modeling & Transformation</span>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            Normalize and model healthcare data with drag-and-drop mapping, transformation rules, and schema visualization.
+            Build and manage data models, transformations, and dimensional structures for healthcare analytics.
           </p>
-          {isReadOnly && (
-            <div className="flex items-center gap-2 mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-              <Eye className="h-4 w-4 text-amber-500" />
-              <span className="text-amber-500 text-sm">Read-only mode: You have view access only</span>
-            </div>
-          )}
         </div>
 
-        <Tabs defaultValue="mapping" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
-            <TabsTrigger value="mapping" className="data-[state=active]:bg-purple-500/20">
-              Data Mapping
+        <Tabs defaultValue="workflow" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6 bg-muted/50">
+            <TabsTrigger value="workflow" className="data-[state=active]:bg-orange-500/20">
+              <Workflow className="h-4 w-4 mr-2" />
+              Modeling Workflow
             </TabsTrigger>
-            <TabsTrigger value="transformation">
-              Transformation Rules
-            </TabsTrigger>
-            <TabsTrigger value="schema">
-              Schema Visualization
-            </TabsTrigger>
-            <TabsTrigger value="pipelines">
-              Data Pipelines
-            </TabsTrigger>
-            <TabsTrigger value="tools">
-              Data Tools
-            </TabsTrigger>
+            <TabsTrigger value="mapping">Data Mapping</TabsTrigger>
+            <TabsTrigger value="schema">Schema Design</TabsTrigger>
+            <TabsTrigger value="transformation">Transformations</TabsTrigger>
+            <TabsTrigger value="timestamp">Timestamp Tools</TabsTrigger>
+            <TabsTrigger value="pipeline">Pipeline Management</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="mapping" className="space-y-6">
+          <TabsContent value="workflow" className="space-y-6">
             <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Workflow className="h-5 w-5 text-purple-500" />
-                  Data Mapping Canvas
+                  <Wrench className="h-5 w-5 text-orange-400" />
+                  Normalization, Modeling & Transformation Workflow
                 </CardTitle>
                 <CardDescription>
-                  Drag and drop to map source data to target schemas (dim_zone, dim_patient, fact_ed_inbound)
+                  End-to-end workflow for cleaning, unifying data formats, and defining dimensional models
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <DataMappingCanvas readOnly={isReadOnly} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Data Normalization & Cleaning</h3>
+                    <p className="text-muted-foreground">
+                      Clean and unify data formats from multiple healthcare systems. Standardize field names, 
+                      data types, and apply business rules for consistent data quality across all sources.
+                    </p>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                          <Database className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-foreground font-medium">Data Quality Rules</p>
+                          <p className="text-muted-foreground text-sm">Validation and cleansing rules</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                          <Code className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-foreground font-medium">Field Standardization</p>
+                          <p className="text-muted-foreground text-sm">Normalize field names and formats</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                          <GitBranch className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-foreground font-medium">Business Logic</p>
+                          <p className="text-muted-foreground text-sm">Apply healthcare-specific rules</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Dimensional Modeling</h3>
+                    <div className="space-y-3">
+                      <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Table className="h-5 w-5 text-orange-400" />
+                          <span className="text-foreground font-medium">Fact Tables</span>
+                        </div>
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <p>• <code className="bg-background px-1 rounded">fact_ed_inbound</code> - Emergency department arrivals</p>
+                          <p>• <code className="bg-background px-1 rounded">fact_patient_flow</code> - Patient movement events</p>
+                          <p>• <code className="bg-background px-1 rounded">fact_sla_metrics</code> - Service level agreements</p>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Boxes className="h-5 w-5 text-blue-400" />
+                          <span className="text-foreground font-medium">Dimension Tables</span>
+                        </div>
+                        <div className="space-y-1 text-sm text-muted-foreground">
+                          <p>• <code className="bg-background px-1 rounded">dim_patient</code> - Patient master data</p>
+                          <p>• <code className="bg-background px-1 rounded">dim_location</code> - Hospital zones and beds</p>
+                          <p>• <code className="bg-background px-1 rounded">dim_time</code> - Time dimension for analysis</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Button className="w-full bg-orange-600 hover:bg-orange-700">
+                        <Layers className="h-4 w-4 mr-2" />
+                        Configure Data Models
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        View Transformation Rules
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        Apply KPI Logic
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="transformation" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+          <TabsContent value="mapping" className="space-y-6">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Database className="h-5 w-5 text-blue-500" />
-                  Transformation Rules Editor
+                <CardTitle className="flex items-center gap-2">
+                  <GitBranch className="h-5 w-5 text-orange-400" />
+                  Data Mapping Canvas
                 </CardTitle>
                 <CardDescription>
-                  Create and edit transformation rules using SQL or visual logic
+                  Visual data mapping interface for healthcare data sources
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <TransformationRulesEditor readOnly={isReadOnly} />
+                <DataMappingCanvas />
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="schema" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-green-500" />
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="h-5 w-5 text-orange-400" />
                   Schema Visualization
                 </CardTitle>
                 <CardDescription>
-                  Visualize fact and dimension table relationships
+                  Interactive schema design and relationship mapping
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -117,36 +186,53 @@ const AstroBricks = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="pipelines" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+          <TabsContent value="transformation" className="space-y-6">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Workflow className="h-5 w-5 text-cyan-500" />
-                  Data Pipeline Manager
+                <CardTitle className="flex items-center gap-2">
+                  <Code className="h-5 w-5 text-orange-400" />
+                  Transformation Rules
                 </CardTitle>
                 <CardDescription>
-                  Manage saveable data pipelines with version history
+                  Define and manage data transformation logic
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <DataPipelineManager readOnly={isReadOnly} />
+                <TransformationRulesEditor />
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="tools" className="space-y-6">
-            <Card className="bg-card/80 border-border backdrop-blur-sm">
+          <TabsContent value="timestamp" className="space-y-6">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Timer className="h-5 w-5 text-orange-500" />
-                  Data Cleaning Tools
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-orange-400" />
+                  Timestamp Management
                 </CardTitle>
                 <CardDescription>
-                  Timestamp cleaning functions and duplicate resolution
+                  Healthcare-specific timestamp handling and timezone management
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <TimestampTools readOnly={isReadOnly} />
+                <TimestampTools />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="pipeline" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-orange-400" />
+                  Data Pipeline Management
+                </CardTitle>
+                <CardDescription>
+                  Monitor and manage data transformation pipelines
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DataPipelineManager />
               </CardContent>
             </Card>
           </TabsContent>
