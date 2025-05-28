@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Play, Pause } from 'lucide-react';
+import { Activity, Play, Pause, Heart, Stethoscope, Database, TrendingUp, Shield, Server, Brain, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { analyticsDataService, AnalyticsData } from '@/services/analytics';
+import EmergencyDepartmentTab from './tabs/EmergencyDepartmentTab';
+import ClinicalOperationsTab from './tabs/ClinicalOperationsTab';
+import DataPipelineTab from './tabs/DataPipelineTab';
+import BusinessAnalyticsTab from './tabs/BusinessAnalyticsTab';
+import SystemHealthTab from './tabs/SystemHealthTab';
+import AIMetricsTab from './tabs/AIMetricsTab';
 
 const DashboardAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
