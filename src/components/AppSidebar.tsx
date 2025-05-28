@@ -13,7 +13,7 @@ import { navigationItems, systemItems } from "./sidebar/navigationData";
 export function AppSidebar() {
   return (
     <Sidebar 
-      className="bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300 min-h-screen w-80 group-data-[collapsible=icon]:w-16"
+      className="bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300 min-h-screen w-80 group-data-[collapsible=icon]:w-20"
       collapsible="icon"
     >
       <SidebarContent className="flex flex-col h-full overflow-y-auto">
