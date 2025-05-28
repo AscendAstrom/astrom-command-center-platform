@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { DataSourceList } from "@/components/astro-scan/DataSourceList";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
-import IngestionDashboard from "@/components/astro-scan/IngestionDashboard";
+import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
 import BedManagementTable from "@/components/shared/BedManagementTable";
 import { mockBedData } from "@/data/mockBedData";
 
