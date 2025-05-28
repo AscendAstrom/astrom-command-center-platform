@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { DataSource } from '../types';
+import { DataSource, SyncStatus } from '../types';
 import { mockEpicDataSources } from '@/data/mockEpicDataSources';
 
 export const useDataSources = () => {
@@ -51,12 +51,12 @@ export const useDataSources = () => {
     }
   };
 
-  const updateDataSourceStatus = async (id: string, status: string) => {
+  const updateDataSourceStatus = async (id: string, status: SyncStatus) => {
     try {
       // Update local state immediately for better UX
       setDataSources(prev => 
         prev.map(source => 
-          source.id === id ? { ...source, status: status as any } : source
+          source.id === id ? { ...source, status } : source
         )
       );
 
