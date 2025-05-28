@@ -32,6 +32,7 @@ import SurgePredictor from "@/components/astro-flow/SurgePredictor";
 import NLPAssistant from "@/components/astro-flow/NLPAssistant";
 import DailySummaries from "@/components/astro-flow/DailySummaries";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
+import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSection";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
@@ -265,116 +266,14 @@ const AstroFlow = () => {
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
                   <Bot className="h-5 w-5 text-cyan-400" />
-                  AI Role Management Panel
+                  AI Flow & Automation Roles Management
                 </CardTitle>
                 <CardDescription>
-                  Configure and monitor AI agent roles and responsibilities across the healthcare platform
+                  Configure and monitor AI agent roles for workflow optimization and automation
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  {[
-                    { role: "SLA Sentinel", desc: "Monitors SLA compliance and breach risks in real-time", color: "border-red-500/20" },
-                    { role: "Surge Forecaster", desc: "Predicts patient volume surges using ML models", color: "border-blue-500/20" },
-                    { role: "Routing Strategist", desc: "Optimizes patient flow routing and bed assignments", color: "border-green-500/20" },
-                    { role: "Insight Generator", desc: "Creates executive summaries and performance insights", color: "border-purple-500/20" },
-                    { role: "Flow Optimizer", desc: "Manages workflow efficiency and resource utilization", color: "border-orange-500/20" },
-                    { role: "Audit Trail Guardian", desc: "Ensures compliance tracking and audit requirements", color: "border-cyan-500/20" }
-                  ].map((item) => (
-                    <div key={item.role} className={`border p-4 rounded-xl bg-muted/50 ${item.color}`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4 text-cyan-400" />
-                          <Label className="font-medium text-foreground">{item.role}</Label>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-                      <div className="mt-3 flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Active</Badge>
-                        <Badge variant="outline" className="text-xs bg-green-500/10 text-green-600 border-green-500/20">
-                          Monitoring
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bed Management AI Roles Example */}
-                <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20 mb-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Hospital className="h-5 w-5 text-green-400" />
-                    <h3 className="text-lg font-semibold text-foreground">Bed Management AI Roles Example</h3>
-                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Saudi Healthcare Demo</Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border p-4 rounded-xl bg-muted/50 border-orange-500/20">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4 text-orange-400" />
-                          <Label className="font-medium text-foreground">Bed Assignment Optimizer</Label>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">AI agent that optimizes bed assignments based on patient acuity, gender requirements, and cultural preferences in Saudi hospitals</p>
-                      <div className="mt-3 flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Active</Badge>
-                        <Badge variant="outline" className="text-xs bg-green-500/10 text-green-600 border-green-500/20">
-                          Learning
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="border p-4 rounded-xl bg-muted/50 border-purple-500/20">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Bot className="h-4 w-4 text-purple-400" />
-                          <Label className="font-medium text-foreground">Hajj Surge Predictor</Label>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">Specialized AI for predicting patient surges during Hajj season in Mecca hospitals using LSTM models</p>
-                      <div className="mt-3 flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">Active</Badge>
-                        <Badge variant="outline" className="text-xs bg-blue-500/10 text-blue-600 border-blue-500/20">
-                          Forecasting
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
-                    <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-blue-400" />
-                      AI Coordination Hub
-                    </h4>
-                    <p className="text-muted-foreground text-sm mb-3">
-                      Central coordination point where AI agents communicate, share insights, and collaborate on healthcare operations management.
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">8 Agents Active</Badge>
-                      <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Real-time Sync</Badge>
-                      <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Learning Mode</Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-4">
-                    <Button className="flex-1 bg-cyan-600 hover:bg-cyan-700">
-                      <Bot className="h-4 w-4 mr-2" />
-                      Save AI Configuration
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      Reset to Defaults
-                    </Button>
-                    <Button variant="outline">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Advanced Settings
-                    </Button>
-                  </div>
-                </div>
+                <AIFlowRolesSection />
               </CardContent>
             </Card>
           </TabsContent>

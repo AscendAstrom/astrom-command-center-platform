@@ -13,13 +13,15 @@ import {
   AlertTriangle,
   Hospital,
   Activity,
-  CheckCircle
+  CheckCircle,
+  Bot
 } from "lucide-react";
 import MetricBuilder from "@/components/astro-metrics/MetricBuilder";
 import KPIDictionary from "@/components/astro-metrics/KPIDictionary";
 import SLAConfiguration from "@/components/astro-metrics/SLAConfiguration";
 import AlertsManager from "@/components/astro-metrics/AlertsManager";
 import AccessControl from "@/components/astro-metrics/AccessControl";
+import AIMetricsRolesSection from "@/components/astro-metrics/sections/AIMetricsRolesSection";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import BedManagementTable from "@/components/shared/BedManagementTable";
 import { mockBedData, mockKPIs } from "@/data/mockBedData";
