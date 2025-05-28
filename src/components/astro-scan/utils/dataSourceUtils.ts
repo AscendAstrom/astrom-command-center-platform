@@ -2,22 +2,22 @@
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'CONNECTED':
-      return 'text-green-400 border-green-400';
+      return 'text-status-success border-status-success bg-status-success/10';
     case 'SYNCING':
-      return 'text-blue-400 border-blue-400';
+      return 'text-astrom-blue border-astrom-blue bg-astrom-blue/10';
     case 'ERROR':
-      return 'text-red-400 border-red-400';
+      return 'text-status-error border-status-error bg-status-error/10';
     case 'PAUSED':
-      return 'text-yellow-400 border-yellow-400';
+      return 'text-status-warning border-status-warning bg-status-warning/10';
     default:
-      return 'text-slate-400 border-slate-400';
+      return 'text-muted-foreground border-border bg-muted/10';
   }
 };
 
 export const getHealthColor = (health: number) => {
-  if (health >= 95) return 'text-green-400';
-  if (health >= 80) return 'text-yellow-400';
-  return 'text-red-400';
+  if (health >= 95) return 'text-status-success';
+  if (health >= 80) return 'text-status-warning';
+  return 'text-status-error';
 };
 
 export const formatNumber = (num: number) => {
