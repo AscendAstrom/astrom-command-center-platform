@@ -1,130 +1,105 @@
-
-import { useState } from 'react';
+import { useState } from "react";
+import { Plus, Target, TrendingUp, AlertTriangle, Users, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BarChart3, Settings, AlertTriangle, Users, Plus, TrendingUp } from "lucide-react";
-import { useUserRole } from '@/components/astro-bricks/hooks/useUserRole';
-import KPIDictionary from '@/components/astro-metrics/KPIDictionary';
-import MetricBuilder from '@/components/astro-metrics/MetricBuilder';
-import SLAConfiguration from '@/components/astro-metrics/SLAConfiguration';
-import AlertsManager from '@/components/astro-metrics/AlertsManager';
-import AccessControl from '@/components/astro-metrics/AccessControl';
+import MetricBuilder from "@/components/astro-metrics/MetricBuilder";
+import KPIDictionary from "@/components/astro-metrics/KPIDictionary";
+import SLAConfiguration from "@/components/astro-metrics/SLAConfiguration";
+import AlertsManager from "@/components/astro-metrics/AlertsManager";
 
 const AstroMetrics = () => {
-  const { userRole, isLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState('dictionary');
-
-  const mockMetrics = [
-    { name: 'Avg Wait Time', value: '12.5 min', trend: 'up', status: 'warning' },
-    { name: 'SLA Breaches', value: '3', trend: 'down', status: 'critical' },
-    { name: 'Throughput', value: '245/hr', trend: 'up', status: 'good' },
-    { name: 'Bed Utilization', value: '87%', trend: 'stable', status: 'good' },
-  ];
-
-  if (isLoading) {
-    return (
-      <div className="p-6 bg-slate-950 min-h-full flex items-center justify-center">
-        <div className="text-cyan-400">Loading ASTRO-METRICS...</div>
-      </div>
-    );
-  }
-
-  const canManage = userRole === 'ADMIN' || userRole === 'DATA_ENGINEER';
-  const canEdit = userRole === 'ADMIN' || userRole === 'ANALYST' || userRole === 'DATA_ENGINEER';
+  const [activeTab, setActiveTab] = useState("metrics-builder");
 
   return (
-    <div className="p-6 space-y-6 bg-slate-950 min-h-full">
-      <div className="flex items-center justify-between">
+    <div className="container py-10">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <BarChart3 className="h-8 w-8 text-cyan-400" />
-            ASTRO-METRICS
-          </h1>
-          <p className="text-slate-400">KPI Engine & SLA Metrics Management</p>
+          <h1 className="text-3xl font-semibold">AstroMetrics</h1>
+          <p className="text-muted-foreground">Define, track, and visualize key performance indicators.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="text-cyan-400 border-cyan-400">
-            {userRole} Access
-          </Badge>
-          {canEdit && (
-            <Button className="bg-cyan-600 hover:bg-cyan-700">
-              <Plus className="h-4 w-4 mr-2" />
-              New KPI
-            </Button>
-          )}
-        </div>
+        <Button variant="secondary" className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add New Metric
+        </Button>
       </div>
 
-      {/* Quick Metrics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {mockMetrics.map((metric, index) => (
-          <Card key={index} className="bg-slate-900 border-slate-800">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-400">{metric.name}</p>
-                  <p className="text-xl font-bold text-white">{metric.value}</p>
-                </div>
-                <div className={`flex items-center gap-1 ${
-                  metric.status === 'critical' ? 'text-red-400' :
-                  metric.status === 'warning' ? 'text-yellow-400' : 'text-green-400'
-                }`}>
-                  <TrendingUp className="h-4 w-4" />
-                  <Badge variant={metric.status === 'critical' ? 'destructive' : 'outline'}>
-                    {metric.status}
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="bg-slate-900 border-slate-800">
-          <TabsTrigger value="dictionary" className="data-[state=active]:bg-cyan-600">
-            KPI Dictionary
-          </TabsTrigger>
-          <TabsTrigger value="builder" className="data-[state=active]:bg-cyan-600">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList>
+          <TabsTrigger value="metrics-builder" className="data-[state=active]:text-primary">
+            <Target className="mr-2 h-4 w-4" />
             Metric Builder
           </TabsTrigger>
-          <TabsTrigger value="sla" className="data-[state=active]:bg-cyan-600">
-            SLA Config
+          <TabsTrigger value="kpi-dictionary" className="data-[state=active]:text-primary">
+            <TrendingUp className="mr-2 h-4 w-4" />
+            KPI Dictionary
           </TabsTrigger>
-          <TabsTrigger value="alerts" className="data-[state=active]:bg-cyan-600">
-            Alerts
+          <TabsTrigger value="sla-configuration" className="data-[state=active]:text-primary">
+            <AlertTriangle className="mr-2 h-4 w-4" />
+            SLA Configuration
           </TabsTrigger>
-          {canManage && (
-            <TabsTrigger value="access" className="data-[state=active]:bg-cyan-600">
-              Access Control
-            </TabsTrigger>
-          )}
+          <TabsTrigger value="alerts-manager" className="data-[state=active]:text-primary">
+            <Bell className="mr-2 h-4 w-4" />
+            Alerts Manager
+          </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="dictionary" className="space-y-4">
-          <KPIDictionary userRole={userRole} />
+        <TabsContent value="metrics-builder" className="mt-6">
+          <MetricBuilder />
         </TabsContent>
-
-        <TabsContent value="builder" className="space-y-4">
-          <MetricBuilder userRole={userRole} />
+        <TabsContent value="kpi-dictionary" className="mt-6">
+          <KPIDictionary />
         </TabsContent>
-
-        <TabsContent value="sla" className="space-y-4">
-          <SLAConfiguration userRole={userRole} />
+        <TabsContent value="sla-configuration" className="mt-6">
+          <SLAConfiguration />
         </TabsContent>
-
-        <TabsContent value="alerts" className="space-y-4">
-          <AlertsManager userRole={userRole} />
+        <TabsContent value="alerts-manager" className="mt-6">
+          <AlertsManager />
         </TabsContent>
-
-        {canManage && (
-          <TabsContent value="access" className="space-y-4">
-            <AccessControl userRole={userRole} />
-          </TabsContent>
-        )}
       </Tabs>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              User Engagement
+            </CardTitle>
+            <CardDescription>Track user activity and engagement metrics.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">4,567 Active Users</p>
+            <p className="text-sm text-muted-foreground">30% increase from last month</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              System Performance
+            </CardTitle>
+            <CardDescription>Monitor system health and performance metrics.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">99.99% Uptime</p>
+            <p className="text-sm text-muted-foreground">No downtime incidents reported</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Conversion Rates
+            </CardTitle>
+            <CardDescription>Analyze conversion rates across different stages.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">15% Conversion Rate</p>
+            <p className="text-sm text-muted-foreground">5% increase from last quarter</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
