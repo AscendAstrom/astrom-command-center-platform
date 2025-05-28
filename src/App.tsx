@@ -12,6 +12,7 @@ import TenantAdmin from "./pages/TenantAdmin";
 import AstroScan from "./pages/AstroScan";
 import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
+import AstroView from "./pages/AstroView";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/astro-scan" element={<AstroScan />} />
                 <Route path="/astro-bricks" element={<AstroBricks />} />
                 <Route path="/astro-metrics" element={<AstroMetrics />} />
+                <Route path="/astro-view" element={<AstroView />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/automation" element={<Automation />} />
                 <Route path="/admin" element={<TenantAdmin />} />

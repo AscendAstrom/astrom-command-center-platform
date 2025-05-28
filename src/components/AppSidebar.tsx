@@ -10,7 +10,8 @@ import {
   Bell,
   Scan,
   Layers,
-  Target
+  Target,
+  Eye
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -30,6 +31,7 @@ const navigationItems = [
   { title: "ASTRO-SCAN", url: "/astro-scan", icon: Scan },
   { title: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers },
   { title: "ASTRO-METRICS", url: "/astro-metrics", icon: Target },
+  { title: "ASTRO-VIEW", url: "/astro-view", icon: Eye },
   { title: "Data Sources", url: "/data-sources", icon: Database },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Automation", url: "/automation", icon: Zap },
