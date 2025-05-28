@@ -27,6 +27,16 @@ import {
 
 const navigationItems = [
   { 
+    title: "Dashboard", 
+    subtitle: "OVERVIEW", 
+    url: "/dashboard", 
+    icon: LayoutDashboard, 
+    color: "text-slate-600 dark:text-slate-400", 
+    bg: "bg-slate-50 dark:bg-slate-800/50",
+    activeBg: "bg-slate-100 dark:bg-slate-700/50",
+    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
+  },
+  { 
     title: "Sources", 
     subtitle: "ASTRO-SCAN", 
     url: "/astro-scan", 
@@ -104,7 +114,12 @@ export function AppSidebar() {
   const location = useLocation();
   const collapsed = state === "collapsed";
 
-  const isActive = (path: string) => location.pathname === path || (path === "/astro-scan" && location.pathname === "/");
+  const isActive = (path: string) => {
+    if (path === "/dashboard") {
+      return location.pathname === "/" || location.pathname === "/dashboard";
+    }
+    return location.pathname === path;
+  };
   
   const getNavCls = (item: any, active: boolean) => {
     const baseClasses = "group relative flex items-center w-full p-3 rounded-xl transition-all duration-300 ease-out hover:shadow-sm";

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Dashboard from "./pages/Dashboard";
 import AstroScan from "./pages/AstroScan";
 import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
@@ -26,7 +27,8 @@ const App = () => (
             <div className="min-h-screen flex w-full bg-background">
               <DashboardLayout>
                 <Routes>
-                  <Route path="/" element={<AstroScan />} />
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/astro-scan" element={<AstroScan />} />
                   <Route path="/astro-bricks" element={<AstroBricks />} />
                   <Route path="/astro-metrics" element={<AstroMetrics />} />
