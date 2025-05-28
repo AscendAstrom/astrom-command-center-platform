@@ -14,6 +14,10 @@ import AIAssistantChat from "@/components/ai-ecosystem/AIAssistantChat";
 import PredictiveAnalyticsEngine from "@/components/ai-ecosystem/PredictiveAnalyticsEngine";
 import AutonomousDecisionEngine from "@/components/ai-ecosystem/AutonomousDecisionEngine";
 import AdvancedMLPlatform from "@/components/ai-ecosystem/AdvancedMLPlatform";
+import AdvancedConfiguration from "@/components/ai-ecosystem/AdvancedConfiguration";
+import EnterpriseIntegrationHub from "@/components/ai-ecosystem/EnterpriseIntegrationHub";
+import CognitiveAnalyticsPlatform from "@/components/ai-ecosystem/CognitiveAnalyticsPlatform";
+import AdvancedWorkflowAutomation from "@/components/ai-ecosystem/AdvancedWorkflowAutomation";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 
 const AIEcosystem = () => {
@@ -46,11 +50,11 @@ const AIEcosystem = () => {
               <Brain className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">AI ECOSYSTEM</h1>
-            <span className="text-sm text-purple-400 font-medium">Phase 3A: Enterprise-Grade AI Intelligence</span>
+            <span className="text-sm text-purple-400 font-medium">Phase 3B: Enterprise Integration & Cognitive Analytics</span>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            Autonomous decision-making, advanced machine learning platform, and enterprise-grade 
-            AI intelligence with self-learning capabilities and multi-agent coordination.
+            Enterprise-grade integration hub, cognitive analytics platform, advanced workflow automation, 
+            and comprehensive AI configuration management for large-scale healthcare operations.
           </p>
         </div>
 
@@ -107,46 +111,19 @@ const AIEcosystem = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <PredictiveAnalyticsEngine />
+            <CognitiveAnalyticsPlatform />
           </TabsContent>
 
           <TabsContent value="workflows" className="space-y-6">
-            <div className="grid gap-6">
-              <div className="p-8 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-lg border border-orange-500/20 text-center">
-                <Zap className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Intelligent Workflow Automation</h3>
-                <p className="text-muted-foreground mb-4">
-                  Advanced workflow automation with smart escalation chains, adaptive resource allocation, and autonomous problem resolution.
-                </p>
-                <p className="text-sm text-orange-400">Coming in next update...</p>
-              </div>
-            </div>
+            <AdvancedWorkflowAutomation />
           </TabsContent>
 
           <TabsContent value="integration" className="space-y-6">
-            <div className="grid gap-6">
-              <div className="p-8 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20 text-center">
-                <Brain className="h-12 w-12 text-cyan-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Cross-Module Integration Hub</h3>
-                <p className="text-muted-foreground mb-4">
-                  Deep integration features connecting ASTRO-SCAN, ASTRO-FLOW, ASTRO-METRICS, and ASTRO-VIEW with intelligent data propagation.
-                </p>
-                <p className="text-sm text-cyan-400">Coming in next update...</p>
-              </div>
-            </div>
+            <EnterpriseIntegrationHub />
           </TabsContent>
 
           <TabsContent value="config" className="space-y-6">
-            <div className="grid gap-6">
-              <div className="p-8 bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-lg border border-red-500/20 text-center">
-                <Settings className="h-12 w-12 text-red-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">Advanced Configuration</h3>
-                <p className="text-muted-foreground mb-4">
-                  Global AI settings, model parameters, integration preferences, and system optimization controls.
-                </p>
-                <p className="text-sm text-red-400">Coming in next update...</p>
-              </div>
-            </div>
+            <AdvancedConfiguration />
           </TabsContent>
         </Tabs>
       </div>
