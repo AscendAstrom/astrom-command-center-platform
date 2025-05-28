@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus, Play, Pause, Zap, Bell, TrendingUp, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,20 +25,25 @@ const AstroFlow = () => {
         </Button>
       </div>
 
-      <Tabs defaultvalue="rules" className="space-y-4">
+      <Tabs defaultValue="rules" className="space-y-4">
         <TabsList>
           <TabsTrigger value="rules">Rules</TabsTrigger>
           <TabsTrigger value="executions">Executions</TabsTrigger>
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
         </TabsList>
         <TabsContent value="rules" className="space-y-4">
-          <RulesList />
+          <RulesList 
+            rules={[]}
+            selectedRule={null}
+            onSelectRule={() => {}}
+            onCreateRule={() => {}}
+          />
         </TabsContent>
         <TabsContent value="executions" className="space-y-4">
-          <RuleExecutions />
+          <RuleExecutions userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="alerts" className="space-y-4">
-          <AlertSubscriptions />
+          <AlertSubscriptions userRole="ADMIN" />
         </TabsContent>
       </Tabs>
 
@@ -51,7 +57,10 @@ const AstroFlow = () => {
                 <CardDescription>Define the conditions and actions for your automation rule.</CardDescription>
               </CardHeader>
               <CardContent>
-                <RuleBuilder onClose={() => setIsRuleBuilderOpen(false)} />
+                <RuleBuilder 
+                  onClose={() => setIsRuleBuilderOpen(false)} 
+                  userRole="ADMIN"
+                />
               </CardContent>
             </Card>
           </div>

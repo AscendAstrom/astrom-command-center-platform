@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus, Target, TrendingUp, AlertTriangle, Users, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,16 +45,16 @@ const AstroMetrics = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="metrics-builder" className="mt-6">
-          <MetricBuilder />
+          <MetricBuilder userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="kpi-dictionary" className="mt-6">
-          <KPIDictionary />
+          <KPIDictionary userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="sla-configuration" className="mt-6">
-          <SLAConfiguration />
+          <SLAConfiguration userRole="ADMIN" />
         </TabsContent>
         <TabsContent value="alerts-manager" className="mt-6">
-          <AlertsManager />
+          <AlertsManager userRole="ADMIN" />
         </TabsContent>
       </Tabs>
 
