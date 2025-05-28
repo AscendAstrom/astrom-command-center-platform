@@ -117,8 +117,8 @@ const DashboardManager = ({ userRole }: DashboardManagerProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-white">Dashboard Management</h3>
-          <p className="text-sm text-slate-400">Create and manage custom dashboards</p>
+          <h3 className="text-lg font-semibold text-foreground">Dashboard Management</h3>
+          <p className="text-sm text-muted-foreground">Create and manage custom dashboards</p>
         </div>
         {canEdit && (
           <Button onClick={handleCreateDashboard} className="bg-purple-600 hover:bg-purple-700">
@@ -130,11 +130,11 @@ const DashboardManager = ({ userRole }: DashboardManagerProps) => {
 
       <div className="grid gap-4">
         {dashboards.map((dashboard) => (
-          <Card key={dashboard.id} className="bg-slate-800 border-slate-700">
+          <Card key={dashboard.id} className="bg-card border-border">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <CardTitle className="text-white text-lg">{dashboard.name}</CardTitle>
+                  <CardTitle className="text-foreground text-lg">{dashboard.name}</CardTitle>
                   <CardDescription>{dashboard.description}</CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -173,7 +173,7 @@ const DashboardManager = ({ userRole }: DashboardManagerProps) => {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center gap-4 text-sm text-slate-300">
+              <div className="flex items-center gap-4 text-sm text-foreground">
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4 text-blue-400" />
                   <span>Auto-refresh: {dashboard.autoRefresh}s</span>
@@ -183,7 +183,7 @@ const DashboardManager = ({ userRole }: DashboardManagerProps) => {
                   <span>{dashboard.widgets.length} widgets</span>
                 </div>
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-muted-foreground">
                 Created by {dashboard.createdBy} • Last updated {new Date(dashboard.updatedAt).toLocaleDateString()}
               </div>
             </CardContent>

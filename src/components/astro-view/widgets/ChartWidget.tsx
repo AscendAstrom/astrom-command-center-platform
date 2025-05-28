@@ -64,9 +64,9 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
         return (
           <ChartContainer config={chartConfig}>
             <BarChart data={sampleBarData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="name" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+              <XAxis dataKey="name" className="fill-muted-foreground" />
+              <YAxis className="fill-muted-foreground" />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="value" fill="var(--color-value)" />
             </BarChart>
@@ -77,9 +77,9 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
         return (
           <ChartContainer config={chartConfig}>
             <LineChart data={sampleLineData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="name" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+              <XAxis dataKey="name" className="fill-muted-foreground" />
+              <YAxis className="fill-muted-foreground" />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Line 
                 type="monotone" 
@@ -124,7 +124,7 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
 
       default:
         return (
-          <div className="flex items-center justify-center h-full text-slate-400">
+          <div className="flex items-center justify-center h-full text-muted-foreground">
             <BarChart3 className="h-12 w-12 mb-2" />
             <p>Chart type not supported</p>
           </div>
@@ -133,10 +133,10 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
   };
 
   return (
-    <Card className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors">
+    <Card className="bg-card border-border hover:border-muted-foreground transition-colors">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-white text-lg flex items-center gap-2">
+          <CardTitle className="text-foreground text-lg flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-cyan-400" />
             {title}
           </CardTitle>
@@ -147,10 +147,10 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
             </div>
             <button
               onClick={handleDrillDown}
-              className="p-1 hover:bg-slate-800 rounded transition-colors"
+              className="p-1 hover:bg-muted rounded transition-colors"
               title="Drill down for details"
             >
-              <Maximize2 className="h-4 w-4 text-slate-400 hover:text-cyan-400" />
+              <Maximize2 className="h-4 w-4 text-muted-foreground hover:text-cyan-400" />
             </button>
           </div>
         </div>
@@ -168,7 +168,7 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
                   className="w-3 h-3 rounded-full" 
                   style={{ backgroundColor: entry.color }}
                 />
-                <span className="text-sm text-slate-300">{entry.name}</span>
+                <span className="text-sm text-foreground">{entry.name}</span>
               </div>
             ))}
           </div>

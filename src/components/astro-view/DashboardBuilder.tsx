@@ -66,7 +66,7 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-foreground">
           {dashboard.id ? 'Edit Dashboard' : 'Create Dashboard'}
         </h3>
         <div className="flex gap-2">
@@ -74,7 +74,7 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
             <Save className="h-4 w-4 mr-2" />
             Save Dashboard
           </Button>
-          <Button variant="outline" onClick={onCancel} className="border-slate-600 text-slate-300">
+          <Button variant="outline" onClick={onCancel} className="border-border text-foreground">
             <X className="h-4 w-4 mr-2" />
             Cancel
           </Button>
@@ -83,42 +83,42 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Dashboard Settings */}
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white text-lg">Dashboard Settings</CardTitle>
+            <CardTitle className="text-foreground text-lg">Dashboard Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-slate-300">Dashboard Name</Label>
+              <Label htmlFor="name" className="text-foreground">Dashboard Name</Label>
               <Input
                 id="name"
                 value={editedDashboard.name}
                 onChange={(e) => setEditedDashboard({ ...editedDashboard, name: e.target.value })}
-                className="bg-slate-900 border-slate-600 text-white"
+                className="bg-background border-border text-foreground"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-slate-300">Description</Label>
+              <Label htmlFor="description" className="text-foreground">Description</Label>
               <Textarea
                 id="description"
                 value={editedDashboard.description}
                 onChange={(e) => setEditedDashboard({ ...editedDashboard, description: e.target.value })}
-                className="bg-slate-900 border-slate-600 text-white"
+                className="bg-background border-border text-foreground"
                 rows={3}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="audience" className="text-slate-300">Target Audience</Label>
+              <Label htmlFor="audience" className="text-foreground">Target Audience</Label>
               <Select
                 value={editedDashboard.targetAudience}
                 onValueChange={(value: any) => setEditedDashboard({ ...editedDashboard, targetAudience: value })}
               >
-                <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600">
+                <SelectContent className="bg-popover border-border">
                   <SelectItem value="ed_managers">ED Managers</SelectItem>
                   <SelectItem value="ops_staff">Operations Staff</SelectItem>
                   <SelectItem value="executives">Executives</SelectItem>
@@ -127,15 +127,15 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="refresh" className="text-slate-300">Auto Refresh (seconds)</Label>
+              <Label htmlFor="refresh" className="text-foreground">Auto Refresh (seconds)</Label>
               <Select
                 value={editedDashboard.autoRefresh.toString()}
                 onValueChange={(value) => setEditedDashboard({ ...editedDashboard, autoRefresh: parseInt(value) as any })}
               >
-                <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                <SelectTrigger className="bg-background border-border text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600">
+                <SelectContent className="bg-popover border-border">
                   <SelectItem value="15">15 seconds</SelectItem>
                   <SelectItem value="30">30 seconds</SelectItem>
                   <SelectItem value="60">1 minute</SelectItem>
@@ -145,13 +145,13 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
             </div>
 
             <div className="pt-4">
-              <h4 className="text-white font-medium mb-3">Add Widgets</h4>
+              <h4 className="text-foreground font-medium mb-3">Add Widgets</h4>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleAddWidget('zone_tile')}
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   <MapPin className="h-4 w-4 mr-1" />
                   Zone Tile
@@ -160,7 +160,7 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
                   variant="outline"
                   size="sm"
                   onClick={() => handleAddWidget('patient_timer')}
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   <Clock className="h-4 w-4 mr-1" />
                   Patient Timer
@@ -169,7 +169,7 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
                   variant="outline"
                   size="sm"
                   onClick={() => handleAddWidget('chart')}
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   <BarChart className="h-4 w-4 mr-1" />
                   Chart
@@ -178,7 +178,7 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
                   variant="outline"
                   size="sm"
                   onClick={() => handleAddWidget('metric_card')}
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   <Grid className="h-4 w-4 mr-1" />
                   Metric Card
@@ -189,13 +189,13 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
         </Card>
 
         {/* Widget List */}
-        <Card className="bg-slate-800 border-slate-700 lg:col-span-2">
+        <Card className="bg-card border-border lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-white text-lg">Dashboard Widgets</CardTitle>
+            <CardTitle className="text-foreground text-lg">Dashboard Widgets</CardTitle>
           </CardHeader>
           <CardContent>
             {editedDashboard.widgets.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">
+              <div className="text-center py-8 text-muted-foreground">
                 <Grid className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>No widgets added yet</p>
                 <p className="text-sm">Add widgets from the panel on the left</p>
@@ -205,13 +205,13 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
                 {editedDashboard.widgets.map((widget) => (
                   <div
                     key={widget.id}
-                    className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700"
+                    className="flex items-center justify-between p-3 bg-background rounded-lg border border-border"
                   >
                     <div className="flex items-center gap-3">
                       {getWidgetIcon(widget.type)}
                       <div>
-                        <div className="text-white font-medium">{widget.title}</div>
-                        <div className="text-sm text-slate-400 capitalize">
+                        <div className="text-foreground font-medium">{widget.title}</div>
+                        <div className="text-sm text-muted-foreground capitalize">
                           {widget.type.replace('_', ' ')}
                         </div>
                       </div>

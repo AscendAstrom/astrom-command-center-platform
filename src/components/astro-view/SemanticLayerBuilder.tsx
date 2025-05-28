@@ -106,8 +106,8 @@ const SemanticLayerBuilder = ({ userRole }: SemanticLayerBuilderProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-white">Business Terms Dictionary</h3>
-          <p className="text-sm text-slate-400">Define standardized metrics and calculations</p>
+          <h3 className="text-lg font-semibold text-foreground">Business Terms Dictionary</h3>
+          <p className="text-sm text-muted-foreground">Define standardized metrics and calculations</p>
         </div>
         {canEdit && (
           <Button onClick={handleCreateTerm} className="bg-purple-600 hover:bg-purple-700">
@@ -119,11 +119,11 @@ const SemanticLayerBuilder = ({ userRole }: SemanticLayerBuilderProps) => {
 
       <div className="grid gap-4">
         {semanticTerms.map((term) => (
-          <Card key={term.id} className="bg-slate-800 border-slate-700">
+          <Card key={term.id} className="bg-card border-border">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <CardTitle className="text-white text-lg">{term.name}</CardTitle>
+                  <CardTitle className="text-foreground text-lg">{term.name}</CardTitle>
                   <CardDescription>{term.description}</CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -154,16 +154,16 @@ const SemanticLayerBuilder = ({ userRole }: SemanticLayerBuilderProps) => {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-slate-300">
+              <div className="flex items-center gap-2 text-sm text-foreground">
                 <Calculator className="h-4 w-4 text-purple-400" />
-                <code className="bg-slate-900 px-2 py-1 rounded text-cyan-400">
+                <code className="bg-muted px-2 py-1 rounded text-cyan-400">
                   {term.formula}
                 </code>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-300">
+              <div className="flex items-center gap-2 text-sm text-foreground">
                 <Database className="h-4 w-4 text-blue-400" />
                 <span>Source: {term.dataSource}</span>
-                <span className="text-slate-500">•</span>
+                <span className="text-muted-foreground">•</span>
                 <span>Unit: {term.unit}</span>
               </div>
             </CardContent>
@@ -192,33 +192,33 @@ const SemanticTermEditor = ({ term, onSave, onCancel, isCreating }: SemanticTerm
   };
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="text-white">
+        <CardTitle className="text-foreground">
           {isCreating ? 'Create New Term' : 'Edit Term'}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-slate-300">Term Name</Label>
+            <Label htmlFor="name" className="text-foreground">Term Name</Label>
             <Input
               id="name"
               value={editedTerm.name}
               onChange={(e) => setEditedTerm({ ...editedTerm, name: e.target.value })}
-              className="bg-slate-900 border-slate-600 text-white"
+              className="bg-background border-border text-foreground"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-slate-300">Category</Label>
+            <Label htmlFor="category" className="text-foreground">Category</Label>
             <Select
               value={editedTerm.category}
               onValueChange={(value) => setEditedTerm({ ...editedTerm, category: value })}
             >
-              <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+              <SelectTrigger className="bg-background border-border text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-popover border-border">
                 <SelectItem value="Patient Flow">Patient Flow</SelectItem>
                 <SelectItem value="Capacity">Capacity</SelectItem>
                 <SelectItem value="Quality">Quality</SelectItem>
@@ -229,45 +229,45 @@ const SemanticTermEditor = ({ term, onSave, onCancel, isCreating }: SemanticTerm
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description" className="text-slate-300">Description</Label>
+          <Label htmlFor="description" className="text-foreground">Description</Label>
           <Textarea
             id="description"
             value={editedTerm.description}
             onChange={(e) => setEditedTerm({ ...editedTerm, description: e.target.value })}
-            className="bg-slate-900 border-slate-600 text-white"
+            className="bg-background border-border text-foreground"
             rows={2}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="formula" className="text-slate-300">Formula</Label>
+          <Label htmlFor="formula" className="text-foreground">Formula</Label>
           <Textarea
             id="formula"
             value={editedTerm.formula}
             onChange={(e) => setEditedTerm({ ...editedTerm, formula: e.target.value })}
-            className="bg-slate-900 border-slate-600 text-white font-mono"
+            className="bg-background border-border text-foreground font-mono"
             rows={3}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="unit" className="text-slate-300">Unit</Label>
+            <Label htmlFor="unit" className="text-foreground">Unit</Label>
             <Input
               id="unit"
               value={editedTerm.unit}
               onChange={(e) => setEditedTerm({ ...editedTerm, unit: e.target.value })}
-              className="bg-slate-900 border-slate-600 text-white"
+              className="bg-background border-border text-foreground"
               placeholder="e.g., minutes, percentage, count"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dataSource" className="text-slate-300">Data Source</Label>
+            <Label htmlFor="dataSource" className="text-foreground">Data Source</Label>
             <Input
               id="dataSource"
               value={editedTerm.dataSource}
               onChange={(e) => setEditedTerm({ ...editedTerm, dataSource: e.target.value })}
-              className="bg-slate-900 border-slate-600 text-white"
+              className="bg-background border-border text-foreground"
               placeholder="e.g., patient_visits, bed_status"
             />
           </div>
@@ -277,7 +277,7 @@ const SemanticTermEditor = ({ term, onSave, onCancel, isCreating }: SemanticTerm
           <Button onClick={handleSave} className="bg-purple-600 hover:bg-purple-700">
             {isCreating ? 'Create Term' : 'Save Changes'}
           </Button>
-          <Button variant="outline" onClick={onCancel} className="border-slate-600 text-slate-300">
+          <Button variant="outline" onClick={onCancel} className="border-border text-foreground">
             Cancel
           </Button>
         </div>
