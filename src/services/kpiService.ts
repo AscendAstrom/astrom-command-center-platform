@@ -11,10 +11,7 @@ export const kpiService = {
   async getAll() {
     const { data, error } = await supabase
       .from('kpis')
-      .select(`
-        *,
-        data_sources(name, type)
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     return { data, error };
@@ -37,6 +34,7 @@ export const kpiService = {
       .from('kpis')
       .insert({
         ...kpi,
+        category: kpi.category as any,
         created_by: user?.id,
       })
       .select()

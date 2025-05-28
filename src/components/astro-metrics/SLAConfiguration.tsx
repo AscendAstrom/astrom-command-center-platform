@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { slaService } from '@/services/slaService';
 import { useRealTimeData } from '@/hooks/useRealTimeData';
-import { SLAConfiguration as SLAConfig, MetricsUserRole } from './types';
+import { MetricsUserRole } from './types';
 import SLACreateDialog from './SLACreateDialog';
 import SLATable from './SLATable';
 import type { Tables } from '@/integrations/supabase/types';

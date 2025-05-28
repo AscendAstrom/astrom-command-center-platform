@@ -50,8 +50,8 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       const { data, error } = await automationService.create({
         name: 'New Rule',
         description: '',
-        trigger_conditions: { conditions: [] },
-        actions: []
+        trigger_conditions: { conditions: [] } as any,
+        actions: [] as any
       });
 
       if (error) throw error;
@@ -84,8 +84,8 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
         const { error } = await automationService.update(selectedRule.id, {
           name: selectedRule.name,
           description: selectedRule.description,
-          trigger_conditions: { conditions: selectedRule.conditions },
-          actions: selectedRule.actions,
+          trigger_conditions: { conditions: selectedRule.conditions } as any,
+          actions: selectedRule.actions as any,
           status: selectedRule.isActive ? 'ACTIVE' : 'DRAFT'
         });
 

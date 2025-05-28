@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 
 interface UseRealTimeDataOptions {
   table: string;
@@ -8,7 +9,7 @@ interface UseRealTimeDataOptions {
   enabled?: boolean;
 }
 
-export function useRealTimeData<T>({ table, filter, enabled = true }: UseRealTimeDataOptions) {
+export function useRealTimeData<T extends Record<string, any>>({ table, filter, enabled = true }: UseRealTimeDataOptions) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
@@ -19,7 +20,7 @@ export function useRealTimeData<T>({ table, filter, enabled = true }: UseRealTim
     const fetchData = async () => {
       try {
         setLoading(true);
-        let query = supabase.from(table).select('*');
+        let query = supabase.from(table as any).select('*');
         
         if (filter) {
           query = query.eq(filter.column, filter.value);
@@ -28,7 +29,7 @@ export function useRealTimeData<T>({ table, filter, enabled = true }: UseRealTim
         const { data: result, error: fetchError } = await query;
         
         if (fetchError) throw fetchError;
-        setData(result || []);
+        setData(result as T[] || []);
       } catch (err) {
         setError(err);
       } finally {
