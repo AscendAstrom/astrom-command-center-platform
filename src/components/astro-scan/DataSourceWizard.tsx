@@ -20,7 +20,7 @@ interface DataSourceWizardProps {
 
 interface DataSourceForm {
   name: string;
-  type: 'HL7' | 'FHIR' | 'API' | 'CSV' | 'MANUAL';
+  type: 'HL7' | 'FHIR' | 'API' | 'CSV' | 'MANUAL' | 'EPIC';
   ingestionMode: 'BATCH' | 'STREAM';
   config: Record<string, any>;
   fieldMappings: Record<string, any>;
@@ -94,6 +94,7 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-background border-border">
+                  <SelectItem value="EPIC">Epic EMR (Enterprise Healthcare)</SelectItem>
                   <SelectItem value="HL7">HL7 (Health Level 7)</SelectItem>
                   <SelectItem value="FHIR">FHIR (Fast Healthcare Interoperability)</SelectItem>
                   <SelectItem value="API">REST/GraphQL API</SelectItem>

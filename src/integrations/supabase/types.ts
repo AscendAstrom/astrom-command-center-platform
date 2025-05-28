@@ -139,7 +139,7 @@ export type Database = {
       }
     }
     Enums: {
-      data_source_type: "HL7" | "FHIR" | "API" | "CSV" | "MANUAL"
+      data_source_type: "HL7" | "FHIR" | "API" | "CSV" | "MANUAL" | "EPIC"
       ingestion_mode: "BATCH" | "STREAM"
       sync_status: "CONNECTED" | "SYNCING" | "ERROR" | "PAUSED"
       user_role: "ADMIN" | "DATA_ENGINEER" | "ANALYST" | "CLINICIAN"
@@ -258,7 +258,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      data_source_type: ["HL7", "FHIR", "API", "CSV", "MANUAL"],
+      data_source_type: ["HL7", "FHIR", "API", "CSV", "MANUAL", "EPIC"],
       ingestion_mode: ["BATCH", "STREAM"],
       sync_status: ["CONNECTED", "SYNCING", "ERROR", "PAUSED"],
       user_role: ["ADMIN", "DATA_ENGINEER", "ANALYST", "CLINICIAN"],

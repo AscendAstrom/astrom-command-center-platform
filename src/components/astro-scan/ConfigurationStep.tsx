@@ -23,6 +23,79 @@ export const ConfigurationStep = ({ formData, updateFormData }: ConfigurationSte
 
   const renderConfigFields = () => {
     switch (formData.type) {
+      case 'EPIC':
+        return (
+          <>
+            <div>
+              <Label className="text-slate-300">Epic Server URL</Label>
+              <Input
+                value={formData.config.serverUrl || ''}
+                onChange={(e) => updateConfig('serverUrl', e.target.value)}
+                placeholder="https://epic.hospital.org/interconnect-prd-oauth2/api/FHIR/R4"
+                className="bg-slate-800 border-slate-700 text-white"
+              />
+            </div>
+            <div>
+              <Label className="text-slate-300">Epic Client ID</Label>
+              <Input
+                value={formData.config.clientId || ''}
+                onChange={(e) => updateConfig('clientId', e.target.value)}
+                placeholder="Your Epic App Client ID"
+                className="bg-slate-800 border-slate-700 text-white"
+              />
+            </div>
+            <div>
+              <Label className="text-slate-300">Epic Environment</Label>
+              <Select value={formData.config.environment || 'sandbox'} onValueChange={(value) => updateConfig('environment', value)}>
+                <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="sandbox">Sandbox</SelectItem>
+                  <SelectItem value="production">Production</SelectItem>
+                  <SelectItem value="staging">Staging</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-slate-300">Epic API Version</Label>
+              <Select value={formData.config.apiVersion || 'R4'} onValueChange={(value) => updateConfig('apiVersion', value)}>
+                <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="R4">FHIR R4</SelectItem>
+                  <SelectItem value="STU3">FHIR STU3</SelectItem>
+                  <SelectItem value="DSTU2">FHIR DSTU2</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-slate-300">Epic Applications/Modules</Label>
+              <Textarea
+                value={formData.config.applications || ''}
+                onChange={(e) => updateConfig('applications', e.target.value)}
+                placeholder="Hyperspace,MyChart,Beacon,Willow,Tapestry"
+                className="bg-slate-800 border-slate-700 text-white"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.config.enableSSL || true}
+                onCheckedChange={(checked) => updateConfig('enableSSL', checked)}
+              />
+              <Label className="text-slate-300">Enable SSL/TLS</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.config.enableSmartAuth || false}
+                onCheckedChange={(checked) => updateConfig('enableSmartAuth', checked)}
+              />
+              <Label className="text-slate-300">Enable SMART on FHIR Authentication</Label>
+            </div>
+          </>
+        );
+
       case 'HL7':
         return (
           <>
