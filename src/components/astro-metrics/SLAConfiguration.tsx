@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -339,7 +338,6 @@ const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
                         <Switch
                           checked={sla.status === 'active'}
                           onCheckedChange={() => toggleSLAStatus(sla.id)}
-                          size="sm"
                         />
                         <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
                           <Trash2 className="h-4 w-4" />

@@ -102,4 +102,4 @@ export interface DataAccessRule {
   };
 }
 
-export type MetricsUserRole = 'ADMIN' | 'ANALYST' | 'VIEWER';
+export type MetricsUserRole = 'ADMIN' | 'ANALYST' | 'VIEWER' | 'DATA_ENGINEER';
