@@ -75,11 +75,11 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
   return (
     <div className="space-y-6">
       {/* AI Toggle and Status */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Brain className="h-5 w-5 text-purple-400" />
                 AI Surge Prediction Model
               </CardTitle>
@@ -87,7 +87,7 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-400">AI Predictions</span>
+                <span className="text-sm text-muted-foreground">AI Predictions</span>
                 {canConfigureAI && (
                   <Switch
                     checked={isAIEnabled}
@@ -107,38 +107,38 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-400" />
                 <div>
-                  <p className="text-sm text-slate-400">Model Status</p>
-                  <p className="text-white font-medium">Online</p>
+                  <p className="text-sm text-muted-foreground">Model Status</p>
+                  <p className="text-foreground font-medium">Online</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-cyan-400" />
                 <div>
-                  <p className="text-sm text-slate-400">Accuracy</p>
-                  <p className="text-white font-medium">91.3%</p>
+                  <p className="text-sm text-muted-foreground">Accuracy</p>
+                  <p className="text-foreground font-medium">91.3%</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <RefreshCw className="h-5 w-5 text-blue-400" />
                 <div>
-                  <p className="text-sm text-slate-400">Last Update</p>
-                  <p className="text-white font-medium">2 min ago</p>
+                  <p className="text-sm text-muted-foreground">Last Update</p>
+                  <p className="text-foreground font-medium">2 min ago</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-purple-400" />
                 <div>
-                  <p className="text-sm text-slate-400">Predictions</p>
-                  <p className="text-white font-medium">847 today</p>
+                  <p className="text-sm text-muted-foreground">Predictions</p>
+                  <p className="text-foreground font-medium">847 today</p>
                 </div>
               </div>
             </div>
           ) : (
             <div className="text-center py-8">
-              <Brain className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-              <p className="text-slate-400">AI Surge Prediction is currently disabled</p>
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">AI Surge Prediction is currently disabled</p>
               {canConfigureAI && (
-                <p className="text-sm text-slate-500 mt-2">Enable to start receiving predictions</p>
+                <p className="text-sm text-muted-foreground mt-2">Enable to start receiving predictions</p>
               )}
             </div>
           )}
@@ -148,9 +148,9 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
       {isAIEnabled && (
         <>
           {/* Current Prediction */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white">Current Surge Prediction</CardTitle>
+              <CardTitle className="text-foreground">Current Surge Prediction</CardTitle>
               <CardDescription>Real-time capacity forecasting for the next {formatTimeFrame(currentPrediction.timeFrame)}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -159,7 +159,7 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                   {/* Capacity Prediction */}
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-white">Predicted Capacity</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Predicted Capacity</h3>
                       <Badge className={getCapacityBadgeColor(currentPrediction.predictedCapacity)}>
                         {currentPrediction.predictedCapacity >= 90 ? 'Critical' : 
                          currentPrediction.predictedCapacity >= 80 ? 'High' : 
@@ -168,7 +168,7 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Current</span>
+                        <span className="text-muted-foreground">Current</span>
                         <span className={`font-bold ${getCapacityColor(currentPrediction.currentCapacity)}`}>
                           {currentPrediction.currentCapacity}%
                         </span>
@@ -176,7 +176,7 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                       <Progress value={currentPrediction.currentCapacity} className="h-2" />
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Predicted ({formatTimeFrame(currentPrediction.timeFrame)})</span>
+                        <span className="text-muted-foreground">Predicted ({formatTimeFrame(currentPrediction.timeFrame)})</span>
                         <span className={`font-bold ${getCapacityColor(currentPrediction.predictedCapacity)}`}>
                           {currentPrediction.predictedCapacity}%
                         </span>
@@ -188,13 +188,13 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                   {/* Confidence Score */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-white">Confidence Score</h3>
+                      <h3 className="text-lg font-semibold text-foreground">Confidence Score</h3>
                       <span className={`font-bold ${getConfidenceColor(currentPrediction.confidenceScore)}`}>
                         {currentPrediction.confidenceScore}%
                       </span>
                     </div>
                     <Progress value={currentPrediction.confidenceScore} className="h-2" />
-                    <p className="text-sm text-slate-400 mt-2">
+                    <p className="text-sm text-muted-foreground mt-2">
                       {currentPrediction.confidenceScore >= 85 ? 'High confidence prediction' :
                        currentPrediction.confidenceScore >= 70 ? 'Moderate confidence prediction' :
                        'Low confidence prediction'}
@@ -205,12 +205,12 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                 <div className="space-y-6">
                   {/* Influencing Factors */}
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-4">Influencing Factors</h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-4">Influencing Factors</h3>
                     <div className="space-y-2">
                       {currentPrediction.factors.map((factor, index) => (
                         <div key={index} className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                          <span className="text-slate-300">{factor}</span>
+                          <span className="text-foreground">{factor}</span>
                         </div>
                       ))}
                     </div>
@@ -218,13 +218,13 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
 
                   {/* Recommendations */}
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-4">AI Recommendations</h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-4">AI Recommendations</h3>
                     <div className="space-y-3">
                       {currentPrediction.recommendations.map((recommendation, index) => (
-                        <div key={index} className="p-3 bg-slate-800 rounded-lg border-l-4 border-cyan-400">
+                        <div key={index} className="p-3 bg-muted rounded-lg border-l-4 border-cyan-400">
                           <div className="flex items-start gap-2">
                             <AlertTriangle className="h-4 w-4 text-cyan-400 mt-0.5 flex-shrink-0" />
-                            <span className="text-slate-300 text-sm">{recommendation}</span>
+                            <span className="text-foreground text-sm">{recommendation}</span>
                           </div>
                         </div>
                       ))}
@@ -236,14 +236,14 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
           </Card>
 
           {/* Prediction History */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-card border-border">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-white">Prediction History</CardTitle>
+                  <CardTitle className="text-foreground">Prediction History</CardTitle>
                   <CardDescription>Recent surge predictions and accuracy tracking</CardDescription>
                 </div>
-                <Button variant="outline" size="sm" className="border-slate-600">
+                <Button variant="outline" size="sm" className="border-border">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh
                 </Button>
@@ -252,14 +252,14 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
             <CardContent>
               <div className="space-y-4">
                 {predictions.map((prediction) => (
-                  <div key={prediction.id} className="p-4 border border-slate-700 rounded-lg">
+                  <div key={prediction.id} className="p-4 border border-border rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-4">
                         <div>
-                          <div className="text-white font-medium">
+                          <div className="text-foreground font-medium">
                             {formatTimeFrame(prediction.timeFrame)} Prediction
                           </div>
-                          <div className="text-sm text-slate-400">
+                          <div className="text-sm text-muted-foreground">
                             {new Date(prediction.timestamp).toLocaleString()}
                           </div>
                         </div>
@@ -271,14 +271,14 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                         <div className={`font-medium ${getConfidenceColor(prediction.confidenceScore)}`}>
                           {prediction.confidenceScore}% confidence
                         </div>
-                        <div className="text-sm text-slate-400">
+                        <div className="text-sm text-muted-foreground">
                           Current: {prediction.currentCapacity}%
                         </div>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="text-sm font-medium text-slate-300 mb-2">Factors</h4>
+                        <h4 className="text-sm font-medium text-foreground mb-2">Factors</h4>
                         <div className="flex flex-wrap gap-2">
                           {prediction.factors.map((factor, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
@@ -288,8 +288,8 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium text-slate-300 mb-2">Recommendations</h4>
-                        <div className="text-sm text-slate-400">
+                        <h4 className="text-sm font-medium text-foreground mb-2">Recommendations</h4>
+                        <div className="text-sm text-muted-foreground">
                           {prediction.recommendations.length} action items generated
                         </div>
                       </div>
@@ -302,9 +302,9 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
 
           {/* Model Configuration */}
           {canConfigureAI && (
-            <Card className="bg-slate-900 border-slate-800">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Settings className="h-5 w-5 text-cyan-400" />
                   Model Configuration
                 </CardTitle>
@@ -312,56 +312,56 @@ const SurgePredictor = ({ userRole }: SurgePredictorProps) => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="p-4 bg-slate-800 rounded-lg">
-                    <h3 className="font-medium text-white mb-2">Data Sources</h3>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h3 className="font-medium text-foreground mb-2">Data Sources</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Patient admissions</span>
+                        <span className="text-muted-foreground">Patient admissions</span>
                         <Badge className="bg-green-600">Connected</Badge>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Historical patterns</span>
+                        <span className="text-muted-foreground">Historical patterns</span>
                         <Badge className="bg-green-600">Connected</Badge>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">External events</span>
+                        <span className="text-muted-foreground">External events</span>
                         <Badge className="bg-green-600">Connected</Badge>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-slate-800 rounded-lg">
-                    <h3 className="font-medium text-white mb-2">Model Parameters</h3>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h3 className="font-medium text-foreground mb-2">Model Parameters</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Prediction window</span>
-                        <span className="text-slate-300">2-12 hours</span>
+                        <span className="text-muted-foreground">Prediction window</span>
+                        <span className="text-foreground">2-12 hours</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Update frequency</span>
-                        <span className="text-slate-300">Every 15 min</span>
+                        <span className="text-muted-foreground">Update frequency</span>
+                        <span className="text-foreground">Every 15 min</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Confidence threshold</span>
-                        <span className="text-slate-300">70%</span>
+                        <span className="text-muted-foreground">Confidence threshold</span>
+                        <span className="text-foreground">70%</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-slate-800 rounded-lg">
-                    <h3 className="font-medium text-white mb-2">Performance Metrics</h3>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h3 className="font-medium text-foreground mb-2">Performance Metrics</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">30-day accuracy</span>
+                        <span className="text-muted-foreground">30-day accuracy</span>
                         <span className="text-green-400">91.3%</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Predictions made</span>
-                        <span className="text-slate-300">2,847</span>
+                        <span className="text-muted-foreground">Predictions made</span>
+                        <span className="text-foreground">2,847</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400">Model version</span>
-                        <span className="text-slate-300">v2.1.4</span>
+                        <span className="text-muted-foreground">Model version</span>
+                        <span className="text-foreground">v2.1.4</span>
                       </div>
                     </div>
                   </div>

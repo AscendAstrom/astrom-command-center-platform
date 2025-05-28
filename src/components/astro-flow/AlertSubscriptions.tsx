@@ -89,11 +89,11 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-white">Alert Subscriptions</CardTitle>
+              <CardTitle className="text-foreground">Alert Subscriptions</CardTitle>
               <CardDescription>Manage notification preferences for automation rules</CardDescription>
             </div>
             {canManageSubscriptions && (
@@ -107,16 +107,16 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
         <CardContent>
           <div className="space-y-6">
             {subscriptions.map((subscription) => (
-              <div key={subscription.id} className="p-4 border border-slate-700 rounded-lg">
+              <div key={subscription.id} className="p-4 border border-border rounded-lg">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <Badge className={getRoleColor(subscription.userRole)}>
                       {subscription.userRole.replace('_', ' ')}
                     </Badge>
-                    <span className="text-white font-medium">User ID: {subscription.userId}</span>
+                    <span className="text-foreground font-medium">User ID: {subscription.userId}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-400">
+                    <span className="text-sm text-muted-foreground">
                       {subscription.isActive ? 'Active' : 'Inactive'}
                     </span>
                     {canManageSubscriptions && (
@@ -131,7 +131,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Subscribed Rules */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-300 mb-3">Subscribed Rules</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-3">Subscribed Rules</h4>
                     <div className="space-y-2">
                       {availableRules.map((rule) => (
                         <div key={rule.id} className="flex items-center space-x-2">
@@ -156,7 +156,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
                           />
                           <label
                             htmlFor={`rule-${subscription.id}-${rule.id}`}
-                            className="text-sm text-slate-300 cursor-pointer"
+                            className="text-sm text-foreground cursor-pointer"
                           >
                             {rule.name}
                           </label>
@@ -167,7 +167,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
 
                   {/* Notification Channels */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-300 mb-3">Notification Channels</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-3">Notification Channels</h4>
                     <div className="space-y-2">
                       {availableChannels.map((channel) => (
                         <div key={channel.type} className="flex items-center space-x-2">
@@ -183,7 +183,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
                           />
                           <label
                             htmlFor={`channel-${subscription.id}-${channel.type}`}
-                            className="text-sm text-slate-300 cursor-pointer flex items-center gap-2"
+                            className="text-sm text-foreground cursor-pointer flex items-center gap-2"
                           >
                             {getChannelIcon(channel.type)}
                             {channel.label}
@@ -195,7 +195,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
 
                   {/* Frequency Settings */}
                   <div>
-                    <h4 className="text-sm font-medium text-slate-300 mb-3">Frequency</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-3">Frequency</h4>
                     <Select
                       value={subscription.frequency}
                       onValueChange={(value: any) => {
@@ -209,20 +209,20 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
                       }}
                       disabled={!canManageSubscriptions}
                     >
-                      <SelectTrigger className="bg-slate-800 border-slate-700">
+                      <SelectTrigger className="bg-muted border-border">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-700">
+                      <SelectContent className="bg-popover border-border">
                         <SelectItem value="immediate">Immediate</SelectItem>
                         <SelectItem value="hourly">Hourly Digest</SelectItem>
                         <SelectItem value="daily">Daily Summary</SelectItem>
                       </SelectContent>
                     </Select>
 
-                    <div className="mt-4 p-3 bg-slate-800 rounded-lg">
+                    <div className="mt-4 p-3 bg-muted rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Bell className="h-4 w-4 text-cyan-400" />
-                        <span className="text-sm font-medium text-slate-300">Active Channels</span>
+                        <span className="text-sm font-medium text-foreground">Active Channels</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {subscription.channels.map((channel) => (
@@ -242,29 +242,29 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
 
       {/* Channel Configuration */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Mail className="h-5 w-5 text-cyan-400" />
               Email Configuration
             </CardTitle>
             <CardDescription>Configure email notification settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 bg-slate-800 rounded-lg">
+            <div className="p-3 bg-muted rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-white font-medium">SMTP Server</div>
-                  <div className="text-sm text-slate-400">smtp.hospital.com:587</div>
+                  <div className="text-foreground font-medium">SMTP Server</div>
+                  <div className="text-sm text-muted-foreground">smtp.hospital.com:587</div>
                 </div>
                 <Badge className="bg-green-600">Connected</Badge>
               </div>
             </div>
-            <div className="p-3 bg-slate-800 rounded-lg">
+            <div className="p-3 bg-muted rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-white font-medium">From Address</div>
-                  <div className="text-sm text-slate-400">alerts@hospital.com</div>
+                  <div className="text-foreground font-medium">From Address</div>
+                  <div className="text-sm text-muted-foreground">alerts@hospital.com</div>
                 </div>
                 <Button variant="ghost" size="sm" className="text-cyan-400">
                   <Settings className="h-4 w-4" />
@@ -274,29 +274,29 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-cyan-400" />
               Slack Integration
             </CardTitle>
             <CardDescription>Configure Slack notification settings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 bg-slate-800 rounded-lg">
+            <div className="p-3 bg-muted rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-white font-medium">Workspace</div>
-                  <div className="text-sm text-slate-400">Hospital Operations</div>
+                  <div className="text-foreground font-medium">Workspace</div>
+                  <div className="text-sm text-muted-foreground">Hospital Operations</div>
                 </div>
                 <Badge className="bg-green-600">Connected</Badge>
               </div>
             </div>
-            <div className="p-3 bg-slate-800 rounded-lg">
+            <div className="p-3 bg-muted rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-white font-medium">Default Channel</div>
-                  <div className="text-sm text-slate-400">#alerts</div>
+                  <div className="text-foreground font-medium">Default Channel</div>
+                  <div className="text-sm text-muted-foreground">#alerts</div>
                 </div>
                 <Button variant="ghost" size="sm" className="text-cyan-400">
                   <Settings className="h-4 w-4" />
