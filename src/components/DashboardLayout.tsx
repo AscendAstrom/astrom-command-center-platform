@@ -4,7 +4,8 @@ import { AppSidebar } from "./AppSidebar";
 import { ThemeToggle } from "./ThemeToggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Bell, Zap, Activity } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { User, Bell, Activity, Search } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,18 +19,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <header className="h-16 border-b border-border/50 glass-card sticky top-0 z-50 flex items-center px-6 animate-fade-in">
           <SidebarTrigger className="mr-4 text-primary hover:text-primary/80 transition-all duration-200 hover:scale-110" />
           
-          {/* Logo and Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gradient-bg-blue rounded-2xl flex items-center justify-center font-bold text-white text-sm shadow-lg hover-glow transition-all duration-300 animate-pulse-glow">
-              <Zap className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-foreground bg-gradient-to-r from-astrom-blue to-astrom-purple bg-clip-text text-transparent">
-                ASTROM
-              </h1>
-              <span className="text-xs text-astrom-blue font-medium opacity-80">
-                Healthcare Intelligence Platform
-              </span>
+          {/* Search Bar */}
+          <div className="flex items-center flex-1 max-w-md">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search..."
+                className="pl-10 bg-background/50 border-border/50 focus:border-primary/50 transition-colors"
+              />
             </div>
           </div>
           
