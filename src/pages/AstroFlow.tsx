@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Plus, Bell } from "lucide-react";
+import { Plus, Play, Pause, Zap, Bell, TrendingUp, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,26 +24,20 @@ const AstroFlow = () => {
         </Button>
       </div>
 
-      <Tabs defaultValue="rules" className="space-y-4">
+      <Tabs defaultvalue="rules" className="space-y-4">
         <TabsList>
           <TabsTrigger value="rules">Rules</TabsTrigger>
           <TabsTrigger value="executions">Executions</TabsTrigger>
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
         </TabsList>
         <TabsContent value="rules" className="space-y-4">
-          <RulesList 
-            rules={[]} 
-            selectedRule={null} 
-            onSelectRule={() => {}} 
-            onCreateRule={() => setIsRuleBuilderOpen(true)}
-            onEditRule={() => {}}
-          />
+          <RulesList />
         </TabsContent>
         <TabsContent value="executions" className="space-y-4">
-          <RuleExecutions userRole="admin" />
+          <RuleExecutions />
         </TabsContent>
         <TabsContent value="alerts" className="space-y-4">
-          <AlertSubscriptions userRole="admin" />
+          <AlertSubscriptions />
         </TabsContent>
       </Tabs>
 
@@ -58,11 +51,7 @@ const AstroFlow = () => {
                 <CardDescription>Define the conditions and actions for your automation rule.</CardDescription>
               </CardHeader>
               <CardContent>
-                <RuleBuilder 
-                  onSave={() => setIsRuleBuilderOpen(false)}
-                  onCancel={() => setIsRuleBuilderOpen(false)}
-                  userRole="admin"
-                />
+                <RuleBuilder onClose={() => setIsRuleBuilderOpen(false)} />
               </CardContent>
             </Card>
           </div>

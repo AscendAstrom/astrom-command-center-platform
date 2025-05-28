@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Plus, Target, TrendingUp, AlertTriangle, Users, Activity, Bell } from "lucide-react";
+import { Plus, Target, TrendingUp, AlertTriangle, Users, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -45,16 +44,16 @@ const AstroMetrics = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="metrics-builder" className="mt-6">
-          <MetricBuilder userRole="admin" />
+          <MetricBuilder />
         </TabsContent>
         <TabsContent value="kpi-dictionary" className="mt-6">
-          <KPIDictionary userRole="admin" />
+          <KPIDictionary />
         </TabsContent>
         <TabsContent value="sla-configuration" className="mt-6">
-          <SLAConfiguration userRole="admin" />
+          <SLAConfiguration />
         </TabsContent>
         <TabsContent value="alerts-manager" className="mt-6">
-          <AlertsManager userRole="admin" />
+          <AlertsManager />
         </TabsContent>
       </Tabs>
 
