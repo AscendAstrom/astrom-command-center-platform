@@ -9,16 +9,140 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      data_sources: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          field_mappings: Json
+          health_score: number | null
+          id: string
+          ingestion_mode: Database["public"]["Enums"]["ingestion_mode"]
+          last_error: string | null
+          last_sync: string | null
+          name: string
+          records_count: number | null
+          schedule_cron: string | null
+          status: Database["public"]["Enums"]["sync_status"]
+          type: Database["public"]["Enums"]["data_source_type"]
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          field_mappings?: Json
+          health_score?: number | null
+          id?: string
+          ingestion_mode?: Database["public"]["Enums"]["ingestion_mode"]
+          last_error?: string | null
+          last_sync?: string | null
+          name: string
+          records_count?: number | null
+          schedule_cron?: string | null
+          status?: Database["public"]["Enums"]["sync_status"]
+          type: Database["public"]["Enums"]["data_source_type"]
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          field_mappings?: Json
+          health_score?: number | null
+          id?: string
+          ingestion_mode?: Database["public"]["Enums"]["ingestion_mode"]
+          last_error?: string | null
+          last_sync?: string | null
+          name?: string
+          records_count?: number | null
+          schedule_cron?: string | null
+          status?: Database["public"]["Enums"]["sync_status"]
+          type?: Database["public"]["Enums"]["data_source_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ingestion_logs: {
+        Row: {
+          completed_at: string | null
+          data_source_id: string | null
+          error_details: Json | null
+          id: string
+          message: string | null
+          records_processed: number | null
+          started_at: string
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          data_source_id?: string | null
+          error_details?: Json | null
+          id?: string
+          message?: string | null
+          records_processed?: number | null
+          started_at?: string
+          status: string
+        }
+        Update: {
+          completed_at?: string | null
+          data_source_id?: string | null
+          error_details?: Json | null
+          id?: string
+          message?: string | null
+          records_processed?: number | null
+          started_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingestion_logs_data_source_id_fkey"
+            columns: ["data_source_id"]
+            isOneToOne: false
+            referencedRelation: "data_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      data_source_type: "HL7" | "FHIR" | "API" | "CSV" | "MANUAL"
+      ingestion_mode: "BATCH" | "STREAM"
+      sync_status: "CONNECTED" | "SYNCING" | "ERROR" | "PAUSED"
+      user_role: "ADMIN" | "DATA_ENGINEER" | "ANALYST" | "CLINICIAN"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +257,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      data_source_type: ["HL7", "FHIR", "API", "CSV", "MANUAL"],
+      ingestion_mode: ["BATCH", "STREAM"],
+      sync_status: ["CONNECTED", "SYNCING", "ERROR", "PAUSED"],
+      user_role: ["ADMIN", "DATA_ENGINEER", "ANALYST", "CLINICIAN"],
+    },
   },
 } as const

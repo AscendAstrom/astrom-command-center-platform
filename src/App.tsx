@@ -1,16 +1,16 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import DashboardLayout from "./components/DashboardLayout";
-import CommandCenter from "./pages/CommandCenter";
-import TenantAdmin from "./pages/TenantAdmin";
+import Index from "./pages/Index";
 import DataSources from "./pages/DataSources";
 import Analytics from "./pages/Analytics";
 import Automation from "./pages/Automation";
+import TenantAdmin from "./pages/TenantAdmin";
+import AstroScan from "./pages/AstroScan";
+import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,38 +19,20 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-      <Sonner />
       <BrowserRouter>
         <SidebarProvider>
           <div className="min-h-screen flex w-full bg-slate-950">
-            <Routes>
-              <Route path="/" element={
-                <DashboardLayout>
-                  <CommandCenter />
-                </DashboardLayout>
-              } />
-              <Route path="/admin" element={
-                <DashboardLayout>
-                  <TenantAdmin />
-                </DashboardLayout>
-              } />
-              <Route path="/data-sources" element={
-                <DashboardLayout>
-                  <DataSources />
-                </DashboardLayout>
-              } />
-              <Route path="/analytics" element={
-                <DashboardLayout>
-                  <Analytics />
-                </DashboardLayout>
-              } />
-              <Route path="/automation" element={
-                <DashboardLayout>
-                  <Automation />
-                </DashboardLayout>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <DashboardLayout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/data-sources" element={<DataSources />} />
+                <Route path="/astro-scan" element={<AstroScan />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/automation" element={<Automation />} />
+                <Route path="/admin" element={<TenantAdmin />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </DashboardLayout>
           </div>
         </SidebarProvider>
       </BrowserRouter>
