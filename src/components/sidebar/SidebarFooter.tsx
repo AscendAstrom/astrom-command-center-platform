@@ -17,7 +17,7 @@ export function SidebarFooter() {
   }
 
   return (
-    <div className="flex-shrink-0 mt-4 mx-3 mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
+    <div className="flex-shrink-0 mt-4 mx-3 mb-4 p-4 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
           <Activity className="h-6 w-6 text-white animate-pulse" />

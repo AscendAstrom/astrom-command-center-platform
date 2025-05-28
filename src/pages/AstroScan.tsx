@@ -27,7 +27,7 @@ const AstroScan = () => {
               <Database className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-astrom-blue via-astrom-purple to-astrom-blue bg-clip-text text-transparent font-display">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent font-display">
                 ASTRO-SCAN
               </h1>
               <p className="text-muted-foreground text-xl font-medium mt-1">
@@ -38,7 +38,7 @@ const AstroScan = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <Badge variant="outline" className="text-status-success border-status-success bg-status-success/10 px-6 py-3 text-sm font-medium">
+          <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50 dark:text-green-400 dark:border-green-400 dark:bg-green-950/20 px-6 py-3 text-sm font-medium">
             <CheckCircle className="h-4 w-4 mr-2" />
             All Systems Operational
           </Badge>
@@ -61,8 +61,8 @@ const AstroScan = () => {
                 <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Sources</p>
                 <p className="text-4xl font-bold text-foreground">12</p>
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-status-success" />
-                  <p className="text-sm text-status-success font-semibold">+2 this week</p>
+                  <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <p className="text-sm text-green-600 dark:text-green-400 font-semibold">+2 this week</p>
                 </div>
               </div>
               <div className="w-16 h-16 gradient-bg-blue rounded-2xl flex items-center justify-center shadow-lg">
@@ -79,8 +79,8 @@ const AstroScan = () => {
                 <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Records/Hour</p>
                 <p className="text-4xl font-bold text-foreground">2.4K</p>
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-status-success" />
-                  <p className="text-sm text-status-success font-semibold">+15% from last hour</p>
+                  <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <p className="text-sm text-green-600 dark:text-green-400 font-semibold">+15% from last hour</p>
                 </div>
               </div>
               <div className="w-16 h-16 gradient-bg-green rounded-2xl flex items-center justify-center shadow-lg">
@@ -96,7 +96,7 @@ const AstroScan = () => {
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Health Score</p>
                 <p className="text-4xl font-bold text-foreground">98%</p>
-                <p className="text-sm text-astrom-blue font-semibold">Excellent performance</p>
+                <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">Excellent performance</p>
               </div>
               <div className="w-16 h-16 gradient-bg-green rounded-2xl flex items-center justify-center shadow-lg">
                 <Zap className="h-8 w-8 text-white" />
@@ -111,7 +111,7 @@ const AstroScan = () => {
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Pending Issues</p>
                 <p className="text-4xl font-bold text-foreground">2</p>
-                <p className="text-sm text-status-warning font-semibold">Require attention</p>
+                <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold">Require attention</p>
               </div>
               <div className="w-16 h-16 gradient-bg-orange rounded-2xl flex items-center justify-center shadow-lg">
                 <AlertTriangle className="h-8 w-8 text-white" />
