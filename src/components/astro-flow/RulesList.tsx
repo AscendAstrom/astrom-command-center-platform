@@ -20,11 +20,11 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-600';
-      case 'high': return 'bg-orange-600';
-      case 'medium': return 'bg-yellow-600';
-      case 'low': return 'bg-green-600';
-      default: return 'bg-muted';
+      case 'critical': return 'bg-red-600 text-white';
+      case 'high': return 'bg-orange-600 text-white';
+      case 'medium': return 'bg-yellow-600 text-white';
+      case 'low': return 'bg-green-600 text-white';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
