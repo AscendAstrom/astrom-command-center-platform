@@ -125,7 +125,7 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                       <Badge className="bg-green-600">ACTIVE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      Auto-alerts staff when AI predicts SLA breach risk > 85%
+                      Auto-alerts staff when AI predicts SLA breach risk greater than 85%
                     </p>
                     <div className="text-xs text-muted-foreground">
                       Triggered 23 times today • 89% success rate
@@ -138,7 +138,7 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
                       <Badge className="bg-blue-600">ACTIVE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      Pre-allocates resources when surge prediction confidence > 90%
+                      Pre-allocates resources when surge prediction confidence greater than 90%
                     </p>
                     <div className="text-xs text-muted-foreground">
                       Triggered 7 times today • 94% accuracy
