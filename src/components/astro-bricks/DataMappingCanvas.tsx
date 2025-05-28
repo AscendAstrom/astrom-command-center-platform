@@ -1,20 +1,12 @@
 
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowRight, 
-  Plus, 
-  Trash2, 
-  Database, 
-  Target,
-  Save,
-  Download,
-  Upload
-} from 'lucide-react';
+import { Database, Target } from 'lucide-react';
 import { SourceField, TargetField, FieldMapping } from './types';
+import { SourceFieldCard } from './components/SourceFieldCard';
+import { TargetFieldCard } from './components/TargetFieldCard';
+import { MappingStatsBar } from './components/MappingStatsBar';
+import { MappingToolbar } from './components/MappingToolbar';
 
 interface DataMappingCanvasProps {
   readOnly?: boolean;
@@ -71,38 +63,16 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
   }, [readOnly]);
 
   const getSourceFieldById = (id: string) => sourceFields.find(f => f.id === id);
-  const getTargetFieldById = (id: string) => targetFields.find(f => f.id === id);
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <Badge variant="outline" className="text-blue-400 border-blue-400">
-            {sourceFields.length} Source Fields
-          </Badge>
-          <Badge variant="outline" className="text-green-400 border-green-400">
-            {targetFields.length} Target Fields
-          </Badge>
-          <Badge variant="outline" className="text-purple-400 border-purple-400">
-            {mappings.length} Mappings
-          </Badge>
-        </div>
-        {!readOnly && (
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline">
-              <Upload className="h-4 w-4 mr-2" />
-              Import
-            </Button>
-            <Button size="sm" variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button size="sm">
-              <Save className="h-4 w-4 mr-2" />
-              Save Mapping
-            </Button>
-          </div>
-        )}
+        <MappingStatsBar 
+          sourceFieldsCount={sourceFields.length}
+          targetFieldsCount={targetFields.length}
+          mappingsCount={mappings.length}
+        />
+        <MappingToolbar readOnly={readOnly} />
       </div>
 
       <div className="grid grid-cols-2 gap-8">
@@ -116,29 +86,12 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
           </CardHeader>
           <CardContent className="space-y-3">
             {sourceFields.map((field) => (
-              <div
+              <SourceFieldCard
                 key={field.id}
-                draggable={!readOnly}
-                onDragStart={() => handleDragStart(field.id)}
-                className={`p-3 rounded-lg border transition-all ${
-                  readOnly 
-                    ? 'bg-muted border-border cursor-default' 
-                    : 'bg-muted/50 border-border hover:border-blue-400 cursor-grab active:cursor-grabbing'
-                }`}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <span className="font-medium text-foreground">{field.name}</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {field.type}
-                  </Badge>
-                </div>
-                {field.description && (
-                  <p className="text-sm text-muted-foreground mb-1">{field.description}</p>
-                )}
-                {field.sample && (
-                  <p className="text-xs text-muted-foreground/80">Sample: {field.sample}</p>
-                )}
-              </div>
+                field={field}
+                onDragStart={handleDragStart}
+                readOnly={readOnly}
+              />
             ))}
           </CardContent>
         </Card>
@@ -154,66 +107,18 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
           <CardContent className="space-y-3">
             {targetFields.map((field) => {
               const mapping = mappings.find(m => m.targetFieldId === field.id);
-              const sourceField = mapping ? getSourceFieldById(mapping.sourceFieldId) : null;
+              const sourceField = mapping ? getSourceFieldById(mapping.sourceFieldId) : undefined;
 
               return (
-                <div
+                <TargetFieldCard
                   key={field.id}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => handleDrop(field.id)}
-                  className={`p-3 rounded-lg border transition-all ${
-                    mapping 
-                      ? 'bg-green-500/10 border-green-500/30' 
-                      : 'bg-muted border-border border-dashed'
-                  }`}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="font-medium text-foreground">{field.name}</span>
-                    <div className="flex gap-1">
-                      <Badge variant="secondary" className="text-xs">
-                        {field.type}
-                      </Badge>
-                      {field.required && (
-                        <Badge variant="destructive" className="text-xs">
-                          Required
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  {field.description && (
-                    <p className="text-sm text-muted-foreground mb-2">{field.description}</p>
-                  )}
-                  
-                  {mapping && sourceField && (
-                    <div className="bg-muted/50 rounded p-2 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ArrowRight className="h-4 w-4 text-green-400" />
-                        <span className="text-sm text-green-400">{sourceField.name}</span>
-                        {mapping.transformationRule && (
-                          <Badge variant="outline" className="text-xs text-yellow-400 border-yellow-400">
-                            {mapping.transformationRule}
-                          </Badge>
-                        )}
-                      </div>
-                      {!readOnly && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => removeMapping(mapping.id)}
-                          className="h-6 w-6 p-0 text-red-400 hover:text-red-300"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                  
-                  {!mapping && !readOnly && (
-                    <div className="text-center py-2">
-                      <span className="text-xs text-muted-foreground">Drop source field here</span>
-                    </div>
-                  )}
-                </div>
+                  field={field}
+                  mapping={mapping}
+                  sourceField={sourceField}
+                  onDrop={handleDrop}
+                  onRemoveMapping={removeMapping}
+                  readOnly={readOnly}
+                />
               );
             })}
           </CardContent>
