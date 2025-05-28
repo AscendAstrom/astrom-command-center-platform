@@ -12,6 +12,27 @@ import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
 const AstroView = () => {
   const [activeTab, setActiveTab] = useState("dashboards");
 
+  const mockDashboard = {
+    id: "mock",
+    name: "New Dashboard",
+    description: "",
+    targetAudience: "ed_managers" as const,
+    widgets: [],
+    autoRefresh: 30 as const,
+    isPublic: false,
+    createdBy: "user",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  const handleSaveDashboard = (dashboard: any) => {
+    console.log('Saving dashboard:', dashboard);
+  };
+
+  const handleCancelDashboard = () => {
+    console.log('Cancelling dashboard creation');
+  };
+
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between mb-6">
@@ -59,7 +80,12 @@ const AstroView = () => {
               <SemanticLayerBuilder userRole="ADMIN" />
             </TabsContent>
             <TabsContent value="reports" className="pt-4">
-              <DashboardBuilder userRole="ADMIN" />
+              <DashboardBuilder 
+                dashboard={mockDashboard}
+                onSave={handleSaveDashboard}
+                onCancel={handleCancelDashboard}
+                userRole="ADMIN"
+              />
             </TabsContent>
           </Tabs>
         </CardContent>

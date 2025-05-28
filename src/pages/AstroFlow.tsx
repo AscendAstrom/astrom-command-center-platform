@@ -12,6 +12,11 @@ import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 const AstroFlow = () => {
   const [isRuleBuilderOpen, setIsRuleBuilderOpen] = useState(false);
 
+  const handleToggleRule = (ruleId: string) => {
+    // Handle rule toggle logic
+    console.log('Toggling rule:', ruleId);
+  };
+
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between mb-6">
@@ -37,6 +42,8 @@ const AstroFlow = () => {
             selectedRule={null}
             onSelectRule={() => {}}
             onCreateRule={() => {}}
+            onToggleRule={handleToggleRule}
+            userRole="ADMIN"
           />
         </TabsContent>
         <TabsContent value="executions" className="space-y-4">
@@ -57,10 +64,12 @@ const AstroFlow = () => {
                 <CardDescription>Define the conditions and actions for your automation rule.</CardDescription>
               </CardHeader>
               <CardContent>
-                <RuleBuilder 
-                  onClose={() => setIsRuleBuilderOpen(false)} 
-                  userRole="ADMIN"
-                />
+                <RuleBuilder userRole="ADMIN" />
+                <div className="flex justify-end mt-4">
+                  <Button onClick={() => setIsRuleBuilderOpen(false)} variant="outline">
+                    Close
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
