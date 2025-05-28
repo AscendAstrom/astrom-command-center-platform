@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Database, Settings, Play, Pause, Trash2, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+type SyncStatus = 'CONNECTED' | 'SYNCING' | 'ERROR' | 'PAUSED';
 
 export const DataSourceList = () => {
   const [dataSources, setDataSources] = useState<any[]>([]);
@@ -32,7 +33,7 @@ export const DataSourceList = () => {
     }
   };
 
-  const updateDataSourceStatus = async (id: string, status: string) => {
+  const updateDataSourceStatus = async (id: string, status: SyncStatus) => {
     try {
       const { error } = await supabase
         .from('data_sources')
