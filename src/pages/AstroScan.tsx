@@ -19,100 +19,102 @@ const AstroScan = () => {
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-full animate-fade-in">
-      {/* Header Section */}
+      {/* Header Section - Enhanced */}
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 gradient-bg-blue rounded-2xl flex items-center justify-center animate-pulse-glow">
-              <Database className="h-6 w-6 text-white" />
+            <div className="w-16 h-16 gradient-bg-blue rounded-2xl flex items-center justify-center animate-pulse-glow shadow-lg">
+              <Database className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-astrom-blue to-astrom-purple bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-astrom-blue via-astrom-purple to-astrom-blue bg-clip-text text-transparent font-display">
                 ASTRO-SCAN
               </h1>
-              <p className="text-muted-foreground text-lg">Healthcare Data Ingestion & Source Management</p>
+              <p className="text-muted-foreground text-xl font-medium mt-1">
+                Healthcare Data Ingestion & Source Management
+              </p>
             </div>
           </div>
         </div>
         
         <div className="flex items-center gap-4">
-          <Badge variant="outline" className="text-status-success border-status-success bg-status-success/10 px-4 py-2">
+          <Badge variant="outline" className="text-status-success border-status-success bg-status-success/10 px-6 py-3 text-sm font-medium">
             <CheckCircle className="h-4 w-4 mr-2" />
             All Systems Operational
           </Badge>
           <Button 
             onClick={() => setShowWizard(true)}
-            className="gradient-bg-blue hover:shadow-lg hover-lift transition-all duration-300 px-6 py-3"
+            className="gradient-bg-blue hover:shadow-xl hover-lift transition-all duration-300 px-8 py-4 text-base font-semibold"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-5 w-5 mr-2" />
             Add Data Source
           </Button>
         </div>
       </div>
 
-      {/* Overview Stats */}
+      {/* Overview Stats - Enhanced */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up">
+        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Active Sources</p>
-                <p className="text-3xl font-bold text-foreground">12</p>
-                <div className="flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 text-status-success" />
-                  <p className="text-xs text-status-success font-medium">+2 this week</p>
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Sources</p>
+                <p className="text-4xl font-bold text-foreground">12</p>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-status-success" />
+                  <p className="text-sm text-status-success font-semibold">+2 this week</p>
                 </div>
               </div>
-              <div className="w-14 h-14 gradient-bg-blue rounded-2xl flex items-center justify-center">
-                <Database className="h-7 w-7 text-white" />
+              <div className="w-16 h-16 gradient-bg-blue rounded-2xl flex items-center justify-center shadow-lg">
+                <Database className="h-8 w-8 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.1s' }}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Records/Hour</p>
-                <p className="text-3xl font-bold text-foreground">2.4K</p>
-                <div className="flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 text-status-success" />
-                  <p className="text-xs text-status-success font-medium">+15% from last hour</p>
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Records/Hour</p>
+                <p className="text-4xl font-bold text-foreground">2.4K</p>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-status-success" />
+                  <p className="text-sm text-status-success font-semibold">+15% from last hour</p>
                 </div>
               </div>
-              <div className="w-14 h-14 gradient-bg-green rounded-2xl flex items-center justify-center">
-                <Activity className="h-7 w-7 text-white" />
+              <div className="w-16 h-16 gradient-bg-green rounded-2xl flex items-center justify-center shadow-lg">
+                <Activity className="h-8 w-8 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.2s' }}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Health Score</p>
-                <p className="text-3xl font-bold text-foreground">98%</p>
-                <p className="text-xs text-astrom-blue font-medium">Excellent performance</p>
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Health Score</p>
+                <p className="text-4xl font-bold text-foreground">98%</p>
+                <p className="text-sm text-astrom-blue font-semibold">Excellent performance</p>
               </div>
-              <div className="w-14 h-14 gradient-bg-green rounded-2xl flex items-center justify-center">
-                <Zap className="h-7 w-7 text-white" />
+              <div className="w-16 h-16 gradient-bg-green rounded-2xl flex items-center justify-center shadow-lg">
+                <Zap className="h-8 w-8 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <Card className="surface-elevated border-border/50 hover-lift transition-all duration-300 animate-slide-up glass-card" style={{ animationDelay: '0.3s' }}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">Pending Issues</p>
-                <p className="text-3xl font-bold text-foreground">2</p>
-                <p className="text-xs text-status-warning font-medium">Require attention</p>
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Pending Issues</p>
+                <p className="text-4xl font-bold text-foreground">2</p>
+                <p className="text-sm text-status-warning font-semibold">Require attention</p>
               </div>
-              <div className="w-14 h-14 gradient-bg-orange rounded-2xl flex items-center justify-center">
-                <AlertTriangle className="h-7 w-7 text-white" />
+              <div className="w-16 h-16 gradient-bg-orange rounded-2xl flex items-center justify-center shadow-lg">
+                <AlertTriangle className="h-8 w-8 text-white" />
               </div>
             </div>
           </CardContent>

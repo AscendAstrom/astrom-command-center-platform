@@ -75,25 +75,25 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
     switch (currentStep) {
       case 0:
         return (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <Label htmlFor="name" className="text-slate-300">Data Source Name</Label>
+              <Label htmlFor="name" className="text-foreground font-medium">Data Source Name</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => updateFormData({ name: e.target.value })}
                 placeholder="e.g., Epic EMR - Main Campus"
-                className="bg-slate-800 border-slate-700 text-white"
+                className="mt-2 bg-background border-border text-foreground"
               />
             </div>
 
             <div>
-              <Label className="text-slate-300">Source Type</Label>
+              <Label className="text-foreground font-medium">Source Type</Label>
               <Select value={formData.type} onValueChange={(value: any) => updateFormData({ type: value })}>
-                <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                <SelectTrigger className="mt-2 bg-background border-border text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectContent className="bg-background border-border">
                   <SelectItem value="HL7">HL7 (Health Level 7)</SelectItem>
                   <SelectItem value="FHIR">FHIR (Fast Healthcare Interoperability)</SelectItem>
                   <SelectItem value="API">REST/GraphQL API</SelectItem>
@@ -104,15 +104,15 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
             </div>
 
             <div>
-              <Label className="text-slate-300">Ingestion Mode</Label>
-              <div className="flex items-center space-x-2 mt-2">
+              <Label className="text-foreground font-medium">Ingestion Mode</Label>
+              <div className="flex items-center space-x-3 mt-3">
                 <Switch
                   checked={formData.ingestionMode === 'STREAM'}
                   onCheckedChange={(checked) => 
                     updateFormData({ ingestionMode: checked ? 'STREAM' : 'BATCH' })
                   }
                 />
-                <span className="text-slate-300">
+                <span className="text-foreground font-medium">
                   {formData.ingestionMode === 'STREAM' ? 'Real-time Stream' : 'Batch Processing'}
                 </span>
               </div>
@@ -148,42 +148,44 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-4xl bg-slate-900 border-slate-800 max-h-[90vh] overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <Card className="w-full max-w-4xl surface-elevated border-border/50 max-h-[90vh] overflow-hidden glass-card">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-border/30">
           <div>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Database className="h-5 w-5 text-cyan-400" />
+            <CardTitle className="text-foreground flex items-center gap-3 text-2xl font-bold">
+              <div className="p-2 rounded-xl bg-astrom-blue/10">
+                <Database className="h-6 w-6 text-astrom-blue" />
+              </div>
               Add Data Source - {STEP_TITLES[currentStep]}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-lg mt-1">
               Step {currentStep + 1} of {STEP_TITLES.length}
             </CardDescription>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-muted">
+            <X className="h-5 w-5" />
           </Button>
         </CardHeader>
 
-        <CardContent className="overflow-y-auto max-h-[60vh]">
+        <CardContent className="overflow-y-auto max-h-[60vh] p-8">
           {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             {STEP_TITLES.map((title, index) => (
               <div key={index} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 ${
                   index <= currentStep 
-                    ? 'bg-cyan-600 text-white' 
-                    : 'bg-slate-700 text-slate-400'
+                    ? 'bg-astrom-blue border-astrom-blue text-white' 
+                    : 'bg-background border-border text-muted-foreground'
                 }`}>
                   {index + 1}
                 </div>
-                <div className="ml-2 text-sm">
-                  <div className={index <= currentStep ? 'text-cyan-400' : 'text-slate-400'}>
+                <div className="ml-3 text-sm">
+                  <div className={`font-semibold ${index <= currentStep ? 'text-astrom-blue' : 'text-muted-foreground'}`}>
                     {title}
                   </div>
                 </div>
                 {index < STEP_TITLES.length - 1 && (
-                  <ChevronRight className="mx-4 h-4 w-4 text-slate-500" />
+                  <ChevronRight className="mx-6 h-5 w-5 text-muted-foreground" />
                 )}
               </div>
             ))}
@@ -194,14 +196,14 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
         </CardContent>
 
         {/* Navigation */}
-        <div className="p-6 border-t border-slate-800 flex justify-between">
+        <div className="p-6 border-t border-border/30 flex justify-between bg-muted/30">
           <Button
             variant="outline"
             onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
             disabled={currentStep === 0}
-            className="border-slate-700 text-slate-300"
+            className="border-border text-foreground hover:bg-muted"
           >
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Previous
           </Button>
 
@@ -209,18 +211,18 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
             <Button
               onClick={() => setCurrentStep(prev => prev + 1)}
               disabled={!canProceed()}
-              className="bg-cyan-600 hover:bg-cyan-700"
+              className="gradient-bg-blue hover:shadow-lg"
             >
               Next
-              <ChevronRight className="h-4 w-4 ml-1" />
+              <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
             <Button
               onClick={handleSubmit}
               disabled={!canProceed()}
-              className="bg-green-600 hover:bg-green-700"
+              className="gradient-bg-green hover:shadow-lg"
             >
-              <Play className="h-4 w-4 mr-1" />
+              <Play className="h-4 w-4 mr-2" />
               Deploy Source
             </Button>
           )}
