@@ -9,8 +9,7 @@ import {
   LayoutDashboard,
   ChevronRight,
   Activity,
-  Sparkles,
-  Command
+  Sparkles
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -36,16 +35,6 @@ const navigationItems = [
     bg: "bg-slate-50 dark:bg-slate-800/50",
     activeBg: "bg-slate-100 dark:bg-slate-700/50",
     iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
-  },
-  { 
-    title: "Command Center", 
-    subtitle: "WORKFLOW", 
-    url: "/command-center", 
-    icon: Command, 
-    color: "text-cyan-600 dark:text-cyan-400", 
-    bg: "bg-cyan-50 dark:bg-cyan-950/50",
-    activeBg: "bg-cyan-100 dark:bg-cyan-900/30",
-    iconBg: "bg-gradient-to-br from-cyan-500 to-cyan-600"
   },
   { 
     title: "Sources", 
