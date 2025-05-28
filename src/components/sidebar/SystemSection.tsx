@@ -26,6 +26,14 @@ export function SystemSection({ items }: SystemSectionProps) {
   };
   
   const getNavCls = (item: SystemItem, active: boolean) => {
+    if (collapsed) {
+      return `group relative flex items-center justify-center w-full p-2 rounded-xl transition-all duration-300 ease-out hover:shadow-sm ${
+        active 
+          ? `${item.activeBg} ${item.color} shadow-sm border border-border/20`
+          : `text-muted-foreground hover:${item.bg} hover:${item.color} hover:shadow-sm`
+      }`;
+    }
+    
     const baseClasses = "group relative flex items-center w-full p-3 rounded-xl transition-all duration-300 ease-out hover:shadow-sm";
     
     if (active) {
@@ -36,7 +44,7 @@ export function SystemSection({ items }: SystemSectionProps) {
   };
 
   return (
-    <SidebarGroup className="flex-shrink-0 px-3">
+    <SidebarGroup className={`flex-shrink-0 ${collapsed ? 'px-1' : 'px-3'}`}>
       <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-4 px-2">
         {!collapsed && "SYSTEM"}
       </SidebarGroupLabel>
@@ -50,14 +58,20 @@ export function SystemSection({ items }: SystemSectionProps) {
                   end 
                   className={getNavCls(item, isActive(item.url))}
                 >
-                  <div className={`${collapsed ? 'p-4' : 'p-3'} rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
-                    <item.icon className={`${collapsed ? 'h-7 w-7' : 'h-5 w-5'} text-white`} />
-                  </div>
-                  {!collapsed && (
-                    <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>
-                  )}
-                  {!collapsed && isActive(item.url) && (
-                    <ChevronRight className="h-4 w-4 opacity-60 flex-shrink-0 mr-2" />
+                  {collapsed ? (
+                    <div className={`p-2 rounded-lg ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-105`}>
+                      <item.icon className="h-5 w-5 text-white" />
+                    </div>
+                  ) : (
+                    <>
+                      <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                        <item.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>
+                      {isActive(item.url) && (
+                        <ChevronRight className="h-4 w-4 opacity-60 flex-shrink-0 mr-2" />
+                      )}
+                    </>
                   )}
                   {/* Active indicator */}
                   {isActive(item.url) && (
