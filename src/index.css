@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
@@ -8,7 +9,7 @@
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 98%;
+    --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
@@ -17,20 +18,20 @@
     --primary: 214 84% 56%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 94%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 94%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 94%;
+    --accent: 210 40% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 87%;
-    --input: 214.3 31.8% 87%;
+    --border: 214.3 31.8% 91%;
+    --input: 214.3 31.8% 91%;
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.75rem;
@@ -82,13 +83,13 @@
     --status-info: 214 84% 46%;
     
     /* Sidebar Variables - Light Mode Enhanced */
-    --sidebar-background: 0 0% 99%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 214 84% 46%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95%;
+    --sidebar-accent: 240 4.8% 96%;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 87%;
+    --sidebar-border: 220 13% 91%;
     --sidebar-ring: 214 84% 46%;
   }
 
@@ -296,7 +297,7 @@
   /* Light Theme Specific Glass Enhancement */
   .light .glass,
   .light .glass-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 
       0 4px 6px -1px rgb(0 0 0 / 0.05),
