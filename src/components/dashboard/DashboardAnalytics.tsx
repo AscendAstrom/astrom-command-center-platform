@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Play, Pause, Heart, Stethoscope, Database, TrendingUp, Shield, Server, Brain, Zap } from 'lucide-react';
+import { Activity, Play, Pause, Heart, Stethoscope, Database, TrendingUp, Shield, Server, Brain, Zap, BarChart3 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { analyticsDataService, AnalyticsData } from '@/services/analytics';
 import EmergencyDepartmentTab from './tabs/EmergencyDepartmentTab';
