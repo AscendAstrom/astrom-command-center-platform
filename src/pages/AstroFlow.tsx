@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,8 @@ import {
   AlertTriangle,
   MessageSquare,
   FileText,
-  Settings
+  Settings,
+  Bell
 } from "lucide-react";
 import RuleBuilder from "@/components/astro-flow/RuleBuilder";
 import RulesList from "@/components/astro-flow/RulesList";
@@ -28,8 +30,31 @@ import SurgePredictor from "@/components/astro-flow/SurgePredictor";
 import NLPAssistant from "@/components/astro-flow/NLPAssistant";
 import DailySummaries from "@/components/astro-flow/DailySummaries";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
+import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 
 const AstroFlow = () => {
+  const { userRole, isLoading } = useUserRole();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-96 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Default to ANALYST if userRole is null
+  const effectiveUserRole = userRole || 'ANALYST';
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
@@ -245,7 +270,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RuleBuilder />
+                <RuleBuilder userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -262,7 +287,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SLABreachRadar />
+                <SLABreachRadar userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -279,7 +304,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SurgePredictor />
+                <SurgePredictor userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -296,7 +321,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <NLPAssistant />
+                <NLPAssistant userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -313,7 +338,7 @@ const AstroFlow = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AlertSubscriptions />
+                <AlertSubscriptions userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>

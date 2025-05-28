@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,8 +20,31 @@ import DashboardBuilder from "@/components/astro-view/DashboardBuilder";
 import DashboardManager from "@/components/astro-view/DashboardManager";
 import RealtimeDashboard from "@/components/astro-view/RealtimeDashboard";
 import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
+import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 
 const AstroView = () => {
+  const { userRole, isLoading } = useUserRole();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-96 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Default to ANALYST if userRole is null
+  const effectiveUserRole = userRole || 'ANALYST';
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
@@ -177,7 +201,12 @@ const AstroView = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <DashboardBuilder />
+                <DashboardBuilder 
+                  dashboard={null} 
+                  onSave={() => {}} 
+                  onCancel={() => {}} 
+                  userRole={effectiveUserRole} 
+                />
               </CardContent>
             </Card>
           </TabsContent>
@@ -194,7 +223,7 @@ const AstroView = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <DashboardManager />
+                <DashboardManager userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -211,7 +240,7 @@ const AstroView = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <RealtimeDashboard />
+                <RealtimeDashboard userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -228,7 +257,7 @@ const AstroView = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SemanticLayerBuilder />
+                <SemanticLayerBuilder userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>

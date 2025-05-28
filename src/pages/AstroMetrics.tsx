@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,31 @@ import SLAConfiguration from "@/components/astro-metrics/SLAConfiguration";
 import KPIDictionary from "@/components/astro-metrics/KPIDictionary";
 import AlertsManager from "@/components/astro-metrics/AlertsManager";
 import AccessControl from "@/components/astro-metrics/AccessControl";
+import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 
 const AstroMetrics = () => {
+  const { userRole, isLoading } = useUserRole();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-12 bg-muted rounded"></div>
+              <div className="h-96 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Default to ANALYST if userRole is null
+  const effectiveUserRole = userRole || 'ANALYST';
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
@@ -179,7 +203,7 @@ const AstroMetrics = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <MetricBuilder />
+                <MetricBuilder userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -196,7 +220,7 @@ const AstroMetrics = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SLAConfiguration />
+                <SLAConfiguration userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -213,7 +237,7 @@ const AstroMetrics = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <KPIDictionary />
+                <KPIDictionary userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -230,7 +254,7 @@ const AstroMetrics = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AlertsManager />
+                <AlertsManager userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -247,7 +271,7 @@ const AstroMetrics = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AccessControl />
+                <AccessControl userRole={effectiveUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
