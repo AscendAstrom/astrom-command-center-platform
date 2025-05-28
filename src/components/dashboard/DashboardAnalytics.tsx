@@ -1,31 +1,10 @@
-
 import { useState, useEffect } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Activity, Play, Pause } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { 
-  Activity, 
-  Users, 
-  Database, 
-  TrendingUp, 
-  Shield, 
-  Brain,
-  Heart,
-  Stethoscope,
-  BarChart3,
-  Server,
-  Zap,
-  Play,
-  Pause
-} from 'lucide-react';
-import { analyticsDataService, AnalyticsData } from '@/services/analyticsDataService';
-import EmergencyDepartmentTab from './tabs/EmergencyDepartmentTab';
-import ClinicalOperationsTab from './tabs/ClinicalOperationsTab';
-import DataPipelineTab from './tabs/DataPipelineTab';
-import BusinessAnalyticsTab from './tabs/BusinessAnalyticsTab';
-import SystemHealthTab from './tabs/SystemHealthTab';
-import AIMetricsTab from './tabs/AIMetricsTab';
+import { analyticsDataService, AnalyticsData } from '@/services/analytics';
 
 const DashboardAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);

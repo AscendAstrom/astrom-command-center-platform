@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AnalyticsData } from '@/services/analyticsDataService';
+import { AnalyticsData } from '@/services/analytics';
 import { Heart, Users, Clock, Bed, AlertTriangle, TrendingUp } from 'lucide-react';
 import RealtimeLineChart from '../charts/RealtimeLineChart';
 import RealtimeAreaChart from '../charts/RealtimeAreaChart';
