@@ -7,6 +7,8 @@ import AstroScanHeader from "@/components/astro-scan/AstroScanHeader";
 import SourcesTabContent from "@/components/astro-scan/SourcesTabContent";
 import IngestionTabContent from "@/components/astro-scan/IngestionTabContent";
 import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
+import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
+import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -47,6 +49,12 @@ const AstroScan = () => {
 
           <TabsContent value="monitoring" className="space-y-6">
             <MonitoringTabContent />
+            
+            {/* Enhanced Phase 4 & Phase 5 Sections */}
+            <div className="space-y-6 mt-8">
+              <PhaseFourSection />
+              <PhaseFiveSection />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
