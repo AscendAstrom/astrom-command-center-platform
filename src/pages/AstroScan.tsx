@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,8 +15,8 @@ import {
 import { DataSourceList } from "@/components/astro-scan/DataSourceList";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
-import BedManagementTable from "@/components/shared/BedManagementTable";
-import { mockBedData } from "@/data/mockBedData";
+import EnhancedBedManagementTable from "@/components/shared/EnhancedBedManagementTable";
+import { mockHierarchicalBedData, occupancyThresholds } from "@/data/mockHierarchicalBedData";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -82,56 +81,54 @@ const AstroScan = () => {
               <CardContent>
                 <DataSourceList />
 
-                {/* Bed Management Data Sources Example */}
+                {/* Enhanced Bed Management Data Sources Example */}
                 <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
                   <div className="flex items-center gap-2 mb-4">
                     <Hospital className="h-5 w-5 text-green-400" />
-                    <h3 className="text-lg font-semibold text-foreground">Saudi Hospital Bed Management Sources</h3>
-                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Live Demo</Badge>
+                    <h3 className="text-lg font-semibold text-foreground">Epic 3.1 - Hospital Bed Management System</h3>
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Hierarchical View</Badge>
                   </div>
                   <p className="text-muted-foreground mb-6">
-                    Real-time data sources from major Saudi hospitals including KAMC, KFSH, and regional MOH facilities.
+                    Comprehensive bed occupancy management with drill-down capabilities from organization to ward level. 
+                    Features real-time tooltips, visual indicators, and Saudi healthcare compliance monitoring.
                   </p>
 
+                  {/* Features Overview */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="font-medium text-foreground text-sm">KAMC Riyadh</span>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        <span className="font-medium text-foreground text-sm">Hierarchical Navigation</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">HL7 FHIR • Real-time • 450 beds</div>
+                      <div className="text-xs text-muted-foreground">
+                        Drill-down from Organization → Hospital → Department → Ward levels
+                      </div>
                     </div>
                     <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="font-medium text-foreground text-sm">KFSH Dammam</span>
+                        <span className="font-medium text-foreground text-sm">Enhanced Tooltips</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">REST API • 15min sync • 320 beds</div>
+                      <div className="text-xs text-muted-foreground">
+                        Patient details, bed status, and discharge information on hover
+                      </div>
                     </div>
                     <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                        <span className="font-medium text-foreground text-sm">MOH Jeddah</span>
+                        <span className="font-medium text-foreground text-sm">Visual Indicators</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">Database • Hourly • 280 beds</div>
+                      <div className="text-xs text-muted-foreground">
+                        Color-coded occupancy thresholds with status icons
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50 mb-4">
-                    <div className="flex items-center gap-2">
-                      <ArrowRight className="h-4 w-4 text-blue-400" />
-                      <span className="text-sm font-medium text-foreground">Data Flow:</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>Hospital HIS</span>
-                      <ArrowRight className="h-3 w-3" />
-                      <span>ASTRO-SCAN</span>
-                      <ArrowRight className="h-3 w-3" />
-                      <span>Data Warehouse</span>
-                    </div>
-                  </div>
-
-                  <BedManagementTable data={mockBedData.slice(0, 3)} showArabicNames={true} />
+                  <EnhancedBedManagementTable 
+                    data={mockHierarchicalBedData} 
+                    showArabicNames={true}
+                    thresholds={occupancyThresholds}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -151,18 +148,19 @@ const AstroScan = () => {
               <CardContent>
                 <IngestionDashboard />
 
-                {/* Bed Management Ingestion Example */}
+                {/* Enhanced Bed Management Ingestion Example */}
                 <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
                   <div className="flex items-center gap-2 mb-4">
                     <Hospital className="h-5 w-5 text-green-400" />
-                    <h3 className="text-lg font-semibold text-foreground">Real-time Bed Status Ingestion</h3>
+                    <h3 className="text-lg font-semibold text-foreground">Real-time Hierarchical Bed Data Ingestion</h3>
                     <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Live Pipeline</Badge>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    Continuous ingestion of bed occupancy, patient flow, and compliance data from Saudi healthcare facilities.
+                    Real-time ingestion of hierarchical bed data with patient flow tracking, 
+                    room-level details, and automated compliance validation for Saudi healthcare standards.
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="p-3 bg-muted/50 rounded-lg text-center">
                       <div className="text-lg font-bold text-green-400">98.7%</div>
                       <div className="text-xs text-muted-foreground">Data Quality</div>
@@ -181,7 +179,11 @@ const AstroScan = () => {
                     </div>
                   </div>
 
-                  <BedManagementTable data={mockBedData.slice(3, 5)} showCompliance={true} />
+                  <EnhancedBedManagementTable 
+                    data={mockHierarchicalBedData.filter(item => item.level === 'ward')} 
+                    showCompliance={true}
+                    thresholds={occupancyThresholds}
+                  />
                 </div>
               </CardContent>
             </Card>

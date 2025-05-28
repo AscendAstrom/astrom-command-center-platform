@@ -19,6 +19,52 @@ export interface BedData {
   arabicName?: string;
   mohCompliance?: boolean;
   sehaCluster?: string;
+  // New fields for Epic 3.1
+  rooms?: RoomData[];
+  patients?: PatientData[];
+  beds?: BedDetail[];
+  level: 'organization' | 'hospital' | 'department' | 'ward' | 'room';
+  isExpanded?: boolean;
+  hasChildren?: boolean;
+  parentId?: string;
+  id: string;
+}
+
+export interface RoomData {
+  id: string;
+  roomNumber: string;
+  wardId: string;
+  totalBeds: number;
+  occupiedBeds: number;
+  availableBeds: number;
+  beds: BedDetail[];
+}
+
+export interface BedDetail {
+  id: string;
+  bedNumber: string;
+  roomId: string;
+  status: 'occupied' | 'available' | 'dirty' | 'evs-requested' | 'evs-accepted' | 'evs-assigned' | 'maintenance';
+  patient?: PatientData;
+  lastCleaned?: string;
+  estimatedAvailable?: string;
+}
+
+export interface PatientData {
+  id: string;
+  nameAbbreviation: string;
+  mrn: string;
+  los: number; // Length of stay in days
+  bedLocation: {
+    department: string;
+    ward: string;
+    room: string;
+    bedNumber: string;
+  };
+  estimatedDischargeDate?: string;
+  actualDischargeDate?: string;
+  admissionDate: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface DataSource {
@@ -40,4 +86,10 @@ export interface KPIMetric {
   trend: 'up' | 'down' | 'stable';
   hospital: string;
   department: string;
+}
+
+export interface OccupancyThresholds {
+  normal: number; // 0-75%
+  warning: number; // 75-90%
+  critical: number; // 90%+
 }
