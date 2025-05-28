@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus, Eye, BarChart3, Monitor, Layers, PieChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,16 +50,21 @@ const AstroView = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="dashboards" className="pt-4">
-              <DashboardManager />
+              <DashboardManager userRole="admin" />
             </TabsContent>
             <TabsContent value="realtime" className="pt-4">
-              <RealtimeDashboard />
+              <RealtimeDashboard userRole="admin" />
             </TabsContent>
             <TabsContent value="semantic" className="pt-4">
-              <SemanticLayerBuilder />
+              <SemanticLayerBuilder userRole="admin" />
             </TabsContent>
             <TabsContent value="reports" className="pt-4">
-              <DashboardBuilder />
+              <DashboardBuilder 
+                dashboard={null}
+                onSave={() => {}}
+                onCancel={() => {}}
+                userRole="admin"
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
