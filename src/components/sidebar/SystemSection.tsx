@@ -35,8 +35,8 @@ const SystemSection = ({ items, collapsed }: SystemSectionProps) => {
                   end 
                   className={getNavCls(item, isActive(item.url))}
                 >
-                  <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
-                    <item.icon className="h-5 w-5 text-white" />
+                  <div className={`p-4 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                    <item.icon className="h-7 w-7 text-white" />
                   </div>
                   {!collapsed && (
                     <span className="font-semibold text-sm flex-1 min-w-0 ml-3">{item.title}</span>

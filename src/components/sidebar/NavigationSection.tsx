@@ -36,8 +36,8 @@ const NavigationSection = ({ items, collapsed, title }: NavigationSectionProps) 
                   end 
                   className={getNavCls(item, isActive(item.url))}
                 >
-                  <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
-                    <item.icon className="h-5 w-5 text-white" />
+                  <div className={`p-4 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                    <item.icon className="h-7 w-7 text-white" />
                   </div>
                   {!collapsed && (
                     <div className="flex flex-col flex-1 min-w-0 ml-3">

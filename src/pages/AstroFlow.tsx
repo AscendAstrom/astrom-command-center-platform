@@ -38,7 +38,6 @@ const AstroFlow = () => {
             onSelectRule={() => {}} 
             onCreateRule={() => setIsRuleBuilderOpen(true)}
             onEditRule={() => {}}
-            onDeleteRule={() => {}}
           />
         </TabsContent>
         <TabsContent value="executions" className="space-y-4">
@@ -60,7 +59,6 @@ const AstroFlow = () => {
               </CardHeader>
               <CardContent>
                 <RuleBuilder 
-                  rule={null}
                   onSave={() => setIsRuleBuilderOpen(false)}
                   onCancel={() => setIsRuleBuilderOpen(false)}
                   userRole="admin"

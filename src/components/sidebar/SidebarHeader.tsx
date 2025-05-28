@@ -11,8 +11,8 @@ const SidebarHeader = ({ collapsed }: SidebarHeaderProps) => {
   return (
     <div className="flex-shrink-0 p-4 mb-2">
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
-          <LayoutDashboard className="h-6 w-6 text-white" />
+        <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+          <LayoutDashboard className="h-8 w-8 text-white" />
         </div>
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
