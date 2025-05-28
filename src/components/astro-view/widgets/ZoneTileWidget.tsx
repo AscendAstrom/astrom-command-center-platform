@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ZoneTileData } from '../types';
@@ -61,9 +60,9 @@ const ZoneTileWidget = () => {
   };
 
   return (
-    <Card className="bg-slate-900 border-slate-800">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-foreground flex items-center gap-2">
           <MapPin className="h-5 w-5 text-cyan-400" />
           Zone Status Overview
         </CardTitle>
@@ -73,12 +72,12 @@ const ZoneTileWidget = () => {
           {zoneData.map((zone) => (
             <div
               key={zone.zoneId}
-              className="p-4 bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer"
+              className="p-4 bg-background rounded-lg border border-border hover:border-muted-foreground transition-colors cursor-pointer"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h4 className="font-medium text-white">{zone.zoneName}</h4>
-                  <p className="text-xs text-slate-400">Zone ID: {zone.zoneId}</p>
+                  <h4 className="font-medium text-foreground">{zone.zoneName}</h4>
+                  <p className="text-xs text-muted-foreground">Zone ID: {zone.zoneId}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge className={getStatusColor(zone.status)}>
@@ -95,7 +94,7 @@ const ZoneTileWidget = () => {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm text-slate-300">
+                  <div className="flex items-center gap-1 text-sm text-foreground">
                     <Users className="h-4 w-4" />
                     <span>Occupancy</span>
                   </div>
@@ -104,7 +103,7 @@ const ZoneTileWidget = () => {
                   </span>
                 </div>
 
-                <div className="w-full bg-slate-700 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${
                       (zone.occupancy / zone.capacity) >= 0.9 ? 'bg-red-500' :
@@ -116,7 +115,7 @@ const ZoneTileWidget = () => {
 
                 {zone.avgWaitTime > 0 && (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-sm text-slate-300">
+                    <div className="flex items-center gap-1 text-sm text-foreground">
                       <Clock className="h-4 w-4" />
                       <span>Avg Wait</span>
                     </div>

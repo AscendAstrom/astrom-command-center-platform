@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PatientTimerData } from '../types';
@@ -75,9 +74,9 @@ const EntityTimerWidget = () => {
   };
 
   return (
-    <Card className="bg-slate-900 border-slate-800">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-foreground flex items-center gap-2">
           <Clock className="h-5 w-5 text-cyan-400" />
           Entity Processing Times
         </CardTitle>
@@ -87,13 +86,13 @@ const EntityTimerWidget = () => {
           {entityData.map((entity) => (
             <div
               key={entity.patientId}
-              className="p-3 bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer"
+              className="p-3 bg-background rounded-lg border border-border hover:border-muted-foreground transition-colors cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-slate-400" />
-                    <span className="font-medium text-white">{entity.patientId}</span>
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-foreground">{entity.patientId}</span>
                   </div>
                   
                   <Badge className={getPriorityColor(entity.priority)}>
@@ -110,7 +109,7 @@ const EntityTimerWidget = () => {
                     <div className={`text-lg font-bold ${getWaitTimeColor(entity.currentWaitTime, entity.priority)}`}>
                       {entity.currentWaitTime}m
                     </div>
-                    <div className="text-xs text-slate-400">wait time</div>
+                    <div className="text-xs text-muted-foreground">wait time</div>
                   </div>
                   
                   {entity.currentWaitTime > 60 && (
@@ -119,7 +118,7 @@ const EntityTimerWidget = () => {
                 </div>
               </div>
 
-              <div className="mt-2 text-sm text-slate-400">
+              <div className="mt-2 text-sm text-muted-foreground">
                 <span>{entity.zoneName}</span>
                 <span className="mx-2">•</span>
                 <span>Arrived: {new Date(entity.arrivalTime).toLocaleTimeString()}</span>
@@ -127,7 +126,7 @@ const EntityTimerWidget = () => {
 
               {/* Wait time progress bar */}
               <div className="mt-2">
-                <div className="w-full bg-slate-700 rounded-full h-1">
+                <div className="w-full bg-muted rounded-full h-1">
                   <div
                     className={`h-1 rounded-full transition-all duration-300 ${
                       entity.currentWaitTime > 60 ? 'bg-red-500' :
