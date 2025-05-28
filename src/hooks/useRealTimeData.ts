@@ -19,7 +19,11 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
     const fetchData = async () => {
       try {
         setLoading(true);
-        let query = supabase.from(table as any).select('*');
+        setError(null);
+        
+        console.log(`Fetching data from table: ${table}`);
+        
+        let query = supabase.from(table).select('*');
         
         if (filter) {
           query = query.eq(filter.column, filter.value);
@@ -27,9 +31,15 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
         
         const { data: result, error: fetchError } = await query;
         
-        if (fetchError) throw fetchError;
-        setData((result as unknown as T[]) || []);
+        if (fetchError) {
+          console.error(`Error fetching from ${table}:`, fetchError);
+          throw fetchError;
+        }
+        
+        console.log(`Fetched ${result?.length || 0} records from ${table}`);
+        setData((result as T[]) || []);
       } catch (err) {
+        console.error(`Error in useRealTimeData for ${table}:`, err);
         setError(err);
       } finally {
         setLoading(false);
@@ -39,6 +49,7 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
     fetchData();
 
     // Set up real-time subscription
+    console.log(`Setting up real-time subscription for ${table}`);
     const channel = supabase
       .channel(`${table}_changes`)
       .on('postgres_changes', 
@@ -51,6 +62,7 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
       .subscribe();
 
     return () => {
+      console.log(`Cleaning up real-time subscription for ${table}`);
       supabase.removeChannel(channel);
     };
   }, [table, filter?.column, filter?.value, enabled]);

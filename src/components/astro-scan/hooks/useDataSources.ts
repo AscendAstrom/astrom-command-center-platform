@@ -13,12 +13,39 @@ export const useDataSources = () => {
 
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
 
+  // Ensure data persistence and proper updates
   useEffect(() => {
-    setDataSources(realtimeData);
+    if (realtimeData && Array.isArray(realtimeData)) {
+      console.log('Real-time data sources updated:', realtimeData.length);
+      setDataSources(realtimeData);
+    }
   }, [realtimeData]);
+
+  // Initial data fetch if real-time data is empty
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (!loading && (!realtimeData || realtimeData.length === 0)) {
+        try {
+          console.log('Fetching initial data sources...');
+          const { data, error } = await dataSourceService.getAll();
+          if (error) {
+            console.error('Error fetching initial data sources:', error);
+          } else if (data) {
+            console.log('Initial data sources loaded:', data.length);
+            setDataSources(data);
+          }
+        } catch (err) {
+          console.error('Error in initial data fetch:', err);
+        }
+      }
+    };
+
+    fetchInitialData();
+  }, [loading, realtimeData]);
 
   const updateDataSourceStatus = async (id: string, status: any) => {
     try {
+      console.log('Updating data source status:', id, status);
       const { error } = await dataSourceService.update(id, { status });
       if (error) throw error;
     } catch (err) {
@@ -28,6 +55,7 @@ export const useDataSources = () => {
 
   const deleteDataSource = async (id: string) => {
     try {
+      console.log('Deleting data source:', id);
       const { error } = await dataSourceService.delete(id);
       if (error) throw error;
     } catch (err) {
@@ -37,6 +65,7 @@ export const useDataSources = () => {
 
   const testConnection = async (id: string) => {
     try {
+      console.log('Testing connection for data source:', id);
       const { error } = await dataSourceService.testConnection(id);
       if (error) throw error;
     } catch (err) {
@@ -46,13 +75,23 @@ export const useDataSources = () => {
 
   const refetch = async () => {
     try {
+      console.log('Manually refetching data sources...');
       const { data, error } = await dataSourceService.getAll();
       if (error) throw error;
-      setDataSources(data || []);
+      if (data) {
+        console.log('Manual refetch completed:', data.length);
+        setDataSources(data || []);
+      }
     } catch (err) {
       console.error('Error refetching data sources:', err);
     }
   };
+
+  console.log('useDataSources - Current state:', {
+    dataSourcesCount: dataSources.length,
+    loading,
+    error: error?.message
+  });
 
   return {
     dataSources,
