@@ -1,27 +1,26 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Layers, 
-  Database, 
-  Code, 
+  Boxes, 
   GitBranch, 
+  Settings, 
   Clock, 
-  Users, 
-  Settings,
-  Workflow,
-  Wrench,
+  Database, 
+  Zap,
+  Hospital,
   Table,
-  Boxes,
-  Hospital
+  BarChart3,
+  ArrowRight
 } from "lucide-react";
-import { DataMappingCanvas } from "@/components/astro-bricks/DataMappingCanvas";
-import { SchemaVisualization } from "@/components/astro-bricks/SchemaVisualization";
-import { TransformationRulesEditor } from "@/components/astro-bricks/TransformationRulesEditor";
-import { TimestampTools } from "@/components/astro-bricks/TimestampTools";
-import { DataPipelineManager } from "@/components/astro-bricks/DataPipelineManager";
+import DataMappingCanvas from "@/components/astro-bricks/DataMappingCanvas";
+import SchemaVisualization from "@/components/astro-bricks/SchemaVisualization";
+import DataPipelineManager from "@/components/astro-bricks/DataPipelineManager";
+import TransformationRulesEditor from "@/components/astro-bricks/TransformationRulesEditor";
+import TimestampTools from "@/components/astro-bricks/TimestampTools";
 import BedManagementTable from "@/components/shared/BedManagementTable";
 import { mockBedData } from "@/data/mockBedData";
 
@@ -32,126 +31,219 @@ const AstroBricks = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-              <Layers className="h-5 w-5 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Boxes className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">ASTRO-BRICKS</h1>
-            <span className="text-sm text-orange-400 font-medium">Data Modeling & Transformation</span>
+            <span className="text-sm text-purple-400 font-medium">Data Modeling & Transformation</span>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            Build and manage data models, transformations, and dimensional structures for healthcare analytics.
+            Advanced data modeling platform with dimensional modeling, ETL pipelines, and real-time transformation capabilities for healthcare data warehousing.
           </p>
         </div>
 
-        <Tabs defaultValue="workflow" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-muted/50">
-            <TabsTrigger value="workflow" className="data-[state=active]:bg-orange-500/20">
-              <Workflow className="h-4 w-4 mr-2" />
-              Modeling Workflow
+        <Tabs defaultValue="modeling" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+            <TabsTrigger value="modeling" className="data-[state=active]:bg-purple-500/20">
+              <Database className="h-4 w-4 mr-2" />
+              Data Modeling
             </TabsTrigger>
-            <TabsTrigger value="bedmodeling" className="data-[state=active]:bg-green-500/20">
-              <Hospital className="h-4 w-4 mr-2" />
-              Bed Data Transformation
+            <TabsTrigger value="transformations" className="data-[state=active]:bg-blue-500/20">
+              <GitBranch className="h-4 w-4 mr-2" />
+              Transformations
             </TabsTrigger>
-            <TabsTrigger value="mapping">Data Mapping</TabsTrigger>
-            <TabsTrigger value="schema">Schema Design</TabsTrigger>
-            <TabsTrigger value="transformation">Transformations</TabsTrigger>
-            <TabsTrigger value="timestamp">Timestamp Tools</TabsTrigger>
-            <TabsTrigger value="pipeline">Pipeline Management</TabsTrigger>
+            <TabsTrigger value="pipelines" className="data-[state=active]:bg-green-500/20">
+              <Zap className="h-4 w-4 mr-2" />
+              Pipelines
+            </TabsTrigger>
+            <TabsTrigger value="mapping" className="data-[state=active]:bg-orange-500/20">
+              <GitBranch className="h-4 w-4 mr-2" />
+              Field Mapping
+            </TabsTrigger>
+            <TabsTrigger value="timestamps" className="data-[state=active]:bg-cyan-500/20">
+              <Clock className="h-4 w-4 mr-2" />
+              Timestamps
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="workflow" className="space-y-6">
+          <TabsContent value="modeling" className="space-y-6">
             <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Wrench className="h-5 w-5 text-orange-400" />
-                  Normalization, Modeling & Transformation Workflow
+                  <Database className="h-5 w-5 text-purple-400" />
+                  Data Modeling Workspace
                 </CardTitle>
                 <CardDescription>
-                  End-to-end workflow for cleaning, unifying data formats, and defining dimensional models
+                  Design dimensional models with fact and dimension tables for healthcare analytics
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground">Data Normalization & Cleaning</h3>
-                    <p className="text-muted-foreground">
-                      Clean and unify data formats from multiple healthcare systems. Standardize field names, 
-                      data types, and apply business rules for consistent data quality across all sources.
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                          <Database className="h-4 w-4 text-white" />
+                <SchemaVisualization />
+
+                {/* Bed Management Data Model Example */}
+                <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Hospital className="h-5 w-5 text-green-400" />
+                    <h3 className="text-lg font-semibold text-foreground">Bed Management Data Model Example</h3>
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Saudi Healthcare</Badge>
+                  </div>
+                  <p className="text-muted-foreground mb-6">
+                    Dimensional model design for Saudi hospital bed management with cultural and regulatory considerations.
+                  </p>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div className="space-y-4">
+                      <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <Table className="h-5 w-5 text-blue-400" />
+                        Fact Tables
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
+                          <div className="font-medium text-foreground mb-2">fact_bed_status</div>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            <li>• bed_id, hospital_id, department_id</li>
+                            <li>• occupied_beds, available_beds</li>
+                            <li>• occupancy_rate, turnover_time</li>
+                            <li>• gender_segregation_flag</li>
+                            <li>• moh_compliance_status</li>
+                          </ul>
                         </div>
-                        <div>
-                          <p className="text-foreground font-medium">Data Quality Rules</p>
-                          <p className="text-muted-foreground text-sm">Validation and cleansing rules</p>
+                        <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
+                          <div className="font-medium text-foreground mb-2">fact_patient_flow</div>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            <li>• patient_id, bed_id, admission_time</li>
+                            <li>• discharge_time, length_of_stay</li>
+                            <li>• acuity_level, cultural_preferences</li>
+                            <li>• family_room_requested</li>
+                          </ul>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                          <Code className="h-4 w-4 text-white" />
+                    </div>
+
+                    <div className="space-y-4">
+                      <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <BarChart3 className="h-5 w-5 text-green-400" />
+                        Dimension Tables
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
+                          <div className="font-medium text-foreground mb-2">dim_hospital</div>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            <li>• hospital_id, hospital_name</li>
+                            <li>• arabic_name, city, region</li>
+                            <li>• hospital_type (MOH, Private, NGHA)</li>
+                            <li>• seha_cluster, bed_capacity</li>
+                          </ul>
                         </div>
-                        <div>
-                          <p className="text-foreground font-medium">Field Standardization</p>
-                          <p className="text-muted-foreground text-sm">Normalize field names and formats</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
-                          <GitBranch className="h-4 w-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-foreground font-medium">Business Logic</p>
-                          <p className="text-muted-foreground text-sm">Apply healthcare-specific rules</p>
+                        <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
+                          <div className="font-medium text-foreground mb-2">dim_department</div>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            <li>• department_id, department_name</li>
+                            <li>• arabic_name, specialty_type</li>
+                            <li>• gender_segregated, family_rooms</li>
+                            <li>• prayer_room_available</li>
+                          </ul>
                         </div>
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground">Dimensional Modeling</h3>
-                    <div className="space-y-3">
-                      <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Table className="h-5 w-5 text-orange-400" />
-                          <span className="text-foreground font-medium">Fact Tables</span>
+
+                  <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-border/50">
+                    <div className="flex items-center gap-2">
+                      <ArrowRight className="h-4 w-4 text-purple-400" />
+                      <span className="text-sm font-medium text-foreground">Data Flow:</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>Raw Bed Data</span>
+                      <ArrowRight className="h-3 w-3" />
+                      <span>Transformation</span>
+                      <ArrowRight className="h-3 w-3" />
+                      <span>Fact/Dim Tables</span>
+                      <ArrowRight className="h-3 w-3" />
+                      <span>Analytics</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <BedManagementTable data={mockBedData.slice(0, 2)} showArabicNames={true} showCompliance={true} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="transformations" className="space-y-6">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <GitBranch className="h-5 w-5 text-blue-400" />
+                  Transformation Rules Engine
+                </CardTitle>
+                <CardDescription>
+                  Define and manage data transformation rules with visual rule builder
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TransformationRulesEditor />
+
+                {/* Bed Management Transformations Example */}
+                <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Hospital className="h-5 w-5 text-green-400" />
+                    <h3 className="text-lg font-semibold text-foreground">Bed Management Transformations Example</h3>
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Saudi Data Rules</Badge>
+                  </div>
+                  <p className="text-muted-foreground mb-4">
+                    Specialized transformation rules for Saudi healthcare data including cultural validations and MOH compliance.
+                  </p>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-foreground">Cultural Transformation Rules</h4>
+                      <div className="space-y-3">
+                        <div className="p-3 bg-muted/50 rounded-lg border border-blue-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">Gender Segregation Validation</div>
+                          <div className="text-xs text-muted-foreground">
+                            IF patient_gender = 'M' THEN ward_type MUST = 'Male' OR 'Mixed_ICU'
+                          </div>
                         </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• <code className="bg-background px-1 rounded">fact_ed_inbound</code> - Emergency department arrivals</p>
-                          <p>• <code className="bg-background px-1 rounded">fact_patient_flow</code> - Patient movement events</p>
-                          <p>• <code className="bg-background px-1 rounded">fact_sla_metrics</code> - Service level agreements</p>
+                        <div className="p-3 bg-muted/50 rounded-lg border border-green-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">Family Room Priority</div>
+                          <div className="text-xs text-muted-foreground">
+                            IF family_request = TRUE THEN assign_priority = HIGH
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Boxes className="h-5 w-5 text-blue-400" />
-                          <span className="text-foreground font-medium">Dimension Tables</span>
-                        </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• <code className="bg-background px-1 rounded">dim_patient</code> - Patient master data</p>
-                          <p>• <code className="bg-background px-1 rounded">dim_location</code> - Hospital zones and beds</p>
-                          <p>• <code className="bg-background px-1 rounded">dim_time</code> - Time dimension for analysis</p>
+                        <div className="p-3 bg-muted/50 rounded-lg border border-purple-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">Prayer Time Scheduling</div>
+                          <div className="text-xs text-muted-foreground">
+                            BLOCK procedures DURING prayer_times (Fajr, Dhuhr, Asr, Maghrib, Isha)
+                          </div>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                        <Layers className="h-4 w-4 mr-2" />
-                        Configure Data Models
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        View Transformation Rules
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        Apply KPI Logic
-                      </Button>
+
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-foreground">Compliance Transformations</h4>
+                      <div className="space-y-3">
+                        <div className="p-3 bg-muted/50 rounded-lg border border-orange-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">MOH Reporting Format</div>
+                          <div className="text-xs text-muted-foreground">
+                            CONVERT bed_status TO moh_format WITH arabic_translations
+                          </div>
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg border border-red-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">Occupancy Rate Calculation</div>
+                          <div className="text-xs text-muted-foreground">
+                            occupancy_rate = (occupied_beds / planned_beds) * 100
+                          </div>
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-lg border border-cyan-500/20">
+                          <div className="font-medium text-foreground text-sm mb-1">Hajj Season Adjustment</div>
+                          <div className="text-xs text-muted-foreground">
+                            IF location = 'Mecca' AND hajj_season = TRUE THEN capacity_multiplier = 1.5
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -159,136 +251,70 @@ const AstroBricks = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="bedmodeling" className="space-y-6">
+          <TabsContent value="pipelines" className="space-y-6">
             <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Hospital className="h-5 w-5 text-green-400" />
-                  Bed Management Data Transformation & Modeling
+                  <Zap className="h-5 w-5 text-green-400" />
+                  Data Pipeline Management
                 </CardTitle>
                 <CardDescription>
-                  Transform raw Saudi hospital bed data into normalized dimensional models for analytics
+                  Orchestrate complex ETL/ELT pipelines with dependency management and monitoring
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground">Data Transformation Pipeline</h3>
-                    <p className="text-muted-foreground">
-                      Transform raw bed status feeds from HL7, HIS, and EMS systems into clean, standardized 
-                      fact and dimension tables optimized for Saudi healthcare analytics and MOH reporting.
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Database className="h-5 w-5 text-orange-400" />
-                          <span className="text-foreground font-medium">Raw Data Sources</span>
-                        </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• HL7 FHIR bed status messages</p>
-                          <p>• HIS patient admission/discharge events</p>
-                          <p>• EMS arrival notifications</p>
-                          <p>• Manual bed census updates</p>
-                        </div>
+                <DataPipelineManager />
+
+                {/* Bed Management Pipeline Example */}
+                <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Hospital className="h-5 w-5 text-green-400" />
+                    <h3 className="text-lg font-semibold text-foreground">Bed Management Pipeline Example</h3>
+                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Real-time ETL</Badge>
+                  </div>
+                  <p className="text-muted-foreground mb-4">
+                    End-to-end pipeline for processing bed management data from Saudi hospitals with real-time updates and compliance checks.
+                  </p>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Database className="h-4 w-4 text-blue-400" />
                       </div>
-                      
-                      <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Code className="h-5 w-5 text-blue-400" />
-                          <span className="text-foreground font-medium">Transformation Rules</span>
-                        </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• Standardize hospital and department names</p>
-                          <p>• Convert Arabic text to UTF-8 encoding</p>
-                          <p>• Validate bed capacity constraints</p>
-                          <p>• Calculate occupancy rates and projections</p>
-                        </div>
+                      <div className="font-medium text-foreground text-sm">Extract</div>
+                      <div className="text-xs text-muted-foreground">HL7/HIS Sources</div>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <GitBranch className="h-4 w-4 text-purple-400" />
                       </div>
+                      <div className="font-medium text-foreground text-sm">Transform</div>
+                      <div className="text-xs text-muted-foreground">Cultural Rules</div>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Settings className="h-4 w-4 text-green-400" />
+                      </div>
+                      <div className="font-medium text-foreground text-sm">Validate</div>
+                      <div className="text-xs text-muted-foreground">MOH Compliance</div>
+                    </div>
+                    <div className="p-4 bg-muted/50 rounded-lg text-center">
+                      <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Zap className="h-4 w-4 text-orange-400" />
+                      </div>
+                      <div className="font-medium text-foreground text-sm">Load</div>
+                      <div className="text-xs text-muted-foreground">Data Warehouse</div>
                     </div>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground">Dimensional Model Design</h3>
-                    <div className="space-y-3">
-                      <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Table className="h-5 w-5 text-green-400" />
-                          <span className="text-foreground font-medium">Fact Tables</span>
-                        </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• <code className="bg-background px-1 rounded">fact_bed_census</code> - Daily bed counts by ward</p>
-                          <p>• <code className="bg-background px-1 rounded">fact_bed_events</code> - Individual bed status changes</p>
-                          <p>• <code className="bg-background px-1 rounded">fact_occupancy_rates</code> - Hourly occupancy metrics</p>
-                        </div>
-                      </div>
-                      
-                      <div className="p-4 bg-muted/50 rounded-lg border border-purple-500/20">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Boxes className="h-5 w-5 text-purple-400" />
-                          <span className="text-foreground font-medium">Dimension Tables</span>
-                        </div>
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <p>• <code className="bg-background px-1 rounded">dim_hospital</code> - Hospital master with Arabic names</p>
-                          <p>• <code className="bg-background px-1 rounded">dim_department</code> - Departments and specialties</p>
-                          <p>• <code className="bg-background px-1 rounded">dim_bed</code> - Individual bed attributes</p>
-                          <p>• <code className="bg-background px-1 rounded">dim_geography</code> - Seha clusters and regions</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Current Bed Data - Post Transformation</h3>
-                  <div className="bg-muted/30 p-4 rounded-lg">
-                    <BedManagementTable data={mockBedData} showArabicNames={true} showCompliance={true} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
-                  <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
-                    <h4 className="font-semibold text-foreground mb-2">Data Quality Rules</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Occupancy rate ≤ 100%</li>
-                      <li>• Total beds = occupied + available</li>
-                      <li>• Arabic name validation</li>
-                      <li>• MOH facility code verification</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
-                    <h4 className="font-semibold text-foreground mb-2">Business Logic</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Family room allocation rules</li>
-                      <li>• Gender-specific ward assignments</li>
-                      <li>• Hajj season surge calculations</li>
-                      <li>• VIP bed prioritization</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
-                    <h4 className="font-semibold text-foreground mb-2">KPI Calculations</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Bed turnover time</li>
-                      <li>• Discharge efficiency</li>
-                      <li>• Capacity utilization</li>
-                      <li>• Patient flow rates</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="space-y-2 mt-6">
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                    <Layers className="h-4 w-4 mr-2" />
-                    Apply Bed Data Transformations
-                  </Button>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" className="w-full">
-                      View Transformation Rules
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      <Zap className="h-4 w-4 mr-2" />
+                      Run Pipeline
                     </Button>
-                    <Button variant="outline" className="w-full">
-                      Validate Data Quality
+                    <Button variant="outline">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure Schedule
                     </Button>
                   </div>
                 </div>
@@ -297,14 +323,14 @@ const AstroBricks = () => {
           </TabsContent>
 
           <TabsContent value="mapping" className="space-y-6">
-            <Card>
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <GitBranch className="h-5 w-5 text-orange-400" />
-                  Data Mapping Canvas
+                  Field Mapping Canvas
                 </CardTitle>
                 <CardDescription>
-                  Visual data mapping interface for healthcare data sources
+                  Visual mapping interface for source-to-target field relationships
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -313,70 +339,19 @@ const AstroBricks = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="schema" className="space-y-6">
-            <Card>
+          <TabsContent value="timestamps" className="space-y-6">
+            <Card className="bg-card/80 border-border backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-orange-400" />
-                  Schema Visualization
-                </CardTitle>
-                <CardDescription>
-                  Interactive schema design and relationship mapping
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SchemaVisualization />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="transformation" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Code className="h-5 w-5 text-orange-400" />
-                  Transformation Rules
-                </CardTitle>
-                <CardDescription>
-                  Define and manage data transformation logic
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <TransformationRulesEditor />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="timestamp" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-orange-400" />
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-cyan-400" />
                   Timestamp Management
                 </CardTitle>
                 <CardDescription>
-                  Healthcare-specific timestamp handling and timezone management
+                  Handle timezone conversions and temporal data transformations
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <TimestampTools />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pipeline" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-orange-400" />
-                  Data Pipeline Management
-                </CardTitle>
-                <CardDescription>
-                  Monitor and manage data transformation pipelines
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <DataPipelineManager />
               </CardContent>
             </Card>
           </TabsContent>
