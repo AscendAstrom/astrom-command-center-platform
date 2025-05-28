@@ -103,13 +103,13 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
       case 'keep_last': return 'text-green-400 border-green-400';
       case 'merge': return 'text-purple-400 border-purple-400';
       case 'manual_review': return 'text-yellow-400 border-yellow-400';
-      default: return 'text-slate-400 border-slate-400';
+      default: return 'text-muted-foreground border-border';
     }
   };
 
   return (
     <Tabs defaultValue="timestamp" className="space-y-6">
-      <TabsList className="grid w-full grid-cols-2 bg-slate-800/50">
+      <TabsList className="grid w-full grid-cols-2 bg-muted/50">
         <TabsTrigger value="timestamp">Timestamp Cleaning</TabsTrigger>
         <TabsTrigger value="duplicates">Duplicate Resolution</TabsTrigger>
       </TabsList>
@@ -117,10 +117,10 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
       <TabsContent value="timestamp" className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Timestamp Rules */}
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader className="pb-3">
               <div className="flex justify-between items-center">
-                <CardTitle className="text-white text-lg">Cleaning Rules</CardTitle>
+                <CardTitle className="text-foreground text-lg">Cleaning Rules</CardTitle>
                 {!readOnly && (
                   <Button size="sm" onClick={handleAddTimestampRule}>
                     <Plus className="h-4 w-4" />
@@ -130,9 +130,9 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
             </CardHeader>
             <CardContent className="space-y-3">
               {timestampRules.map((rule) => (
-                <div key={rule.id} className="p-3 rounded-lg bg-slate-700/30 border border-slate-600">
+                <div key={rule.id} className="p-3 rounded-lg bg-muted/30 border border-border">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="font-medium text-white text-sm">{rule.name}</span>
+                    <span className="font-medium text-foreground text-sm">{rule.name}</span>
                     {!readOnly && (
                       <div className="flex gap-1">
                         <Button
@@ -155,15 +155,15 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
                     )}
                   </div>
                   
-                  <p className="text-xs text-slate-400 mb-2">{rule.description}</p>
+                  <p className="text-xs text-muted-foreground mb-2">{rule.description}</p>
                   
                   <div className="space-y-1">
                     <div className="text-xs">
-                      <span className="text-slate-500">Pattern:</span>
+                      <span className="text-muted-foreground">Pattern:</span>
                       <code className="ml-2 text-blue-400 font-mono">{rule.pattern}</code>
                     </div>
                     <div className="text-xs">
-                      <span className="text-slate-500">Replace:</span>
+                      <span className="text-muted-foreground">Replace:</span>
                       <code className="ml-2 text-green-400 font-mono">{rule.replacement}</code>
                     </div>
                   </div>
@@ -173,23 +173,23 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
           </Card>
 
           {/* Test Panel */}
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Clock className="h-5 w-5 text-orange-400" />
                 Test Timestamp Cleaning
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Test Input
                 </label>
                 <Input
                   value={testInput}
                   onChange={(e) => setTestInput(e.target.value)}
                   placeholder="Enter timestamp to test"
-                  className="bg-slate-700/50 border-slate-600 font-mono"
+                  className="bg-muted border-border font-mono"
                   readOnly={readOnly}
                 />
               </div>
@@ -206,16 +206,16 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Test Results
                 </label>
-                <div className="bg-slate-900/50 rounded-lg p-3 max-h-40 overflow-y-auto">
+                <div className="bg-muted/80 rounded-lg p-3 max-h-40 overflow-y-auto">
                   {testResults.length === 0 ? (
-                    <p className="text-slate-500 text-sm">No test results yet</p>
+                    <p className="text-muted-foreground text-sm">No test results yet</p>
                   ) : (
                     <div className="space-y-1">
                       {testResults.map((result, index) => (
-                        <div key={index} className="text-sm font-mono text-slate-300">
+                        <div key={index} className="text-sm font-mono text-foreground">
                           {result}
                         </div>
                       ))}
@@ -229,10 +229,10 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
       </TabsContent>
 
       <TabsContent value="duplicates" className="space-y-6">
-        <Card className="bg-slate-800/30 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader className="pb-3">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-white">Duplicate Resolution Rules</CardTitle>
+              <CardTitle className="text-foreground">Duplicate Resolution Rules</CardTitle>
               {!readOnly && (
                 <Button size="sm" onClick={handleAddDuplicateRule}>
                   <Plus className="h-4 w-4 mr-2" />
@@ -249,9 +249,9 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
           </CardHeader>
           <CardContent className="space-y-4">
             {duplicateRules.map((rule) => (
-              <div key={rule.id} className="p-4 rounded-lg bg-slate-700/30 border border-slate-600">
+              <div key={rule.id} className="p-4 rounded-lg bg-muted/30 border border-border">
                 <div className="flex justify-between items-start mb-3">
-                  <span className="font-medium text-white">{rule.name}</span>
+                  <span className="font-medium text-foreground">{rule.name}</span>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={`text-xs ${getStrategyColor(rule.strategy)}`}>
                       {rule.strategy.replace('_', ' ').toUpperCase()}
@@ -269,10 +269,10 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
                   </div>
                 </div>
                 
-                <p className="text-sm text-slate-400 mb-3">{rule.description}</p>
+                <p className="text-sm text-muted-foreground mb-3">{rule.description}</p>
                 
                 <div>
-                  <span className="text-sm text-slate-500 mb-2 block">Duplicate Detection Fields:</span>
+                  <span className="text-sm text-muted-foreground mb-2 block">Duplicate Detection Fields:</span>
                   <div className="flex flex-wrap gap-1">
                     {rule.fields.map((field, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">
@@ -288,37 +288,37 @@ export const TimestampTools = ({ readOnly = false }: TimestampToolsProps) => {
 
         {/* Duplicate Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-8 w-8 text-green-400" />
                 <div>
-                  <p className="text-2xl font-bold text-white">1,247</p>
-                  <p className="text-sm text-slate-400">Records Processed</p>
+                  <p className="text-2xl font-bold text-foreground">1,247</p>
+                  <p className="text-sm text-muted-foreground">Records Processed</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <AlertCircle className="h-8 w-8 text-yellow-400" />
                 <div>
-                  <p className="text-2xl font-bold text-white">23</p>
-                  <p className="text-sm text-slate-400">Duplicates Found</p>
+                  <p className="text-2xl font-bold text-foreground">23</p>
+                  <p className="text-sm text-muted-foreground">Duplicates Found</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-slate-800/30 border-slate-700">
+          <Card className="bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <Copy className="h-8 w-8 text-blue-400" />
                 <div>
-                  <p className="text-2xl font-bold text-white">18</p>
-                  <p className="text-sm text-slate-400">Auto-Resolved</p>
+                  <p className="text-2xl font-bold text-foreground">18</p>
+                  <p className="text-sm text-muted-foreground">Auto-Resolved</p>
                 </div>
               </div>
             </CardContent>
