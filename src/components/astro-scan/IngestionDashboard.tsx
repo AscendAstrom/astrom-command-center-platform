@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Activity, AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { mockIngestionLogs } from "@/data/mockIngestionLogs";
 
 export const IngestionDashboard = () => {
   const [logs, setLogs] = useState<any[]>([]);
@@ -39,9 +39,17 @@ export const IngestionDashboard = () => {
         .limit(10);
 
       if (error) throw error;
-      setLogs(data || []);
+      
+      // If no real data exists, use mock data
+      if (!data || data.length === 0) {
+        setLogs(mockIngestionLogs);
+      } else {
+        setLogs(data);
+      }
     } catch (error) {
       console.error('Error fetching logs:', error);
+      // Fallback to mock data on error
+      setLogs(mockIngestionLogs);
     } finally {
       setLoading(false);
     }
@@ -190,7 +198,10 @@ export const IngestionDashboard = () => {
                       <AlertTriangle className="h-4 w-4" />
                       <span className="font-medium">Error Details</span>
                     </div>
-                    {JSON.stringify(log.error_details)}
+                    {typeof log.error_details === 'object' ? 
+                      log.error_details.error_message || JSON.stringify(log.error_details) :
+                      log.error_details
+                    }
                   </div>
                 )}
               </div>
