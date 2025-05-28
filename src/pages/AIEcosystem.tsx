@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Brain, 
@@ -6,11 +5,15 @@ import {
   TrendingUp, 
   Network,
   Zap,
-  Settings
+  Settings,
+  Cpu,
+  GitBranch
 } from "lucide-react";
 import AIOrchestrator from "@/components/ai-ecosystem/AIOrchestrator";
 import AIAssistantChat from "@/components/ai-ecosystem/AIAssistantChat";
 import PredictiveAnalyticsEngine from "@/components/ai-ecosystem/PredictiveAnalyticsEngine";
+import AutonomousDecisionEngine from "@/components/ai-ecosystem/AutonomousDecisionEngine";
+import AdvancedMLPlatform from "@/components/ai-ecosystem/AdvancedMLPlatform";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 
 const AIEcosystem = () => {
@@ -43,18 +46,27 @@ const AIEcosystem = () => {
               <Brain className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">AI ECOSYSTEM</h1>
-            <span className="text-sm text-purple-400 font-medium">Phase 2: Advanced Intelligence & Integration</span>
+            <span className="text-sm text-purple-400 font-medium">Phase 3A: Enterprise-Grade AI Intelligence</span>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            Centralized AI orchestration with cross-module communication, predictive analytics, and natural language interfaces for intelligent healthcare operations management.
+            Autonomous decision-making, advanced machine learning platform, and enterprise-grade 
+            AI intelligence with self-learning capabilities and multi-agent coordination.
           </p>
         </div>
 
         <Tabs defaultValue="orchestrator" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-8 bg-muted/50">
             <TabsTrigger value="orchestrator" className="data-[state=active]:bg-purple-500/20">
               <Network className="h-4 w-4 mr-2" />
               Orchestrator
+            </TabsTrigger>
+            <TabsTrigger value="autonomous" className="data-[state=active]:bg-indigo-500/20">
+              <Brain className="h-4 w-4 mr-2" />
+              Autonomous
+            </TabsTrigger>
+            <TabsTrigger value="ml-platform" className="data-[state=active]:bg-cyan-500/20">
+              <Cpu className="h-4 w-4 mr-2" />
+              ML Platform
             </TabsTrigger>
             <TabsTrigger value="assistant" className="data-[state=active]:bg-blue-500/20">
               <MessageSquare className="h-4 w-4 mr-2" />
@@ -68,8 +80,8 @@ const AIEcosystem = () => {
               <Zap className="h-4 w-4 mr-2" />
               Workflows
             </TabsTrigger>
-            <TabsTrigger value="integration" className="data-[state=active]:bg-cyan-500/20">
-              <Brain className="h-4 w-4 mr-2" />
+            <TabsTrigger value="integration" className="data-[state=active]:bg-pink-500/20">
+              <GitBranch className="h-4 w-4 mr-2" />
               Integration
             </TabsTrigger>
             <TabsTrigger value="config" className="data-[state=active]:bg-red-500/20">
@@ -80,6 +92,14 @@ const AIEcosystem = () => {
 
           <TabsContent value="orchestrator" className="space-y-6">
             <AIOrchestrator />
+          </TabsContent>
+
+          <TabsContent value="autonomous" className="space-y-6">
+            <AutonomousDecisionEngine />
+          </TabsContent>
+
+          <TabsContent value="ml-platform" className="space-y-6">
+            <AdvancedMLPlatform />
           </TabsContent>
 
           <TabsContent value="assistant" className="space-y-6">
