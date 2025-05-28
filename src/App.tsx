@@ -10,6 +10,8 @@ import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
 import AstroView from "./pages/AstroView";
 import AstroFlow from "./pages/AstroFlow";
+import Settings from "./pages/Settings";
+import AdminPanel from "./pages/AdminPanel";
 import DashboardLayout from "./components/DashboardLayout";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
                   <Route path="/astro-metrics" element={<AstroMetrics />} />
                   <Route path="/astro-view" element={<AstroView />} />
                   <Route path="/astro-flow" element={<AstroFlow />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/admin" element={<AdminPanel />} />
                 </Routes>
               </DashboardLayout>
             </div>
