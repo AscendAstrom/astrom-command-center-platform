@@ -104,7 +104,7 @@ const EnhancedRuleBuilder = ({ userRole }: EnhancedRuleBuilderProps) => {
         </TabsContent>
 
         <TabsContent value="automation">
-          <Card className="bg-card/80 border-border backdrop-blur-sm">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-foreground flex items-center gap-2">
                 <Brain className="h-5 w-5 text-cyan-500" />

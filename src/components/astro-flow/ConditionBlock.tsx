@@ -17,10 +17,10 @@ interface ConditionBlockProps {
 
 const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlockProps) => {
   const getFieldIcon = (field: string) => {
-    if (field.includes('wait_time') || field.includes('time')) return <Clock className="h-4 w-4 text-blue-400" />;
-    if (field.includes('zone') || field.includes('location')) return <MapPin className="h-4 w-4 text-green-400" />;
-    if (field.includes('count') || field.includes('volume')) return <TrendingUp className="h-4 w-4 text-purple-400" />;
-    return <AlertCircle className="h-4 w-4 text-orange-400" />;
+    if (field.includes('wait_time') || field.includes('time')) return <Clock className="h-4 w-4 text-blue-500" />;
+    if (field.includes('zone') || field.includes('location')) return <MapPin className="h-4 w-4 text-green-500" />;
+    if (field.includes('count') || field.includes('volume')) return <TrendingUp className="h-4 w-4 text-purple-500" />;
+    return <AlertCircle className="h-4 w-4 text-orange-500" />;
   };
 
   const operators: Array<{ value: ConditionOperator; label: string; symbol: string }> = [
@@ -37,7 +37,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
   const currentOperator = operators.find(op => op.value === condition.operator);
 
   return (
-    <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+    <Card className="bg-card border-border">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           {/* Field Section */}
@@ -48,7 +48,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
                 value={condition.field}
                 onChange={(e) => onUpdate({ ...condition, field: e.target.value })}
                 placeholder="Field name (e.g., wait_time_minutes)"
-                className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-400"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
                 disabled={!canEdit}
               />
             </div>
@@ -61,19 +61,19 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
               onValueChange={(value: ConditionOperator) => onUpdate({ ...condition, operator: value })}
               disabled={!canEdit}
             >
-              <SelectTrigger className="w-32 bg-slate-900/50 border-slate-600 text-white">
+              <SelectTrigger className="w-32 bg-background border-border text-foreground">
                 <SelectValue>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-cyan-400">{currentOperator?.symbol}</span>
-                    <span className="text-xs text-slate-400">{currentOperator?.label}</span>
+                    <span className="font-mono text-cyan-500">{currentOperator?.symbol}</span>
+                    <span className="text-xs text-muted-foreground">{currentOperator?.label}</span>
                   </div>
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-background border-border">
                 {operators.map((op) => (
                   <SelectItem key={op.value} value={op.value}>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-cyan-400 w-4">{op.symbol}</span>
+                      <span className="font-mono text-cyan-500 w-4">{op.symbol}</span>
                       <span>{op.label}</span>
                     </div>
                   </SelectItem>
@@ -88,7 +88,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
               value={condition.value.toString()}
               onChange={(e) => onUpdate({ ...condition, value: e.target.value })}
               placeholder="Value"
-              className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-400"
+              className="bg-background border-border text-foreground placeholder:text-muted-foreground"
               disabled={!canEdit}
             />
           </div>
@@ -99,7 +99,7 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
               variant="ghost"
               size="sm"
               onClick={onDelete}
-              className="text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-full h-8 w-8 p-0"
+              className="text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-full h-8 w-8 p-0"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
