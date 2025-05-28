@@ -17,11 +17,11 @@ const AstroScan = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-slate-950 min-h-full">
+    <div className="p-6 space-y-6 bg-background min-h-full">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">ASTRO-SCAN</h1>
-          <p className="text-slate-400">Healthcare Data Ingestion & Source Management</p>
+          <h1 className="text-2xl font-bold text-foreground">ASTRO-SCAN</h1>
+          <p className="text-muted-foreground">Healthcare Data Ingestion & Source Management</p>
         </div>
         <Button 
           onClick={() => setShowWizard(true)}
@@ -34,37 +34,37 @@ const AstroScan = () => {
 
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Database className="h-5 w-5 text-cyan-400" />
               <div>
-                <p className="text-sm text-slate-400">Active Sources</p>
-                <p className="text-xl font-bold text-white">12</p>
+                <p className="text-sm text-muted-foreground">Active Sources</p>
+                <p className="text-xl font-bold text-foreground">12</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-green-400" />
               <div>
-                <p className="text-sm text-slate-400">Records/Hour</p>
-                <p className="text-xl font-bold text-white">2.4K</p>
+                <p className="text-sm text-muted-foreground">Records/Hour</p>
+                <p className="text-xl font-bold text-foreground">2.4K</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-card border-border">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-purple-400" />
               <div>
-                <p className="text-sm text-slate-400">Health Score</p>
-                <p className="text-xl font-bold text-white">98%</p>
+                <p className="text-sm text-muted-foreground">Health Score</p>
+                <p className="text-xl font-bold text-foreground">98%</p>
               </div>
             </div>
           </CardContent>

@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import DataSources from "./pages/DataSources";
 import Analytics from "./pages/Analytics";
@@ -21,30 +22,32 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <BrowserRouter>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full bg-slate-950">
-            <DashboardLayout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/data-sources" element={<DataSources />} />
-                <Route path="/astro-scan" element={<AstroScan />} />
-                <Route path="/astro-bricks" element={<AstroBricks />} />
-                <Route path="/astro-metrics" element={<AstroMetrics />} />
-                <Route path="/astro-view" element={<AstroView />} />
-                <Route path="/astro-flow" element={<AstroFlow />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/automation" element={<Automation />} />
-                <Route path="/admin" element={<TenantAdmin />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </DashboardLayout>
-          </div>
-        </SidebarProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="astrom-ui-theme">
+      <TooltipProvider>
+        <Toaster />
+        <BrowserRouter>
+          <SidebarProvider>
+            <div className="min-h-screen flex w-full bg-background">
+              <DashboardLayout>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/data-sources" element={<DataSources />} />
+                  <Route path="/astro-scan" element={<AstroScan />} />
+                  <Route path="/astro-bricks" element={<AstroBricks />} />
+                  <Route path="/astro-metrics" element={<AstroMetrics />} />
+                  <Route path="/astro-view" element={<AstroView />} />
+                  <Route path="/astro-flow" element={<AstroFlow />} />
+                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/automation" element={<Automation />} />
+                  <Route path="/admin" element={<TenantAdmin />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </DashboardLayout>
+            </div>
+          </SidebarProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
