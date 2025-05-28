@@ -33,8 +33,15 @@ export const kpiService = {
     const { data, error } = await supabase
       .from('kpis')
       .insert({
-        ...kpi,
-        category: kpi.category as any,
+        name: kpi.name,
+        description: kpi.description,
+        category: kpi.category,
+        unit: kpi.unit,
+        formula: kpi.formula,
+        target_value: kpi.target_value,
+        warning_threshold: kpi.warning_threshold,
+        critical_threshold: kpi.critical_threshold,
+        data_source_id: kpi.data_source_id,
         created_by: user?.id,
       })
       .select()

@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Tables } from '@/integrations/supabase/types';
 
 interface UseRealTimeDataOptions {
   table: string;
@@ -29,7 +28,7 @@ export function useRealTimeData<T extends Record<string, any>>({ table, filter, 
         const { data: result, error: fetchError } = await query;
         
         if (fetchError) throw fetchError;
-        setData(result as T[] || []);
+        setData((result as unknown as T[]) || []);
       } catch (err) {
         setError(err);
       } finally {
