@@ -37,14 +37,15 @@ const AstroFlow = () => {
             selectedRule={null} 
             onSelectRule={() => {}} 
             onCreateRule={() => setIsRuleBuilderOpen(true)}
+            onEditRule={() => {}}
             onDeleteRule={() => {}}
           />
         </TabsContent>
         <TabsContent value="executions" className="space-y-4">
-          <RuleExecutions userRole="ADMIN" />
+          <RuleExecutions userRole="admin" />
         </TabsContent>
         <TabsContent value="alerts" className="space-y-4">
-          <AlertSubscriptions userRole="ADMIN" />
+          <AlertSubscriptions userRole="admin" />
         </TabsContent>
       </Tabs>
 
@@ -62,7 +63,7 @@ const AstroFlow = () => {
                   rule={null}
                   onSave={() => setIsRuleBuilderOpen(false)}
                   onCancel={() => setIsRuleBuilderOpen(false)}
-                  userRole="ADMIN"
+                  userRole="admin"
                 />
               </CardContent>
             </Card>

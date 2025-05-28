@@ -50,20 +50,20 @@ const AstroView = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="dashboards" className="pt-4">
-              <DashboardManager userRole="ADMIN" />
+              <DashboardManager userRole="admin" />
             </TabsContent>
             <TabsContent value="realtime" className="pt-4">
-              <RealtimeDashboard userRole="ADMIN" />
+              <RealtimeDashboard userRole="admin" />
             </TabsContent>
             <TabsContent value="semantic" className="pt-4">
-              <SemanticLayerBuilder userRole="ADMIN" />
+              <SemanticLayerBuilder userRole="admin" />
             </TabsContent>
             <TabsContent value="reports" className="pt-4">
               <DashboardBuilder 
                 dashboard={null}
                 onSave={() => {}}
                 onCancel={() => {}}
-                userRole="ADMIN"
+                userRole="admin"
               />
             </TabsContent>
           </Tabs>
