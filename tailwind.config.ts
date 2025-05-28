@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,11 +85,78 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'slide-up': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(20px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'fade-in': {
+					'0%': {
+						opacity: '0'
+					},
+					'100%': {
+						opacity: '1'
+					}
+				},
+				'scale-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'scale(0.95)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					}
+				},
+				'bounce-subtle': {
+					'0%, 20%, 50%, 80%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'40%': {
+						transform: 'translateY(-4px)'
+					},
+					'60%': {
+						transform: 'translateY(-2px)'
+					}
+				},
+				'pulse-glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px hsl(var(--astrom-blue) / 0.5)'
+					},
+					'50%': {
+						boxShadow: '0 0 20px hsl(var(--astrom-blue) / 0.8)'
+					}
+				},
+				'gradient-shift': {
+					'0%': {
+						backgroundPosition: '0% 50%'
+					},
+					'50%': {
+						backgroundPosition: '100% 50%'
+					},
+					'100%': {
+						backgroundPosition: '0% 50%'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'slide-up': 'slide-up 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+				'fade-in': 'fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+				'scale-in': 'scale-in 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+				'bounce-subtle': 'bounce-subtle 2s infinite',
+				'pulse-glow': 'pulse-glow 3s infinite',
+				'gradient-shift': 'gradient-shift 6s ease infinite'
+			},
+			backdropBlur: {
+				xs: '2px'
 			}
 		}
 	},
