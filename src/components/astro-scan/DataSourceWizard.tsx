@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
+import { dataSourceService } from "@/services/dataSourceService";
 import { toast } from "sonner";
 import { FieldMappingStep } from "./FieldMappingStep";
 import { ConfigurationStep } from "./ConfigurationStep";
@@ -23,6 +22,7 @@ interface DataSourceForm {
   config: Record<string, any>;
   fieldMappings: Record<string, any>;
   scheduleCron?: string;
+  description?: string;
 }
 
 const STEP_TITLES = [
@@ -48,16 +48,15 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
 
   const handleSubmit = async () => {
     try {
-      const { error } = await supabase
-        .from('data_sources')
-        .insert({
-          name: formData.name,
-          type: formData.type,
-          ingestion_mode: formData.ingestionMode,
-          config: formData.config,
-          field_mappings: formData.fieldMappings,
-          schedule_cron: formData.scheduleCron
-        });
+      const { error } = await dataSourceService.create({
+        name: formData.name,
+        type: formData.type,
+        ingestion_mode: formData.ingestionMode,
+        config: formData.config,
+        field_mappings: formData.fieldMappings,
+        schedule_cron: formData.scheduleCron,
+        description: formData.description
+      });
 
       if (error) throw error;
 

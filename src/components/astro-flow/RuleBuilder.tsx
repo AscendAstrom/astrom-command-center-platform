@@ -1,91 +1,109 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { automationService } from '@/services/automationService';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import { AutomationRule, RuleCondition, RuleAction, FlowUserRole } from './types';
 import RulesList from './RulesList';
 import RuleEditor from './RuleEditor';
 import EmptyState from './EmptyState';
+import type { Tables } from '@/integrations/supabase/types';
+
+type DBAutomationRule = Tables<'automation_rules'>;
 
 interface RuleBuilderProps {
   userRole: FlowUserRole;
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const [rules, setRules] = useState<AutomationRule[]>([
-    {
-      id: '1',
-      name: 'SLA Breach Alert',
-      description: 'Alert when patient wait time exceeds SLA threshold',
-      triggerType: 'sla_breach',
-      conditions: [
-        {
-          id: '1',
-          field: 'wait_time_minutes',
-          operator: 'greater_than',
-          value: 45
-        }
-      ],
-      actions: [
-        {
-          id: '1',
-          type: 'email_alert',
-          config: {
-            recipients: ['ed-manager@hospital.com'],
-            message: 'SLA breach detected: Patient wait time exceeded threshold',
-            severity: 'high'
-          }
-        }
-      ],
-      isActive: true,
-      priority: 'high',
-      cooldownMinutes: 15,
-      executionCount: 47,
-      lastExecuted: '2024-01-20T14:30:00Z',
-      createdBy: 'admin',
-      createdAt: '2024-01-15T10:00:00Z',
-      updatedAt: '2024-01-20T14:30:00Z'
-    }
-  ]);
+  const { data: realtimeRules, loading } = useRealTimeData<DBAutomationRule>({
+    table: 'automation_rules'
+  });
 
+  const [rules, setRules] = useState<AutomationRule[]>([]);
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateRule = () => {
-    const newRule: AutomationRule = {
-      id: Math.random().toString(),
-      name: 'New Rule',
-      description: '',
-      triggerType: 'threshold_exceeded',
-      conditions: [],
-      actions: [],
-      isActive: false,
-      priority: 'medium',
-      executionCount: 0,
-      createdBy: 'current_user',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    setRules([...rules, newRule]);
-    setSelectedRule(newRule);
-    setIsCreating(true);
-  };
+  useEffect(() => {
+    // Transform database rules to match component interface
+    const transformedRules: AutomationRule[] = realtimeRules.map(rule => ({
+      id: rule.id,
+      name: rule.name,
+      description: rule.description || '',
+      triggerType: 'sla_breach', // Default value
+      conditions: (rule.trigger_conditions as any)?.conditions || [],
+      actions: (rule.actions as any) || [],
+      isActive: rule.status === 'ACTIVE',
+      priority: 'medium', // Default value
+      cooldownMinutes: 15, // Default value
+      executionCount: rule.execution_count || 0,
+      lastExecuted: rule.last_execution || undefined,
+      createdBy: rule.created_by || '',
+      createdAt: rule.created_at,
+      updatedAt: rule.updated_at
+    }));
+    
+    setRules(transformedRules);
+  }, [realtimeRules]);
 
-  const handleSaveRule = () => {
-    if (selectedRule) {
-      setRules(rules.map(rule => 
-        rule.id === selectedRule.id 
-          ? { ...selectedRule, updatedAt: new Date().toISOString() }
-          : rule
-      ));
-      setIsCreating(false);
+  const handleCreateRule = async () => {
+    try {
+      const { data, error } = await automationService.create({
+        name: 'New Rule',
+        description: '',
+        trigger_conditions: { conditions: [] },
+        actions: []
+      });
+
+      if (error) throw error;
+      if (data) {
+        const newRule: AutomationRule = {
+          id: data.id,
+          name: data.name,
+          description: data.description || '',
+          triggerType: 'threshold_exceeded',
+          conditions: [],
+          actions: [],
+          isActive: false,
+          priority: 'medium',
+          executionCount: 0,
+          createdBy: 'current_user',
+          createdAt: data.created_at,
+          updatedAt: data.updated_at
+        };
+        setSelectedRule(newRule);
+        setIsCreating(true);
+      }
+    } catch (error) {
+      console.error('Error creating rule:', error);
     }
   };
 
-  const handleToggleRule = (ruleId: string) => {
-    setRules(rules.map(rule => 
-      rule.id === ruleId 
-        ? { ...rule, isActive: !rule.isActive, updatedAt: new Date().toISOString() }
-        : rule
-    ));
+  const handleSaveRule = async () => {
+    if (selectedRule) {
+      try {
+        const { error } = await automationService.update(selectedRule.id, {
+          name: selectedRule.name,
+          description: selectedRule.description,
+          trigger_conditions: { conditions: selectedRule.conditions },
+          actions: selectedRule.actions,
+          status: selectedRule.isActive ? 'ACTIVE' : 'DRAFT'
+        });
+
+        if (error) throw error;
+        setIsCreating(false);
+      } catch (error) {
+        console.error('Error saving rule:', error);
+      }
+    }
+  };
+
+  const handleToggleRule = async (ruleId: string) => {
+    try {
+      const { error } = await automationService.toggleStatus(ruleId);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error toggling rule:', error);
+    }
   };
 
   const handleUpdateRule = (updatedRule: AutomationRule) => {
@@ -103,6 +121,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
           onCreateRule={handleCreateRule}
           onToggleRule={handleToggleRule}
           userRole={userRole}
+          loading={loading}
         />
       </div>
 

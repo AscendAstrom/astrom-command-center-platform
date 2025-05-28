@@ -35,6 +35,9 @@ export const dataSourceService = {
       .insert({
         ...dataSource,
         created_by: user?.id,
+        status: 'PAUSED',
+        health_score: 100,
+        records_count: 0
       })
       .select()
       .single();
@@ -54,7 +57,10 @@ export const dataSourceService = {
   async update(id: string, updates: DataSourceUpdate) {
     const { data, error } = await supabase
       .from('data_sources')
-      .update(updates)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id)
       .select()
       .single();
@@ -89,40 +95,27 @@ export const dataSourceService = {
   },
 
   async testConnection(id: string) {
-    // This would implement actual connection testing
-    // For now, we'll simulate it
-    const result = Math.random() > 0.2; // 80% success rate for demo
+    // Simulate connection test
+    const testResult = Math.random() > 0.2; // 80% success rate
     
-    await this.update(id, {
+    const updates = {
       last_health_check: new Date().toISOString(),
-      health_score: result ? 100 : 0,
-      status: result ? 'CONNECTED' : 'ERROR',
-      last_error: result ? null : 'Connection test failed',
-    });
+      health_score: testResult ? Math.floor(Math.random() * 20) + 80 : Math.floor(Math.random() * 30) + 20,
+      status: testResult ? 'CONNECTED' : 'ERROR' as any,
+      last_error: testResult ? null : 'Connection timeout - please check credentials'
+    };
 
-    return { success: result };
+    return this.update(id, updates);
   },
 
-  async syncData(id: string) {
-    const { data: dataSource } = await this.getById(id);
-    if (!dataSource) return { error: 'Data source not found' };
-
-    // Update sync status
-    await this.update(id, {
-      status: 'SYNCING',
-      last_sync: new Date().toISOString(),
-    });
-
-    // Simulate sync process
-    setTimeout(async () => {
-      const success = Math.random() > 0.1; // 90% success rate
-      await this.update(id, {
-        status: success ? 'CONNECTED' : 'ERROR',
-        last_error: success ? null : 'Sync failed',
-        records_count: success ? (dataSource.records_count || 0) + Math.floor(Math.random() * 100) : dataSource.records_count,
-      });
-    }, 2000);
-
-    return { success: true };
+  // Real-time subscription for data sources
+  subscribeToChanges(callback: (payload: any) => void) {
+    return supabase
+      .channel('data_sources')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'data_sources' }, 
+        callback
+      )
+      .subscribe();
   }
 };
