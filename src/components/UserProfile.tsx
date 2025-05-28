@@ -25,6 +25,7 @@ interface Profile {
   position?: string;
   organization?: string;
   phone?: string;
+  avatar_url?: string;
 }
 
 const UserProfile = () => {
@@ -93,7 +94,7 @@ const UserProfile = () => {
       <DialogTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={profile?.avatar_url} />
+            <AvatarImage src={profile?.avatar_url || undefined} />
             <AvatarFallback>{getInitials()}</AvatarFallback>
           </Avatar>
         </Button>
@@ -109,7 +110,7 @@ const UserProfile = () => {
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={profile?.avatar_url} />
+              <AvatarImage src={profile?.avatar_url || undefined} />
               <AvatarFallback className="text-lg">{getInitials()}</AvatarFallback>
             </Avatar>
             <div>
