@@ -10,6 +10,7 @@ import Analytics from "./pages/Analytics";
 import Automation from "./pages/Automation";
 import TenantAdmin from "./pages/TenantAdmin";
 import AstroScan from "./pages/AstroScan";
+import AstroBricks from "./pages/AstroBricks";
 import DashboardLayout from "./components/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
@@ -27,6 +28,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/data-sources" element={<DataSources />} />
                 <Route path="/astro-scan" element={<AstroScan />} />
+                <Route path="/astro-bricks" element={<AstroBricks />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/automation" element={<Automation />} />
                 <Route path="/admin" element={<TenantAdmin />} />

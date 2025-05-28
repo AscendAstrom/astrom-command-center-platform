@@ -8,7 +8,8 @@ import {
   Building2,
   Users,
   Bell,
-  Scan
+  Scan,
+  Layers
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -26,6 +27,7 @@ import {
 const navigationItems = [
   { title: "Command Center", url: "/", icon: Activity },
   { title: "ASTRO-SCAN", url: "/astro-scan", icon: Scan },
+  { title: "ASTRO-BRICKS", url: "/astro-bricks", icon: Layers },
   { title: "Data Sources", url: "/data-sources", icon: Database },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Automation", url: "/automation", icon: Zap },
