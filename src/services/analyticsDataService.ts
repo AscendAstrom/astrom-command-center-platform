@@ -226,6 +226,22 @@ class AnalyticsDataService {
   private generateMockData(): AnalyticsData {
     const now = new Date();
     
+    // Helper function to get equipment status with proper typing
+    const getEquipmentStatus = (): 'optimal' | 'warning' | 'critical' => {
+      const rand = Math.random();
+      if (rand > 0.9) return 'critical';
+      if (rand > 0.8) return 'warning';
+      return 'optimal';
+    };
+
+    // Helper function to get sync status with proper typing
+    const getSyncStatus = (): 'healthy' | 'warning' | 'error' => {
+      const rand = Math.random();
+      if (rand > 0.95) return 'error';
+      if (rand > 0.9) return 'warning';
+      return 'healthy';
+    };
+    
     const baseData = {
       emergencyDepartment: {
         totalPatients: 142 + Math.floor(Math.random() * 20 - 10),
@@ -240,7 +256,7 @@ class AnalyticsDataService {
         scheduledProcedures: 34 + Math.floor(Math.random() * 8 - 4),
         resourceUtilization: 85 + Math.floor(Math.random() * 10 - 5),
         avgProcedureTime: 45 + Math.floor(Math.random() * 10 - 5),
-        equipmentStatus: Math.random() > 0.8 ? 'warning' : 'optimal',
+        equipmentStatus: getEquipmentStatus(),
         lastUpdated: now
       },
       dataPipeline: {
@@ -248,7 +264,7 @@ class AnalyticsDataService {
         processingSpeed: 1200 + Math.floor(Math.random() * 200 - 100),
         errorRate: Math.max(0, 2.5 + Math.random() * 2 - 1),
         dataQuality: 98.7 + Math.random() * 2 - 1,
-        syncStatus: Math.random() > 0.9 ? 'warning' : 'healthy',
+        syncStatus: getSyncStatus(),
         lastUpdated: now
       },
       business: {
