@@ -5,6 +5,9 @@ import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
 import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSection";
 import IntelligentBedManagementSection from "@/components/astro-scan/sections/IntelligentBedManagementSection";
 import AdvancedMonitoringSection from "@/components/astro-scan/sections/AdvancedMonitoringSection";
+import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
+import ExecutiveCommandCenterSection from "@/components/astro-scan/sections/ExecutiveCommandCenterSection";
+import AIDecisionEngineSection from "@/components/astro-scan/sections/AIDecisionEngineSection";
 
 const IngestionTabContent = () => {
   return (
@@ -29,6 +32,12 @@ const IngestionTabContent = () => {
       <IntelligentBedManagementSection />
 
       <AdvancedMonitoringSection />
+
+      <PhaseFourSection />
+
+      <ExecutiveCommandCenterSection />
+
+      <AIDecisionEngineSection />
     </div>
   );
 };
