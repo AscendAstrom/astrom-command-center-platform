@@ -107,7 +107,7 @@ export function AppSidebar() {
   const isActive = (path: string) => location.pathname === path || (path === "/astro-scan" && location.pathname === "/");
   
   const getNavCls = (item: any, active: boolean) => {
-    const baseClasses = "group relative flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 ease-out hover:shadow-sm";
+    const baseClasses = "group relative flex items-center w-full px-3 py-4 rounded-xl transition-all duration-300 ease-out hover:shadow-sm min-h-[64px]";
     
     if (active) {
       return `${baseClasses} ${item.activeBg} ${item.color} shadow-sm border border-border/20`;
@@ -118,22 +118,22 @@ export function AppSidebar() {
 
   return (
     <Sidebar 
-      className={`${collapsed ? "w-16" : "w-80"} bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300`}
+      className={`${collapsed ? "w-16" : "w-80"} bg-background/95 backdrop-blur-xl border-r border-border/50 transition-all duration-300 min-h-screen`}
       collapsible="icon"
     >
-      <SidebarContent className="p-6 space-y-8">
+      <SidebarContent className="flex flex-col h-full p-4 overflow-y-auto">
         {/* Header */}
         {!collapsed && (
-          <div className="px-2 py-4">
+          <div className="flex-shrink-0 px-2 py-6 mb-4">
             <div className="flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                 <LayoutDashboard className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent truncate">
                   ASTROM
                 </h1>
-                <p className="text-sm text-muted-foreground font-medium">
+                <p className="text-sm text-muted-foreground font-medium truncate">
                   Healthcare Intelligence Platform
                 </p>
               </div>
@@ -141,31 +141,32 @@ export function AppSidebar() {
           </div>
         )}
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-6 px-2">
+        {/* Platform Modules */}
+        <SidebarGroup className="flex-1">
+          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-4 px-2">
             {!collapsed && "Platform Modules"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-3">
+            <SidebarMenu className="space-y-2">
               {navigationItems.map((item, index) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="h-auto p-0">
                     <NavLink 
                       to={item.url} 
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-2.5 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                      <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
                         <item.icon className="h-5 w-5 text-white" />
                       </div>
                       {!collapsed && (
-                        <div className="flex flex-col flex-1 min-w-0">
+                        <div className="flex flex-col flex-1 min-w-0 ml-3">
                           <span className="font-semibold text-sm truncate leading-tight">{item.title}</span>
                           <span className="text-xs opacity-75 truncate font-medium">{item.subtitle}</span>
                         </div>
                       )}
                       {!collapsed && isActive(item.url) && (
-                        <div className="flex items-center">
+                        <div className="flex items-center flex-shrink-0 ml-2">
                           <ChevronRight className="h-4 w-4 opacity-60" />
                         </div>
                       )}
@@ -181,30 +182,31 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator className="bg-gradient-to-r from-transparent via-border/50 to-transparent my-8" />
+        <SidebarSeparator className="bg-gradient-to-r from-transparent via-border/50 to-transparent my-6" />
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-6 px-2">
+        {/* System Section */}
+        <SidebarGroup className="flex-shrink-0">
+          <SidebarGroupLabel className="text-muted-foreground/80 font-semibold text-xs uppercase tracking-wider mb-4 px-2">
             {!collapsed && "System"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-3">
+            <SidebarMenu className="space-y-2">
               {systemItems.map((item, index) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="h-auto p-0">
                     <NavLink 
                       to={item.url} 
                       end 
                       className={getNavCls(item, isActive(item.url))}
                     >
-                      <div className={`p-2.5 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
+                      <div className={`p-3 rounded-xl ${item.iconBg} shadow-sm flex-shrink-0 transition-all duration-300 group-hover:scale-105`}>
                         <item.icon className="h-5 w-5 text-white" />
                       </div>
                       {!collapsed && (
-                        <span className="font-semibold text-sm truncate">{item.title}</span>
+                        <span className="font-semibold text-sm truncate flex-1 min-w-0 ml-3">{item.title}</span>
                       )}
                       {!collapsed && isActive(item.url) && (
-                        <ChevronRight className="h-4 w-4 opacity-60" />
+                        <ChevronRight className="h-4 w-4 opacity-60 flex-shrink-0 ml-2" />
                       )}
                       {/* Active indicator */}
                       {isActive(item.url) && (
@@ -220,14 +222,14 @@ export function AppSidebar() {
 
         {/* Footer */}
         {!collapsed && (
-          <div className="mt-auto px-4 py-5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm">
+          <div className="flex-shrink-0 mt-6 px-3 py-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200/50 dark:border-green-800/30">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
                 <Activity className="h-5 w-5 text-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-green-700 dark:text-green-300">AI Powered</span>
-                <span className="text-xs text-green-600/80 dark:text-green-400/80 font-medium">Healthcare Analytics</span>
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-sm font-semibold text-green-700 dark:text-green-300 truncate">AI Powered</span>
+                <span className="text-xs text-green-600/80 dark:text-green-400/80 font-medium truncate">Healthcare Analytics</span>
               </div>
             </div>
           </div>
