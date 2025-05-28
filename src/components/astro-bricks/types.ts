@@ -74,7 +74,7 @@ export interface SchemaRelationship {
   toTableId: string;
   fromFieldId: string;
   toFieldId: string;
-  type: 'one-to-one' | 'one-to-many' | 'many-to-many';
+  type: 'one-to-one' | 'one-to-many' | 'many-to-one' | 'many-to-many';
 }
 
 export interface DataPipeline {
