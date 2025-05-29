@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataPipeline } from './types';
 import { PipelineListCard } from './components/PipelineListCard';
 import { PipelineDetailsCard } from './components/PipelineDetailsCard';
@@ -50,9 +50,19 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
   const [selectedPipeline, setSelectedPipeline] = useState<DataPipeline | null>(pipelines[0]);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
 
-  const handleCreatePipeline = () => {
-    if (readOnly) return;
-    
+  // Listen for create pipeline events from the header
+  useEffect(() => {
+    const handleCreatePipeline = () => {
+      if (!readOnly) {
+        createNewPipeline();
+      }
+    };
+
+    window.addEventListener('createPipeline', handleCreatePipeline);
+    return () => window.removeEventListener('createPipeline', handleCreatePipeline);
+  }, [readOnly]);
+
+  const createNewPipeline = () => {
     const newPipeline: DataPipeline = {
       id: Date.now().toString(),
       name: 'New Pipeline',
@@ -67,6 +77,11 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
     
     setPipelines(prev => [...prev, newPipeline]);
     setSelectedPipeline(newPipeline);
+  };
+
+  const handleCreatePipeline = () => {
+    if (readOnly) return;
+    createNewPipeline();
   };
 
   const handleTogglePipeline = (pipelineId: string) => {

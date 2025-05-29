@@ -25,6 +25,7 @@ import { toast } from "sonner";
 const AstroBricks = () => {
   const [activeTab, setActiveTab] = useState("pipelines");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pipelineManagerKey, setPipelineManagerKey] = useState(0);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -42,21 +43,44 @@ const AstroBricks = () => {
     setIsRefreshing(true);
     toast.info("Refreshing data models and pipelines...");
     
+    // Simulate refresh process
     setTimeout(() => {
       setIsRefreshing(false);
+      setPipelineManagerKey(prev => prev + 1); // Force re-render of pipeline manager
       toast.success("Data models refreshed successfully!");
     }, 2000);
   };
 
   const handleCreatePipeline = () => {
     toast.info("Opening pipeline creation wizard...");
-    // Add pipeline creation logic here
+    // Switch to pipelines tab and trigger pipeline creation
+    setActiveTab("pipelines");
+    setTimeout(() => {
+      // Trigger the create pipeline action in DataPipelineManager
+      const createEvent = new CustomEvent('createPipeline');
+      window.dispatchEvent(createEvent);
+    }, 100);
   };
 
   const handleOptimizePipelines = () => {
     toast.info("Analyzing pipelines for optimization opportunities...");
     setTimeout(() => {
-      toast.success("Pipeline optimization recommendations generated!");
+      const optimizationSuggestions = [
+        "Combine duplicate transformation steps in ED Patient Intake Pipeline",
+        "Optimize Zone Capacity Monitoring schedule to reduce resource usage",
+        "Enable parallel processing for data extraction steps"
+      ];
+      
+      toast.success(`Pipeline optimization completed! Found ${optimizationSuggestions.length} optimization opportunities.`);
+      
+      // Show detailed suggestions after a brief delay
+      setTimeout(() => {
+        optimizationSuggestions.forEach((suggestion, index) => {
+          setTimeout(() => {
+            toast.info(suggestion, { duration: 4000 });
+          }, index * 1000);
+        });
+      }, 1000);
     }, 1500);
   };
 
@@ -191,7 +215,7 @@ const AstroBricks = () => {
           </TabsList>
 
           <TabsContent value="pipelines" className="space-y-6">
-            <DataPipelineManager />
+            <DataPipelineManager key={pipelineManagerKey} />
           </TabsContent>
 
           <TabsContent value="mapping" className="space-y-6">
