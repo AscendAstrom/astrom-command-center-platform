@@ -3,13 +3,21 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DataSource, SyncStatus } from '../types';
 import { mockEpicDataSources } from '@/data/mockEpicDataSources';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useDataSources = () => {
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const fetchDataSources = async () => {
+    if (!user) {
+      setDataSources([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -52,6 +60,8 @@ export const useDataSources = () => {
   };
 
   const updateDataSourceStatus = async (id: string, status: SyncStatus) => {
+    if (!user) return;
+
     try {
       // Update local state immediately for better UX
       setDataSources(prev => 
@@ -79,6 +89,8 @@ export const useDataSources = () => {
   };
 
   const deleteDataSource = async (id: string) => {
+    if (!user) return;
+
     try {
       // Update local state immediately for better UX
       setDataSources(prev => prev.filter(source => source.id !== id));
@@ -103,7 +115,7 @@ export const useDataSources = () => {
 
   useEffect(() => {
     fetchDataSources();
-  }, []);
+  }, [user]);
 
   const refetch = () => {
     fetchDataSources();
