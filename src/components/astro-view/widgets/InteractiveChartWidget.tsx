@@ -72,6 +72,9 @@ const InteractiveChartWidget = ({
     patients: { label: "Patients", color: "#8b5cf6" },
     wait_time: { label: "Wait Time", color: "#ef4444" },
     staff: { label: "Staff", color: "#06b6d4" },
+    Emergency: { label: "Emergency", color: "#ef4444" },
+    Elective: { label: "Elective", color: "#3b82f6" },
+    Urgent: { label: "Urgent", color: "#f59e0b" },
   };
 
   const handleRefresh = () => {
@@ -125,7 +128,7 @@ const InteractiveChartWidget = ({
 
       case 'pie':
         return (
-          <ResponsiveContainer width="100%" height="100%">
+          <ChartContainer config={chartConfig}>
             <PieChart>
               <Pie
                 data={chartData}
@@ -142,7 +145,7 @@ const InteractiveChartWidget = ({
               <ChartTooltip content={<ChartTooltipContent />} />
               <Legend />
             </PieChart>
-          </ResponsiveContainer>
+          </ChartContainer>
         );
 
       default:
