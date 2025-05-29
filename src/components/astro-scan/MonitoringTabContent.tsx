@@ -1,128 +1,147 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Activity, TrendingUp, Shield, Brain, AlertTriangle, Eye, Database } from "lucide-react";
-import AdvancedMonitoringPanel from "./AdvancedMonitoringPanel";
+import { Button } from "@/components/ui/button";
+import { Settings, Hospital, Brain, Shield, Zap, TrendingUp } from "lucide-react";
+import AdvancedMonitoringPanel from "@/components/astro-scan/AdvancedMonitoringPanel";
 
-interface MonitoringTabContentProps {
-  onNavigate?: (path: string) => void;
-  onTabNavigate?: (path: string, tab?: string) => void;
-}
-
-const MonitoringTabContent = ({ onNavigate, onTabNavigate }: MonitoringTabContentProps) => {
+const MonitoringTabContent = () => {
   return (
     <div className="space-y-6">
-      <Card className="bg-card/80 border-border backdrop-blur-sm">
+      <Card className="bg-card border-border backdrop-blur-sm">
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="text-foreground flex items-center gap-2">
-                <Settings className="h-5 w-5 text-purple-400" />
-                System Monitoring & Health Dashboard
-              </CardTitle>
-              <CardDescription>
-                Comprehensive monitoring of all system components and AI agents
-              </CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => onNavigate?.('/ai-ecosystem')}>
-                <Brain className="h-4 w-4 mr-2" />
-                AI Ecosystem
-              </Button>
-              <Button variant="outline" onClick={() => onTabNavigate?.('/astro-metrics', 'alerts')}>
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                Alert Manager
-              </Button>
-              <Button onClick={() => onNavigate?.('/dashboard')}>
-                <Eye className="h-4 w-4 mr-2" />
-                Live Dashboard
-              </Button>
-            </div>
-          </div>
+          <CardTitle className="text-foreground flex items-center gap-2">
+            <Settings className="h-5 w-5 text-primary" />
+            Advanced Monitoring & Intelligence
+          </CardTitle>
+          <CardDescription>
+            Phase 3: AI-powered monitoring with predictive alerts and automated responses
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Button variant="outline" onClick={() => onNavigate?.('/astro-flow')}>
-              <Activity className="h-4 w-4 mr-2" />
-              Workflow Engine
-            </Button>
-            <Button variant="outline" onClick={() => onTabNavigate?.('/astro-metrics', 'sla-configuration')}>
-              <TrendingUp className="h-4 w-4 mr-2" />
-              SLA Management
-            </Button>
-            <Button variant="outline" onClick={() => onNavigate?.('/admin')}>
-              <Shield className="h-4 w-4 mr-2" />
-              Security Center
-            </Button>
-            <Button variant="outline" onClick={() => onTabNavigate?.('/astro-scan', 'sources')}>
-              <Database className="h-4 w-4 mr-2" />
-              Data Sources
-            </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Shield className="h-5 w-5 text-astrom-green" />
+                Intelligent SLA Monitoring
+              </h3>
+              <AdvancedMonitoringPanel />
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Brain className="h-5 w-5 text-astrom-purple" />
+                AI Alert Engine
+              </h3>
+              <div className="space-y-3">
+                <div className="p-4 bg-muted/50 rounded-lg border border-astrom-purple/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-foreground">Predictive Breach Detection</span>
+                    <Badge className="bg-astrom-purple/10 text-astrom-purple border-astrom-purple/20">AI-Powered</Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Forecasts SLA breaches 30-60 minutes in advance</div>
+                </div>
+                <div className="p-4 bg-muted/50 rounded-lg border border-astrom-blue/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-foreground">Adaptive Thresholds</span>
+                    <Badge className="bg-astrom-blue/10 text-astrom-blue border-astrom-blue/20">Learning</Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Machine learning adjusts alert sensitivity</div>
+                </div>
+                <div className="p-4 bg-muted/50 rounded-lg border border-astrom-green/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-foreground">Auto-Resolution</span>
+                    <Badge className="bg-astrom-green/10 text-astrom-green border-astrom-green/20">Active</Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Automated remediation for common issues</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <AdvancedMonitoringPanel />
+          {/* Enhanced Bed Management Monitoring */}
+          <div className="mt-8 p-6 bg-gradient-to-r from-astrom-green/10 to-astrom-blue/10 rounded-lg border border-astrom-green/20">
+            <div className="flex items-center gap-2 mb-4">
+              <Hospital className="h-5 w-5 text-astrom-green" />
+              <h3 className="text-lg font-semibold text-foreground">Phase 3: Intelligent Bed Management Monitoring</h3>
+              <Badge className="bg-astrom-green/10 text-astrom-green border-astrom-green/20">Enhanced</Badge>
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Advanced monitoring with AI-powered capacity prediction, cultural compliance validation, 
+              and automated resource optimization for Saudi healthcare requirements.
+            </p>
 
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-foreground">System Health</h4>
-                <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Optimal</Badge>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-3">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Brain className="h-4 w-4 text-astrom-purple" />
+                  Predictive Monitoring
+                </h4>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-purple/20">
+                  <div className="font-medium text-foreground text-sm mb-1">Surge Prediction</div>
+                  <div className="text-xs text-muted-foreground">
+                    AI forecasts bed demand spikes 2-6 hours ahead
+                  </div>
+                </div>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-blue/20">
+                  <div className="font-medium text-foreground text-sm mb-1">Capacity Optimization</div>
+                  <div className="text-xs text-muted-foreground">
+                    ML algorithms optimize bed allocation efficiency
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">CPU Usage</span>
-                  <span className="text-green-400">23%</span>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-astrom-blue" />
+                  Enhanced Compliance
+                </h4>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-blue/20">
+                  <div className="font-medium text-foreground text-sm mb-1">Cultural AI Validation</div>
+                  <div className="text-xs text-muted-foreground">
+                    AI ensures gender segregation compliance
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Memory</span>
-                  <span className="text-green-400">45%</span>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-orange/20">
+                  <div className="font-medium text-foreground text-sm mb-1">MOH Reporting Intelligence</div>
+                  <div className="text-xs text-muted-foreground">
+                    Automated regulatory compliance monitoring
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Storage</span>
-                  <span className="text-green-400">67%</span>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-astrom-orange" />
+                  Automated Actions
+                </h4>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-orange/20">
+                  <div className="font-medium text-foreground text-sm mb-1">Smart Escalation</div>
+                  <div className="text-xs text-muted-foreground">
+                    Context-aware alert routing to right teams
+                  </div>
+                </div>
+                <div className="p-3 bg-muted/50 rounded-lg border border-astrom-green/20">
+                  <div className="font-medium text-foreground text-sm mb-1">Resource Pre-allocation</div>
+                  <div className="text-xs text-muted-foreground">
+                    Proactive staff and equipment allocation
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-foreground">AI Agents</h4>
-                <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">14 Active</Badge>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">SLA Sentinel</span>
-                  <span className="text-blue-400">Running</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Flow Optimizer</span>
-                  <span className="text-blue-400">Running</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Data Guardian</span>
-                  <span className="text-blue-400">Running</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-foreground">Data Pipeline</h4>
-                <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Processing</Badge>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Throughput</span>
-                  <span className="text-purple-400">1.2M/hr</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Quality Score</span>
-                  <span className="text-purple-400">98.7%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Latency</span>
-                  <span className="text-purple-400">45ms</span>
-                </div>
+            <div className="mt-6 flex items-center gap-4">
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                View Analytics
+              </Button>
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Configure AI
+              </Button>
+              <div className="text-sm text-muted-foreground">
+                AI Accuracy: <span className="font-medium text-astrom-green">94.7%</span> | 
+                Predictions Today: <span className="font-medium text-astrom-blue">247</span>
               </div>
             </div>
           </div>

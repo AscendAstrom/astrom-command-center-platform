@@ -1,38 +1,10 @@
 
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
-import { useNavigate, useSearchParams } from "react-router-dom"
+
 import { cn } from "@/lib/utils"
 
-const Tabs = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
-    enableRouting?: boolean
-    basePath?: string
-  }
->(({ className, enableRouting = false, basePath = "", onValueChange, ...props }, ref) => {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  
-  const handleValueChange = (value: string) => {
-    if (enableRouting && basePath) {
-      navigate(`${basePath}?tab=${value}`)
-    }
-    if (onValueChange) {
-      onValueChange(value)
-    }
-  }
-
-  return (
-    <TabsPrimitive.Root
-      ref={ref}
-      className={className}
-      onValueChange={handleValueChange}
-      {...props}
-    />
-  )
-})
-Tabs.displayName = TabsPrimitive.Root.displayName
+const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,

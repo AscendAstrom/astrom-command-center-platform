@@ -40,19 +40,15 @@ export interface ButtonProps
   asChild?: boolean
   showToast?: boolean
   toastMessage?: string
-  href?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, showToast = false, toastMessage, onClick, children, href, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, showToast = false, toastMessage, onClick, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (showToast && toastMessage) {
         toast.success(toastMessage);
-      }
-      if (href) {
-        window.location.href = href;
       }
       if (onClick) {
         onClick(event);

@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
@@ -13,34 +13,17 @@ import { toast } from "sonner";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
+  const [activeTab, setActiveTab] = useState("sources");
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
     toast.success("Data source added successfully!");
+    // Refresh data sources list
   };
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    navigate(`/astro-scan?tab=${value}`);
     toast.info(`Switched to ${value} module`);
-  };
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    toast.info(`Navigating to ${path}`);
-  };
-
-  const handleTabNavigation = (path: string, tab?: string) => {
-    if (tab) {
-      navigate(`${path}?tab=${tab}`);
-      toast.info(`Navigating to ${path} - ${tab} tab`);
-    } else {
-      navigate(path);
-      toast.info(`Navigating to ${path}`);
-    }
   };
 
   return (
@@ -48,13 +31,7 @@ const AstroScan = () => {
       <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
         <AstroScanHeader />
 
-        <Tabs 
-          value={activeTab} 
-          onValueChange={handleTabChange} 
-          className="space-y-6"
-          enableRouting={true}
-          basePath="/astro-scan"
-        >
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
@@ -71,38 +48,23 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
-            <SourcesTabContent 
-              onAddSourceClick={() => {
-                setIsWizardOpen(true);
-                toast.info("Opening data source wizard...");
-              }}
-              onNavigate={handleNavigation}
-              onTabNavigate={handleTabNavigation}
-            />
+            <SourcesTabContent onAddSourceClick={() => {
+              setIsWizardOpen(true);
+              toast.info("Opening data source wizard...");
+            }} />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
-            <IngestionTabContent 
-              onNavigate={handleNavigation}
-              onTabNavigate={handleTabNavigation}
-            />
+            <IngestionTabContent />
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6">
-            <MonitoringTabContent 
-              onNavigate={handleNavigation}
-              onTabNavigate={handleTabNavigation}
-            />
+            <MonitoringTabContent />
             
+            {/* Enhanced Phase 4 & Phase 5 Sections */}
             <div className="space-y-6 mt-8">
-              <PhaseFourSection 
-                onNavigate={handleNavigation}
-                onTabNavigate={handleTabNavigation}
-              />
-              <PhaseFiveSection 
-                onNavigate={handleNavigation}
-                onTabNavigate={handleTabNavigation}
-              />
+              <PhaseFourSection />
+              <PhaseFiveSection />
             </div>
           </TabsContent>
         </Tabs>
