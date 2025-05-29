@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import ExecutiveDashboard from "./ExecutiveDashboard";
@@ -24,12 +23,7 @@ const AstroViewTabs = ({ activeTab, onTabChange }: AstroViewTabsProps) => {
             Executive
           </TabsTrigger>
           <TabsTrigger value="dashboards" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
-            <div className="flex items-center gap-1">
-              Dashboard Builder
-              <Badge variant="secondary" className="text-xs bg-blue-500 text-white border-blue-600">
-                UNIFIED
-              </Badge>
-            </div>
+            Dashboard Builder
           </TabsTrigger>
           <TabsTrigger value="realtime" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             Real-time
