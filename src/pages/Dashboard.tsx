@@ -1,351 +1,185 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  LayoutDashboard, 
-  Users, 
-  TrendingUp, 
   Activity, 
+  BarChart3, 
   Database, 
-  Target,
-  Eye,
-  Zap,
-  Layers,
-  ArrowRight,
-  CheckCircle,
-  AlertTriangle,
-  RefreshCw,
-  Settings,
-  BarChart3
+  Heart, 
+  Users, 
+  Clock,
+  TrendingUp,
+  RefreshCw
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
-import LogoIcon from "@/components/ui/LogoIcon";
-import { useState } from "react";
+import EmergencyDepartmentTab from "@/components/dashboard/tabs/EmergencyDepartmentTab";
+import ClinicalOperationsTab from "@/components/dashboard/tabs/ClinicalOperationsTab";
+import BusinessAnalyticsTab from "@/components/dashboard/tabs/BusinessAnalyticsTab";
+import DataPipelineTab from "@/components/dashboard/tabs/DataPipelineTab";
+import SystemHealthTab from "@/components/dashboard/tabs/SystemHealthTab";
+import AIMetricsTab from "@/components/dashboard/tabs/AIMetricsTab";
 import { toast } from "sonner";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("emergency");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const modules = [
-    {
-      title: "ASTRO-SCAN",
-      description: "Data Ingestion & Source Management",
-      icon: Database,
-      link: "/astro-scan",
-      color: "text-blue-400",
-      iconBg: "bg-gradient-to-br from-blue-500 to-blue-600"
-    },
-    {
-      title: "ASTRO-BRICKS",
-      description: "Data Modeling & Transformation",
-      icon: Layers,
-      link: "/astro-bricks",
-      color: "text-orange-400",
-      iconBg: "bg-gradient-to-br from-purple-500 to-pink-600"
-    },
-    {
-      title: "ASTRO-METRICS",
-      description: "KPI & Performance Analytics",
-      icon: Target,
-      link: "/astro-metrics",
-      color: "text-green-400",
-      iconBg: "bg-gradient-to-br from-green-500 to-green-600"
-    },
-    {
-      title: "ASTRO-VIEW",
-      description: "Data Visualization & Dashboards",
-      icon: Eye,
-      link: "/astro-view",
-      color: "text-purple-400",
-      iconBg: "bg-gradient-to-br from-purple-500 to-purple-600"
-    },
-    {
-      title: "ASTRO-FLOW",
-      description: "Automation & Workflow Management",
-      icon: Zap,
-      link: "/astro-flow",
-      color: "text-pink-400",
-      iconBg: "bg-gradient-to-br from-pink-500 to-pink-600"
-    }
-  ];
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    toast.info(`Switched to ${value} dashboard`);
+  };
 
-  const handleRefreshStats = () => {
+  const handleRefresh = () => {
     setIsRefreshing(true);
-    toast.info("Refreshing platform statistics...");
+    toast.info("Refreshing dashboard data...");
     
     setTimeout(() => {
       setIsRefreshing(false);
-      toast.success("Statistics refreshed successfully!");
+      toast.success("Dashboard data refreshed successfully!");
     }, 2000);
   };
 
-  const handleModuleNavigation = (module: any) => {
-    toast.info(`Navigating to ${module.title}...`);
-    navigate(module.link);
-  };
-
-  const handleQuickAction = (action: string, path: string) => {
-    toast.info(`Opening ${action}...`);
-    navigate(path);
-  };
-
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-border/50">
-                <LogoIcon size="sm" animate={true} />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">Astrom</h1>
-                <span className="text-sm text-blue-400 font-medium">Intelligence Platform Dashboard</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefreshStats}
-                disabled={isRefreshing}
-                className="hover:bg-blue-500/10 border-blue-500/20"
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? "Refreshing..." : "Refresh Stats"}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleQuickAction("Settings", "/settings")}
-                className="hover:bg-gray-500/10"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
-            </div>
+    <div className="min-h-screen bg-background">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Operations Dashboard</h1>
+            <p className="text-muted-foreground mt-2">
+              Real-time operational intelligence for healthcare excellence
+            </p>
           </div>
-          <p className="text-muted-foreground max-w-2xl mt-2">
-            Comprehensive data intelligence platform providing end-to-end analytics, 
-            from data ingestion to advanced visualizations and automated workflows.
-          </p>
-        </div>
-
-        {/* Platform Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Sources</p>
-                  <p className="text-3xl font-bold text-foreground">24</p>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-green-400" />
-                    <p className="text-sm text-green-400 font-semibold">+8% this week</p>
-                  </div>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <Database className="h-7 w-7 text-white" />
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-blue-400 hover:bg-blue-500/10"
-                onClick={() => handleQuickAction("Data Sources", "/astro-scan")}
-              >
-                <BarChart3 className="h-4 w-4 mr-2" />
-                View Details
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Data Models</p>
-                  <p className="text-3xl font-bold text-foreground">156</p>
-                  <p className="text-sm text-orange-400 font-semibold">12 active pipelines</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <Layers className="h-7 w-7 text-white" />
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-orange-400 hover:bg-orange-500/10"
-                onClick={() => handleQuickAction("Data Models", "/astro-bricks")}
-              >
-                <Layers className="h-4 w-4 mr-2" />
-                Manage Models
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Users</p>
-                  <p className="text-3xl font-bold text-foreground">342</p>
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-green-400" />
-                    <p className="text-sm text-green-400 font-semibold">89 online now</p>
-                  </div>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <Users className="h-7 w-7 text-white" />
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-green-400 hover:bg-green-500/10"
-                onClick={() => handleQuickAction("User Management", "/admin")}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                View Users
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">System Health</p>
-                  <p className="text-3xl font-bold text-foreground">99.8%</p>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-400" />
-                    <p className="text-sm text-green-400 font-semibold">All systems operational</p>
-                  </div>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  <Activity className="h-7 w-7 text-white" />
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-green-400 hover:bg-green-500/10"
-                onClick={() => handleQuickAction("System Status", "/admin")}
-              >
-                <Activity className="h-4 w-4 mr-2" />
-                Health Check
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Real-Time Analytics Dashboard */}
-        <DashboardAnalytics />
-
-        {/* Platform Modules */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-foreground">Platform Modules</h2>
-            <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10 px-4 py-2">
-              5 Available Modules
+          <div className="flex items-center gap-4">
+            <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+              <Activity className="h-3 w-3 mr-1" />
+              System Operational
             </Badge>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {modules.map((module, index) => (
-              <Card 
-                key={module.title} 
-                className="bg-card border-border hover:bg-accent transition-all duration-300 group cursor-pointer hover:shadow-lg"
-                onClick={() => handleModuleNavigation(module)}
-              >
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <div className={`p-3 rounded-xl ${module.iconBg} shadow-lg group-hover:scale-105 transition-transform duration-300`}>
-                      <module.icon className="h-6 w-6 text-white" />
-                    </div>
-                    <ArrowRight className={`h-5 w-5 ${module.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                  </div>
-                  <div>
-                    <CardTitle className={`text-xl font-bold ${module.color}`}>
-                      {module.title}
-                    </CardTitle>
-                    <CardDescription className="text-base mt-2 text-muted-foreground">
-                      {module.description}
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <Button 
-                    variant="ghost" 
-                    className={`w-full justify-start ${module.color} hover:bg-accent font-semibold transition-colors duration-300`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleModuleNavigation(module);
-                    }}
-                  >
-                    Explore Module
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? "Refreshing..." : "Refresh"}
+            </Button>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <Card className="bg-card border-border mt-8">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Zap className="h-5 w-5 text-white" />
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-card rounded-lg p-6 border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Patients</p>
+                <p className="text-3xl font-bold text-foreground">247</p>
+                <p className="text-xs text-green-500 flex items-center mt-1">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +12% from yesterday
+                </p>
               </div>
-              Quick Actions
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground">
-              Common tasks and shortcuts to get you started quickly
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-blue-400 transition-all duration-300"
-                onClick={() => handleQuickAction("Add Data Source", "/astro-scan")}
-              >
-                <Database className="h-5 w-5 mr-3 text-blue-400" />
-                <div>
-                  <div className="font-semibold text-foreground">Add Data Source</div>
-                  <div className="text-sm text-muted-foreground">Connect new data</div>
-                </div>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-purple-400 transition-all duration-300"
-                onClick={() => handleQuickAction("Create Dashboard", "/astro-view")}
-              >
-                <Eye className="h-5 w-5 mr-3 text-purple-400" />
-                <div>
-                  <div className="font-semibold text-foreground">Create Dashboard</div>
-                  <div className="text-sm text-muted-foreground">Build visualizations</div>
-                </div>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-green-400 transition-all duration-300"
-                onClick={() => handleQuickAction("Monitor KPIs", "/astro-metrics")}
-              >
-                <Target className="h-5 w-5 mr-3 text-green-400" />
-                <div>
-                  <div className="font-semibold text-foreground">Monitor KPIs</div>
-                  <div className="text-sm text-muted-foreground">Track performance</div>
-                </div>
-              </Button>
+              <Users className="h-8 w-8 text-blue-400" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <div className="bg-card rounded-lg p-6 border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Avg Wait Time</p>
+                <p className="text-3xl font-bold text-foreground">18m</p>
+                <p className="text-xs text-green-500 flex items-center mt-1">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  -5m from target
+                </p>
+              </div>
+              <Clock className="h-8 w-8 text-green-400" />
+            </div>
+          </div>
+          
+          <div className="bg-card rounded-lg p-6 border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Bed Occupancy</p>
+                <p className="text-3xl font-bold text-foreground">89%</p>
+                <p className="text-xs text-orange-500 flex items-center mt-1">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  Near capacity
+                </p>
+              </div>
+              <Heart className="h-8 w-8 text-red-400" />
+            </div>
+          </div>
+          
+          <div className="bg-card rounded-lg p-6 border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Data Quality</p>
+                <p className="text-3xl font-bold text-foreground">94%</p>
+                <p className="text-xs text-green-500 flex items-center mt-1">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  Excellent
+                </p>
+              </div>
+              <Database className="h-8 w-8 text-purple-400" />
+            </div>
+          </div>
+        </div>
+
+        {/* Dashboard Tabs */}
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6 bg-muted/50">
+            <TabsTrigger value="emergency" className="data-[state=active]:bg-red-500/20">
+              <Heart className="h-4 w-4 mr-2" />
+              Emergency Dept
+            </TabsTrigger>
+            <TabsTrigger value="clinical" className="data-[state=active]:bg-blue-500/20">
+              <Users className="h-4 w-4 mr-2" />
+              Clinical Ops
+            </TabsTrigger>
+            <TabsTrigger value="business" className="data-[state=active]:bg-green-500/20">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Business Analytics
+            </TabsTrigger>
+            <TabsTrigger value="pipeline" className="data-[state=active]:bg-purple-500/20">
+              <Database className="h-4 w-4 mr-2" />
+              Data Pipeline
+            </TabsTrigger>
+            <TabsTrigger value="system" className="data-[state=active]:bg-orange-500/20">
+              <Activity className="h-4 w-4 mr-2" />
+              System Health
+            </TabsTrigger>
+            <TabsTrigger value="ai-metrics" className="data-[state=active]:bg-pink-500/20">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              AI Metrics
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="emergency" className="space-y-6">
+            <EmergencyDepartmentTab />
+          </TabsContent>
+
+          <TabsContent value="clinical" className="space-y-6">
+            <ClinicalOperationsTab />
+          </TabsContent>
+
+          <TabsContent value="business" className="space-y-6">
+            <BusinessAnalyticsTab />
+          </TabsContent>
+
+          <TabsContent value="pipeline" className="space-y-6">
+            <DataPipelineTab />
+          </TabsContent>
+
+          <TabsContent value="system" className="space-y-6">
+            <SystemHealthTab />
+          </TabsContent>
+
+          <TabsContent value="ai-metrics" className="space-y-6">
+            <AIMetricsTab />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
