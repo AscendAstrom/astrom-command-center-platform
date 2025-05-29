@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
+import LogoIcon from '@/components/ui/LogoIcon';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -70,11 +71,9 @@ const Auth = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <img 
-              src="/lovable-uploads/7b58170b-05ed-4bbd-a939-a488df672e8c.png" 
-              alt="Astrom Logo" 
-              className="h-16 w-auto"
-            />
+            <div className="w-16 h-16 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-border/50">
+              <LogoIcon size="lg" animate={true} />
+            </div>
           </div>
         </div>
 
