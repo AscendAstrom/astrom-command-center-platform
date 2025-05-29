@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useDrag } from 'react-dnd';
-import { BarChart3, PieChart, Activity, Gauge, Map, Type, Grid2X2 } from 'lucide-react';
+import { BarChart3, Activity, Grid2X2, Gauge, Map, Type } from 'lucide-react';
 import { WidgetType } from './types';
 
 interface WidgetPaletteProps {
@@ -16,21 +15,10 @@ interface WidgetPaletteItemProps {
   onAdd: () => void;
 }
 
-const WidgetPaletteItem = ({ type, icon, label, description, onAdd }: WidgetPaletteItemProps) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'widget',
-    item: { type: 'widget', widgetType: type },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  }));
-
+const WidgetPaletteItem = ({ icon, label, description, onAdd }: WidgetPaletteItemProps) => {
   return (
     <div
-      ref={drag}
-      className={`p-3 border border-border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-purple-400 ${
-        isDragging ? 'opacity-50' : ''
-      }`}
+      className="p-3 border border-border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-purple-400"
       onClick={onAdd}
     >
       <div className="flex items-center gap-3">
@@ -90,7 +78,7 @@ const WidgetPalette = ({ onAddWidget }: WidgetPaletteProps) => {
     <Card className="h-full bg-card border-0 rounded-none">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg text-foreground">Widget Library</CardTitle>
-        <p className="text-sm text-muted-foreground">Drag widgets to canvas or click to add</p>
+        <p className="text-sm text-muted-foreground">Click widgets to add them to canvas</p>
       </CardHeader>
       <CardContent className="space-y-3">
         {widgets.map((widget) => (
