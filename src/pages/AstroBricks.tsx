@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ import { toast } from "sonner";
 const AstroBricks = () => {
   const [activeTab, setActiveTab] = useState("pipelines");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const navigate = useNavigate();
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -49,20 +51,18 @@ const AstroBricks = () => {
   };
 
   const handleCreatePipeline = () => {
-    toast.info("Opening pipeline creation wizard...");
-    // Add pipeline creation logic here
+    navigate("/astro-flow");
+    toast.info("Navigating to AstroFlow for pipeline creation...");
   };
 
   const handleOptimizePipelines = () => {
-    toast.info("Analyzing pipelines for optimization opportunities...");
-    setTimeout(() => {
-      toast.success("Pipeline optimization recommendations generated!");
-    }, 1500);
+    navigate("/astro-metrics?tab=sla-configuration");
+    toast.info("Navigating to AstroMetrics for pipeline optimization...");
   };
 
   const handleViewAnalytics = () => {
-    toast.info("Opening pipeline analytics dashboard...");
-    // Navigate to analytics view
+    navigate("/astro-view");
+    toast.info("Navigating to AstroView analytics dashboard...");
   };
 
   return (
