@@ -21,7 +21,7 @@ import {
 
 export default function CommandCenter() {
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState("automation");
+  const [activeTab, setActiveTab] = useState("visualization");
 
   useEffect(() => {
     const tabParam = searchParams.get("tab");
