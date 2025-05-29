@@ -14,6 +14,11 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const handleNotificationsClick = () => {
+    console.log("Notifications clicked");
+    // Add notifications panel logic here
+  };
+
   return (
     <div className="flex h-screen">
       <AppSidebar />
@@ -32,7 +37,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative hover:bg-accent hover:text-accent-foreground"
+                onClick={handleNotificationsClick}
+              >
                 <Bell className="h-4 w-4" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
               </Button>
