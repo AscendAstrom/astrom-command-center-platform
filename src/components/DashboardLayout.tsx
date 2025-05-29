@@ -5,6 +5,8 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
+import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -23,6 +25,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               {/* Removed the Healthcare Data Intelligence Platform text */}
             </div>
             <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-4 w-4" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+              </Button>
               <ThemeToggle />
               <UserMenu />
             </div>
