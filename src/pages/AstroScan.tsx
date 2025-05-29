@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,7 +20,6 @@ const AstroScan = () => {
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
     toast.success("Data source added successfully!");
-    // Refresh data sources list
   };
 
   const handleTabChange = (value: string) => {
@@ -32,13 +30,16 @@ const AstroScan = () => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    toast.info(`Navigating to ${path}`);
   };
 
   const handleTabNavigation = (path: string, tab?: string) => {
     if (tab) {
       navigate(`${path}?tab=${tab}`);
+      toast.info(`Navigating to ${path} - ${tab} tab`);
     } else {
       navigate(path);
+      toast.info(`Navigating to ${path}`);
     }
   };
 
@@ -47,7 +48,13 @@ const AstroScan = () => {
       <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
         <AstroScanHeader />
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+        <Tabs 
+          value={activeTab} 
+          onValueChange={handleTabChange} 
+          className="space-y-6"
+          enableRouting={true}
+          basePath="/astro-scan"
+        >
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
@@ -87,7 +94,6 @@ const AstroScan = () => {
               onTabNavigate={handleTabNavigation}
             />
             
-            {/* Enhanced Phase 4 & Phase 5 Sections */}
             <div className="space-y-6 mt-8">
               <PhaseFourSection 
                 onNavigate={handleNavigation}

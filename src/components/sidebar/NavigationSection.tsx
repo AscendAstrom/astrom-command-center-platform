@@ -1,6 +1,6 @@
 
 import { ChevronRight } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,6 +11,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { NavigationItem } from "./types";
+import { toast } from "sonner";
 
 interface NavigationSectionProps {
   items: NavigationItem[];
@@ -19,6 +20,7 @@ interface NavigationSectionProps {
 export function NavigationSection({ items }: NavigationSectionProps) {
   const { state } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
   const collapsed = state === "collapsed";
 
   const isActive = (path: string) => {
@@ -26,6 +28,11 @@ export function NavigationSection({ items }: NavigationSectionProps) {
       return location.pathname === "/" || location.pathname === "/dashboard";
     }
     return location.pathname === path;
+  };
+
+  const handleNavigation = (path: string, title: string) => {
+    navigate(path);
+    toast.success(`Navigated to ${title}`);
   };
   
   const getNavCls = (item: NavigationItem, active: boolean) => {
@@ -60,6 +67,7 @@ export function NavigationSection({ items }: NavigationSectionProps) {
                   to={item.url} 
                   end 
                   className={getNavCls(item, isActive(item.url))}
+                  onClick={() => handleNavigation(item.url, item.title)}
                 >
                   {collapsed ? (
                     <div className={`p-2 rounded-lg ${item.iconBg} shadow-sm transition-all duration-300 group-hover:scale-105`}>
