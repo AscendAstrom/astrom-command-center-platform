@@ -62,37 +62,96 @@ export type Database = {
           },
         ]
       }
+      api_keys: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          key_hash: string
+          last_used: string | null
+          name: string
+          permissions: Json | null
+          rate_limit: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash: string
+          last_used?: string | null
+          name: string
+          permissions?: Json | null
+          rate_limit?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash?: string
+          last_used?: string | null
+          name?: string
+          permissions?: Json | null
+          rate_limit?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
+          correlation_id: string | null
           created_at: string
           details: Json | null
           id: string
           ip_address: unknown | null
           resource_id: string | null
           resource_type: string
+          session_id: string | null
+          severity: string | null
           user_agent: string | null
           user_id: string | null
         }
         Insert: {
           action: string
+          correlation_id?: string | null
           created_at?: string
           details?: Json | null
           id?: string
           ip_address?: unknown | null
           resource_id?: string | null
           resource_type: string
+          session_id?: string | null
+          severity?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
         Update: {
           action?: string
+          correlation_id?: string | null
           created_at?: string
           details?: Json | null
           id?: string
           ip_address?: unknown | null
           resource_id?: string | null
           resource_type?: string
+          session_id?: string | null
+          severity?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
@@ -156,12 +215,64 @@ export type Database = {
           },
         ]
       }
+      bed_status_history: {
+        Row: {
+          bed_id: string | null
+          changed_by: string | null
+          duration_minutes: number | null
+          id: string
+          metadata: Json | null
+          new_status: string
+          previous_status: string | null
+          reason: string | null
+          timestamp: string | null
+        }
+        Insert: {
+          bed_id?: string | null
+          changed_by?: string | null
+          duration_minutes?: number | null
+          id?: string
+          metadata?: Json | null
+          new_status: string
+          previous_status?: string | null
+          reason?: string | null
+          timestamp?: string | null
+        }
+        Update: {
+          bed_id?: string | null
+          changed_by?: string | null
+          duration_minutes?: number | null
+          id?: string
+          metadata?: Json | null
+          new_status?: string
+          previous_status?: string | null
+          reason?: string | null
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bed_status_history_bed_id_fkey"
+            columns: ["bed_id"]
+            isOneToOne: false
+            referencedRelation: "beds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bed_status_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       beds: {
         Row: {
           bed_number: string
           bed_type: string | null
           capabilities: Json | null
           created_at: string
+          deleted_at: string | null
           department_id: string
           id: string
           last_cleaned: string | null
@@ -176,6 +287,7 @@ export type Database = {
           bed_type?: string | null
           capabilities?: Json | null
           created_at?: string
+          deleted_at?: string | null
           department_id: string
           id?: string
           last_cleaned?: string | null
@@ -190,6 +302,7 @@ export type Database = {
           bed_type?: string | null
           capabilities?: Json | null
           created_at?: string
+          deleted_at?: string | null
           department_id?: string
           id?: string
           last_cleaned?: string | null
@@ -212,6 +325,50 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      capacity_forecasts: {
+        Row: {
+          confidence_interval: number | null
+          created_at: string | null
+          department_id: string | null
+          forecast_date: string
+          forecast_type: string
+          id: string
+          metadata: Json | null
+          model_version: string | null
+          predicted_value: number
+        }
+        Insert: {
+          confidence_interval?: number | null
+          created_at?: string | null
+          department_id?: string | null
+          forecast_date: string
+          forecast_type: string
+          id?: string
+          metadata?: Json | null
+          model_version?: string | null
+          predicted_value: number
+        }
+        Update: {
+          confidence_interval?: number | null
+          created_at?: string | null
+          department_id?: string | null
+          forecast_date?: string
+          forecast_type?: string
+          id?: string
+          metadata?: Json | null
+          model_version?: string | null
+          predicted_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "capacity_forecasts_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]
@@ -265,6 +422,47 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_lineage: {
+        Row: {
+          created_at: string | null
+          id: string
+          pipeline_id: string | null
+          source_column: string | null
+          source_table: string
+          target_column: string | null
+          target_table: string
+          transformation_rule: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          pipeline_id?: string | null
+          source_column?: string | null
+          source_table: string
+          target_column?: string | null
+          target_table: string
+          transformation_rule?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          pipeline_id?: string | null
+          source_column?: string | null
+          source_table?: string
+          target_column?: string | null
+          target_table?: string
+          transformation_rule?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_lineage_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "data_pipelines"
             referencedColumns: ["id"]
           },
         ]
@@ -447,6 +645,7 @@ export type Database = {
           capacity: number | null
           code: string
           created_at: string
+          deleted_at: string | null
           description: string | null
           id: string
           is_active: boolean | null
@@ -460,6 +659,7 @@ export type Database = {
           capacity?: number | null
           code: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
@@ -473,6 +673,7 @@ export type Database = {
           capacity?: number | null
           code?: string
           created_at?: string
+          deleted_at?: string | null
           description?: string | null
           id?: string
           is_active?: boolean | null
@@ -554,6 +755,69 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment_maintenance: {
+        Row: {
+          completed_date: string | null
+          cost: number | null
+          created_at: string | null
+          description: string | null
+          equipment_id: string | null
+          id: string
+          maintenance_type: string
+          notes: string | null
+          parts_used: Json | null
+          scheduled_date: string | null
+          status: string | null
+          technician_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description?: string | null
+          equipment_id?: string | null
+          id?: string
+          maintenance_type: string
+          notes?: string | null
+          parts_used?: Json | null
+          scheduled_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description?: string | null
+          equipment_id?: string | null
+          id?: string
+          maintenance_type?: string
+          notes?: string | null
+          parts_used?: Json | null
+          scheduled_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_maintenance_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_maintenance_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
             referencedColumns: ["id"]
           },
         ]
@@ -779,6 +1043,103 @@ export type Database = {
           },
         ]
       }
+      message_templates: {
+        Row: {
+          body_template: string
+          channel_type: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          name: string
+          priority: string | null
+          subject_template: string | null
+          template_variables: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          body_template: string
+          channel_type: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name: string
+          priority?: string | null
+          subject_template?: string | null
+          template_variables?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          body_template?: string
+          channel_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name?: string
+          priority?: string | null
+          subject_template?: string | null
+          template_variables?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metric_aggregations: {
+        Row: {
+          aggregation_date: string
+          aggregation_type: string
+          count: number | null
+          created_at: string | null
+          department_id: string | null
+          id: string
+          max_value: number | null
+          metadata: Json | null
+          metric_name: string
+          min_value: number | null
+          value: number
+        }
+        Insert: {
+          aggregation_date: string
+          aggregation_type: string
+          count?: number | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          max_value?: number | null
+          metadata?: Json | null
+          metric_name: string
+          min_value?: number | null
+          value: number
+        }
+        Update: {
+          aggregation_date?: string
+          aggregation_type?: string
+          count?: number | null
+          created_at?: string | null
+          department_id?: string | null
+          id?: string
+          max_value?: number | null
+          metadata?: Json | null
+          metric_name?: string
+          min_value?: number | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metric_aggregations_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metrics_snapshots: {
         Row: {
           created_at: string
@@ -816,6 +1177,84 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_channels: {
+        Row: {
+          configuration: Json
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          configuration?: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      notification_delivery_log: {
+        Row: {
+          channel_id: string | null
+          created_at: string | null
+          delivery_metadata: Json | null
+          delivery_status: string | null
+          delivery_timestamp: string | null
+          error_message: string | null
+          id: string
+          notification_id: string | null
+        }
+        Insert: {
+          channel_id?: string | null
+          created_at?: string | null
+          delivery_metadata?: Json | null
+          delivery_status?: string | null
+          delivery_timestamp?: string | null
+          error_message?: string | null
+          id?: string
+          notification_id?: string | null
+        }
+        Update: {
+          channel_id?: string | null
+          created_at?: string | null
+          delivery_metadata?: Json | null
+          delivery_status?: string | null
+          delivery_timestamp?: string | null
+          error_message?: string | null
+          id?: string
+          notification_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_delivery_log_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "notification_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_delivery_log_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
             referencedColumns: ["id"]
           },
         ]
@@ -975,6 +1414,7 @@ export type Database = {
           admission_date: string | null
           created_at: string
           date_of_birth: string | null
+          deleted_at: string | null
           discharge_date: string | null
           email: string | null
           emergency_contact: Json | null
@@ -993,6 +1433,7 @@ export type Database = {
           admission_date?: string | null
           created_at?: string
           date_of_birth?: string | null
+          deleted_at?: string | null
           discharge_date?: string | null
           email?: string | null
           emergency_contact?: Json | null
@@ -1011,6 +1452,7 @@ export type Database = {
           admission_date?: string | null
           created_at?: string
           date_of_birth?: string | null
+          deleted_at?: string | null
           discharge_date?: string | null
           email?: string | null
           emergency_contact?: Json | null
@@ -1025,6 +1467,99 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      permissions: {
+        Row: {
+          action: string
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          resource: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          resource: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          resource?: string
+        }
+        Relationships: []
+      }
+      pipeline_executions: {
+        Row: {
+          completed_at: string | null
+          duration_seconds: number | null
+          error_message: string | null
+          execution_id: string
+          execution_log: Json | null
+          id: string
+          metrics: Json | null
+          pipeline_id: string | null
+          records_failed: number | null
+          records_processed: number | null
+          started_at: string | null
+          status: string | null
+          trigger_type: string | null
+          triggered_by: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          execution_id: string
+          execution_log?: Json | null
+          id?: string
+          metrics?: Json | null
+          pipeline_id?: string | null
+          records_failed?: number | null
+          records_processed?: number | null
+          started_at?: string | null
+          status?: string | null
+          trigger_type?: string | null
+          triggered_by?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          duration_seconds?: number | null
+          error_message?: string | null
+          execution_id?: string
+          execution_log?: Json | null
+          id?: string
+          metrics?: Json | null
+          pipeline_id?: string | null
+          records_failed?: number | null
+          records_processed?: number | null
+          started_at?: string | null
+          status?: string | null
+          trigger_type?: string | null
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_executions_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "data_pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pipeline_executions_triggered_by_fkey"
+            columns: ["triggered_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1070,6 +1605,245 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      quality_indicators: {
+        Row: {
+          calculation_method: string | null
+          category: string
+          created_at: string | null
+          data_source: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          reporting_frequency: string | null
+          target_value: number | null
+          unit: string | null
+        }
+        Insert: {
+          calculation_method?: string | null
+          category: string
+          created_at?: string | null
+          data_source?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          reporting_frequency?: string | null
+          target_value?: number | null
+          unit?: string | null
+        }
+        Update: {
+          calculation_method?: string | null
+          category?: string
+          created_at?: string | null
+          data_source?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          reporting_frequency?: string | null
+          target_value?: number | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      quality_measurements: {
+        Row: {
+          created_at: string | null
+          denominator: number | null
+          department_id: string | null
+          id: string
+          indicator_id: string | null
+          measured_by: string | null
+          measurement_date: string
+          notes: string | null
+          numerator: number | null
+          value: number
+        }
+        Insert: {
+          created_at?: string | null
+          denominator?: number | null
+          department_id?: string | null
+          id?: string
+          indicator_id?: string | null
+          measured_by?: string | null
+          measurement_date: string
+          notes?: string | null
+          numerator?: number | null
+          value: number
+        }
+        Update: {
+          created_at?: string | null
+          denominator?: number | null
+          department_id?: string | null
+          id?: string
+          indicator_id?: string | null
+          measured_by?: string | null
+          measurement_date?: string
+          notes?: string | null
+          numerator?: number | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_measurements_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quality_measurements_indicator_id_fkey"
+            columns: ["indicator_id"]
+            isOneToOne: false
+            referencedRelation: "quality_indicators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quality_measurements_measured_by_fkey"
+            columns: ["measured_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_definitions: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          output_format: string | null
+          parameters: Json | null
+          query_definition: Json
+          recipients: Json | null
+          report_type: string
+          schedule_cron: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          output_format?: string | null
+          parameters?: Json | null
+          query_definition: Json
+          recipients?: Json | null
+          report_type: string
+          schedule_cron?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          output_format?: string | null
+          parameters?: Json | null
+          query_definition?: Json
+          recipients?: Json | null
+          report_type?: string
+          schedule_cron?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_definitions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_executions: {
+        Row: {
+          error_message: string | null
+          execution_date: string | null
+          execution_time_ms: number | null
+          file_path: string | null
+          file_size: number | null
+          generated_by: string | null
+          id: string
+          report_definition_id: string | null
+          status: string | null
+        }
+        Insert: {
+          error_message?: string | null
+          execution_date?: string | null
+          execution_time_ms?: number | null
+          file_path?: string | null
+          file_size?: number | null
+          generated_by?: string | null
+          id?: string
+          report_definition_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          error_message?: string | null
+          execution_date?: string | null
+          execution_time_ms?: number | null
+          file_path?: string | null
+          file_size?: number | null
+          generated_by?: string | null
+          id?: string
+          report_definition_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_executions_generated_by_fkey"
+            columns: ["generated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_executions_report_definition_id_fkey"
+            columns: ["report_definition_id"]
+            isOneToOne: false
+            referencedRelation: "report_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      role_permissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          permission_id: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          permission_id?: string | null
+          role: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          permission_id?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       slas: {
         Row: {
@@ -1127,6 +1901,87 @@ export type Database = {
             columns: ["kpi_id"]
             isOneToOne: false
             referencedRelation: "kpis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff: {
+        Row: {
+          certifications: Json | null
+          created_at: string | null
+          credentials: string[] | null
+          deleted_at: string | null
+          department_id: string | null
+          emergency_contact: Json | null
+          employee_id: string
+          employment_type: string | null
+          hire_date: string | null
+          hourly_rate: number | null
+          id: string
+          is_active: boolean | null
+          license_expiry: string | null
+          license_number: string | null
+          overtime_rate: number | null
+          position: string
+          profile_id: string | null
+          specializations: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          certifications?: Json | null
+          created_at?: string | null
+          credentials?: string[] | null
+          deleted_at?: string | null
+          department_id?: string | null
+          emergency_contact?: Json | null
+          employee_id: string
+          employment_type?: string | null
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean | null
+          license_expiry?: string | null
+          license_number?: string | null
+          overtime_rate?: number | null
+          position: string
+          profile_id?: string | null
+          specializations?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          certifications?: Json | null
+          created_at?: string | null
+          credentials?: string[] | null
+          deleted_at?: string | null
+          department_id?: string | null
+          emergency_contact?: Json | null
+          employee_id?: string
+          employment_type?: string | null
+          hire_date?: string | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean | null
+          license_expiry?: string | null
+          license_number?: string | null
+          overtime_rate?: number | null
+          position?: string
+          profile_id?: string | null
+          specializations?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1205,6 +2060,56 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string | null
+          device_fingerprint: string | null
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          login_method: string | null
+          session_token: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          login_method?: string | null
+          session_token: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          login_method?: string | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wait_times: {
         Row: {

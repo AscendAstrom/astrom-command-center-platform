@@ -2,6 +2,7 @@
 import { useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageLoadingSpinner } from '@/components/LoadingSpinner';
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -18,11 +19,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoadingSpinner text="Authenticating..." />;
   }
 
   if (!user) {
