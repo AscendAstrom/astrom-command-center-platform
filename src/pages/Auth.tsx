@@ -73,7 +73,7 @@ const Auth = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <LogoIcon size="xl" animate={true} />
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              AstroMedix AI
+              Astrom
             </h1>
           </div>
         </div>

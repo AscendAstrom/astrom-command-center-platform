@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -71,7 +72,7 @@ const Dashboard = () => {
             <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-border/50">
               <LogoIcon size="sm" animate={true} />
             </div>
-            <h1 className="text-3xl font-bold text-foreground">ASTROM</h1>
+            <h1 className="text-3xl font-bold text-foreground">Astrom</h1>
             <span className="text-sm text-blue-400 font-medium">Intelligence Platform Dashboard</span>
           </div>
           <p className="text-muted-foreground max-w-2xl">
