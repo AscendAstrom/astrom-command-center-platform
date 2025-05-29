@@ -1,134 +1,105 @@
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "@/components/ThemeProvider"
-import { AuthProvider } from "@/contexts/AuthContext";
-import { AuthGuard } from "@/components/auth/AuthGuard";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import Dashboard from "./pages/Dashboard";
-import CommandCenter from "./pages/CommandCenter";
 import AstroScan from "./pages/AstroScan";
 import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
-import AstroFlow from "./pages/AstroFlow";
 import AstroView from "./pages/AstroView";
+import AstroFlow from "./pages/AstroFlow";
+import AIEcosystem from "./pages/AIEcosystem";
+import CommandCenter from "./pages/CommandCenter";
 import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
-import DashboardLayout from "./components/DashboardLayout";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/toaster"
-import AIEcosystem from "./pages/AIEcosystem";
+import { AuthProvider } from "./contexts/AuthContext";
+import { AuthGuard } from "./components/auth/AuthGuard";
+import { ProductionGuard } from "./components/ProductionGuard";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <Dashboard />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/dashboard" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <Dashboard />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/command-center" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <CommandCenter />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/astro-scan" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AstroScan />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/astro-bricks" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AstroBricks />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/astro-metrics" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AstroMetrics />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/astro-flow" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AstroFlow />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/astro-view" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AstroView />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/ai-ecosystem" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AIEcosystem />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/admin" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <AdminPanel />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-            <Route path="/settings" element={
-              <AuthGuard>
-                <SidebarProvider>
-                  <DashboardLayout>
-                    <Settings />
-                  </DashboardLayout>
-                </SidebarProvider>
-              </AuthGuard>
-            } />
-          </Routes>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <TooltipProvider>
+          <ProductionGuard>
+            <AuthProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/" element={
+                    <AuthGuard>
+                      <Dashboard />
+                    </AuthGuard>
+                  } />
+                  <Route path="/astro-scan" element={
+                    <AuthGuard>
+                      <AstroScan />
+                    </AuthGuard>
+                  } />
+                  <Route path="/astro-bricks" element={
+                    <AuthGuard>
+                      <AstroBricks />
+                    </AuthGuard>
+                  } />
+                  <Route path="/astro-metrics" element={
+                    <AuthGuard>
+                      <AstroMetrics />
+                    </AuthGuard>
+                  } />
+                  <Route path="/astro-view" element={
+                    <AuthGuard>
+                      <AstroView />
+                    </AuthGuard>
+                  } />
+                  <Route path="/astro-flow" element={
+                    <AuthGuard>
+                      <AstroFlow />
+                    </AuthGuard>
+                  } />
+                  <Route path="/ai-ecosystem" element={
+                    <AuthGuard>
+                      <AIEcosystem />
+                    </AuthGuard>
+                  } />
+                  <Route path="/command-center" element={
+                    <AuthGuard>
+                      <CommandCenter />
+                    </AuthGuard>
+                  } />
+                  <Route path="/admin" element={
+                    <AuthGuard>
+                      <AdminPanel />
+                    </AuthGuard>
+                  } />
+                  <Route path="/settings" element={
+                    <AuthGuard>
+                      <Settings />
+                    </AuthGuard>
+                  } />
+                </Routes>
+              </BrowserRouter>
+            </AuthProvider>
+          </ProductionGuard>
           <Toaster />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
