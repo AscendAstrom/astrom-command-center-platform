@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
+import LogoIcon from '@/components/ui/LogoIcon';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -69,9 +70,12 @@ const Auth = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            AstroMedix AI
-          </h1>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <LogoIcon size="xl" animate={true} />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              AstroMedix AI
+            </h1>
+          </div>
           <p className="text-muted-foreground mt-2">
             Healthcare Data Intelligence Platform
           </p>
