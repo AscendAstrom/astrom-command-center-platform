@@ -1,14 +1,32 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { 
   Brain, 
   TrendingUp, 
   AlertTriangle, 
   Activity,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const WorkflowOverview = () => {
+  const navigate = useNavigate();
+
+  const handleConfigureAITriggers = () => {
+    navigate("/astro-flow?tab=rules");
+    toast.info("Navigating to AI Triggers configuration...");
+  };
+
+  const handleViewWorkflowRules = () => {
+    navigate("/astro-flow?tab=rules");
+    toast.info("Navigating to Workflow Rules...");
+  };
+
+  const handleAIModelSpecs = () => {
+    navigate("/ai-ecosystem");
+    toast.info("Navigating to AI Ecosystem for model specifications...");
+  };
+
   return (
     <Card className="bg-card/80 border-border backdrop-blur-sm">
       <CardHeader>
@@ -86,15 +104,24 @@ const WorkflowOverview = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Button className="bg-pink-600 hover:bg-pink-700">
+            <Button 
+              className="bg-pink-600 hover:bg-pink-700"
+              onClick={handleConfigureAITriggers}
+            >
               <AlertTriangle className="h-4 w-4 mr-2" />
               Configure AI Triggers
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={handleViewWorkflowRules}
+            >
               <TrendingUp className="h-4 w-4 mr-2" />
               View Workflow Rules
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={handleAIModelSpecs}
+            >
               <Brain className="h-4 w-4 mr-2" />
               AI Model Specs
             </Button>
