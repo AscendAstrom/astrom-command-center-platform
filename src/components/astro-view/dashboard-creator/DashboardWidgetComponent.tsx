@@ -1,9 +1,8 @@
 
-import { useState, useCallback } from 'react';
-import { useDrag } from 'react-dnd';
+import { useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Settings } from 'lucide-react';
+import { X, Settings } from 'lucide-react';
 import { DashboardWidget } from './types';
 import WidgetChart from './widgets/WidgetChart';
 import WidgetMetric from './widgets/WidgetMetric';
@@ -28,20 +27,6 @@ const DashboardWidgetComponent = ({
   onDelete,
   isPreviewMode
 }: DashboardWidgetComponentProps) => {
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [{ }, drag] = useDrag(() => ({
-    type: 'widget',
-    item: { type: 'widget', widget },
-    collect: (monitor) => {
-      setIsDragging(monitor.isDragging());
-    },
-  }));
-
-  const handlePositionChange = useCallback((newPosition: { x: number; y: number }) => {
-    onUpdate({ ...widget, position: newPosition });
-  }, [widget, onUpdate]);
-
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isPreviewMode) {
@@ -68,8 +53,7 @@ const DashboardWidgetComponent = ({
 
   return (
     <div
-      ref={!isPreviewMode ? drag : undefined}
-      className={`absolute select-none ${isDragging ? 'opacity-50' : ''}`}
+      className="absolute select-none"
       style={{
         left: widget.position.x,
         top: widget.position.y,
@@ -84,7 +68,7 @@ const DashboardWidgetComponent = ({
           isSelected && !isPreviewMode 
             ? 'ring-2 ring-purple-400 shadow-lg' 
             : 'hover:shadow-md'
-        } ${!isPreviewMode ? 'cursor-move' : ''}`}
+        } ${!isPreviewMode ? 'cursor-pointer' : ''}`}
         style={{
           backgroundColor: widget.config.backgroundColor,
           borderColor: widget.config.borderColor
@@ -136,13 +120,6 @@ const DashboardWidgetComponent = ({
             {renderWidget()}
           </div>
         </CardContent>
-
-        {/* Drag Handle */}
-        {!isPreviewMode && isSelected && (
-          <div className="absolute bottom-1 right-1 cursor-move text-muted-foreground">
-            <GripVertical className="h-4 w-4" />
-          </div>
-        )}
       </Card>
     </div>
   );
