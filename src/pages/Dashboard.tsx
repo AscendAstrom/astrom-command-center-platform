@@ -14,13 +14,21 @@ import {
   Layers,
   ArrowRight,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw,
+  Settings,
+  BarChart3
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 import LogoIcon from "@/components/ui/LogoIcon";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const modules = [
     {
       title: "ASTRO-SCAN",
@@ -64,18 +72,63 @@ const Dashboard = () => {
     }
   ];
 
+  const handleRefreshStats = () => {
+    setIsRefreshing(true);
+    toast.info("Refreshing platform statistics...");
+    
+    setTimeout(() => {
+      setIsRefreshing(false);
+      toast.success("Statistics refreshed successfully!");
+    }, 2000);
+  };
+
+  const handleModuleNavigation = (module: any) => {
+    toast.info(`Navigating to ${module.title}...`);
+    navigate(module.link);
+  };
+
+  const handleQuickAction = (action: string, path: string) => {
+    toast.info(`Opening ${action}...`);
+    navigate(path);
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-border/50">
-              <LogoIcon size="sm" animate={true} />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center border border-border/50">
+                <LogoIcon size="sm" animate={true} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">Astrom</h1>
+                <span className="text-sm text-blue-400 font-medium">Intelligence Platform Dashboard</span>
+              </div>
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Astrom</h1>
-            <span className="text-sm text-blue-400 font-medium">Intelligence Platform Dashboard</span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefreshStats}
+                disabled={isRefreshing}
+                className="hover:bg-blue-500/10 border-blue-500/20"
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                {isRefreshing ? "Refreshing..." : "Refresh Stats"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleQuickAction("Settings", "/settings")}
+                className="hover:bg-gray-500/10"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+            </div>
           </div>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl mt-2">
             Comprehensive data intelligence platform providing end-to-end analytics, 
             from data ingestion to advanced visualizations and automated workflows.
           </p>
@@ -83,7 +136,7 @@ const Dashboard = () => {
 
         {/* Platform Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-card border-border">
+          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -94,14 +147,23 @@ const Dashboard = () => {
                     <p className="text-sm text-green-400 font-semibold">+8% this week</p>
                   </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <Database className="h-7 w-7 text-white" />
                 </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-4 text-blue-400 hover:bg-blue-500/10"
+                onClick={() => handleQuickAction("Data Sources", "/astro-scan")}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                View Details
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
+          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -109,14 +171,23 @@ const Dashboard = () => {
                   <p className="text-3xl font-bold text-foreground">156</p>
                   <p className="text-sm text-orange-400 font-semibold">12 active pipelines</p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <Layers className="h-7 w-7 text-white" />
                 </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-4 text-orange-400 hover:bg-orange-500/10"
+                onClick={() => handleQuickAction("Data Models", "/astro-bricks")}
+              >
+                <Layers className="h-4 w-4 mr-2" />
+                Manage Models
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
+          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -127,14 +198,23 @@ const Dashboard = () => {
                     <p className="text-sm text-green-400 font-semibold">89 online now</p>
                   </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <Users className="h-7 w-7 text-white" />
                 </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-4 text-green-400 hover:bg-green-500/10"
+                onClick={() => handleQuickAction("User Management", "/admin")}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                View Users
+              </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border">
+          <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -145,10 +225,19 @@ const Dashboard = () => {
                     <p className="text-sm text-green-400 font-semibold">All systems operational</p>
                   </div>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <Activity className="h-7 w-7 text-white" />
                 </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-4 text-green-400 hover:bg-green-500/10"
+                onClick={() => handleQuickAction("System Status", "/admin")}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                Health Check
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -169,7 +258,8 @@ const Dashboard = () => {
             {modules.map((module, index) => (
               <Card 
                 key={module.title} 
-                className="bg-card border-border hover:bg-accent transition-all duration-300 group cursor-pointer"
+                className="bg-card border-border hover:bg-accent transition-all duration-300 group cursor-pointer hover:shadow-lg"
+                onClick={() => handleModuleNavigation(module)}
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
@@ -188,15 +278,17 @@ const Dashboard = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <Link to={module.link}>
-                    <Button 
-                      variant="ghost" 
-                      className={`w-full justify-start ${module.color} hover:bg-accent font-semibold transition-colors duration-300`}
-                    >
-                      Explore Module
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="ghost" 
+                    className={`w-full justify-start ${module.color} hover:bg-accent font-semibold transition-colors duration-300`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleModuleNavigation(module);
+                    }}
+                  >
+                    Explore Module
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -218,33 +310,39 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link to="/astro-scan">
-                <Button variant="outline" className="w-full h-16 text-left justify-start border-border hover:bg-accent">
-                  <Database className="h-5 w-5 mr-3 text-blue-400" />
-                  <div>
-                    <div className="font-semibold text-foreground">Add Data Source</div>
-                    <div className="text-sm text-muted-foreground">Connect new data</div>
-                  </div>
-                </Button>
-              </Link>
-              <Link to="/astro-view">
-                <Button variant="outline" className="w-full h-16 text-left justify-start border-border hover:bg-accent">
-                  <Eye className="h-5 w-5 mr-3 text-purple-400" />
-                  <div>
-                    <div className="font-semibold text-foreground">Create Dashboard</div>
-                    <div className="text-sm text-muted-foreground">Build visualizations</div>
-                  </div>
-                </Button>
-              </Link>
-              <Link to="/astro-metrics">
-                <Button variant="outline" className="w-full h-16 text-left justify-start border-border hover:bg-accent">
-                  <Target className="h-5 w-5 mr-3 text-green-400" />
-                  <div>
-                    <div className="font-semibold text-foreground">Monitor KPIs</div>
-                    <div className="text-sm text-muted-foreground">Track performance</div>
-                  </div>
-                </Button>
-              </Link>
+              <Button 
+                variant="outline" 
+                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-blue-400 transition-all duration-300"
+                onClick={() => handleQuickAction("Add Data Source", "/astro-scan")}
+              >
+                <Database className="h-5 w-5 mr-3 text-blue-400" />
+                <div>
+                  <div className="font-semibold text-foreground">Add Data Source</div>
+                  <div className="text-sm text-muted-foreground">Connect new data</div>
+                </div>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-purple-400 transition-all duration-300"
+                onClick={() => handleQuickAction("Create Dashboard", "/astro-view")}
+              >
+                <Eye className="h-5 w-5 mr-3 text-purple-400" />
+                <div>
+                  <div className="font-semibold text-foreground">Create Dashboard</div>
+                  <div className="text-sm text-muted-foreground">Build visualizations</div>
+                </div>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-green-400 transition-all duration-300"
+                onClick={() => handleQuickAction("Monitor KPIs", "/astro-metrics")}
+              >
+                <Target className="h-5 w-5 mr-3 text-green-400" />
+                <div>
+                  <div className="font-semibold text-foreground">Monitor KPIs</div>
+                  <div className="text-sm text-muted-foreground">Track performance</div>
+                </div>
+              </Button>
             </div>
           </CardContent>
         </Card>
