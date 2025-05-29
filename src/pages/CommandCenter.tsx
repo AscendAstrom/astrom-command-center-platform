@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,7 +21,7 @@ import {
 
 export default function CommandCenter() {
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState("ingestion");
+  const [activeTab, setActiveTab] = useState("automation");
 
   useEffect(() => {
     const tabParam = searchParams.get("tab");
