@@ -10,7 +10,7 @@ import {
   Brain,
   Bell
 } from "lucide-react";
-import RuleBuilder from "@/components/astro-flow/RuleBuilder";
+import EnhancedRuleBuilder from "@/components/astro-flow/EnhancedRuleBuilder";
 import SLABreachRadar from "@/components/astro-flow/SLABreachRadar";
 import SurgePredictor from "@/components/astro-flow/SurgePredictor";
 import NLPAssistant from "@/components/astro-flow/NLPAssistant";
@@ -19,6 +19,7 @@ import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSect
 import AstroFlowHeader from "@/components/astro-flow/AstroFlowHeader";
 import WorkflowOverview from "@/components/astro-flow/WorkflowOverview";
 import BedManagementDemo from "@/components/astro-flow/BedManagementDemo";
+import AdvancedWorkflowAutomation from "@/components/ai-ecosystem/AdvancedWorkflowAutomation";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
@@ -75,7 +76,7 @@ const AstroFlow = () => {
         <AstroFlowHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-8 bg-muted/50">
             <TabsTrigger 
               value="workflow" 
               className="data-[state=active]:bg-pink-500/20 transition-all duration-200 hover:bg-pink-500/10"
@@ -91,11 +92,18 @@ const AstroFlow = () => {
               AI Roles
             </TabsTrigger>
             <TabsTrigger 
-              value="rules" 
+              value="advanced" 
+              className="data-[state=active]:bg-purple-500/20 transition-all duration-200 hover:bg-purple-500/10"
+            >
+              <Brain className="h-4 w-4 mr-2" />
+              Advanced AI
+            </TabsTrigger>
+            <TabsTrigger 
+              value="automation" 
               className="data-[state=active]:bg-orange-500/20 transition-all duration-200 hover:bg-orange-500/10"
             >
               <Settings className="h-4 w-4 mr-2" />
-              Rules
+              Automation
             </TabsTrigger>
             <TabsTrigger 
               value="monitoring" 
@@ -149,21 +157,12 @@ const AstroFlow = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="rules" className="space-y-6">
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-pink-400" />
-                  Rule Builder
-                </CardTitle>
-                <CardDescription>
-                  Create and manage automation rules for healthcare workflows
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RuleBuilder userRole={flowUserRole} />
-              </CardContent>
-            </Card>
+          <TabsContent value="advanced" className="space-y-6">
+            <EnhancedRuleBuilder userRole={flowUserRole} />
+          </TabsContent>
+
+          <TabsContent value="automation" className="space-y-6">
+            <AdvancedWorkflowAutomation />
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6">
