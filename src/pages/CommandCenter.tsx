@@ -1,4 +1,5 @@
-
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +20,16 @@ import {
 } from "lucide-react";
 
 export default function CommandCenter() {
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState("preparation");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -44,7 +55,7 @@ export default function CommandCenter() {
       </div>
 
       {/* Main Workflow Tabs */}
-      <Tabs defaultValue="ingestion" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6 bg-muted/50">
           <TabsTrigger value="ingestion" className="data-[state=active]:bg-blue-500/20">
             <Database className="h-4 w-4 mr-2" />
@@ -127,19 +138,96 @@ export default function CommandCenter() {
                   <Wrench className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground">Normalization, Modeling & Transformation</h2>
+                  <h2 className="text-xl font-semibold text-foreground">Phase 2: Normalization, Modeling & Transformation</h2>
                   <p className="text-muted-foreground">Clean and unify data formats for analysis</p>
                 </div>
               </div>
               
-              <p className="text-muted-foreground mb-4">
-                Clean and unify data formats. Define fact/dimension tables like <code className="bg-muted px-1 rounded">fact_ed_inbound</code>, 
-                <code className="bg-muted px-1 rounded">dim_patient</code>, and apply KPI logic transformation rules.
-              </p>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <Button variant="default">Configure Data Models</Button>
-                <Button variant="outline">View Transformation Rules</Button>
+              <div className="space-y-6">
+                <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                  <h3 className="font-semibold text-foreground mb-2">🎯 Phase 2 Focus: Data Preparation Pipeline</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Clean and unify data formats. Define fact/dimension tables like <code className="bg-muted px-1 rounded">fact_ed_inbound</code>, 
+                    <code className="bg-muted px-1 rounded">dim_patient</code>, and apply KPI logic transformation rules.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="p-4 border border-border rounded-lg">
+                    <h4 className="font-medium text-foreground mb-2">Data Cleaning</h4>
+                    <p className="text-sm text-muted-foreground mb-3">Remove duplicates, handle missing values, standardize formats</p>
+                    <Button variant="default" size="sm" className="w-full">
+                      Configure Cleaning Rules
+                    </Button>
+                  </div>
+                  
+                  <div className="p-4 border border-border rounded-lg">
+                    <h4 className="font-medium text-foreground mb-2">Schema Modeling</h4>
+                    <p className="text-sm text-muted-foreground mb-3">Define dimensional models and fact tables</p>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Design Data Models
+                    </Button>
+                  </div>
+                  
+                  <div className="p-4 border border-border rounded-lg">
+                    <h4 className="font-medium text-foreground mb-2">Transformations</h4>
+                    <p className="text-sm text-muted-foreground mb-3">Apply business logic and KPI calculations</p>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Build Transform Rules
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-3">Transformation Status</h4>
+                    <div className="space-y-2">
+                      {[
+                        { name: 'Patient Data Normalization', status: 'completed', progress: 100 },
+                        { name: 'Wait Time Calculations', status: 'in_progress', progress: 75 },
+                        { name: 'SLA Metrics Processing', status: 'in_progress', progress: 45 },
+                        { name: 'Capacity Forecasting', status: 'pending', progress: 0 }
+                      ].map((item) => (
+                        <div key={item.name} className="p-3 border border-border rounded">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium">{item.name}</span>
+                            <Badge variant={item.status === 'completed' ? 'default' : item.status === 'in_progress' ? 'secondary' : 'outline'}>
+                              {item.status.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${item.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium text-foreground mb-3">Data Quality Metrics</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                        <span className="text-sm">Completeness</span>
+                        <span className="text-sm font-medium text-green-400">94.2%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                        <span className="text-sm">Accuracy</span>
+                        <span className="text-sm font-medium text-green-400">98.7%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                        <span className="text-sm">Consistency</span>
+                        <span className="text-sm font-medium text-yellow-400">87.1%</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                        <span className="text-sm">Timeliness</span>
+                        <span className="text-sm font-medium text-green-400">99.3%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

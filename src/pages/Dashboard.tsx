@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 const Dashboard = () => {
   const [shouldNavigate, setShouldNavigate] = useState(false);
 
-  // Auto-navigate to AstroScan
+  // Auto-navigate to Command Center Phase 2
   useEffect(() => {
     const timer = setTimeout(() => {
       setShouldNavigate(true);
@@ -21,7 +22,7 @@ const Dashboard = () => {
   }, []);
 
   if (shouldNavigate) {
-    return <NavigationHelper to="/astro-scan" />;
+    return <NavigationHelper to="/command-center?tab=preparation" />;
   }
 
   const stats = [
@@ -77,7 +78,7 @@ const Dashboard = () => {
             </Badge>
             <Button variant="outline" size="sm">
               <ArrowRight className="h-4 w-4 mr-2" />
-              Navigating to AstroScan...
+              Navigating to Phase 2...
             </Button>
           </div>
         </div>
