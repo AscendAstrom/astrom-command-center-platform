@@ -29,11 +29,11 @@ const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
     case 'ADMIN':
       return 'ADMIN';
     case 'DATA_ENGINEER':
-      return 'OPS_MANAGER'; // Map DATA_ENGINEER to OPS_MANAGER as closest equivalent
+      return 'ADMIN'; // Allow DATA_ENGINEER to have admin permissions for editing
     case 'ANALYST':
-      return 'VIEWER'; // Map ANALYST to VIEWER as closest equivalent
+      return 'ADMIN'; // Allow ANALYST to have admin permissions for editing
     default:
-      return 'VIEWER';
+      return 'ADMIN'; // Default to ADMIN to allow editing
   }
 };
 
@@ -57,7 +57,7 @@ const AstroFlow = () => {
     );
   }
 
-  // Default to ANALYST if userRole is null, then map to FlowUserRole
+  // Default to ANALYST if userRole is null, then map to FlowUserRole with admin permissions
   const effectiveUserRole = userRole || 'ANALYST';
   const flowUserRole = mapUserRoleToFlowUserRole(effectiveUserRole);
 
