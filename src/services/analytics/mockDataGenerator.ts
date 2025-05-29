@@ -74,14 +74,50 @@ export class MockDataGenerator {
   }
 
   generateChartData(baseData: any, chartHistory: any): AnalyticsData['chartData'] {
+    // Generate more realistic staff allocation data
+    const totalStaff = baseData.clinicalOperations.activeStaff;
+    const variation = Math.floor(Math.random() * 10 - 5); // Small variation each time
+    
     return {
       waitTimes: chartHistory.waitTimes || [],
       patientFlow: chartHistory.patientFlow || [],
       staffAllocation: [
-        { category: 'Nurses', value: Math.floor(baseData.clinicalOperations.activeStaff * 0.4) },
-        { category: 'Doctors', value: Math.floor(baseData.clinicalOperations.activeStaff * 0.3) },
-        { category: 'Support', value: Math.floor(baseData.clinicalOperations.activeStaff * 0.2) },
-        { category: 'Admin', value: Math.floor(baseData.clinicalOperations.activeStaff * 0.1) }
+        { 
+          category: 'Registered Nurses', 
+          value: Math.floor(totalStaff * 0.45) + variation,
+          shift: 'Current',
+          department: 'ED'
+        },
+        { 
+          category: 'Physicians', 
+          value: Math.floor(totalStaff * 0.18) + Math.floor(variation / 2),
+          shift: 'Current',
+          department: 'ED'
+        },
+        { 
+          category: 'Nurse Practitioners', 
+          value: Math.floor(totalStaff * 0.12) + Math.floor(variation / 3),
+          shift: 'Current',
+          department: 'ED'
+        },
+        { 
+          category: 'Technicians', 
+          value: Math.floor(totalStaff * 0.15) + Math.floor(variation / 2),
+          shift: 'Current',
+          department: 'ED'
+        },
+        { 
+          category: 'Administrative', 
+          value: Math.floor(totalStaff * 0.07) + Math.floor(variation / 4),
+          shift: 'Current',
+          department: 'ED'
+        },
+        { 
+          category: 'Security', 
+          value: Math.floor(totalStaff * 0.03) + Math.floor(variation / 5),
+          shift: 'Current',
+          department: 'ED'
+        }
       ],
       bedUtilization: [
         { name: 'Occupied', value: baseData.emergencyDepartment.bedUtilization },
