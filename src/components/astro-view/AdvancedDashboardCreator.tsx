@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Save, Play, Settings, Grid, BarChart3, PieChart, TrendingUp, Activity } from 'lucide-react';
+import { Save, Play, Settings, Grid2X2, BarChart3, PieChart, TrendingUp, Activity } from 'lucide-react';
 import DashboardCanvas from './dashboard-creator/DashboardCanvas';
 import WidgetPalette from './dashboard-creator/WidgetPalette';
 import PropertiesPanel from './dashboard-creator/PropertiesPanel';
@@ -97,7 +97,7 @@ const AdvancedDashboardCreator = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <Grid className="h-6 w-6 text-purple-400" />
+                <Grid2X2 className="h-6 w-6 text-purple-400" />
                 <h1 className="text-xl font-semibold text-foreground">Dashboard Creator</h1>
               </div>
               

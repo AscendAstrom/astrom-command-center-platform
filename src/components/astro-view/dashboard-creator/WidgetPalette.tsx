@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDrag } from 'react-dnd';
-import { BarChart3, PieChart, Activity, Gauge, Map, Type, Grid } from 'lucide-react';
+import { BarChart3, PieChart, Activity, Gauge, Map, Type, Grid2X2 } from 'lucide-react';
 import { WidgetType } from './types';
 
 interface WidgetPaletteProps {
@@ -62,7 +62,7 @@ const WidgetPalette = ({ onAddWidget }: WidgetPaletteProps) => {
     },
     {
       type: 'table' as WidgetType,
-      icon: <Grid className="h-4 w-4 text-blue-600" />,
+      icon: <Grid2X2 className="h-4 w-4 text-blue-600" />,
       label: 'Data Table',
       description: 'Tabular data view'
     },
