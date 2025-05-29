@@ -29,145 +29,125 @@ import {
   CheckCircle
 } from 'lucide-react';
 
-export interface NavigationItem {
-  id: string;
-  label: string;
-  icon: any;
-  href: string;
-  badge?: string;
-  description: string;
-  category: 'core' | 'intelligence' | 'operations' | 'admin';
-}
+import { NavigationItem, SystemItem } from './types';
 
 export const navigationItems: NavigationItem[] = [
-  // Core Platform
   {
-    id: 'dashboard',
-    label: 'Dashboard',
+    title: 'Dashboard',
+    subtitle: 'Platform Overview',
+    url: '/dashboard',
     icon: Home,
-    href: '/dashboard',
-    description: 'Main platform overview and analytics',
-    category: 'core'
+    color: 'text-blue-600',
+    bg: 'bg-blue-50',
+    activeBg: 'bg-blue-100',
+    iconBg: 'bg-gradient-to-br from-blue-500 to-blue-600'
   },
   {
-    id: 'astro-scan',
-    label: 'ASTRO-SCAN',
+    title: 'ASTRO-SCAN',
+    subtitle: 'Data Ingestion',
+    url: '/astro-scan',
     icon: Search,
-    href: '/astro-scan',
-    description: 'Data ingestion and source management',
-    category: 'core'
+    color: 'text-green-600',
+    bg: 'bg-green-50',
+    activeBg: 'bg-green-100',
+    iconBg: 'bg-gradient-to-br from-green-500 to-green-600'
   },
   {
-    id: 'astro-bricks',
-    label: 'ASTRO-BRICKS',
+    title: 'ASTRO-BRICKS',
+    subtitle: 'Data Modeling',
+    url: '/astro-bricks',
     icon: Database,
-    href: '/astro-bricks',
-    description: 'Data modeling and transformation',
-    category: 'core'
+    color: 'text-purple-600',
+    bg: 'bg-purple-50',
+    activeBg: 'bg-purple-100',
+    iconBg: 'bg-gradient-to-br from-purple-500 to-purple-600'
   },
   {
-    id: 'astro-metrics',
-    label: 'ASTRO-METRICS',
+    title: 'ASTRO-METRICS',
+    subtitle: 'KPI Analytics',
+    url: '/astro-metrics',
     icon: BarChart3,
-    href: '/astro-metrics',
-    description: 'KPI management and performance analytics',
-    category: 'core'
+    color: 'text-orange-600',
+    bg: 'bg-orange-50',
+    activeBg: 'bg-orange-100',
+    iconBg: 'bg-gradient-to-br from-orange-500 to-orange-600'
   },
   {
-    id: 'astro-view',
-    label: 'ASTRO-VIEW',
+    title: 'ASTRO-VIEW',
+    subtitle: 'Visualization',
+    url: '/astro-view',
     icon: Eye,
-    href: '/astro-view',
-    description: 'Data visualization and dashboards',
-    category: 'core'
+    color: 'text-cyan-600',
+    bg: 'bg-cyan-50',
+    activeBg: 'bg-cyan-100',
+    iconBg: 'bg-gradient-to-br from-cyan-500 to-cyan-600'
   },
   {
-    id: 'astro-flow',
-    label: 'ASTRO-FLOW',
+    title: 'ASTRO-FLOW',
+    subtitle: 'Automation',
+    url: '/astro-flow',
     icon: Workflow,
-    href: '/astro-flow',
-    description: 'Workflow automation and process management',
-    category: 'core'
+    color: 'text-indigo-600',
+    bg: 'bg-indigo-50',
+    activeBg: 'bg-indigo-100',
+    iconBg: 'bg-gradient-to-br from-indigo-500 to-indigo-600'
   },
-
-  // Intelligence & AI
   {
-    id: 'ai-ecosystem',
-    label: 'AI-ECOSYSTEM',
+    title: 'AI-ECOSYSTEM',
+    subtitle: 'Intelligence Platform',
+    url: '/ai-ecosystem',
     icon: Brain,
-    href: '/ai-ecosystem',
-    badge: 'AI',
-    description: 'Advanced AI and machine learning platform',
-    category: 'intelligence'
+    color: 'text-pink-600',
+    bg: 'bg-pink-50',
+    activeBg: 'bg-pink-100',
+    iconBg: 'bg-gradient-to-br from-pink-500 to-pink-600'
   },
   {
-    id: 'command-center',
-    label: 'Command Center',
+    title: 'Command Center',
+    subtitle: 'Executive Control',
+    url: '/command-center',
     icon: Monitor,
-    href: '/command-center',
-    description: 'Executive command and control center',
-    category: 'intelligence'
-  },
-
-  // Operations
-  {
-    id: 'bed-management',
-    label: 'Bed Management',
-    icon: Building2,
-    href: '/dashboard',
-    description: 'Hospital bed tracking and allocation',
-    category: 'operations'
-  },
-  {
-    id: 'patient-flow',
-    label: 'Patient Flow',
-    icon: Activity,
-    href: '/dashboard',
-    description: 'Patient journey and flow optimization',
-    category: 'operations'
-  },
-  {
-    id: 'clinical-ops',
-    label: 'Clinical Operations',
-    icon: Stethoscope,
-    href: '/dashboard',
-    description: 'Clinical workflow management',
-    category: 'operations'
-  },
-
-  // Administration
-  {
-    id: 'admin-panel',
-    label: 'Admin Panel',
-    icon: Users,
-    href: '/admin',
-    description: 'User and system administration',
-    category: 'admin'
-  },
-  {
-    id: 'production-audit',
-    label: 'Production Audit',
-    icon: CheckCircle,
-    href: '/production-audit',
-    badge: 'NEW',
-    description: 'Pre-UAT system validation and readiness check',
-    category: 'admin'
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: Settings,
-    href: '/settings',
-    description: 'Application configuration and preferences',
-    category: 'admin'
+    color: 'text-red-600',
+    bg: 'bg-red-50',
+    activeBg: 'bg-red-100',
+    iconBg: 'bg-gradient-to-br from-red-500 to-red-600'
   }
 ];
 
-export const getNavigationByCategory = (category: NavigationItem['category']) => {
-  return navigationItems.filter(item => item.category === category);
+export const systemItems: SystemItem[] = [
+  {
+    title: 'Admin Panel',
+    url: '/admin',
+    icon: Users,
+    color: 'text-gray-600',
+    bg: 'bg-gray-50',
+    activeBg: 'bg-gray-100',
+    iconBg: 'bg-gradient-to-br from-gray-500 to-gray-600'
+  },
+  {
+    title: 'Production Audit',
+    url: '/production-audit',
+    icon: CheckCircle,
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+    activeBg: 'bg-emerald-100',
+    iconBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600'
+  },
+  {
+    title: 'Settings',
+    url: '/settings',
+    icon: Settings,
+    color: 'text-slate-600',
+    bg: 'bg-slate-50',
+    activeBg: 'bg-slate-100',
+    iconBg: 'bg-gradient-to-br from-slate-500 to-slate-600'
+  }
+];
+
+export const getNavigationByCategory = (category: string) => {
+  return navigationItems;
 };
 
-export const getCoreModules = () => getNavigationByCategory('core');
-export const getIntelligenceModules = () => getNavigationByCategory('intelligence');
-export const getOperationsModules = () => getNavigationByCategory('operations');
-export const getAdminModules = () => getNavigationByCategory('admin');
+export const getCoreModules = () => navigationItems.slice(0, 6);
+export const getIntelligenceModules = () => navigationItems.slice(6, 8);
+export const getAdminModules = () => systemItems;

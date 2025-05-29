@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
@@ -25,7 +25,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<DashboardLayout />}>
+            <Route path="/" element={<DashboardLayout><Outlet /></DashboardLayout>}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="astro-scan" element={<AstroScan />} />
