@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import {
   Play,
   Target
 } from "lucide-react";
-import DashboardBuilder from "@/components/astro-view/DashboardBuilder";
 import DashboardManager from "@/components/astro-view/DashboardManager";
 import RealtimeDashboard from "@/components/astro-view/RealtimeDashboard";
 import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
@@ -28,7 +28,6 @@ const AstroView = () => {
     setActiveTab(value);
     const tabNames: { [key: string]: string } = {
       dashboards: "Dashboard Management",
-      builder: "Dashboard Builder",
       realtime: "Real-time Visualization",
       semantic: "Semantic Layer"
     };
@@ -47,7 +46,7 @@ const AstroView = () => {
 
   const handleCreateDashboard = () => {
     toast.info("Opening dashboard creation wizard...");
-    setActiveTab("builder");
+    setActiveTab("dashboards");
   };
 
   const handleOptimizeViews = () => {
@@ -182,14 +181,10 @@ const AstroView = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="dashboards" className="data-[state=active]:bg-purple-500/20">
               <Layout className="h-4 w-4 mr-2" />
               Dashboards
-            </TabsTrigger>
-            <TabsTrigger value="builder" className="data-[state=active]:bg-blue-500/20">
-              <Settings className="h-4 w-4 mr-2" />
-              Builder
             </TabsTrigger>
             <TabsTrigger value="realtime" className="data-[state=active]:bg-green-500/20">
               <Play className="h-4 w-4 mr-2" />
@@ -203,10 +198,6 @@ const AstroView = () => {
 
           <TabsContent value="dashboards" className="space-y-6">
             <DashboardManager userRole="ADMIN" />
-          </TabsContent>
-
-          <TabsContent value="builder" className="space-y-6">
-            <DashboardBuilder />
           </TabsContent>
 
           <TabsContent value="realtime" className="space-y-6">
