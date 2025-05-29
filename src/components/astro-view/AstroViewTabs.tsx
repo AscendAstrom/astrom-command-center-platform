@@ -1,7 +1,6 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import DashboardManager from "./DashboardManager";
 import ExecutiveDashboard from "./ExecutiveDashboard";
 import RealtimeDashboard from "./RealtimeDashboard";
 import SemanticLayerBuilder from "./SemanticLayerBuilder";
@@ -14,29 +13,29 @@ interface AstroViewTabsProps {
 }
 
 const AstroViewTabs = ({ activeTab, onTabChange }: AstroViewTabsProps) => {
+  // Default user role for now - in a real app this would come from auth context
+  const userRole = 'ADMIN' as const;
+
   return (
     <div className="mt-6">
       <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 bg-muted/50">
+        <TabsList className="grid w-full grid-cols-5 bg-muted/50">
           <TabsTrigger value="executive" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             Executive
           </TabsTrigger>
           <TabsTrigger value="dashboards" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
-            Dashboards
+            <div className="flex items-center gap-1">
+              Dashboard Builder
+              <Badge variant="secondary" className="text-xs bg-blue-500 text-white border-blue-600">
+                UNIFIED
+              </Badge>
+            </div>
           </TabsTrigger>
           <TabsTrigger value="realtime" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             Real-time
           </TabsTrigger>
           <TabsTrigger value="semantic" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             Semantic Layer
-          </TabsTrigger>
-          <TabsTrigger value="creator" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
-            <div className="flex items-center gap-1">
-              Creator
-              <Badge variant="secondary" className="text-xs bg-orange-500 text-white border-orange-600">
-                NEW
-              </Badge>
-            </div>
           </TabsTrigger>
           <TabsTrigger value="ai-config" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
             <div className="flex items-center gap-1">
@@ -49,23 +48,19 @@ const AstroViewTabs = ({ activeTab, onTabChange }: AstroViewTabsProps) => {
         </TabsList>
 
         <TabsContent value="executive" className="space-y-4">
-          <ExecutiveDashboard />
+          <ExecutiveDashboard userRole={userRole} />
         </TabsContent>
 
         <TabsContent value="dashboards" className="space-y-4">
-          <DashboardManager />
+          <AdvancedDashboardCreator />
         </TabsContent>
 
         <TabsContent value="realtime" className="space-y-4">
-          <RealtimeDashboard />
+          <RealtimeDashboard userRole={userRole} />
         </TabsContent>
 
         <TabsContent value="semantic" className="space-y-4">
-          <SemanticLayerBuilder />
-        </TabsContent>
-
-        <TabsContent value="creator" className="space-y-4">
-          <AdvancedDashboardCreator />
+          <SemanticLayerBuilder userRole={userRole} />
         </TabsContent>
 
         <TabsContent value="ai-config" className="space-y-4">
