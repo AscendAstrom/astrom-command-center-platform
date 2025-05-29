@@ -8,7 +8,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Search, AlertTriangle, CheckCircle, Clock, X, Settings, MarkAsRead } from "lucide-react";
+import { Bell, Search, AlertTriangle, CheckCircle, Clock, X, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 interface DashboardLayoutProps {
@@ -134,6 +134,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   size="sm" 
                   variant="ghost" 
                   className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  showToast={true}
+                  toastMessage={`Searching for: ${searchQuery}`}
                 >
                   <Search className="h-3 w-3" />
                 </Button>
@@ -146,6 +148,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   size="icon" 
                   className="relative hover:bg-accent hover:text-accent-foreground transition-all duration-200"
                   onClick={handleNotificationsClick}
+                  showToast={true}
+                  toastMessage="Notifications panel toggled"
                 >
                   <Bell className="h-4 w-4" />
                   {unreadCount > 0 && (
@@ -170,6 +174,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                               size="sm"
                               onClick={markAllAsRead}
                               className="text-xs"
+                              showToast={true}
+                              toastMessage="All notifications marked as read"
                             >
                               <CheckCircle className="h-3 w-3 mr-1" />
                               Mark all read
@@ -203,6 +209,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                   size="icon"
                                   className="h-6 w-6 opacity-60 hover:opacity-100"
                                   onClick={() => dismissNotification(notification.id)}
+                                  showToast={true}
+                                  toastMessage="Notification dismissed"
                                 >
                                   <X className="h-3 w-3" />
                                 </Button>
@@ -220,6 +228,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                     size="sm"
                                     className="h-6 text-xs hover:bg-blue-500/10"
                                     onClick={() => markAsRead(notification.id)}
+                                    showToast={true}
+                                    toastMessage="Notification marked as read"
                                   >
                                     <CheckCircle className="h-3 w-3 mr-1" />
                                     Mark as read
