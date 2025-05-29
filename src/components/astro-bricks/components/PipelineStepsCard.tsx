@@ -2,16 +2,14 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DataPipeline } from '@/hooks/useDataPipelines';
+import { DataPipeline, PipelineStep } from '../types';
 
 interface PipelineStepsCardProps {
   pipeline: DataPipeline;
-  onUpdatePipeline?: (id: string, updates: Partial<DataPipeline>) => Promise<any>;
-  readOnly?: boolean;
 }
 
-export const PipelineStepsCard = ({ pipeline, onUpdatePipeline, readOnly }: PipelineStepsCardProps) => {
-  const getStepTypeColor = (type: string) => {
+export const PipelineStepsCard = ({ pipeline }: PipelineStepsCardProps) => {
+  const getStepTypeColor = (type: PipelineStep['type']) => {
     switch (type) {
       case 'extract': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'transform': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
@@ -20,15 +18,6 @@ export const PipelineStepsCard = ({ pipeline, onUpdatePipeline, readOnly }: Pipe
     }
   };
 
-  // Default steps if none exist
-  const defaultSteps = [
-    { id: '1', type: 'extract', name: 'Data Extraction', config: {}, order: 1 },
-    { id: '2', type: 'transform', name: 'Data Transformation', config: {}, order: 2 },
-    { id: '3', type: 'load', name: 'Data Loading', config: {}, order: 3 }
-  ];
-
-  const steps = pipeline.steps && pipeline.steps.length > 0 ? pipeline.steps : defaultSteps;
-
   return (
     <Card className="bg-card border-border">
       <CardHeader>
@@ -36,7 +25,7 @@ export const PipelineStepsCard = ({ pipeline, onUpdatePipeline, readOnly }: Pipe
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {steps
+          {pipeline.steps
             .sort((a, b) => a.order - b.order)
             .map((step, index) => (
               <div key={step.id} className="flex items-center gap-4">
@@ -55,7 +44,7 @@ export const PipelineStepsCard = ({ pipeline, onUpdatePipeline, readOnly }: Pipe
                     </div>
                   </div>
                 </div>
-                {index < steps.length - 1 && (
+                {index < pipeline.steps.length - 1 && (
                   <div className="flex-shrink-0 text-muted-foreground">
                     →
                   </div>

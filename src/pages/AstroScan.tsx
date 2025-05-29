@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -42,7 +43,7 @@ const AstroScan = () => {
             </TabsTrigger>
             <TabsTrigger value="monitoring" className="data-[state=active]:bg-astrom-purple/20">
               <Settings className="h-4 w-4 mr-2" />
-              Enterprise Integration
+              Monitoring
             </TabsTrigger>
           </TabsList>
 
@@ -59,6 +60,12 @@ const AstroScan = () => {
 
           <TabsContent value="monitoring" className="space-y-6">
             <MonitoringTabContent />
+            
+            {/* Enhanced Phase 4 & Phase 5 Sections */}
+            <div className="space-y-6 mt-8">
+              <PhaseFourSection />
+              <PhaseFiveSection />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

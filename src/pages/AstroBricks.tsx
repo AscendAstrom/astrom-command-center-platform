@@ -25,7 +25,6 @@ import { toast } from "sonner";
 const AstroBricks = () => {
   const [activeTab, setActiveTab] = useState("pipelines");
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pipelineManagerKey, setPipelineManagerKey] = useState(0);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -43,44 +42,21 @@ const AstroBricks = () => {
     setIsRefreshing(true);
     toast.info("Refreshing data models and pipelines...");
     
-    // Simulate refresh process
     setTimeout(() => {
       setIsRefreshing(false);
-      setPipelineManagerKey(prev => prev + 1); // Force re-render of pipeline manager
       toast.success("Data models refreshed successfully!");
     }, 2000);
   };
 
   const handleCreatePipeline = () => {
     toast.info("Opening pipeline creation wizard...");
-    // Switch to pipelines tab and trigger pipeline creation
-    setActiveTab("pipelines");
-    setTimeout(() => {
-      // Trigger the create pipeline action in DataPipelineManager
-      const createEvent = new CustomEvent('createPipeline');
-      window.dispatchEvent(createEvent);
-    }, 100);
+    // Add pipeline creation logic here
   };
 
   const handleOptimizePipelines = () => {
     toast.info("Analyzing pipelines for optimization opportunities...");
     setTimeout(() => {
-      const optimizationSuggestions = [
-        "Combine duplicate transformation steps in ED Patient Intake Pipeline",
-        "Optimize Zone Capacity Monitoring schedule to reduce resource usage",
-        "Enable parallel processing for data extraction steps"
-      ];
-      
-      toast.success(`Pipeline optimization completed! Found ${optimizationSuggestions.length} optimization opportunities.`);
-      
-      // Show detailed suggestions after a brief delay
-      setTimeout(() => {
-        optimizationSuggestions.forEach((suggestion, index) => {
-          setTimeout(() => {
-            toast.info(suggestion, { duration: 4000 });
-          }, index * 1000);
-        });
-      }, 1000);
+      toast.success("Pipeline optimization recommendations generated!");
     }, 1500);
   };
 
@@ -101,8 +77,7 @@ const AstroBricks = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">ASTRO-BRICKS</h1>
-                <p className="text-purple-400 font-medium">Advanced Data Modeling & Transformation Engine</p>
-                <p className="text-sm text-muted-foreground">Phase 2: Enhanced Pipeline Foundation with Real-time Processing</p>
+                <p className="text-purple-400 font-medium">Data Modeling & Transformation Engine</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -146,19 +121,18 @@ const AstroBricks = () => {
             </div>
           </div>
           <p className="text-muted-foreground max-w-3xl mt-2">
-            Advanced data modeling platform with enhanced file processing, visual transformation builders,
-            real-time monitoring, and intelligent pipeline optimization capabilities.
+            Advanced data modeling platform for building, transforming, and managing data pipelines
+            with intelligent schema mapping and real-time transformation capabilities.
           </p>
         </div>
 
-        {/* Enhanced Status Cards with Real-time Updates */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        {/* Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-card rounded-lg p-4 border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Pipelines</p>
                 <p className="text-2xl font-bold text-foreground">12</p>
-                <p className="text-xs text-green-600">+2 from last hour</p>
               </div>
               <Database className="h-8 w-8 text-purple-400" />
             </div>
@@ -168,7 +142,6 @@ const AstroBricks = () => {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Data Models</p>
                 <p className="text-2xl font-bold text-foreground">156</p>
-                <p className="text-xs text-blue-600">Enhanced schemas</p>
               </div>
               <Workflow className="h-8 w-8 text-blue-400" />
             </div>
@@ -178,7 +151,6 @@ const AstroBricks = () => {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Transformations</p>
                 <p className="text-2xl font-bold text-foreground">89</p>
-                <p className="text-xs text-orange-600">Visual builders</p>
               </div>
               <GitBranch className="h-8 w-8 text-green-400" />
             </div>
@@ -187,20 +159,9 @@ const AstroBricks = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Processing Rate</p>
-                <p className="text-2xl font-bold text-foreground">2.3k/s</p>
-                <p className="text-xs text-purple-600">Real-time</p>
+                <p className="text-2xl font-bold text-foreground">2.3k/min</p>
               </div>
               <Play className="h-8 w-8 text-orange-400" />
-            </div>
-          </div>
-          <div className="bg-card rounded-lg p-4 border">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Files Processed</p>
-                <p className="text-2xl font-bold text-foreground">1.2k</p>
-                <p className="text-xs text-cyan-600">Auto-ingestion</p>
-              </div>
-              <BarChart3 className="h-8 w-8 text-cyan-400" />
             </div>
           </div>
         </div>
@@ -230,7 +191,7 @@ const AstroBricks = () => {
           </TabsList>
 
           <TabsContent value="pipelines" className="space-y-6">
-            <DataPipelineManager key={pipelineManagerKey} />
+            <DataPipelineManager />
           </TabsContent>
 
           <TabsContent value="mapping" className="space-y-6">

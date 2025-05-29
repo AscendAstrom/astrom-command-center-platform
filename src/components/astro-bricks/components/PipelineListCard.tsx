@@ -8,10 +8,9 @@ import {
   Pause, 
   Plus, 
   GitBranch,
-  Clock,
-  Trash2
+  Clock
 } from 'lucide-react';
-import { DataPipeline } from '@/hooks/useDataPipelines';
+import { DataPipeline } from '../types';
 
 interface PipelineListCardProps {
   pipelines: DataPipeline[];
@@ -20,8 +19,6 @@ interface PipelineListCardProps {
   onCreatePipeline: () => void;
   onSelectPipeline: (pipeline: DataPipeline) => void;
   onTogglePipeline: (pipelineId: string) => void;
-  onDeletePipeline?: (pipelineId: string) => void;
-  onExecutePipeline?: (pipelineId: string) => void;
 }
 
 export const PipelineListCard = ({
@@ -30,12 +27,10 @@ export const PipelineListCard = ({
   readOnly,
   onCreatePipeline,
   onSelectPipeline,
-  onTogglePipeline,
-  onDeletePipeline,
-  onExecutePipeline
+  onTogglePipeline
 }: PipelineListCardProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+  const getStatusColor = (status: DataPipeline['status']) => {
+    switch (status) {
       case 'active': return 'text-green-400 border-green-400';
       case 'draft': return 'text-yellow-400 border-yellow-400';
       case 'deprecated': return 'text-red-400 border-red-400';
@@ -84,55 +79,40 @@ export const PipelineListCard = ({
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                <span>{pipeline.schedule_cron || 'Manual'}</span>
+                <span>{pipeline.schedule || 'Manual'}</span>
               </div>
             </div>
             
             <div className="flex justify-between items-center mt-2">
               <span className="text-xs text-muted-foreground">
-                {pipeline.steps?.length || 0} steps
+                {pipeline.steps.length} steps
               </span>
-              <div className="flex gap-1">
-                {!readOnly && pipeline.status === 'ACTIVE' && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onTogglePipeline(pipeline.id);
-                    }}
-                  >
-                    <Pause className="h-3 w-3" />
-                  </Button>
-                )}
-                {!readOnly && pipeline.status !== 'ACTIVE' && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0 text-green-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onTogglePipeline(pipeline.id);
-                    }}
-                  >
-                    <Play className="h-3 w-3" />
-                  </Button>
-                )}
-                {!readOnly && onDeletePipeline && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0 text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeletePipeline(pipeline.id);
-                    }}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                )}
-              </div>
+              {!readOnly && pipeline.status === 'active' && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTogglePipeline(pipeline.id);
+                  }}
+                >
+                  <Pause className="h-3 w-3" />
+                </Button>
+              )}
+              {!readOnly && pipeline.status !== 'active' && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 text-green-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTogglePipeline(pipeline.id);
+                  }}
+                >
+                  <Play className="h-3 w-3" />
+                </Button>
+              )}
             </div>
           </div>
         ))}
