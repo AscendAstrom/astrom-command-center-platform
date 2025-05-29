@@ -13,6 +13,8 @@ interface CSVConfigurationFieldsProps {
 }
 
 export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfigurationFieldsProps) => {
+  console.log("CSVConfigurationFields component rendered"); // Debug log
+  
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +24,8 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
       file.name.toLowerCase().endsWith('.csv') ||
       file.type === 'application/vnd.ms-excel'
     );
+    
+    console.log("Files uploaded:", csvFiles); // Debug log
     
     setUploadedFiles(prev => [...prev, ...csvFiles]);
     updateConfig('uploadedFiles', [...uploadedFiles, ...csvFiles]);
@@ -34,7 +38,11 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
   };
 
   return (
-    <>
+    <div className="space-y-6">
+      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-sm text-blue-800 font-medium">CSV Configuration Fields Loaded</p>
+      </div>
+
       <div>
         <Label className="text-foreground font-medium">Data Source</Label>
         <div className="mt-2 space-y-3">
@@ -166,6 +174,6 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
           <Label className="text-foreground text-sm">Skip empty lines</Label>
         </div>
       </div>
-    </>
+    </div>
   );
 };

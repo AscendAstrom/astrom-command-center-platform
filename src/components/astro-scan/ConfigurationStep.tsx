@@ -22,6 +22,8 @@ export const ConfigurationStep = ({ formData, updateFormData }: ConfigurationSte
     });
   };
 
+  console.log("ConfigurationStep - formData.type:", formData.type); // Debug log
+
   const renderConfigFields = () => {
     switch (formData.type) {
       case 'EPIC':
@@ -33,11 +35,19 @@ export const ConfigurationStep = ({ formData, updateFormData }: ConfigurationSte
       case 'API':
         return <APIConfigurationFields config={formData.config} updateConfig={updateConfig} />;
       case 'CSV':
+        console.log("Rendering CSV configuration fields"); // Debug log
         return <CSVConfigurationFields config={formData.config} updateConfig={updateConfig} />;
-      default:
+      case 'MANUAL':
         return (
           <div className="text-muted-foreground text-center py-8">
             No additional configuration required for manual entry.
+          </div>
+        );
+      default:
+        console.log("Unknown type:", formData.type); // Debug log
+        return (
+          <div className="text-muted-foreground text-center py-8">
+            No additional configuration required for this source type.
           </div>
         );
     }
