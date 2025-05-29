@@ -67,9 +67,9 @@ const AstroBricks = () => {
 
   return (
     <div className="h-full bg-background">
-      <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
+      <div className="h-full w-full px-4 sm:px-6 lg:px-8 xl:px-12 overflow-y-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -120,14 +120,14 @@ const AstroBricks = () => {
               </Button>
             </div>
           </div>
-          <p className="text-muted-foreground max-w-3xl mt-2">
+          <p className="text-muted-foreground mt-2">
             Advanced data modeling platform for building, transforming, and managing data pipelines
             with intelligent schema mapping and real-time transformation capabilities.
           </p>
         </div>
 
         {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-card rounded-lg p-4 border">
             <div className="flex items-center justify-between">
               <div>
@@ -166,7 +166,7 @@ const AstroBricks = () => {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6 pb-6">
           <TabsList className="grid w-full grid-cols-5 bg-muted/50">
             <TabsTrigger value="pipelines" className="data-[state=active]:bg-purple-500/20">
               <Database className="h-4 w-4 mr-2" />
