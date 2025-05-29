@@ -19,8 +19,8 @@ const AstroScan = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="h-full bg-background">
+      <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
         <AstroScanHeader />
 
         <Tabs defaultValue="sources" className="space-y-6">

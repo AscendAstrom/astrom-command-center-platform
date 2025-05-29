@@ -93,9 +93,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen w-full overflow-hidden">
       <AppSidebar />
-      <SidebarInset className="flex-1 flex flex-col min-w-0">
+      <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b border-border relative">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
@@ -184,8 +184,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-auto">
-          {children}
+        <main className="flex-1 overflow-y-auto">
+          <div className="h-full">
+            {children}
+          </div>
         </main>
       </SidebarInset>
     </div>
