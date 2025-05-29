@@ -138,14 +138,14 @@ export default function CommandCenter() {
                   <Wrench className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground">Phase 2: Normalization, Modeling & Transformation</h2>
+                  <h2 className="text-xl font-semibold text-foreground">Normalization, Modeling & Transformation</h2>
                   <p className="text-muted-foreground">Clean and unify data formats for analysis</p>
                 </div>
               </div>
               
               <div className="space-y-6">
                 <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                  <h3 className="font-semibold text-foreground mb-2">🎯 Phase 2 Focus: Data Preparation Pipeline</h3>
+                  <h3 className="font-semibold text-foreground mb-2">🎯 Data Preparation Pipeline</h3>
                   <p className="text-muted-foreground mb-4">
                     Clean and unify data formats. Define fact/dimension tables like <code className="bg-muted px-1 rounded">fact_ed_inbound</code>, 
                     <code className="bg-muted px-1 rounded">dim_patient</code>, and apply KPI logic transformation rules.
