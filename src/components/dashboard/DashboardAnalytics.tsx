@@ -17,9 +17,13 @@ const DashboardAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [isLive, setIsLive] = useState(true);
   const [activeCategory, setActiveCategory] = useState('operations');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = analyticsDataService.subscribe(setAnalyticsData);
+    const unsubscribe = analyticsDataService.subscribe((data) => {
+      setAnalyticsData(data);
+      setIsLoading(false);
+    });
     
     if (isLive) {
       analyticsDataService.start();
@@ -88,6 +92,68 @@ const DashboardAnalytics = () => {
 
   const activeTabCategory = tabCategories.find(cat => cat.id === activeCategory);
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Analytics Dashboard</h2>
+            <p className="text-muted-foreground">Loading real-time insights...</p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400 animate-pulse" />
+              <span className="text-sm text-foreground">Loading...</span>
+            </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              disabled
+              className="border-border text-foreground"
+            >
+              <Play className="h-4 w-4 mr-1" />
+              Loading
+            </Button>
+          </div>
+        </div>
+
+        {/* Loading skeleton */}
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {tabCategories.map((category) => (
+              <div
+                key={category.id}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/50 animate-pulse"
+              >
+                <div className="w-4 h-4 bg-muted rounded" />
+                <div className="w-20 h-4 bg-muted rounded" />
+                <div className="w-4 h-4 bg-muted rounded" />
+              </div>
+            ))}
+          </div>
+
+          <Card className="bg-card border-border">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-muted rounded-lg animate-pulse" />
+                <div className="space-y-2">
+                  <div className="w-32 h-6 bg-muted rounded animate-pulse" />
+                  <div className="w-48 h-4 bg-muted rounded animate-pulse" />
+                </div>
+              </div>
+            </CardHeader>
+            
+            <CardContent>
+              <div className="w-full h-96 bg-muted rounded animate-pulse" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -139,7 +205,7 @@ const DashboardAnalytics = () => {
         </div>
 
         {/* Active Category Tabs */}
-        {activeTabCategory && (
+        {activeTabCategory && analyticsData && (
           <Card className="bg-card border-border">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
@@ -149,7 +215,7 @@ const DashboardAnalytics = () => {
                 <div>
                   <CardTitle className="text-foreground">{activeTabCategory.name}</CardTitle>
                   <CardDescription>
-                    {analyticsData && `Last updated: ${analyticsData.emergencyDepartment.lastUpdated.toLocaleTimeString()}`}
+                    Last updated: {analyticsData.emergencyDepartment.lastUpdated.toLocaleTimeString()}
                   </CardDescription>
                 </div>
               </div>
@@ -172,12 +238,10 @@ const DashboardAnalytics = () => {
                 
                 {activeTabCategory.tabs.map((tab) => (
                   <TabsContent key={tab.id} value={tab.id} className="mt-6">
-                    {analyticsData && (
-                      <tab.component 
-                        data={analyticsData} 
-                        isLive={isLive}
-                      />
-                    )}
+                    <tab.component 
+                      data={analyticsData} 
+                      isLive={isLive}
+                    />
                   </TabsContent>
                 ))}
               </Tabs>
