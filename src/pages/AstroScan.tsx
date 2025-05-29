@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
@@ -13,7 +14,9 @@ import { toast } from "sonner";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("sources");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
@@ -23,7 +26,20 @@ const AstroScan = () => {
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    navigate(`/astro-scan?tab=${value}`);
     toast.info(`Switched to ${value} module`);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
+  const handleTabNavigation = (path: string, tab?: string) => {
+    if (tab) {
+      navigate(`${path}?tab=${tab}`);
+    } else {
+      navigate(path);
+    }
   };
 
   return (
@@ -48,23 +64,39 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
-            <SourcesTabContent onAddSourceClick={() => {
-              setIsWizardOpen(true);
-              toast.info("Opening data source wizard...");
-            }} />
+            <SourcesTabContent 
+              onAddSourceClick={() => {
+                setIsWizardOpen(true);
+                toast.info("Opening data source wizard...");
+              }}
+              onNavigate={handleNavigation}
+              onTabNavigate={handleTabNavigation}
+            />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
-            <IngestionTabContent />
+            <IngestionTabContent 
+              onNavigate={handleNavigation}
+              onTabNavigate={handleTabNavigation}
+            />
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-6">
-            <MonitoringTabContent />
+            <MonitoringTabContent 
+              onNavigate={handleNavigation}
+              onTabNavigate={handleTabNavigation}
+            />
             
             {/* Enhanced Phase 4 & Phase 5 Sections */}
             <div className="space-y-6 mt-8">
-              <PhaseFourSection />
-              <PhaseFiveSection />
+              <PhaseFourSection 
+                onNavigate={handleNavigation}
+                onTabNavigate={handleTabNavigation}
+              />
+              <PhaseFiveSection 
+                onNavigate={handleNavigation}
+                onTabNavigate={handleTabNavigation}
+              />
             </div>
           </TabsContent>
         </Tabs>
