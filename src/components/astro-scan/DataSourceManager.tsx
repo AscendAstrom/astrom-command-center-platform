@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export const DataSourceManager = () => {
+interface DataSourceManagerProps {
+  onAddSourceClick?: () => void;
+}
+
+export const DataSourceManager = ({ onAddSourceClick }: DataSourceManagerProps) => {
   const { dataSources, loading, testConnection, triggerSync, deleteDataSource } = useDataSources();
   const [searchTerm, setSearchTerm] = useState('');
   const [testingConnections, setTestingConnections] = useState<Set<string>>(new Set());
@@ -124,7 +127,7 @@ export const DataSourceManager = () => {
           <h2 className="text-2xl font-bold text-foreground">Data Sources</h2>
           <p className="text-muted-foreground">Manage your connected data sources and monitor their health</p>
         </div>
-        <Button>
+        <Button onClick={onAddSourceClick}>
           <Plus className="h-4 w-4 mr-2" />
           Add Source
         </Button>
@@ -245,7 +248,7 @@ export const DataSourceManager = () => {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? 'No sources match your search criteria.' : 'Get started by adding your first data source.'}
           </p>
-          <Button>
+          <Button onClick={onAddSourceClick}>
             <Plus className="h-4 w-4 mr-2" />
             Add Data Source
           </Button>

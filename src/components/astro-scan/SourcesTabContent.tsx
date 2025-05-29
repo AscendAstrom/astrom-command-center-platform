@@ -7,7 +7,7 @@ interface SourcesTabContentProps {
 }
 
 const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
-  return <EnhancedDataSourceManager />;
+  return <EnhancedDataSourceManager onAddSourceClick={onAddSourceClick} />;
 };
 
 export default SourcesTabContent;

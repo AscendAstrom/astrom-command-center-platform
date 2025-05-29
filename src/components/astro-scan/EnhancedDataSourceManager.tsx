@@ -7,13 +7,18 @@ import {
   Database, 
   Upload, 
   Settings, 
-  Activity 
+  Activity,
+  Plus
 } from 'lucide-react';
 import { DataSourceManager } from './DataSourceManager';
 import { FileUploadDropzone } from './FileUploadDropzone';
 import { toast } from 'sonner';
 
-export const EnhancedDataSourceManager = () => {
+interface EnhancedDataSourceManagerProps {
+  onAddSourceClick?: () => void;
+}
+
+export const EnhancedDataSourceManager = ({ onAddSourceClick }: EnhancedDataSourceManagerProps) => {
   const [activeTab, setActiveTab] = useState('sources');
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
@@ -30,6 +35,18 @@ export const EnhancedDataSourceManager = () => {
 
   return (
     <div className="space-y-6">
+      {/* Add Source Button */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">Data Sources</h2>
+          <p className="text-muted-foreground">Manage your connected data sources and monitor their health</p>
+        </div>
+        <Button onClick={onAddSourceClick} className="gradient-bg-blue hover:shadow-lg">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Data Source
+        </Button>
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="sources" className="flex items-center gap-2">
@@ -47,7 +64,7 @@ export const EnhancedDataSourceManager = () => {
         </TabsList>
 
         <TabsContent value="sources" className="space-y-4">
-          <DataSourceManager />
+          <DataSourceManager onAddSourceClick={onAddSourceClick} />
         </TabsContent>
 
         <TabsContent value="upload" className="space-y-4">
