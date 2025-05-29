@@ -154,6 +154,8 @@ export const NextGenWorkflowsTab = () => {
             size="sm"
             onClick={refreshMetrics}
             className="hover:bg-purple-500/10"
+            showToast={true}
+            toastMessage="Metrics refreshed successfully"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -203,6 +205,8 @@ export const NextGenWorkflowsTab = () => {
                 onClick={handleCreateWorkflow}
                 disabled={isCreatingWorkflow || !newWorkflowInput.trim()}
                 className="bg-purple-600 hover:bg-purple-700"
+                showToast={true}
+                toastMessage={isCreatingWorkflow ? "Creating workflow..." : "Workflow creation started"}
               >
                 {isCreatingWorkflow ? (
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -230,6 +234,8 @@ export const NextGenWorkflowsTab = () => {
                     size="sm"
                     onClick={() => toggleWorkflowStatus(workflow.id)}
                     className="h-6 w-6 p-0"
+                    showToast={true}
+                    toastMessage={`Workflow ${workflow.status === 'active' ? 'paused' : 'activated'}`}
                   >
                     {workflow.status === 'active' ? 
                       <Pause className="h-3 w-3" /> : 
@@ -242,6 +248,8 @@ export const NextGenWorkflowsTab = () => {
                     onClick={() => optimizeWorkflow(workflow.id)}
                     className="h-6 w-6 p-0"
                     disabled={workflow.status === 'optimizing'}
+                    showToast={true}
+                    toastMessage="Workflow optimization started"
                   >
                     <Settings className="h-3 w-3" />
                   </Button>
