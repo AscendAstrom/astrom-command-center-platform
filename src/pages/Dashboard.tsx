@@ -11,7 +11,7 @@ import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 const Dashboard = () => {
   const [shouldNavigate, setShouldNavigate] = useState(false);
 
-  // Auto-navigate to Command Center
+  // Auto-navigate to AstroScan
   useEffect(() => {
     const timer = setTimeout(() => {
       setShouldNavigate(true);
@@ -21,7 +21,7 @@ const Dashboard = () => {
   }, []);
 
   if (shouldNavigate) {
-    return <NavigationHelper to="/command-center" />;
+    return <NavigationHelper to="/astro-scan" />;
   }
 
   const stats = [
@@ -77,7 +77,7 @@ const Dashboard = () => {
             </Badge>
             <Button variant="outline" size="sm">
               <ArrowRight className="h-4 w-4 mr-2" />
-              Navigating to Command Center...
+              Navigating to AstroScan...
             </Button>
           </div>
         </div>
