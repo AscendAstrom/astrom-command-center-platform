@@ -6,7 +6,7 @@ import AstroViewStatusCards from "@/components/astro-view/AstroViewStatusCards";
 import AstroViewTabs from "@/components/astro-view/AstroViewTabs";
 
 const AstroView = () => {
-  const [activeTab, setActiveTab] = useState("dashboards");
+  const [activeTab, setActiveTab] = useState("executive"); // Changed from "dashboards" to "executive"
   const {
     isRefreshing,
     handleRefresh,
