@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { DataSourceManager } from './DataSourceManager';
+import { EnhancedDataSourceManager } from './EnhancedDataSourceManager';
 
 interface SourcesTabContentProps {
   onAddSourceClick: () => void;
 }
 
 const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
-  return <DataSourceManager />;
+  return <EnhancedDataSourceManager />;
 };
 
 export default SourcesTabContent;
