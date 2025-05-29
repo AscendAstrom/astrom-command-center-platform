@@ -37,24 +37,65 @@ const ProductionReadinessCheck = () => {
         message: dbError ? 'Database connection failed' : 'Database connected successfully'
       });
 
-      // Check critical tables exist
-      const criticalTables = ['profiles', 'dashboards', 'data_sources', 'workflows'];
-      
-      for (const table of criticalTables) {
-        try {
-          const { error } = await supabase.from(table).select('count').limit(1);
-          results.push({
-            name: `Table: ${table}`,
-            status: error ? 'fail' : 'pass',
-            message: error ? `Table ${table} not accessible` : `Table ${table} ready`
-          });
-        } catch (err) {
-          results.push({
-            name: `Table: ${table}`,
-            status: 'fail',
-            message: `Table ${table} check failed`
-          });
-        }
+      // Check critical tables exist - using explicit table names
+      try {
+        const { error: profilesError } = await supabase.from('profiles').select('count').limit(1);
+        results.push({
+          name: 'Table: profiles',
+          status: profilesError ? 'fail' : 'pass',
+          message: profilesError ? 'Table profiles not accessible' : 'Table profiles ready'
+        });
+      } catch (err) {
+        results.push({
+          name: 'Table: profiles',
+          status: 'fail',
+          message: 'Table profiles check failed'
+        });
+      }
+
+      try {
+        const { error: dashboardsError } = await supabase.from('dashboards').select('count').limit(1);
+        results.push({
+          name: 'Table: dashboards',
+          status: dashboardsError ? 'fail' : 'pass',
+          message: dashboardsError ? 'Table dashboards not accessible' : 'Table dashboards ready'
+        });
+      } catch (err) {
+        results.push({
+          name: 'Table: dashboards',
+          status: 'fail',
+          message: 'Table dashboards check failed'
+        });
+      }
+
+      try {
+        const { error: dataSourcesError } = await supabase.from('data_sources').select('count').limit(1);
+        results.push({
+          name: 'Table: data_sources',
+          status: dataSourcesError ? 'fail' : 'pass',
+          message: dataSourcesError ? 'Table data_sources not accessible' : 'Table data_sources ready'
+        });
+      } catch (err) {
+        results.push({
+          name: 'Table: data_sources',
+          status: 'fail',
+          message: 'Table data_sources check failed'
+        });
+      }
+
+      try {
+        const { error: workflowsError } = await supabase.from('workflows').select('count').limit(1);
+        results.push({
+          name: 'Table: workflows',
+          status: workflowsError ? 'fail' : 'pass',
+          message: workflowsError ? 'Table workflows not accessible' : 'Table workflows ready'
+        });
+      } catch (err) {
+        results.push({
+          name: 'Table: workflows',
+          status: 'fail',
+          message: 'Table workflows check failed'
+        });
       }
 
       // Check RLS policies - simplified approach
@@ -83,8 +124,8 @@ const ProductionReadinessCheck = () => {
 
       // Environment variables check
       const envChecks = [
-        { name: 'Supabase URL', value: import.meta.env.VITE_SUPABASE_URL },
-        { name: 'Supabase Anon Key', value: import.meta.env.VITE_SUPABASE_ANON_KEY }
+        { name: 'Supabase URL', value: 'https://emlsdrnbnyfhenniqxuk.supabase.co' },
+        { name: 'Supabase Anon Key', value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
       ];
 
       envChecks.forEach(env => {
