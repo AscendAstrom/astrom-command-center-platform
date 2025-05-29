@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import {
   Play,
   Target
 } from "lucide-react";
-import DashboardBuilder from "@/components/astro-view/DashboardBuilder";
 import DashboardManager from "@/components/astro-view/DashboardManager";
 import RealtimeDashboard from "@/components/astro-view/RealtimeDashboard";
 import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
@@ -206,7 +206,7 @@ const AstroView = () => {
           </TabsContent>
 
           <TabsContent value="builder" className="space-y-6">
-            <DashboardBuilder />
+            <DashboardManager userRole="ADMIN" />
           </TabsContent>
 
           <TabsContent value="realtime" className="space-y-6">
