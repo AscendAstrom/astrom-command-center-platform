@@ -1496,6 +1496,7 @@ export type Database = {
         | "PEDIATRICS"
         | "MATERNITY"
         | "GENERAL"
+      execution_status: "PENDING" | "RUNNING" | "SUCCESS" | "FAILED"
       ingestion_mode: "BATCH" | "STREAM"
       integration_status: "CONNECTED" | "DISCONNECTED" | "ERROR" | "SYNCING"
       kpi_category:
@@ -1511,6 +1512,8 @@ export type Database = {
         | "ASTRO_VIEW"
         | "ASTRO_FLOW"
       patient_status: "ACTIVE" | "DISCHARGED" | "TRANSFERRED" | "DECEASED"
+      pipeline_status: "DRAFT" | "ACTIVE" | "PAUSED" | "DEPRECATED"
+      rule_status: "DRAFT" | "ACTIVE" | "PAUSED"
       sync_status: "CONNECTED" | "SYNCING" | "ERROR" | "PAUSED"
       user_role: "ADMIN" | "DATA_ENGINEER" | "ANALYST" | "CLINICIAN"
       widget_type: "CHART" | "METRIC_CARD" | "TABLE" | "MAP" | "ALERT_PANEL"
@@ -1646,6 +1649,7 @@ export const Constants = {
         "MATERNITY",
         "GENERAL",
       ],
+      execution_status: ["PENDING", "RUNNING", "SUCCESS", "FAILED"],
       ingestion_mode: ["BATCH", "STREAM"],
       integration_status: ["CONNECTED", "DISCONNECTED", "ERROR", "SYNCING"],
       kpi_category: [
@@ -1663,6 +1667,8 @@ export const Constants = {
         "ASTRO_FLOW",
       ],
       patient_status: ["ACTIVE", "DISCHARGED", "TRANSFERRED", "DECEASED"],
+      pipeline_status: ["DRAFT", "ACTIVE", "PAUSED", "DEPRECATED"],
+      rule_status: ["DRAFT", "ACTIVE", "PAUSED"],
       sync_status: ["CONNECTED", "SYNCING", "ERROR", "PAUSED"],
       user_role: ["ADMIN", "DATA_ENGINEER", "ANALYST", "CLINICIAN"],
       widget_type: ["CHART", "METRIC_CARD", "TABLE", "MAP", "ALERT_PANEL"],

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { DataPipeline } from './types';
+import { useDataPipelines } from '@/hooks/useDataPipelines';
 import { PipelineListCard } from './components/PipelineListCard';
 import { PipelineDetailsCard } from './components/PipelineDetailsCard';
 import { PipelineStepsCard } from './components/PipelineStepsCard';
@@ -12,43 +12,16 @@ interface DataPipelineManagerProps {
 }
 
 export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerProps) => {
-  const [pipelines, setPipelines] = useState<DataPipeline[]>([
-    {
-      id: '1',
-      name: 'ED Patient Intake Pipeline',
-      description: 'Process emergency department patient admission data',
-      version: 3,
-      status: 'active',
-      schedule: '*/15 * * * *',
-      steps: [
-        { id: 's1', type: 'extract', name: 'Extract HL7 Messages', config: {}, order: 1 },
-        { id: 's2', type: 'transform', name: 'Clean Timestamps', config: {}, order: 2 },
-        { id: 's3', type: 'transform', name: 'Map to Schema', config: {}, order: 3 },
-        { id: 's4', type: 'load', name: 'Load to Warehouse', config: {}, order: 4 }
-      ],
-      createdAt: '2024-01-10',
-      updatedAt: '2024-01-16',
-      createdBy: 'john.doe@hospital.com'
-    },
-    {
-      id: '2',
-      name: 'Zone Capacity Monitoring',
-      description: 'Track and analyze treatment zone capacity',
-      version: 1,
-      status: 'draft',
-      steps: [
-        { id: 's5', type: 'extract', name: 'Extract Zone Data', config: {}, order: 1 },
-        { id: 's6', type: 'transform', name: 'Calculate Metrics', config: {}, order: 2 },
-        { id: 's7', type: 'load', name: 'Update Dashboard', config: {}, order: 3 }
-      ],
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-15',
-      createdBy: 'jane.smith@hospital.com'
-    }
-  ]);
-
-  const [selectedPipeline, setSelectedPipeline] = useState<DataPipeline | null>(pipelines[0]);
+  const { pipelines, loading, createPipeline, updatePipeline, deletePipeline, executePipeline } = useDataPipelines();
+  const [selectedPipeline, setSelectedPipeline] = useState<any>(null);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
+
+  // Select first pipeline when pipelines load
+  useEffect(() => {
+    if (pipelines.length > 0 && !selectedPipeline) {
+      setSelectedPipeline(pipelines[0]);
+    }
+  }, [pipelines, selectedPipeline]);
 
   // Listen for create pipeline events from the header
   useEffect(() => {
@@ -62,21 +35,20 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
     return () => window.removeEventListener('createPipeline', handleCreatePipeline);
   }, [readOnly]);
 
-  const createNewPipeline = () => {
-    const newPipeline: DataPipeline = {
-      id: Date.now().toString(),
-      name: 'New Pipeline',
-      description: 'Description for new pipeline',
-      version: 1,
-      status: 'draft',
-      steps: [],
-      createdAt: new Date().toISOString().split('T')[0],
-      updatedAt: new Date().toISOString().split('T')[0],
-      createdBy: 'current.user@hospital.com'
-    };
-    
-    setPipelines(prev => [...prev, newPipeline]);
-    setSelectedPipeline(newPipeline);
+  const createNewPipeline = async () => {
+    try {
+      const newPipeline = await createPipeline({
+        name: 'New Pipeline',
+        description: 'Description for new pipeline',
+        target_schema: {},
+        transformation_rules: {},
+        status: 'DRAFT'
+      });
+      
+      setSelectedPipeline(newPipeline);
+    } catch (error) {
+      console.error('Failed to create pipeline:', error);
+    }
   };
 
   const handleCreatePipeline = () => {
@@ -84,19 +56,50 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
     createNewPipeline();
   };
 
-  const handleTogglePipeline = (pipelineId: string) => {
+  const handleTogglePipeline = async (pipelineId: string) => {
     if (readOnly) return;
     
-    setPipelines(prev => prev.map(pipeline => 
-      pipeline.id === pipelineId 
-        ? { 
-            ...pipeline, 
-            status: pipeline.status === 'active' ? 'draft' : 'active',
-            updatedAt: new Date().toISOString().split('T')[0]
-          }
-        : pipeline
-    ));
+    const pipeline = pipelines.find(p => p.id === pipelineId);
+    if (!pipeline) return;
+
+    const newStatus = pipeline.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
+    
+    try {
+      await updatePipeline(pipelineId, { status: newStatus });
+    } catch (error) {
+      console.error('Failed to toggle pipeline:', error);
+    }
   };
+
+  const handleExecutePipeline = async (pipelineId: string) => {
+    try {
+      await executePipeline(pipelineId);
+    } catch (error) {
+      console.error('Failed to execute pipeline:', error);
+    }
+  };
+
+  const handleDeletePipeline = async (pipelineId: string) => {
+    if (readOnly) return;
+    
+    try {
+      await deletePipeline(pipelineId);
+      if (selectedPipeline?.id === pipelineId) {
+        setSelectedPipeline(pipelines.length > 1 ? pipelines.find(p => p.id !== pipelineId) : null);
+      }
+    } catch (error) {
+      console.error('Failed to delete pipeline:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="animate-pulse bg-gray-200 rounded-lg h-96"></div>
+        <div className="lg:col-span-2 animate-pulse bg-gray-200 rounded-lg h-96"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -108,6 +111,8 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
         onCreatePipeline={handleCreatePipeline}
         onSelectPipeline={setSelectedPipeline}
         onTogglePipeline={handleTogglePipeline}
+        onDeletePipeline={handleDeletePipeline}
+        onExecutePipeline={handleExecutePipeline}
       />
 
       {/* Pipeline Details */}
@@ -119,10 +124,15 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
               pipeline={selectedPipeline}
               readOnly={readOnly}
               onToggleVersionHistory={() => setShowVersionHistory(!showVersionHistory)}
+              onUpdatePipeline={updatePipeline}
             />
 
             {/* Pipeline Steps */}
-            <PipelineStepsCard pipeline={selectedPipeline} />
+            <PipelineStepsCard 
+              pipeline={selectedPipeline} 
+              onUpdatePipeline={updatePipeline}
+              readOnly={readOnly}
+            />
 
             {/* Version History */}
             {showVersionHistory && (
@@ -130,7 +140,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
             )}
           </div>
         ) : (
-          <EmptyPipelineState />
+          <EmptyPipelineState onCreatePipeline={handleCreatePipeline} />
         )}
       </div>
     </div>
