@@ -15,6 +15,17 @@ export interface DataPipeline {
   created_by?: string;
   created_at: string;
   updated_at: string;
+  version: number;
+  steps: Array<{
+    id: string;
+    type: 'extract' | 'transform' | 'load';
+    name: string;
+    config: Record<string, any>;
+    order: number;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
 }
 
 export const useDataPipelines = () => {
@@ -31,7 +42,28 @@ export const useDataPipelines = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPipelines(data || []);
+      
+      // Transform database data to match interface
+      const transformedData: DataPipeline[] = (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        source_id: item.source_id,
+        target_schema: typeof item.target_schema === 'string' ? JSON.parse(item.target_schema) : (item.target_schema || {}),
+        transformation_rules: typeof item.transformation_rules === 'string' ? JSON.parse(item.transformation_rules) : (item.transformation_rules || {}),
+        status: item.status,
+        schedule_cron: item.schedule_cron,
+        created_by: item.created_by,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        version: 1, // Default version
+        steps: [], // Default empty steps
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+        createdBy: item.created_by || 'Unknown'
+      }));
+      
+      setPipelines(transformedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pipelines');
       toast.error('Failed to load pipelines');
@@ -40,7 +72,7 @@ export const useDataPipelines = () => {
     }
   };
 
-  const createPipeline = async (pipeline: Omit<DataPipeline, 'id' | 'created_at' | 'updated_at' | 'created_by'>) => {
+  const createPipeline = async (pipeline: Omit<DataPipeline, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'version' | 'steps' | 'createdAt' | 'updatedAt' | 'createdBy'>) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
@@ -48,7 +80,13 @@ export const useDataPipelines = () => {
       const { data, error } = await supabase
         .from('data_pipelines')
         .insert([{
-          ...pipeline,
+          name: pipeline.name,
+          description: pipeline.description,
+          source_id: pipeline.source_id,
+          target_schema: pipeline.target_schema,
+          transformation_rules: pipeline.transformation_rules,
+          status: pipeline.status,
+          schedule_cron: pipeline.schedule_cron,
           created_by: user.id
         }])
         .select()
@@ -56,9 +94,29 @@ export const useDataPipelines = () => {
 
       if (error) throw error;
       
-      setPipelines(prev => [data, ...prev]);
+      // Transform the created item
+      const transformedData: DataPipeline = {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        source_id: data.source_id,
+        target_schema: typeof data.target_schema === 'string' ? JSON.parse(data.target_schema) : (data.target_schema || {}),
+        transformation_rules: typeof data.transformation_rules === 'string' ? JSON.parse(data.transformation_rules) : (data.transformation_rules || {}),
+        status: data.status,
+        schedule_cron: data.schedule_cron,
+        created_by: data.created_by,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        version: 1,
+        steps: [],
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+        createdBy: data.created_by || 'Unknown'
+      };
+      
+      setPipelines(prev => [transformedData, ...prev]);
       toast.success('Pipeline created successfully');
-      return data;
+      return transformedData;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create pipeline';
       setError(message);
@@ -71,16 +129,43 @@ export const useDataPipelines = () => {
     try {
       const { data, error } = await supabase
         .from('data_pipelines')
-        .update(updates)
+        .update({
+          name: updates.name,
+          description: updates.description,
+          status: updates.status,
+          schedule_cron: updates.schedule_cron,
+          target_schema: updates.target_schema,
+          transformation_rules: updates.transformation_rules
+        })
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
       
-      setPipelines(prev => prev.map(p => p.id === id ? data : p));
+      // Transform the updated item
+      const transformedData: DataPipeline = {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        source_id: data.source_id,
+        target_schema: typeof data.target_schema === 'string' ? JSON.parse(data.target_schema) : (data.target_schema || {}),
+        transformation_rules: typeof data.transformation_rules === 'string' ? JSON.parse(data.transformation_rules) : (data.transformation_rules || {}),
+        status: data.status,
+        schedule_cron: data.schedule_cron,
+        created_by: data.created_by,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        version: 1,
+        steps: [],
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+        createdBy: data.created_by || 'Unknown'
+      };
+      
+      setPipelines(prev => prev.map(p => p.id === id ? transformedData : p));
       toast.success('Pipeline updated successfully');
-      return data;
+      return transformedData;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to update pipeline';
       setError(message);

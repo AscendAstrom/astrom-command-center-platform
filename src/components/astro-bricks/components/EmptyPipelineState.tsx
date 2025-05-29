@@ -1,16 +1,28 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { GitBranch } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Plus, Database } from 'lucide-react';
 
-export const EmptyPipelineState = () => {
+interface EmptyPipelineStateProps {
+  onCreatePipeline?: () => void;
+}
+
+export const EmptyPipelineState = ({ onCreatePipeline }: EmptyPipelineStateProps) => {
   return (
-    <Card className="bg-card border-border">
-      <CardContent className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <GitBranch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">Select a pipeline to view details</p>
-        </div>
+    <Card className="p-8 text-center bg-card border-border">
+      <CardContent className="pt-6">
+        <Database className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+        <h3 className="text-lg font-semibold mb-2 text-foreground">No Pipeline Selected</h3>
+        <p className="text-muted-foreground mb-4">
+          Select a pipeline from the list to view its details, or create a new one to get started.
+        </p>
+        {onCreatePipeline && (
+          <Button onClick={onCreatePipeline}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Pipeline
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

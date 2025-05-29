@@ -9,21 +9,23 @@ import {
   History,
   Eye
 } from 'lucide-react';
-import { DataPipeline } from '../types';
+import { DataPipeline } from '@/hooks/useDataPipelines';
 
 interface PipelineDetailsCardProps {
   pipeline: DataPipeline;
   readOnly: boolean;
   onToggleVersionHistory: () => void;
+  onUpdatePipeline?: (id: string, updates: Partial<DataPipeline>) => Promise<any>;
 }
 
 export const PipelineDetailsCard = ({
   pipeline,
   readOnly,
-  onToggleVersionHistory
+  onToggleVersionHistory,
+  onUpdatePipeline
 }: PipelineDetailsCardProps) => {
-  const getStatusColor = (status: DataPipeline['status']) => {
-    switch (status) {
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
       case 'active': return 'text-green-400 border-green-400';
       case 'draft': return 'text-yellow-400 border-yellow-400';
       case 'deprecated': return 'text-red-400 border-red-400';
@@ -82,7 +84,7 @@ export const PipelineDetailsCard = ({
           <div>
             <span className="text-muted-foreground">Schedule:</span>
             <div className="mt-1 text-foreground font-mono text-xs">
-              {pipeline.schedule || 'Manual execution'}
+              {pipeline.schedule_cron || 'Manual execution'}
             </div>
           </div>
           <div>

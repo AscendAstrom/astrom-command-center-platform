@@ -39,7 +39,31 @@ export const useDataSources = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDataSources(data || []);
+      
+      // Transform database data to match interface
+      const transformedData: DataSource[] = (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        type: item.type,
+        description: item.description,
+        config: typeof item.config === 'string' ? JSON.parse(item.config) : (item.config || {}),
+        field_mappings: typeof item.field_mappings === 'string' ? JSON.parse(item.field_mappings) : (item.field_mappings || {}),
+        ingestion_mode: item.ingestion_mode || 'BATCH',
+        schedule_cron: item.schedule_cron,
+        status: item.status || 'PAUSED',
+        last_sync: item.last_sync,
+        last_error: item.last_error,
+        records_count: item.records_count || 0,
+        health_score: item.health_score || 100,
+        metadata: typeof item.metadata === 'string' ? JSON.parse(item.metadata) : (item.metadata || {}),
+        tags: item.tags,
+        created_by: item.created_by,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        last_health_check: item.last_health_check
+      }));
+      
+      setDataSources(transformedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data sources');
       toast.error('Failed to load data sources');
@@ -56,7 +80,18 @@ export const useDataSources = () => {
       const { data, error } = await supabase
         .from('data_sources')
         .insert([{
-          ...dataSource,
+          name: dataSource.name,
+          type: dataSource.type,
+          description: dataSource.description,
+          config: dataSource.config,
+          field_mappings: dataSource.field_mappings,
+          ingestion_mode: dataSource.ingestion_mode,
+          schedule_cron: dataSource.schedule_cron,
+          status: dataSource.status,
+          records_count: dataSource.records_count,
+          health_score: dataSource.health_score,
+          metadata: dataSource.metadata,
+          tags: dataSource.tags,
           created_by: user.id
         }])
         .select()
@@ -64,9 +99,32 @@ export const useDataSources = () => {
 
       if (error) throw error;
       
-      setDataSources(prev => [data, ...prev]);
+      // Transform the created item
+      const transformedData: DataSource = {
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        description: data.description,
+        config: typeof data.config === 'string' ? JSON.parse(data.config) : (data.config || {}),
+        field_mappings: typeof data.field_mappings === 'string' ? JSON.parse(data.field_mappings) : (data.field_mappings || {}),
+        ingestion_mode: data.ingestion_mode || 'BATCH',
+        schedule_cron: data.schedule_cron,
+        status: data.status || 'PAUSED',
+        last_sync: data.last_sync,
+        last_error: data.last_error,
+        records_count: data.records_count || 0,
+        health_score: data.health_score || 100,
+        metadata: typeof data.metadata === 'string' ? JSON.parse(data.metadata) : (data.metadata || {}),
+        tags: data.tags,
+        created_by: data.created_by,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        last_health_check: data.last_health_check
+      };
+      
+      setDataSources(prev => [transformedData, ...prev]);
       toast.success('Data source created successfully');
-      return data;
+      return transformedData;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to create data source';
       setError(message);
@@ -79,16 +137,48 @@ export const useDataSources = () => {
     try {
       const { data, error } = await supabase
         .from('data_sources')
-        .update(updates)
+        .update({
+          name: updates.name,
+          description: updates.description,
+          status: updates.status,
+          health_score: updates.health_score,
+          last_health_check: updates.last_health_check,
+          last_error: updates.last_error,
+          last_sync: updates.last_sync,
+          records_count: updates.records_count
+        })
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
       
-      setDataSources(prev => prev.map(ds => ds.id === id ? data : ds));
+      // Transform the updated item
+      const transformedData: DataSource = {
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        description: data.description,
+        config: typeof data.config === 'string' ? JSON.parse(data.config) : (data.config || {}),
+        field_mappings: typeof data.field_mappings === 'string' ? JSON.parse(data.field_mappings) : (data.field_mappings || {}),
+        ingestion_mode: data.ingestion_mode || 'BATCH',
+        schedule_cron: data.schedule_cron,
+        status: data.status || 'PAUSED',
+        last_sync: data.last_sync,
+        last_error: data.last_error,
+        records_count: data.records_count || 0,
+        health_score: data.health_score || 100,
+        metadata: typeof data.metadata === 'string' ? JSON.parse(data.metadata) : (data.metadata || {}),
+        tags: data.tags,
+        created_by: data.created_by,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        last_health_check: data.last_health_check
+      };
+      
+      setDataSources(prev => prev.map(ds => ds.id === id ? transformedData : ds));
       toast.success('Data source updated successfully');
-      return data;
+      return transformedData;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to update data source';
       setError(message);
