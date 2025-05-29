@@ -22,6 +22,8 @@ import BedManagementDemo from "@/components/astro-flow/BedManagementDemo";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
+import { toast } from "sonner";
+import { useState } from "react";
 
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
@@ -39,6 +41,12 @@ const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
 
 const AstroFlow = () => {
   const { userRole, isLoading } = useUserRole();
+  const [activeTab, setActiveTab] = useState("workflow");
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    toast.info(`Switched to ${value} module`);
+  };
 
   if (isLoading) {
     return (
@@ -66,33 +74,54 @@ const AstroFlow = () => {
       <div className="max-w-7xl mx-auto">
         <AstroFlowHeader />
 
-        <Tabs defaultValue="workflow" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <TabsList className="grid w-full grid-cols-7 bg-muted/50">
-            <TabsTrigger value="workflow" className="data-[state=active]:bg-pink-500/20">
+            <TabsTrigger 
+              value="workflow" 
+              className="data-[state=active]:bg-pink-500/20 transition-all duration-200 hover:bg-pink-500/10"
+            >
               <Workflow className="h-4 w-4 mr-2" />
               AI Workflow
             </TabsTrigger>
-            <TabsTrigger value="aiRoles" className="data-[state=active]:bg-cyan-500/20">
+            <TabsTrigger 
+              value="aiRoles" 
+              className="data-[state=active]:bg-cyan-500/20 transition-all duration-200 hover:bg-cyan-500/10"
+            >
               <Bot className="h-4 w-4 mr-2" />
               AI Roles
             </TabsTrigger>
-            <TabsTrigger value="rules" className="data-[state=active]:bg-orange-500/20">
+            <TabsTrigger 
+              value="rules" 
+              className="data-[state=active]:bg-orange-500/20 transition-all duration-200 hover:bg-orange-500/10"
+            >
               <Settings className="h-4 w-4 mr-2" />
               Rules
             </TabsTrigger>
-            <TabsTrigger value="monitoring" className="data-[state=active]:bg-red-500/20">
+            <TabsTrigger 
+              value="monitoring" 
+              className="data-[state=active]:bg-red-500/20 transition-all duration-200 hover:bg-red-500/10"
+            >
               <AlertTriangle className="h-4 w-4 mr-2" />
               SLA Monitor
             </TabsTrigger>
-            <TabsTrigger value="predictions" className="data-[state=active]:bg-blue-500/20">
+            <TabsTrigger 
+              value="predictions" 
+              className="data-[state=active]:bg-blue-500/20 transition-all duration-200 hover:bg-blue-500/10"
+            >
               <TrendingUp className="h-4 w-4 mr-2" />
               Predictions
             </TabsTrigger>
-            <TabsTrigger value="nlp" className="data-[state=active]:bg-green-500/20">
+            <TabsTrigger 
+              value="nlp" 
+              className="data-[state=active]:bg-green-500/20 transition-all duration-200 hover:bg-green-500/10"
+            >
               <Brain className="h-4 w-4 mr-2" />
               NLP
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="data-[state=active]:bg-purple-500/20">
+            <TabsTrigger 
+              value="alerts" 
+              className="data-[state=active]:bg-purple-500/20 transition-all duration-200 hover:bg-purple-500/10"
+            >
               <Bell className="h-4 w-4 mr-2" />
               Alerts
             </TabsTrigger>

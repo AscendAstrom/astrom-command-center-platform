@@ -8,7 +8,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Search, AlertTriangle, CheckCircle, Clock, X } from "lucide-react";
+import { Bell, Search, AlertTriangle, CheckCircle, Clock, X, Settings, MarkAsRead } from "lucide-react";
 import { toast } from "sonner";
 
 interface DashboardLayoutProps {
@@ -62,11 +62,13 @@ const mockNotifications: Notification[] = [
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleNotificationsClick = () => {
     setShowNotifications(!showNotifications);
+    toast.info("Notifications panel toggled");
   };
 
   const markAsRead = (id: string) => {
@@ -77,10 +79,28 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           : notification
       )
     );
+    toast.success("Notification marked as read");
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, isRead: true }))
+    );
+    toast.success("All notifications marked as read");
+    setShowNotifications(false);
   };
 
   const dismissNotification = (id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
+    toast.success("Notification dismissed");
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      toast.info(`Searching for: ${searchQuery}`);
+      // Implement search functionality here
+    }
   };
 
   const getNotificationIcon = (type: string) => {
@@ -101,20 +121,30 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4 flex-1 max-w-md">
-              <div className="relative flex-1">
+              <form onSubmit={handleSearch} className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search..."
+                  placeholder="Search patients, rooms, data..."
                   className="pl-10 bg-background/50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-              </div>
+                <Button 
+                  type="submit" 
+                  size="sm" 
+                  variant="ghost" 
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                >
+                  <Search className="h-3 w-3" />
+                </Button>
+              </form>
             </div>
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="relative hover:bg-accent hover:text-accent-foreground"
+                  className="relative hover:bg-accent hover:text-accent-foreground transition-all duration-200"
                   onClick={handleNotificationsClick}
                 >
                   <Bell className="h-4 w-4" />
@@ -126,12 +156,36 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </Button>
                 
                 {showNotifications && (
-                  <div className="absolute right-0 top-12 w-96 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  <div className="absolute right-0 top-12 w-96 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
                     <div className="p-4 border-b border-border">
-                      <h3 className="font-semibold text-foreground">Notifications</h3>
-                      <p className="text-sm text-muted-foreground">{unreadCount} unread</p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-foreground">Notifications</h3>
+                          <p className="text-sm text-muted-foreground">{unreadCount} unread</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {unreadCount > 0 && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={markAllAsRead}
+                              className="text-xs"
+                            >
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Mark all read
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowNotifications(false)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="divide-y divide-border">
+                    <div className="divide-y divide-border overflow-y-auto max-h-80">
                       {notifications.map((notification) => (
                         <div 
                           key={notification.id} 
@@ -164,9 +218,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-6 text-xs"
+                                    className="h-6 text-xs hover:bg-blue-500/10"
                                     onClick={() => markAsRead(notification.id)}
                                   >
+                                    <CheckCircle className="h-3 w-3 mr-1" />
                                     Mark as read
                                   </Button>
                                 )}
