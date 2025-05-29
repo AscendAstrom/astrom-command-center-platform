@@ -1,96 +1,173 @@
 
 import { 
-  Layers,
-  Target,
-  Eye,
-  Zap,
-  Scan,
-  Settings,
+  Home, 
+  Database, 
+  BarChart3, 
+  Eye, 
+  Workflow, 
+  Settings, 
+  Brain,
   Shield,
-  LayoutDashboard,
-} from "lucide-react";
-import { NavigationItem, SystemItem } from "./types";
+  Users,
+  Search,
+  Building2,
+  Activity,
+  Stethoscope,
+  FileText,
+  Clock,
+  AlertTriangle,
+  TrendingUp,
+  Layers,
+  Zap,
+  Globe,
+  Lock,
+  Target,
+  Cpu,
+  Network,
+  GitBranch,
+  Monitor,
+  CheckCircle
+} from 'lucide-react';
+
+export interface NavigationItem {
+  id: string;
+  label: string;
+  icon: any;
+  href: string;
+  badge?: string;
+  description: string;
+  category: 'core' | 'intelligence' | 'operations' | 'admin';
+}
 
 export const navigationItems: NavigationItem[] = [
-  { 
-    title: "Dashboard", 
-    subtitle: "OVERVIEW", 
-    url: "/dashboard", 
-    icon: LayoutDashboard, 
-    color: "text-slate-600 dark:text-slate-400", 
-    bg: "bg-slate-50 dark:bg-slate-800/50",
-    activeBg: "bg-slate-100 dark:bg-slate-700/50",
-    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
+  // Core Platform
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: Home,
+    href: '/dashboard',
+    description: 'Main platform overview and analytics',
+    category: 'core'
   },
-  { 
-    title: "Sources", 
-    subtitle: "ASTRO-SCAN", 
-    url: "/astro-scan", 
-    icon: Scan, 
-    color: "text-blue-600 dark:text-blue-400", 
-    bg: "bg-blue-50 dark:bg-blue-950/50",
-    activeBg: "bg-blue-100 dark:bg-blue-900/30",
-    iconBg: "bg-gradient-to-br from-blue-500 to-blue-600"
+  {
+    id: 'astro-scan',
+    label: 'ASTRO-SCAN',
+    icon: Search,
+    href: '/astro-scan',
+    description: 'Data ingestion and source management',
+    category: 'core'
   },
-  { 
-    title: "Modeling", 
-    subtitle: "ASTRO-BRICKS", 
-    url: "/astro-bricks", 
-    icon: Layers, 
-    color: "text-orange-600 dark:text-orange-400", 
-    bg: "bg-orange-50 dark:bg-orange-950/50",
-    activeBg: "bg-orange-100 dark:bg-orange-900/30",
-    iconBg: "bg-gradient-to-br from-orange-500 to-orange-600"
+  {
+    id: 'astro-bricks',
+    label: 'ASTRO-BRICKS',
+    icon: Database,
+    href: '/astro-bricks',
+    description: 'Data modeling and transformation',
+    category: 'core'
   },
-  { 
-    title: "Metrics", 
-    subtitle: "ASTRO-METRICS", 
-    url: "/astro-metrics", 
-    icon: Target, 
-    color: "text-green-600 dark:text-green-400", 
-    bg: "bg-green-50 dark:bg-green-950/50",
-    activeBg: "bg-green-100 dark:bg-green-900/30",
-    iconBg: "bg-gradient-to-br from-green-500 to-green-600"
+  {
+    id: 'astro-metrics',
+    label: 'ASTRO-METRICS',
+    icon: BarChart3,
+    href: '/astro-metrics',
+    description: 'KPI management and performance analytics',
+    category: 'core'
   },
-  { 
-    title: "Visuals", 
-    subtitle: "ASTRO-VIEW", 
-    url: "/astro-view", 
-    icon: Eye, 
-    color: "text-purple-600 dark:text-purple-400", 
-    bg: "bg-purple-50 dark:bg-purple-950/50",
-    activeBg: "bg-purple-100 dark:bg-purple-900/30",
-    iconBg: "bg-gradient-to-br from-purple-500 to-purple-600"
+  {
+    id: 'astro-view',
+    label: 'ASTRO-VIEW',
+    icon: Eye,
+    href: '/astro-view',
+    description: 'Data visualization and dashboards',
+    category: 'core'
   },
-  { 
-    title: "Automation", 
-    subtitle: "ASTRO-FLOW", 
-    url: "/astro-flow", 
-    icon: Zap, 
-    color: "text-pink-600 dark:text-pink-400", 
-    bg: "bg-pink-50 dark:bg-pink-950/50",
-    activeBg: "bg-pink-100 dark:bg-pink-900/30",
-    iconBg: "bg-gradient-to-br from-pink-500 to-pink-600"
+  {
+    id: 'astro-flow',
+    label: 'ASTRO-FLOW',
+    icon: Workflow,
+    href: '/astro-flow',
+    description: 'Workflow automation and process management',
+    category: 'core'
   },
+
+  // Intelligence & AI
+  {
+    id: 'ai-ecosystem',
+    label: 'AI-ECOSYSTEM',
+    icon: Brain,
+    href: '/ai-ecosystem',
+    badge: 'AI',
+    description: 'Advanced AI and machine learning platform',
+    category: 'intelligence'
+  },
+  {
+    id: 'command-center',
+    label: 'Command Center',
+    icon: Monitor,
+    href: '/command-center',
+    description: 'Executive command and control center',
+    category: 'intelligence'
+  },
+
+  // Operations
+  {
+    id: 'bed-management',
+    label: 'Bed Management',
+    icon: Building2,
+    href: '/dashboard',
+    description: 'Hospital bed tracking and allocation',
+    category: 'operations'
+  },
+  {
+    id: 'patient-flow',
+    label: 'Patient Flow',
+    icon: Activity,
+    href: '/dashboard',
+    description: 'Patient journey and flow optimization',
+    category: 'operations'
+  },
+  {
+    id: 'clinical-ops',
+    label: 'Clinical Operations',
+    icon: Stethoscope,
+    href: '/dashboard',
+    description: 'Clinical workflow management',
+    category: 'operations'
+  },
+
+  // Administration
+  {
+    id: 'admin-panel',
+    label: 'Admin Panel',
+    icon: Users,
+    href: '/admin',
+    description: 'User and system administration',
+    category: 'admin'
+  },
+  {
+    id: 'production-audit',
+    label: 'Production Audit',
+    icon: CheckCircle,
+    href: '/production-audit',
+    badge: 'NEW',
+    description: 'Pre-UAT system validation and readiness check',
+    category: 'admin'
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: Settings,
+    href: '/settings',
+    description: 'Application configuration and preferences',
+    category: 'admin'
+  }
 ];
 
-export const systemItems: SystemItem[] = [
-  { 
-    title: "Settings", 
-    url: "/settings", 
-    icon: Settings, 
-    color: "text-slate-600 dark:text-slate-400", 
-    bg: "bg-slate-50 dark:bg-slate-800/50",
-    activeBg: "bg-slate-100 dark:bg-slate-700/50",
-    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
-  },
-  { 
-    title: "Admin Panel", 
-    url: "/admin", 
-    icon: Shield, 
-    color: "text-slate-600 dark:text-slate-400", 
-    bg: "bg-slate-50 dark:bg-slate-800/50",
-    activeBg: "bg-slate-100 dark:bg-slate-700/50",
-    iconBg: "bg-gradient-to-br from-slate-500 to-slate-600"
-  },
-];
+export const getNavigationByCategory = (category: NavigationItem['category']) => {
+  return navigationItems.filter(item => item.category === category);
+};
+
+export const getCoreModules = () => getNavigationByCategory('core');
+export const getIntelligenceModules = () => getNavigationByCategory('intelligence');
+export const getOperationsModules = () => getNavigationByCategory('operations');
+export const getAdminModules = () => getNavigationByCategory('admin');
