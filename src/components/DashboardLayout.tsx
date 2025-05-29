@@ -51,7 +51,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 onClick={handleNotificationsClick}
               >
                 <Bell className="h-4 w-4" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
               </Button>
               <ThemeToggle />
               <UserMenu />
