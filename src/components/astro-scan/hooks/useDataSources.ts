@@ -1,97 +1,113 @@
 
 import { useState, useEffect } from 'react';
-import { dataSourceService } from '@/services/dataSourceService';
-import { useRealTimeData } from '@/hooks/useRealTimeData';
-import type { Tables } from '@/integrations/supabase/types';
-
-type DataSource = Tables<'data_sources'>;
+import { supabase } from '@/integrations/supabase/client';
+import { DataSource, SyncStatus } from '../types';
+import { mockEpicDataSources } from '@/data/mockEpicDataSources';
 
 export const useDataSources = () => {
-  const { data: realtimeData, loading, error } = useRealTimeData<DataSource>({
-    table: 'data_sources'
-  });
-
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Ensure data persistence and proper updates
-  useEffect(() => {
-    if (realtimeData && Array.isArray(realtimeData)) {
-      console.log('Real-time data sources updated:', realtimeData.length);
-      setDataSources(realtimeData);
-    }
-  }, [realtimeData]);
-
-  // Initial data fetch if real-time data is empty
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      if (!loading && (!realtimeData || realtimeData.length === 0)) {
-        try {
-          console.log('Fetching initial data sources...');
-          const { data, error } = await dataSourceService.getAll();
-          if (error) {
-            console.error('Error fetching initial data sources:', error);
-          } else if (data) {
-            console.log('Initial data sources loaded:', data.length);
-            setDataSources(data);
-          }
-        } catch (err) {
-          console.error('Error in initial data fetch:', err);
-        }
-      }
-    };
-
-    fetchInitialData();
-  }, [loading, realtimeData]);
-
-  const updateDataSourceStatus = async (id: string, status: any) => {
+  const fetchDataSources = async () => {
     try {
-      console.log('Updating data source status:', id, status);
-      const { error } = await dataSourceService.update(id, { status });
-      if (error) throw error;
+      setLoading(true);
+      setError(null);
+
+      const { data, error: fetchError } = await supabase
+        .from('data_sources')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      // If no real data sources exist, use mock Epic data sources
+      if (!data || data.length === 0) {
+        setDataSources(mockEpicDataSources);
+      } else {
+        // Transform the data to match our DataSource interface
+        const transformedData: DataSource[] = data.map((source: any) => ({
+          id: source.id,
+          name: source.name,
+          type: source.type,
+          status: source.status || 'CONNECTED',
+          ingestion_mode: source.ingestion_mode,
+          records_count: source.records_count || 0,
+          last_sync: source.last_sync,
+          health_score: source.health_score || 85,
+          last_error: source.last_error
+        }));
+        setDataSources(transformedData);
+      }
+    } catch (err) {
+      console.error('Error fetching data sources:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      // Fallback to mock data on error
+      setDataSources(mockEpicDataSources);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateDataSourceStatus = async (id: string, status: SyncStatus) => {
+    try {
+      // Update local state immediately for better UX
+      setDataSources(prev => 
+        prev.map(source => 
+          source.id === id ? { ...source, status } : source
+        )
+      );
+
+      // Update in database (if using real data)
+      const { error: updateError } = await supabase
+        .from('data_sources')
+        .update({ status })
+        .eq('id', id);
+
+      if (updateError) {
+        console.error('Error updating data source status:', updateError);
+        // Revert local state on error
+        fetchDataSources();
+      }
     } catch (err) {
       console.error('Error updating data source status:', err);
+      // Revert local state on error
+      fetchDataSources();
     }
   };
 
   const deleteDataSource = async (id: string) => {
     try {
-      console.log('Deleting data source:', id);
-      const { error } = await dataSourceService.delete(id);
-      if (error) throw error;
-    } catch (err) {
-      console.error('Error deleting data source:', err);
-    }
-  };
+      // Update local state immediately for better UX
+      setDataSources(prev => prev.filter(source => source.id !== id));
 
-  const testConnection = async (id: string) => {
-    try {
-      console.log('Testing connection for data source:', id);
-      const { error } = await dataSourceService.testConnection(id);
-      if (error) throw error;
-    } catch (err) {
-      console.error('Error testing connection:', err);
-    }
-  };
+      // Delete from database (if using real data)
+      const { error: deleteError } = await supabase
+        .from('data_sources')
+        .delete()
+        .eq('id', id);
 
-  const refetch = async () => {
-    try {
-      console.log('Manually refetching data sources...');
-      const { data, error } = await dataSourceService.getAll();
-      if (error) throw error;
-      if (data) {
-        console.log('Manual refetch completed:', data.length);
-        setDataSources(data || []);
+      if (deleteError) {
+        console.error('Error deleting data source:', deleteError);
+        // Revert local state on error
+        fetchDataSources();
       }
     } catch (err) {
-      console.error('Error refetching data sources:', err);
+      console.error('Error deleting data source:', err);
+      // Revert local state on error
+      fetchDataSources();
     }
   };
 
-  console.log('useDataSources - Current state:', {
-    dataSourcesCount: dataSources.length,
-    loading,
-    error: error?.message
-  });
+  useEffect(() => {
+    fetchDataSources();
+  }, []);
+
+  const refetch = () => {
+    fetchDataSources();
+  };
 
   return {
     dataSources,
@@ -99,7 +115,6 @@ export const useDataSources = () => {
     error,
     refetch,
     updateDataSourceStatus,
-    deleteDataSource,
-    testConnection
+    deleteDataSource
   };
 };

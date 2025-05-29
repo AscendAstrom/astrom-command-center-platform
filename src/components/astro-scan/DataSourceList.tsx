@@ -3,11 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useDataSources } from "./hooks/useDataSources";
 import { DataSourceItem } from "./components/DataSourceItem";
 import { DataSourceLoadingSkeleton } from "./components/DataSourceLoadingSkeleton";
-import { Database, Plus, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Database, Plus } from "lucide-react";
 
 export const DataSourceList = () => {
-  const { dataSources, loading, error, updateDataSourceStatus, deleteDataSource, refetch } = useDataSources();
+  const { dataSources, loading, updateDataSourceStatus, deleteDataSource } = useDataSources();
 
   if (loading) {
     return (
@@ -28,33 +27,6 @@ export const DataSourceList = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Card className="surface-elevated border-border/50 glass-card animate-fade-in">
-        <CardHeader>
-          <CardTitle className="text-foreground flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-red-500/10">
-              <Database className="h-5 w-5 text-red-500" />
-            </div>
-            Data Sources - Error
-          </CardTitle>
-          <CardDescription>Failed to load data sources</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">
-              Error loading data sources: {error.message || 'Unknown error'}
-            </p>
-            <Button onClick={refetch} variant="outline">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Retry
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card className="surface-elevated border-border/50 glass-card animate-fade-in hover-lift">
       <CardHeader>
@@ -63,21 +35,8 @@ export const DataSourceList = () => {
             <Database className="h-5 w-5 text-astrom-blue" />
           </div>
           Data Sources
-          <span className="ml-auto text-sm font-normal text-muted-foreground">
-            {dataSources.length} sources
-          </span>
         </CardTitle>
-        <CardDescription className="flex items-center justify-between">
-          <span>Manage and monitor your configured data sources</span>
-          <Button 
-            onClick={refetch} 
-            variant="ghost" 
-            size="sm"
-            className="h-auto p-1"
-          >
-            <RefreshCw className="h-3 w-3" />
-          </Button>
-        </CardDescription>
+        <CardDescription>Manage and monitor your configured data sources</CardDescription>
       </CardHeader>
       <CardContent>
         {dataSources.length === 0 ? (

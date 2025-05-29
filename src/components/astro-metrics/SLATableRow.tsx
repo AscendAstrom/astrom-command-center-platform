@@ -3,37 +3,68 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Edit, Trash2, Target } from "lucide-react";
-import type { Tables } from '@/integrations/supabase/types';
-
-type SLA = Tables<'slas'>;
+import { Clock, MapPin, AlertTriangle, Edit, Trash2 } from "lucide-react";
+import { SLAConfiguration } from './types';
 
 interface SLATableRowProps {
-  sla: SLA;
+  sla: SLAConfiguration;
   canEdit: boolean;
   onToggleStatus: (slaId: string) => void;
 }
 
 const SLATableRow = ({ sla, canEdit, onToggleStatus }: SLATableRowProps) => {
+  const getMetricTypeIcon = (type: string) => {
+    switch (type) {
+      case 'wait_time': return <Clock className="h-4 w-4" />;
+      case 'utilization': return <MapPin className="h-4 w-4" />;
+      default: return <AlertTriangle className="h-4 w-4" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-green-600';
+      case 'paused': return 'bg-yellow-600';
+      case 'disabled': return 'bg-gray-600';
+      default: return 'bg-gray-600';
+    }
+  };
+
   return (
-    <TableRow className="border-border">
+    <TableRow className="border-slate-800">
       <TableCell>
         <div>
-          <div className="font-medium text-foreground">{sla.name}</div>
+          <div className="font-medium text-white">{sla.name}</div>
+          <div className="text-sm text-slate-400">{sla.description}</div>
         </div>
       </TableCell>
       <TableCell>
-        <span className="text-muted-foreground">{sla.description || 'No description'}</span>
-      </TableCell>
-      <TableCell className="text-foreground">
-        {sla.target_value}
-      </TableCell>
-      <TableCell>
-        <span className="text-muted-foreground">{sla.measurement_period}</span>
+        <div className="flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-cyan-400" />
+          <span className="text-slate-300">{sla.zoneName || 'All Zones'}</span>
+        </div>
       </TableCell>
       <TableCell>
-        <Badge className={sla.is_active ? 'bg-green-600' : 'bg-gray-600'}>
-          {sla.is_active ? 'Active' : 'Inactive'}
+        <div className="flex items-center gap-2">
+          {getMetricTypeIcon(sla.metricType)}
+          <span className="text-slate-300 capitalize">
+            {sla.metricType.replace('_', ' ')}
+          </span>
+        </div>
+      </TableCell>
+      <TableCell className="text-slate-300">
+        {sla.threshold} {sla.unit}
+      </TableCell>
+      <TableCell>
+        {sla.alertEnabled ? (
+          <Badge className="bg-green-600">Enabled</Badge>
+        ) : (
+          <Badge variant="outline">Disabled</Badge>
+        )}
+      </TableCell>
+      <TableCell>
+        <Badge className={getStatusColor(sla.status)}>
+          {sla.status}
         </Badge>
       </TableCell>
       {canEdit && (
@@ -43,7 +74,7 @@ const SLATableRow = ({ sla, canEdit, onToggleStatus }: SLATableRowProps) => {
               <Edit className="h-4 w-4" />
             </Button>
             <Switch
-              checked={sla.is_active}
+              checked={sla.status === 'active'}
               onCheckedChange={() => onToggleStatus(sla.id)}
             />
             <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">

@@ -1,48 +1,74 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { slaService } from '@/services/slaService';
-import { useRealTimeData } from '@/hooks/useRealTimeData';
-import { MetricsUserRole } from './types';
+import { SLAConfiguration as SLAConfig, MetricsUserRole } from './types';
 import SLACreateDialog from './SLACreateDialog';
 import SLATable from './SLATable';
-import type { Tables } from '@/integrations/supabase/types';
-
-type SLA = Tables<'slas'>;
 
 interface SLAConfigurationProps {
   userRole: MetricsUserRole | null;
 }
 
 const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
-  const { data: realtimeSLAs, loading } = useRealTimeData<SLA>({
-    table: 'slas'
-  });
-
-  const [slaConfigs, setSlaConfigs] = useState<SLA[]>([]);
-
-  useEffect(() => {
-    setSlaConfigs(realtimeSLAs);
-  }, [realtimeSLAs]);
+  const [slaConfigs, setSlaConfigs] = useState<SLAConfig[]>([
+    {
+      id: '1',
+      name: 'ED Wait Time SLA',
+      description: 'Maximum wait time for emergency department patients',
+      zoneId: 'zone_1',
+      zoneName: 'Emergency Department',
+      metricType: 'wait_time',
+      threshold: 30,
+      unit: 'minutes',
+      timeWindow: 'real_time',
+      alertEnabled: true,
+      escalationRules: [
+        {
+          id: '1',
+          delay: 5,
+          delayUnit: 'minutes',
+          recipients: [
+            { type: 'email', address: 'ed-manager@hospital.com', name: 'ED Manager' }
+          ],
+          actions: [
+            { type: 'notification', config: { message: 'SLA breach detected' } }
+          ]
+        }
+      ],
+      status: 'active',
+      createdAt: '2024-01-15T10:00:00Z',
+      updatedAt: '2024-01-15T10:00:00Z'
+    },
+    {
+      id: '2',
+      name: 'ICU Bed Utilization',
+      description: 'ICU bed utilization threshold',
+      zoneId: 'zone_2',
+      zoneName: 'Intensive Care Unit',
+      metricType: 'utilization',
+      threshold: 85,
+      unit: 'percentage',
+      timeWindow: 'hourly',
+      alertEnabled: true,
+      escalationRules: [],
+      status: 'active',
+      createdAt: '2024-01-16T09:00:00Z',
+      updatedAt: '2024-01-16T09:00:00Z'
+    }
+  ]);
 
   const canEdit = userRole === 'ADMIN' || userRole === 'ANALYST';
 
-  const handleCreateSLA = async (slaData: any) => {
-    try {
-      const { error } = await slaService.create(slaData);
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error creating SLA:', error);
-    }
+  const handleCreateSLA = (sla: SLAConfig) => {
+    setSlaConfigs([...slaConfigs, sla]);
   };
 
-  const toggleSLAStatus = async (slaId: string) => {
-    try {
-      const { error } = await slaService.toggleActive(slaId);
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error toggling SLA status:', error);
-    }
+  const toggleSLAStatus = (slaId: string) => {
+    setSlaConfigs(slaConfigs.map(sla => 
+      sla.id === slaId 
+        ? { ...sla, status: sla.status === 'active' ? 'paused' : 'active' }
+        : sla
+    ));
   };
 
   return (
@@ -62,7 +88,6 @@ const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
             slaConfigs={slaConfigs}
             canEdit={canEdit}
             onToggleStatus={toggleSLAStatus}
-            loading={loading}
           />
         </CardContent>
       </Card>

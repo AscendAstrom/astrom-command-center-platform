@@ -13,10 +13,9 @@ interface RulesListProps {
   onCreateRule: () => void;
   onToggleRule: (ruleId: string) => void;
   userRole: FlowUserRole;
-  loading?: boolean;
 }
 
-const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRule, userRole, loading }: RulesListProps) => {
+const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRule, userRole }: RulesListProps) => {
   const canEdit = userRole === 'ADMIN';
 
   const getPriorityColor = (priority: string) => {
@@ -28,29 +27,6 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
       default: return 'bg-muted text-muted-foreground';
     }
   };
-
-  if (loading) {
-    return (
-      <Card className="bg-card border-border backdrop-blur-sm">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-cyan-400" />
-            <CardTitle className="text-foreground">Automation Rules</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="p-4 rounded-xl border border-border animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-muted rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="bg-card border-border backdrop-blur-sm">
