@@ -8,6 +8,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Search } from "lucide-react";
+import { toast } from "sonner";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -16,7 +17,13 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const handleNotificationsClick = () => {
     console.log("Notifications clicked");
-    // Add notifications panel logic here
+    toast("Notifications", {
+      description: "You have 3 new notifications",
+      action: {
+        label: "View All",
+        onClick: () => console.log("View all notifications"),
+      },
+    });
   };
 
   return (
