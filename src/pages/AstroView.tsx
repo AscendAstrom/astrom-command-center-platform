@@ -19,9 +19,11 @@ import RealtimeDashboard from "@/components/astro-view/RealtimeDashboard";
 import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 
 const AstroView = () => {
-  const [activeTab, setActiveTab] = useState("dashboards");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "dashboards");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleTabChange = (value: string) => {

@@ -10,10 +10,12 @@ import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("sources");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);

@@ -24,6 +24,7 @@ import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
@@ -41,7 +42,8 @@ const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
 
 const AstroFlow = () => {
   const { userRole, isLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState("workflow");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "workflow");
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);

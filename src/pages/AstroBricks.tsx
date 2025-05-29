@@ -21,9 +21,13 @@ import { TransformationRulesEditor } from "@/components/astro-bricks/Transformat
 import { TimestampTools } from "@/components/astro-bricks/TimestampTools";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const AstroBricks = () => {
-  const [activeTab, setActiveTab] = useState("pipelines");
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "pipelines");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleTabChange = (value: string) => {
@@ -50,19 +54,17 @@ const AstroBricks = () => {
 
   const handleCreatePipeline = () => {
     toast.info("Opening pipeline creation wizard...");
-    // Add pipeline creation logic here
+    setActiveTab("pipelines");
   };
 
   const handleOptimizePipelines = () => {
-    toast.info("Analyzing pipelines for optimization opportunities...");
-    setTimeout(() => {
-      toast.success("Pipeline optimization recommendations generated!");
-    }, 1500);
+    toast.info("Navigating to SLA configuration for optimization...");
+    navigate("/astro-metrics?tab=sla-config");
   };
 
   const handleViewAnalytics = () => {
-    toast.info("Opening pipeline analytics dashboard...");
-    // Navigate to analytics view
+    toast.info("Opening analytics dashboard...");
+    navigate("/astro-view");
   };
 
   return (

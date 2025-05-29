@@ -16,10 +16,12 @@ import AccessControlTab from "@/components/astro-metrics/tabs/AccessControlTab";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 
 const AstroMetrics = () => {
   const { userRole, isLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState("kpi-builder");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "kpi-builder");
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);

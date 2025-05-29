@@ -17,8 +17,72 @@ import {
   TrendingUp,
   Zap
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function CommandCenter() {
+  const navigate = useNavigate();
+
+  const handleAddDataSource = () => {
+    toast.info("Navigating to data source configuration...");
+    navigate("/astro-scan");
+  };
+
+  const handleViewSourceWizard = () => {
+    toast.info("Opening source wizard...");
+    navigate("/astro-scan");
+  };
+
+  const handleConfigureDataModels = () => {
+    toast.info("Navigating to data modeling...");
+    navigate("/astro-bricks");
+  };
+
+  const handleViewTransformationRules = () => {
+    toast.info("Opening transformation rules...");
+    navigate("/astro-bricks?tab=transformations");
+  };
+
+  const handleDefineNewKPI = () => {
+    toast.info("Opening KPI builder...");
+    navigate("/astro-metrics?tab=kpi-builder");
+  };
+
+  const handleConfigureSLARules = () => {
+    toast.info("Navigating to SLA configuration...");
+    navigate("/astro-metrics?tab=sla-config");
+  };
+
+  const handleQualityDashboard = () => {
+    toast.info("Opening quality dashboard...");
+    navigate("/astro-metrics");
+  };
+
+  const handleLaunchDashboardBuilder = () => {
+    toast.info("Opening dashboard builder...");
+    navigate("/astro-view");
+  };
+
+  const handleViewLiveDashboards = () => {
+    toast.info("Viewing live dashboards...");
+    navigate("/astro-view?tab=realtime");
+  };
+
+  const handleConfigureAITriggers = () => {
+    toast.info("Configuring AI triggers...");
+    navigate("/astro-flow?tab=rules");
+  };
+
+  const handleViewWorkflowRules = () => {
+    toast.info("Opening workflow rules...");
+    navigate("/astro-flow?tab=workflow");
+  };
+
+  const handleAIModelSpecs = () => {
+    toast.info("Opening AI model specifications...");
+    navigate("/ai-ecosystem");
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -36,7 +100,7 @@ export default function CommandCenter() {
             <Activity className="h-3 w-3 mr-1" />
             System Operational
           </Badge>
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => navigate("/settings")}>
             <Settings className="h-4 w-4 mr-2" />
             Global Settings
           </Button>
@@ -93,11 +157,11 @@ export default function CommandCenter() {
                   </p>
                   
                   <div className="space-y-2">
-                    <Button className="w-full" variant="default">
+                    <Button className="w-full" variant="default" onClick={handleAddDataSource}>
                       <Database className="h-4 w-4 mr-2" />
                       Add Data Source
                     </Button>
-                    <Button className="w-full" variant="outline">
+                    <Button className="w-full" variant="outline" onClick={handleViewSourceWizard}>
                       View Source Wizard
                     </Button>
                   </div>
@@ -138,8 +202,8 @@ export default function CommandCenter() {
               </p>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <Button variant="default">Configure Data Models</Button>
-                <Button variant="outline">View Transformation Rules</Button>
+                <Button variant="default" onClick={handleConfigureDataModels}>Configure Data Models</Button>
+                <Button variant="outline" onClick={handleViewTransformationRules}>View Transformation Rules</Button>
               </div>
             </CardContent>
           </Card>
@@ -164,9 +228,9 @@ export default function CommandCenter() {
               </p>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <Button variant="default">Define New KPI</Button>
-                <Button variant="outline">Configure SLA Rules</Button>
-                <Button variant="outline">Quality Dashboard</Button>
+                <Button variant="default" onClick={handleDefineNewKPI}>Define New KPI</Button>
+                <Button variant="outline" onClick={handleConfigureSLARules}>Configure SLA Rules</Button>
+                <Button variant="outline" onClick={handleQualityDashboard}>Quality Dashboard</Button>
               </div>
             </CardContent>
           </Card>
@@ -191,8 +255,8 @@ export default function CommandCenter() {
               </p>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <Button variant="default">Launch Dashboard Builder</Button>
-                <Button variant="outline">View Live Dashboards</Button>
+                <Button variant="default" onClick={handleLaunchDashboardBuilder}>Launch Dashboard Builder</Button>
+                <Button variant="outline" onClick={handleViewLiveDashboards}>View Live Dashboards</Button>
               </div>
             </CardContent>
           </Card>
@@ -221,15 +285,15 @@ export default function CommandCenter() {
                 </ul>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  <Button variant="default">
+                  <Button variant="default" onClick={handleConfigureAITriggers}>
                     <AlertTriangle className="h-4 w-4 mr-2" />
                     Configure AI Triggers
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={handleViewWorkflowRules}>
                     <TrendingUp className="h-4 w-4 mr-2" />
                     View Workflow Rules
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={handleAIModelSpecs}>
                     <Brain className="h-4 w-4 mr-2" />
                     AI Model Specs
                   </Button>
@@ -272,8 +336,8 @@ export default function CommandCenter() {
               </div>
               
               <div className="flex gap-4">
-                <Button className="flex-1">Save Configuration</Button>
-                <Button variant="outline">Reset to Defaults</Button>
+                <Button className="flex-1" onClick={() => toast.success("AI roles configuration saved!")}>Save Configuration</Button>
+                <Button variant="outline" onClick={() => toast.info("AI roles reset to defaults")}>Reset to Defaults</Button>
               </div>
             </CardContent>
           </Card>
