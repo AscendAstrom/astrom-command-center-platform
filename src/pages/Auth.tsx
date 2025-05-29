@@ -76,9 +76,6 @@ const Auth = () => {
               AstroMedix AI
             </h1>
           </div>
-          <p className="text-muted-foreground mt-2">
-            Healthcare Data Intelligence Platform
-          </p>
         </div>
 
         <Card className="border border-border/50 shadow-xl">

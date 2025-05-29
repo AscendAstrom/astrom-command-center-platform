@@ -20,9 +20,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                Healthcare Data Intelligence Platform
-              </span>
+              {/* Removed the Healthcare Data Intelligence Platform text */}
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />

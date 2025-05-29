@@ -12,7 +12,7 @@ const AstroFlowHeader = () => {
         <span className="text-sm text-pink-400 font-medium">AI Automation & Workflow Intelligence</span>
       </div>
       <p className="text-muted-foreground max-w-2xl">
-        Intelligent automation platform with AI-powered monitoring, predictive analytics, and workflow management for healthcare operations.
+        Intelligent automation platform with AI-powered monitoring, predictive analytics, and workflow management.
       </p>
     </div>
   );
