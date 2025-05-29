@@ -27,7 +27,7 @@ const AIEcosystem = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background p-6">
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
             <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
@@ -42,8 +42,8 @@ const AIEcosystem = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-6">
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -53,7 +53,7 @@ const AIEcosystem = () => {
             <h1 className="text-3xl font-bold text-foreground">AI ECOSYSTEM</h1>
             <span className="text-sm text-purple-400 font-medium">Phase 3B: Enterprise Integration & Cognitive Analytics</span>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground max-w-2xl">
             Enterprise-grade integration hub, cognitive analytics platform, advanced workflow automation, 
             and comprehensive AI configuration management for large-scale healthcare operations.
           </p>

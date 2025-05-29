@@ -29,7 +29,7 @@ const AstroMetrics = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background p-6">
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
             <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
@@ -45,7 +45,7 @@ const AstroMetrics = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="max-w-7xl mx-auto">
         <AstroMetricsHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">

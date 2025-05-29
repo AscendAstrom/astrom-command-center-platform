@@ -1,7 +1,7 @@
 
 import { ReactNode, useState } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarInset, SidebarTrigger, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserMenu } from "@/components/UserMenu";
@@ -113,141 +113,149 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden">
-        <AppSidebar />
-        <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b border-border relative">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-4 flex-1 max-w-md">
-                <form onSubmit={handleSearch} className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search patients, rooms, data..."
-                    className="pl-10 bg-background/50"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <Button 
-                    type="submit" 
-                    size="sm" 
-                    variant="ghost" 
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                  >
-                    <Search className="h-3 w-3" />
-                  </Button>
-                </form>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative hover:bg-accent hover:text-accent-foreground transition-all duration-200"
-                    onClick={handleNotificationsClick}
-                  >
-                    <Bell className="h-4 w-4" />
-                    {unreadCount > 0 && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
-                        <span className="text-xs text-white font-medium">{unreadCount}</span>
-                      </div>
-                    )}
-                  </Button>
-                  
-                  {showNotifications && (
-                    <div className="absolute right-0 top-12 w-96 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
-                      <div className="p-4 border-b border-border">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold text-foreground">Notifications</h3>
-                            <p className="text-sm text-muted-foreground">{unreadCount} unread</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {unreadCount > 0 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={markAllAsRead}
-                                className="text-xs"
-                              >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Mark all read
-                              </Button>
-                            )}
+    <div className="flex h-screen w-full overflow-hidden">
+      <AppSidebar />
+      <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b border-border relative">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4 flex-1 max-w-md">
+              <form onSubmit={handleSearch} className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search patients, rooms, data..."
+                  className="pl-10 bg-background/50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button 
+                  type="submit" 
+                  size="sm" 
+                  variant="ghost" 
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  showToast={true}
+                  toastMessage={`Searching for: ${searchQuery}`}
+                >
+                  <Search className="h-3 w-3" />
+                </Button>
+              </form>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+                  onClick={handleNotificationsClick}
+                  showToast={true}
+                  toastMessage="Notifications panel toggled"
+                >
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
+                      <span className="text-xs text-white font-medium">{unreadCount}</span>
+                    </div>
+                  )}
+                </Button>
+                
+                {showNotifications && (
+                  <div className="absolute right-0 top-12 w-96 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
+                    <div className="p-4 border-b border-border">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-foreground">Notifications</h3>
+                          <p className="text-sm text-muted-foreground">{unreadCount} unread</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {unreadCount > 0 && (
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
-                              onClick={() => setShowNotifications(false)}
+                              onClick={markAllAsRead}
+                              className="text-xs"
+                              showToast={true}
+                              toastMessage="All notifications marked as read"
                             >
-                              <X className="h-4 w-4" />
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Mark all read
                             </Button>
-                          </div>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowNotifications(false)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="divide-y divide-border overflow-y-auto max-h-80">
-                        {notifications.map((notification) => (
-                          <div 
-                            key={notification.id} 
-                            className={`p-4 hover:bg-muted/50 transition-colors ${!notification.isRead ? 'bg-muted/20' : ''}`}
-                          >
-                            <div className="flex items-start gap-3">
-                              {getNotificationIcon(notification.type)}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <h4 className="text-sm font-medium text-foreground truncate">
-                                    {notification.title}
-                                  </h4>
+                    </div>
+                    <div className="divide-y divide-border overflow-y-auto max-h-80">
+                      {notifications.map((notification) => (
+                        <div 
+                          key={notification.id} 
+                          className={`p-4 hover:bg-muted/50 transition-colors ${!notification.isRead ? 'bg-muted/20' : ''}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            {getNotificationIcon(notification.type)}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-medium text-foreground truncate">
+                                  {notification.title}
+                                </h4>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-6 w-6 opacity-60 hover:opacity-100"
+                                  onClick={() => dismissNotification(notification.id)}
+                                  showToast={true}
+                                  toastMessage="Notification dismissed"
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {notification.message}
+                              </p>
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-xs text-muted-foreground">
+                                  {notification.timestamp}
+                                </span>
+                                {!notification.isRead && (
                                   <Button
                                     variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6 opacity-60 hover:opacity-100"
-                                    onClick={() => dismissNotification(notification.id)}
+                                    size="sm"
+                                    className="h-6 text-xs hover:bg-blue-500/10"
+                                    onClick={() => markAsRead(notification.id)}
+                                    showToast={true}
+                                    toastMessage="Notification marked as read"
                                   >
-                                    <X className="h-3 w-3" />
+                                    <CheckCircle className="h-3 w-3 mr-1" />
+                                    Mark as read
                                   </Button>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                  {notification.message}
-                                </p>
-                                <div className="flex items-center justify-between mt-2">
-                                  <span className="text-xs text-muted-foreground">
-                                    {notification.timestamp}
-                                  </span>
-                                  {!notification.isRead && (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-6 text-xs hover:bg-blue-500/10"
-                                      onClick={() => markAsRead(notification.id)}
-                                    >
-                                      <CheckCircle className="h-3 w-3 mr-1" />
-                                      Mark as read
-                                    </Button>
-                                  )}
-                                </div>
+                                )}
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
-                <ThemeToggle />
-                <UserMenu />
+                  </div>
+                )}
               </div>
+              <ThemeToggle />
+              <UserMenu />
             </div>
-          </header>
-          <main className="flex-1 overflow-y-auto">
-            <div className="h-full">
-              {children}
-            </div>
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+          </div>
+        </header>
+        <main className="flex-1 overflow-y-auto">
+          <div className="h-full">
+            {children}
+          </div>
+        </main>
+      </SidebarInset>
+    </div>
   );
 };
 
