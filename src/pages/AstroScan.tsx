@@ -9,13 +9,21 @@ import IngestionTabContent from "@/components/astro-scan/IngestionTabContent";
 import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
+import { toast } from "sonner";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("sources");
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
+    toast.success("Data source added successfully!");
     // Refresh data sources list
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    toast.info(`Switched to ${value} module`);
   };
 
   return (
@@ -23,7 +31,7 @@ const AstroScan = () => {
       <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
         <AstroScanHeader />
 
-        <Tabs defaultValue="sources" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
@@ -40,7 +48,10 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
-            <SourcesTabContent onAddSourceClick={() => setIsWizardOpen(true)} />
+            <SourcesTabContent onAddSourceClick={() => {
+              setIsWizardOpen(true);
+              toast.info("Opening data source wizard...");
+            }} />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
@@ -61,7 +72,10 @@ const AstroScan = () => {
 
       {isWizardOpen && (
         <DataSourceWizard 
-          onClose={() => setIsWizardOpen(false)}
+          onClose={() => {
+            setIsWizardOpen(false);
+            toast.info("Data source wizard closed");
+          }}
           onDataSourceAdded={handleDataSourceAdded}
         />
       )}

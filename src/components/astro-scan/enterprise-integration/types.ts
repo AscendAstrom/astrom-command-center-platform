@@ -40,3 +40,30 @@ export interface ApiMetrics {
   uptime: number;
   activeEndpoints: number;
 }
+
+export interface IntegrationStatus {
+  name: string;
+  status: 'active' | 'maintenance' | 'error';
+  uptime: number;
+  throughput: string;
+  type: string;
+}
+
+export interface FederationFacility {
+  facility: string;
+  systems: string;
+  status: 'synced' | 'syncing' | 'error';
+  latency: string;
+}
+
+export interface SecurityControl {
+  name: string;
+  status: 'active' | 'inactive';
+  score: number;
+}
+
+export interface ComplianceItem {
+  name: string;
+  status: 'compliant' | 'non-compliant';
+  lastAudit: string;
+}

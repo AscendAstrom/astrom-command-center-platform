@@ -14,9 +14,17 @@ import SLAConfigurationTab from "@/components/astro-metrics/tabs/SLAConfiguratio
 import AlertsManagerTab from "@/components/astro-metrics/tabs/AlertsManagerTab";
 import AccessControlTab from "@/components/astro-metrics/tabs/AccessControlTab";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const AstroMetrics = () => {
   const { userRole, isLoading } = useUserRole();
+  const [activeTab, setActiveTab] = useState("kpi-builder");
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    toast.info(`Switched to ${value.replace('-', ' ')} module`);
+  };
 
   if (isLoading) {
     return (
@@ -40,7 +48,7 @@ const AstroMetrics = () => {
       <div className="max-w-7xl mx-auto">
         <AstroMetricsHeader />
 
-        <Tabs defaultValue="kpi-builder" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 bg-muted/50">
             <TabsTrigger value="kpi-builder" className="data-[state=active]:bg-orange-500/20">
               <BarChart3 className="h-4 w-4 mr-2" />

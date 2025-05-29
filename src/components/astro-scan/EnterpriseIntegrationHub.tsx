@@ -25,7 +25,7 @@ const EnterpriseIntegrationHub = () => {
   const [workflowMetrics] = useState<WorkflowMetrics>({
     activeWorkflows: 247,
     completedToday: 1542,
-    averageProcessingTime: '2.3s',
+    averageProcessingTime: 2.3,
     automationRate: 94.2
   });
 
