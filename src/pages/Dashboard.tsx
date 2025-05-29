@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, Users, Bed, AlertTriangle, TrendingUp, Clock, ArrowRight } from "lucide-react";
 import { MetaTags } from "@/components/MetaTags";
 import { NavigationHelper } from "@/components/NavigationHelper";
-import { DashboardAnalytics } from "@/components/dashboard/DashboardAnalytics";
+import DashboardAnalytics from "@/components/dashboard/DashboardAnalytics";
 
 const Dashboard = () => {
   const [shouldNavigate, setShouldNavigate] = useState(false);
