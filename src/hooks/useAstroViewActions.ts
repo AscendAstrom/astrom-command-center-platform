@@ -17,15 +17,13 @@ export const useAstroViewActions = () => {
 
   const handleCreateDashboard = (setActiveTab: (tab: string) => void) => {
     toast.info("Opening dashboard creation wizard...");
-    setActiveTab("builder");
+    setActiveTab("dashboards");
   };
 
   const handleOptimizeViews = () => {
     toast.info("Analyzing dashboard performance...");
     
-    // Simulate optimization process
     setTimeout(() => {
-      // Create and download optimization report
       const optimizationData = {
         timestamp: new Date().toISOString(),
         analysis: {
@@ -67,7 +65,6 @@ export const useAstroViewActions = () => {
     toast.info("Preparing dashboard export...");
     
     setTimeout(() => {
-      // Create comprehensive dashboard export
       const exportData = {
         metadata: {
           export_date: new Date().toISOString(),
@@ -131,23 +128,20 @@ export const useAstroViewActions = () => {
     toast.info("Generating shareable dashboard link...");
     
     setTimeout(() => {
-      // Generate shareable link with access token
       const shareData = {
         dashboard_id: `astro-view-${Date.now()}`,
         access_token: `av_${Math.random().toString(36).substring(2, 15)}`,
-        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         permissions: ["view", "interact"],
         public_url: `https://astro-view.health/share/dashboard/${Date.now()}`
       };
 
-      // Copy to clipboard
       const shareUrl = shareData.public_url;
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast.success("Shareable link copied to clipboard!", {
           description: `Link expires in 7 days • View-only access`
         });
       }).catch(() => {
-        // Fallback if clipboard API fails
         const textArea = document.createElement('textarea');
         textArea.value = shareUrl;
         document.body.appendChild(textArea);
@@ -160,7 +154,6 @@ export const useAstroViewActions = () => {
         });
       });
 
-      // Also download share configuration
       const blob = new Blob([JSON.stringify(shareData, null, 2)], {
         type: 'application/json'
       });
