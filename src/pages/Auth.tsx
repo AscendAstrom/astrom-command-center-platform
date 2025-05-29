@@ -75,6 +75,10 @@ const Auth = () => {
               <LogoIcon size="lg" animate={true} />
             </div>
           </div>
+          <div className="mb-4">
+            <h1 className="text-3xl font-bold text-foreground mb-1">Astrom</h1>
+            <p className="text-blue-400 font-medium">Intelligence Platform</p>
+          </div>
         </div>
 
         <Card className="border border-border/50 shadow-xl">
