@@ -29,7 +29,7 @@ class ErrorTrackingService {
         .insert({
           action: 'ERROR_REPORTED',
           resource_type: 'application',
-          resource_id: crypto.randomUUID(),
+          resource_id: this.generateId(),
           details: {
             message: error.message,
             stack: error.stack,
@@ -52,6 +52,10 @@ class ErrorTrackingService {
     } catch (err) {
       console.error('Error tracking service failed:', err);
     }
+  }
+
+  private generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
   private handleCriticalError(error: ErrorReport): void {
@@ -104,25 +108,27 @@ class ErrorTrackingService {
 
 export const errorTracker = ErrorTrackingService.getInstance();
 
-// Global error handler
+// Global error handler - browser safe
 export const setupGlobalErrorHandler = () => {
-  window.addEventListener('error', (event) => {
-    errorTracker.reportError({
-      message: event.message,
-      stack: event.error?.stack,
-      component: 'global',
-      timestamp: new Date(),
-      severity: 'high'
+  if (typeof window !== 'undefined') {
+    window.addEventListener('error', (event) => {
+      errorTracker.reportError({
+        message: event.message,
+        stack: event.error?.stack,
+        component: 'global',
+        timestamp: new Date(),
+        severity: 'high'
+      });
     });
-  });
 
-  window.addEventListener('unhandledrejection', (event) => {
-    errorTracker.reportError({
-      message: event.reason?.message || 'Unhandled promise rejection',
-      stack: event.reason?.stack,
-      component: 'promise',
-      timestamp: new Date(),
-      severity: 'medium'
+    window.addEventListener('unhandledrejection', (event) => {
+      errorTracker.reportError({
+        message: event.reason?.message || 'Unhandled promise rejection',
+        stack: event.reason?.stack,
+        component: 'promise',
+        timestamp: new Date(),
+        severity: 'medium'
+      });
     });
-  });
+  }
 };
