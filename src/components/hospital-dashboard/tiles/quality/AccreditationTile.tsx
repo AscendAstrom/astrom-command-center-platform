@@ -2,7 +2,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Calendar, CheckCircle, AlertTriangle } from "lucide-react";
-import { ProgressChart } from "recharts";
 
 export const AccreditationTile = () => {
   const accreditations = [

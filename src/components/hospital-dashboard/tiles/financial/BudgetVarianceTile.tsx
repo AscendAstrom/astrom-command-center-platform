@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calculator, TrendingDown, AlertTriangle } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line, Cell } from "recharts";
 
 export const BudgetVarianceTile = () => {
   const varianceData = [
@@ -42,6 +42,10 @@ export const BudgetVarianceTile = () => {
     return 'text-blue-600 bg-blue-50';
   };
 
+  const getBarColor = (variance: number) => {
+    return variance > 0 ? '#ef4444' : '#22c55e';
+  };
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-3">
@@ -77,12 +81,12 @@ export const BudgetVarianceTile = () => {
             <BarChart data={varianceData.slice(0, 4)}>
               <XAxis dataKey="category" fontSize={8} />
               <YAxis hide />
-              <Tooltip formatter={(value) => [`${value > 0 ? '+' : ''}${value}%`, 'Variance']} />
-              <Bar 
-                dataKey="variance" 
-                fill={(entry) => entry.variance > 0 ? '#ef4444' : '#22c55e'}
-                radius={[2, 2, 0, 0]}
-              />
+              <Tooltip formatter={(value) => [`${typeof value === 'number' && value > 0 ? '+' : ''}${value}%`, 'Variance']} />
+              <Bar dataKey="variance" radius={[2, 2, 0, 0]}>
+                {varianceData.slice(0, 4).map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={getBarColor(entry.variance)} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

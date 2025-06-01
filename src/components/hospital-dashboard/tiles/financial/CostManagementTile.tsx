@@ -70,7 +70,7 @@ export const CostManagementTile = () => {
             <AreaChart data={costTrendData}>
               <XAxis dataKey="month" fontSize={10} />
               <YAxis hide />
-              <Tooltip formatter={(value) => [`$${(value / 1000).toFixed(0)}K`, 'Cost']} />
+              <Tooltip formatter={(value) => [`$${typeof value === 'number' ? (value / 1000).toFixed(0) : 0}K`, 'Cost']} />
               <Area 
                 type="monotone" 
                 dataKey="total" 

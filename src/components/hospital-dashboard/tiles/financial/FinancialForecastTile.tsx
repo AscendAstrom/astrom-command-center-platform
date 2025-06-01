@@ -79,7 +79,7 @@ export const FinancialForecastTile = () => {
             <LineChart data={forecastData}>
               <XAxis dataKey="month" fontSize={10} />
               <YAxis hide />
-              <Tooltip formatter={(value) => [`$${(value / 1000000).toFixed(1)}M`, 'Revenue']} />
+              <Tooltip formatter={(value) => [`$${typeof value === 'number' ? (value / 1000000).toFixed(1) : 0}M`, 'Revenue']} />
               <Line 
                 type="monotone" 
                 dataKey="actual" 
