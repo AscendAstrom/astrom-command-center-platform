@@ -1,4 +1,3 @@
-
 import { 
   Layers,
   Target,
@@ -14,7 +13,7 @@ import { NavigationItem, SystemItem } from "./types";
 export const navigationItems: NavigationItem[] = [
   { 
     title: "Dashboard", 
-    subtitle: "OVERVIEW", 
+    subtitle: "HOSPITAL VIEW", 
     url: "/dashboard", 
     icon: LayoutDashboard, 
     color: "text-slate-600 dark:text-slate-400", 
