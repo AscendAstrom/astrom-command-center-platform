@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, AlertTriangle, Clock } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 export const PharmacySuppliesTile = () => {
   const metrics = {
@@ -63,11 +63,11 @@ export const PharmacySuppliesTile = () => {
               <XAxis dataKey="category" fontSize={10} />
               <YAxis hide />
               <Tooltip />
-              <Bar 
-                dataKey="stock" 
-                fill={(entry) => getStockColor(entry.stock, entry.threshold)}
-                radius={[2, 2, 0, 0]}
-              />
+              <Bar dataKey="stock" radius={[2, 2, 0, 0]}>
+                {inventoryData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={getStockColor(entry.stock, entry.threshold)} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
