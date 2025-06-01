@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   TrendingUp, 
   Activity, 
@@ -11,9 +12,19 @@ import {
   BarChart3,
   Bed,
   Clock,
-  Users
+  Users,
+  Heart,
+  Shield,
+  Stethoscope,
+  Building2,
+  DollarSign,
+  Zap
 } from "lucide-react";
 import HospitalDashboardGrid from "@/components/hospital-dashboard/HospitalDashboardGrid";
+import ClinicalAnalyticsGrid from "@/components/hospital-dashboard/ClinicalAnalyticsGrid";
+import FinancialAnalyticsGrid from "@/components/hospital-dashboard/FinancialAnalyticsGrid";
+import PerformanceAnalyticsGrid from "@/components/hospital-dashboard/PerformanceAnalyticsGrid";
+import QualityAnalyticsGrid from "@/components/hospital-dashboard/QualityAnalyticsGrid";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -59,8 +70,8 @@ const Dashboard = () => {
             </div>
           </div>
           <p className="text-muted-foreground max-w-2xl mt-2">
-            Comprehensive hospital operations monitoring with real-time bed management, 
-            patient flow tracking, and AI-powered insights for optimal healthcare delivery.
+            Comprehensive hospital operations monitoring with real-time analytics, 
+            clinical insights, financial performance, and quality metrics for optimal healthcare delivery.
           </p>
         </div>
 
@@ -160,17 +171,85 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Hospital Dashboard Grid - Analytics Only */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-foreground">Hospital Operations Analytics</h2>
-            <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10 px-4 py-2">
-              12 Live Analytics Tiles
-            </Badge>
-          </div>
+        {/* Tabbed Analytics Interface */}
+        <Tabs defaultValue="operations" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="operations" className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              Operations
+            </TabsTrigger>
+            <TabsTrigger value="clinical" className="flex items-center gap-2">
+              <Stethoscope className="h-4 w-4" />
+              Clinical
+            </TabsTrigger>
+            <TabsTrigger value="financial" className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              Financial
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="quality" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Quality
+            </TabsTrigger>
+          </TabsList>
 
-          <HospitalDashboardGrid />
-        </div>
+          <TabsContent value="operations" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">Hospital Operations Analytics</h2>
+              <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10 px-4 py-2">
+                12 Live Analytics Tiles
+              </Badge>
+            </div>
+            <HospitalDashboardGrid />
+          </TabsContent>
+
+          <TabsContent value="clinical" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">Clinical Analytics Dashboard</h2>
+              <Badge variant="outline" className="text-green-400 border-green-400 bg-green-400/10 px-4 py-2">
+                <Heart className="h-3 w-3 mr-1" />
+                10 Clinical Tiles
+              </Badge>
+            </div>
+            <ClinicalAnalyticsGrid />
+          </TabsContent>
+
+          <TabsContent value="financial" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">Financial Performance Analytics</h2>
+              <Badge variant="outline" className="text-yellow-400 border-yellow-400 bg-yellow-400/10 px-4 py-2">
+                <DollarSign className="h-3 w-3 mr-1" />
+                8 Financial Tiles
+              </Badge>
+            </div>
+            <FinancialAnalyticsGrid />
+          </TabsContent>
+
+          <TabsContent value="performance" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">Performance & Efficiency Analytics</h2>
+              <Badge variant="outline" className="text-purple-400 border-purple-400 bg-purple-400/10 px-4 py-2">
+                <Zap className="h-3 w-3 mr-1" />
+                9 Performance Tiles
+              </Badge>
+            </div>
+            <PerformanceAnalyticsGrid />
+          </TabsContent>
+
+          <TabsContent value="quality" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">Quality & Safety Analytics</h2>
+              <Badge variant="outline" className="text-red-400 border-red-400 bg-red-400/10 px-4 py-2">
+                <Shield className="h-3 w-3 mr-1" />
+                7 Quality Tiles
+              </Badge>
+            </div>
+            <QualityAnalyticsGrid />
+          </TabsContent>
+        </Tabs>
 
         {/* Analytics Summary Footer */}
         <Card className="bg-card border-border mt-8">
@@ -182,36 +261,54 @@ const Dashboard = () => {
               Hospital Analytics Summary
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground">
-              Real-time hospital operations analytics and performance monitoring dashboard
+              Comprehensive analytics dashboard covering operations, clinical care, financial performance, and quality metrics
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
                 <div className="flex items-center gap-3 mb-2">
-                  <Activity className="h-5 w-5 text-blue-500" />
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">Real-time Monitoring</span>
+                  <Building2 className="h-5 w-5 text-blue-500" />
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">Operations</span>
                 </div>
                 <p className="text-sm text-blue-600/80 dark:text-blue-400/80">
-                  Live data feeds from hospital systems providing instant operational insights
+                  Real-time operational metrics and resource management
                 </p>
               </div>
               <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200/50 dark:border-green-800/50">
                 <div className="flex items-center gap-3 mb-2">
-                  <BarChart3 className="h-5 w-5 text-green-500" />
-                  <span className="font-semibold text-green-600 dark:text-green-400">Performance Analytics</span>
+                  <Heart className="h-5 w-5 text-green-500" />
+                  <span className="font-semibold text-green-600 dark:text-green-400">Clinical Care</span>
                 </div>
                 <p className="text-sm text-green-600/80 dark:text-green-400/80">
-                  Comprehensive KPI tracking and performance metrics across all departments
+                  Patient outcomes, treatment effectiveness, and care quality
+                </p>
+              </div>
+              <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-200/50 dark:border-yellow-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <DollarSign className="h-5 w-5 text-yellow-500" />
+                  <span className="font-semibold text-yellow-600 dark:text-yellow-400">Financial</span>
+                </div>
+                <p className="text-sm text-yellow-600/80 dark:text-yellow-400/80">
+                  Revenue, costs, billing efficiency, and financial health
                 </p>
               </div>
               <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
                 <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp className="h-5 w-5 text-purple-500" />
-                  <span className="font-semibold text-purple-600 dark:text-purple-400">AI-Powered Insights</span>
+                  <Zap className="h-5 w-5 text-purple-500" />
+                  <span className="font-semibold text-purple-600 dark:text-purple-400">Performance</span>
                 </div>
                 <p className="text-sm text-purple-600/80 dark:text-purple-400/80">
-                  Predictive analytics and intelligent recommendations for optimal operations
+                  Efficiency metrics, throughput, and operational excellence
+                </p>
+              </div>
+              <div className="bg-red-50 dark:bg-red-950/20 p-4 rounded-lg border border-red-200/50 dark:border-red-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Shield className="h-5 w-5 text-red-500" />
+                  <span className="font-semibold text-red-600 dark:text-red-400">Quality & Safety</span>
+                </div>
+                <p className="text-sm text-red-600/80 dark:text-red-400/80">
+                  Patient safety, compliance, and quality improvement
                 </p>
               </div>
             </div>
