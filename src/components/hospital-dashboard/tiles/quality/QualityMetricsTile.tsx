@@ -1,22 +1,30 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CheckCircle } from "lucide-react";
-import { RadialBarChart, RadialBar, ResponsiveContainer } from "recharts";
+import { Shield, TrendingUp, AlertCircle } from "lucide-react";
+import { RadialBarChart, RadialBar, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
 export const QualityMetricsTile = () => {
-  const qualityData = [
-    { name: 'Overall', score: 88, fill: '#22c55e' },
-    { name: 'Safety', score: 92, fill: '#3b82f6' },
-    { name: 'Effectiveness', score: 85, fill: '#f59e0b' },
-    { name: 'Experience', score: 90, fill: '#8b5cf6' }
+  const qualityScores = [
+    { name: 'Patient Safety', value: 94, color: '#22c55e' },
+    { name: 'Clinical Excellence', value: 89, color: '#3b82f6' },
+    { name: 'Patient Satisfaction', value: 92, color: '#f59e0b' },
+    { name: 'Care Coordination', value: 87, color: '#8b5cf6' }
   ];
 
-  const metrics = {
-    overallScore: 88,
-    safetyIncidents: 2,
-    qualityIndicators: 15,
-    accreditationStatus: 'Compliant'
+  const overallScore = 90.5;
+  
+  const incidents = [
+    { type: 'Medication Errors', count: 3, severity: 'Low' },
+    { type: 'Falls', count: 1, severity: 'Medium' },
+    { type: 'Infections', count: 2, severity: 'Low' },
+    { type: 'Procedure Delays', count: 5, severity: 'Low' }
+  ];
+
+  const improvements = {
+    monthlyIncrease: 2.3,
+    targetScore: 95,
+    ranking: "Top 15%"
   };
 
   return (
@@ -29,44 +37,67 @@ export const QualityMetricsTile = () => {
             </div>
             <div>
               <CardTitle className="text-lg">Quality Metrics</CardTitle>
-              <CardDescription>Care quality indicators</CardDescription>
+              <CardDescription>Healthcare quality indicators</CardDescription>
             </div>
           </div>
           <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            {metrics.accreditationStatus}
+            <TrendingUp className="h-3 w-3 mr-1" />
+            {improvements.ranking}
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-green-600">{metrics.overallScore}%</div>
-            <div className="text-xs text-muted-foreground">Quality Score</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-blue-600">{metrics.qualityIndicators}</div>
-            <div className="text-xs text-muted-foreground">Active Indicators</div>
-          </div>
+        <div className="text-center">
+          <div className="text-3xl font-bold text-green-600">{overallScore}%</div>
+          <div className="text-xs text-muted-foreground">Overall Quality Score</div>
+          <div className="text-xs text-green-600">+{improvements.monthlyIncrease}% this month</div>
         </div>
 
-        <div className="h-24">
+        <div className="h-20">
           <ResponsiveContainer width="100%" height="100%">
-            <RadialBarChart data={qualityData} innerRadius="60%" outerRadius="90%">
-              <RadialBar dataKey="score" cornerRadius={10} />
-            </RadialBarChart>
+            <PieChart>
+              <Pie
+                data={qualityScores}
+                cx="50%"
+                cy="50%"
+                innerRadius={25}
+                outerRadius={35}
+                dataKey="value"
+              >
+                {qualityScores.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="grid grid-cols-1 gap-2 text-sm">
-          <div className="bg-green-50 p-2 rounded text-center">
-            <div className="font-bold text-green-600">{metrics.safetyIncidents}</div>
-            <div className="text-xs text-muted-foreground">Safety Incidents (This Month)</div>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          {qualityScores.map((score) => (
+            <div key={score.name} className="flex items-center gap-2">
+              <div 
+                className="w-2 h-2 rounded-full" 
+                style={{ backgroundColor: score.color }}
+              />
+              <span className="text-muted-foreground truncate">{score.name}</span>
+              <span className="font-semibold ml-auto">{score.value}%</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-orange-50 p-2 rounded text-xs">
+          <div className="flex items-center gap-1 mb-1">
+            <AlertCircle className="h-3 w-3 text-orange-500" />
+            <span className="font-semibold text-orange-600">Active Incidents: {incidents.length}</span>
+          </div>
+          <div className="text-muted-foreground">
+            Recent: {incidents[0].count} {incidents[0].type}, {incidents[1].count} {incidents[1].type}
           </div>
         </div>
 
         <div className="text-xs text-muted-foreground bg-green-50 p-2 rounded">
-          <strong>Quality AI:</strong> All quality indicators trending positive. Safety score improved 5% this quarter.
+          <strong>Quality AI:</strong> On track to reach {improvements.targetScore}% target by year-end.
         </div>
       </CardContent>
     </Card>
