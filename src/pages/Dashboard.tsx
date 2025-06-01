@@ -3,32 +3,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  LayoutDashboard, 
-  Users, 
   TrendingUp, 
   Activity, 
-  Database, 
-  Target,
-  Eye,
-  Zap,
-  Layers,
-  ArrowRight,
   CheckCircle,
   AlertTriangle,
   RefreshCw,
-  Settings,
   BarChart3,
   Bed,
-  Clock
+  Clock,
+  Users
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import HospitalDashboardGrid from "@/components/hospital-dashboard/HospitalDashboardGrid";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefreshStats = () => {
@@ -39,16 +29,6 @@ const Dashboard = () => {
       setIsRefreshing(false);
       toast.success("Hospital data refreshed successfully!");
     }, 2000);
-  };
-
-  const handleModuleNavigation = (path: string, moduleName: string) => {
-    toast.info(`Navigating to ${moduleName}...`);
-    navigate(path);
-  };
-
-  const handleQuickAction = (action: string, path: string) => {
-    toast.info(`Opening ${action}...`);
-    navigate(path);
   };
 
   return (
@@ -62,7 +42,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Hospital Operations Dashboard</h1>
-                <span className="text-sm text-blue-400 font-medium">Real-time Hospital Monitoring & Management</span>
+                <span className="text-sm text-blue-400 font-medium">Real-time Hospital Monitoring & Analytics</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -76,15 +56,6 @@ const Dashboard = () => {
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                 {isRefreshing ? "Refreshing..." : "Refresh Data"}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleQuickAction("Settings", "/settings")}
-                className="hover:bg-gray-500/10"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
             </div>
           </div>
           <p className="text-muted-foreground max-w-2xl mt-2">
@@ -93,7 +64,7 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Hospital Overview Stats */}
+        {/* Hospital Overview Stats - Analytics Only */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
@@ -110,15 +81,12 @@ const Dashboard = () => {
                   <Bed className="h-7 w-7 text-white" />
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-blue-400 hover:bg-blue-500/10"
-                onClick={() => handleQuickAction("Bed Management", "/astro-scan")}
-              >
-                <BarChart3 className="h-4 w-4 mr-2" />
-                View Details
-              </Button>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytics View Only
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -134,15 +102,12 @@ const Dashboard = () => {
                   <Users className="h-7 w-7 text-white" />
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-green-400 hover:bg-green-500/10"
-                onClick={() => handleQuickAction("Patient Management", "/astro-bricks")}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Manage Patients
-              </Button>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <Activity className="h-4 w-4 mr-2" />
+                  Real-time Monitoring
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -161,15 +126,12 @@ const Dashboard = () => {
                   <Clock className="h-7 w-7 text-white" />
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-orange-400 hover:bg-orange-500/10"
-                onClick={() => handleQuickAction("Emergency Department", "/astro-metrics")}
-              >
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                View ED Status
-              </Button>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Emergency Tracking
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -188,79 +150,70 @@ const Dashboard = () => {
                   <Users className="h-7 w-7 text-white" />
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full mt-4 text-purple-400 hover:bg-purple-500/10"
-                onClick={() => handleQuickAction("Staff Management", "/admin")}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Manage Staff
-              </Button>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <Activity className="h-4 w-4 mr-2" />
+                  Staffing Analytics
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Hospital Dashboard Grid */}
+        {/* Hospital Dashboard Grid - Analytics Only */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-foreground">Hospital Operations Center</h2>
+            <h2 className="text-2xl font-bold text-foreground">Hospital Operations Analytics</h2>
             <Badge variant="outline" className="text-blue-400 border-blue-400 bg-blue-400/10 px-4 py-2">
-              12 Live Monitoring Tiles
+              12 Live Analytics Tiles
             </Badge>
           </div>
 
           <HospitalDashboardGrid />
         </div>
 
-        {/* Quick Actions for Platform Modules */}
+        {/* Analytics Summary Footer */}
         <Card className="bg-card border-border mt-8">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Zap className="h-5 w-5 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <BarChart3 className="h-5 w-5 text-white" />
               </div>
-              Platform Modules
+              Hospital Analytics Summary
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground">
-              Access Astrom intelligence platform modules for advanced analytics and management
+              Real-time hospital operations analytics and performance monitoring dashboard
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-blue-400 transition-all duration-300"
-                onClick={() => handleModuleNavigation("/astro-scan", "ASTRO-SCAN")}
-              >
-                <Database className="h-5 w-5 mr-3 text-blue-400" />
-                <div>
-                  <div className="font-semibold text-foreground">Data Sources</div>
-                  <div className="text-sm text-muted-foreground">Manage data ingestion</div>
+              <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Activity className="h-5 w-5 text-blue-500" />
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">Real-time Monitoring</span>
                 </div>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-purple-400 transition-all duration-300"
-                onClick={() => handleModuleNavigation("/astro-view", "ASTRO-VIEW")}
-              >
-                <Eye className="h-5 w-5 mr-3 text-purple-400" />
-                <div>
-                  <div className="font-semibold text-foreground">Visualizations</div>
-                  <div className="text-sm text-muted-foreground">Build dashboards</div>
+                <p className="text-sm text-blue-600/80 dark:text-blue-400/80">
+                  Live data feeds from hospital systems providing instant operational insights
+                </p>
+              </div>
+              <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200/50 dark:border-green-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <BarChart3 className="h-5 w-5 text-green-500" />
+                  <span className="font-semibold text-green-600 dark:text-green-400">Performance Analytics</span>
                 </div>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full h-16 text-left justify-start border-border hover:bg-accent hover:border-green-400 transition-all duration-300"
-                onClick={() => handleModuleNavigation("/astro-metrics", "ASTRO-METRICS")}
-              >
-                <Target className="h-5 w-5 mr-3 text-green-400" />
-                <div>
-                  <div className="font-semibold text-foreground">KPI Analytics</div>
-                  <div className="text-sm text-muted-foreground">Monitor performance</div>
+                <p className="text-sm text-green-600/80 dark:text-green-400/80">
+                  Comprehensive KPI tracking and performance metrics across all departments
+                </p>
+              </div>
+              <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg border border-purple-200/50 dark:border-purple-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <TrendingUp className="h-5 w-5 text-purple-500" />
+                  <span className="font-semibold text-purple-600 dark:text-purple-400">AI-Powered Insights</span>
                 </div>
-              </Button>
+                <p className="text-sm text-purple-600/80 dark:text-purple-400/80">
+                  Predictive analytics and intelligent recommendations for optimal operations
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
