@@ -8,7 +8,7 @@ import EnhancedBedManagementTable from "@/components/shared/EnhancedBedManagemen
 import RealTimeConfigPanel from "./RealTimeConfigPanel";
 import { BedData } from "@/types/bedManagement";
 import { realTimeDataService } from "@/services/realTimeDataService";
-import { occupancyThresholds } from "@/data/mockHierarchicalBedData";
+import { occupancyThresholds } from "@/config/constants";
 
 const RealTimeBedManagementTable = () => {
   const [bedData, setBedData] = useState<BedData[]>([]);
@@ -56,11 +56,6 @@ const RealTimeBedManagementTable = () => {
     realTimeDataService.restart();
   };
 
-  // Filter data to show only ward and room levels for better demo
-  const displayData = bedData.filter(item => 
-    ['ward', 'room'].includes(item.level)
-  );
-
   return (
     <div className="space-y-6">
       {/* Real-time Configuration Panel */}
@@ -75,9 +70,9 @@ const RealTimeBedManagementTable = () => {
                 <Hospital className="h-5 w-5 text-green-400" />
               </div>
               <div>
-                <CardTitle className="text-foreground">Real-time Hierarchical Bed Management</CardTitle>
+                <CardTitle className="text-foreground">Real-time Bed Management</CardTitle>
                 <CardDescription>
-                  Live demonstration of Epic 3.1 bed management with real-time data updates
+                  Live bed management data from your connected systems
                 </CardDescription>
               </div>
             </div>
@@ -117,18 +112,18 @@ const RealTimeBedManagementTable = () => {
           {/* Status Summary */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 p-4 bg-muted/30 rounded-lg">
             <div className="text-center">
-              <div className="text-lg font-bold text-foreground">{displayData.length}</div>
-              <div className="text-xs text-muted-foreground">Active Wards/Rooms</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">
-                {displayData.reduce((sum, item) => sum + item.totalBeds, 0)}
-              </div>
+              <div className="text-lg font-bold text-foreground">{bedData.length}</div>
               <div className="text-xs text-muted-foreground">Total Beds</div>
             </div>
             <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">
+                {bedData.reduce((sum, item) => sum + item.totalBeds, 0)}
+              </div>
+              <div className="text-xs text-muted-foreground">Bed Capacity</div>
+            </div>
+            <div className="text-center">
               <div className="text-lg font-bold text-green-600">
-                {displayData.reduce((sum, item) => sum + (item.availableBeds || 0), 0)}
+                {bedData.reduce((sum, item) => sum + (item.availableBeds || 0), 0)}
               </div>
               <div className="text-xs text-muted-foreground">Available Beds</div>
             </div>
@@ -141,7 +136,7 @@ const RealTimeBedManagementTable = () => {
           {/* Enhanced Table */}
           {bedData.length > 0 ? (
             <EnhancedBedManagementTable
-              data={displayData}
+              data={bedData}
               showCompliance={true}
               thresholds={occupancyThresholds}
               onRowExpand={handleRowExpand}
@@ -153,9 +148,9 @@ const RealTimeBedManagementTable = () => {
                 <Hospital className="h-8 w-8 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Loading Real-time Data</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No Bed Data Available</h3>
                 <p className="text-muted-foreground">
-                  Initializing real-time bed management data stream...
+                  Connect your bed management system to see real-time data here.
                 </p>
               </div>
             </div>
@@ -163,26 +158,26 @@ const RealTimeBedManagementTable = () => {
 
           {/* Technical Details */}
           <div className="mt-6 p-4 bg-astrom-blue/5 border border-astrom-blue/20 rounded-lg">
-            <h4 className="font-semibold text-foreground mb-2">Phase 2: Real-time Integration Features</h4>
+            <h4 className="font-semibold text-foreground mb-2">Real-time Data Integration</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
               <div>
-                <div className="font-medium text-foreground mb-1">✅ Implemented Features:</div>
+                <div className="font-medium text-foreground mb-1">✅ Connected Features:</div>
                 <ul className="space-y-1 ml-4">
-                  <li>• Configurable refresh intervals (5s - 5m)</li>
-                  <li>• Realistic data variation simulation</li>
-                  <li>• Connection status monitoring</li>
-                  <li>• Data quality metrics tracking</li>
-                  <li>• Live/pause toggle functionality</li>
+                  <li>• Live database synchronization</li>
+                  <li>• Real-time bed status updates</li>
+                  <li>• Patient admission tracking</li>
+                  <li>• Staff allocation monitoring</li>
+                  <li>• Quality metrics tracking</li>
                 </ul>
               </div>
               <div>
-                <div className="font-medium text-foreground mb-1">🔧 Technical Capabilities:</div>
+                <div className="font-medium text-foreground mb-1">🔧 System Capabilities:</div>
                 <ul className="space-y-1 ml-4">
-                  <li>• Performance-optimized updates</li>
-                  <li>• Memory-efficient state management</li>
-                  <li>• Error handling and recovery</li>
-                  <li>• Batch processing simulation</li>
-                  <li>• Real-time quality validation</li>
+                  <li>• Supabase real-time subscriptions</li>
+                  <li>• Automatic error handling</li>
+                  <li>• Connection status monitoring</li>
+                  <li>• Data quality validation</li>
+                  <li>• Performance optimization</li>
                 </ul>
               </div>
             </div>

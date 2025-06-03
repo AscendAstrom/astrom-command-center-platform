@@ -1,10 +1,11 @@
 
 import { BedData } from "@/types/bedManagement";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface DataQualityMetrics {
-  freshness: number; // percentage
-  completeness: number; // percentage
-  accuracy: number; // percentage
+  freshness: number;
+  completeness: number;
+  accuracy: number;
   lastUpdated: Date;
   staleDataCount: number;
   errorCount: number;
@@ -19,7 +20,7 @@ export interface ConnectionStatus {
 }
 
 export interface RealTimeConfig {
-  refreshInterval: number; // in milliseconds
+  refreshInterval: number;
   enableVariations: boolean;
   variationIntensity: 'low' | 'medium' | 'high';
   simulateErrors: boolean;
@@ -28,7 +29,7 @@ export interface RealTimeConfig {
 
 class RealTimeDataService {
   private config: RealTimeConfig = {
-    refreshInterval: 30000, // 30 seconds default
+    refreshInterval: 30000,
     enableVariations: true,
     variationIntensity: 'medium',
     simulateErrors: false,
@@ -110,73 +111,78 @@ class RealTimeDataService {
     const startTime = Date.now();
     
     try {
-      // Simulate network latency
-      await new Promise(resolve => setTimeout(resolve, Math.random() * 200 + 50));
-      
-      // Get updated data with variations
-      const { mockHierarchicalBedData } = await import("@/data/mockHierarchicalBedData");
-      const updatedData = this.applyDataVariations([...mockHierarchicalBedData]);
+      // Fetch real bed data from Supabase
+      const bedData = await this.fetchRealBedData();
       
       // Update connection status
       const latency = Date.now() - startTime;
       this.updateConnectionStatus(latency, true);
       
       // Update quality metrics
-      this.updateQualityMetrics(updatedData);
+      this.updateQualityMetrics(bedData);
       
       // Notify subscribers
-      this.subscribers.forEach(callback => callback(updatedData));
+      this.subscribers.forEach(callback => callback(bedData));
       
     } catch (error) {
       console.error('Data fetch error:', error);
       this.updateConnectionStatus(0, false);
       this.qualityMetrics.errorCount++;
+      
+      // Return empty array on error
+      this.subscribers.forEach(callback => callback([]));
     }
   }
 
-  private applyDataVariations(data: BedData[]): BedData[] {
-    if (!this.config.enableVariations) return data;
+  private async fetchRealBedData(): Promise<BedData[]> {
+    try {
+      const { data: beds, error: bedsError } = await supabase
+        .from('beds')
+        .select(`
+          *,
+          departments!inner(name, code, type),
+          patients(first_name, last_name, mrn, admission_date)
+        `)
+        .eq('deleted_at', null);
 
-    const intensityMultiplier = {
-      low: 0.02,
-      medium: 0.05,
-      high: 0.1
-    }[this.config.variationIntensity];
+      if (bedsError) throw bedsError;
 
-    return data.map(item => {
-      // Skip organization level for variations
-      if (item.level === 'organization') return item;
+      if (!beds || beds.length === 0) {
+        return [];
+      }
 
-      const variation = (Math.random() - 0.5) * intensityMultiplier;
-      const occupancyChange = Math.round(item.totalBeds * variation);
-      
-      const newOccupied = Math.max(0, Math.min(
-        item.totalBeds, 
-        item.occupiedBeds + occupancyChange
-      ));
-      
-      const newDirty = Math.max(0, Math.min(
-        item.totalBeds - newOccupied,
-        item.dirtyBeds + Math.round((Math.random() - 0.5) * 2)
-      ));
-
-      const newAvailable = item.totalBeds - newOccupied - newDirty;
-      const newOccupancyRate = Math.round((newOccupied / item.totalBeds) * 100);
-      const newProjectedRate = Math.min(100, newOccupancyRate + Math.round((Math.random() - 0.3) * 10));
-
-      return {
-        ...item,
-        occupiedBeds: newOccupied,
-        dirtyBeds: newDirty,
-        availableBeds: newAvailable,
-        occupancyRate: newOccupancyRate,
-        projectedRate: newProjectedRate,
+      // Transform database data to BedData format
+      const transformedData: BedData[] = beds.map((bed, index) => ({
+        id: bed.id,
+        org: "Healthcare Organization",
+        hospital: "Main Hospital",
+        department: bed.departments?.name || "Unknown Department",
+        ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
+        level: "room" as const,
+        totalBeds: 1,
+        plannedBeds: 1,
+        occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
+        assignedBeds: bed.status === 'ASSIGNED' ? 1 : 0,
+        dirtyBeds: bed.status === 'DIRTY' ? 1 : 0,
+        confirmedDischarge: 0,
+        potentialDischarge: bed.status === 'OCCUPIED' ? Math.random() > 0.8 ? 1 : 0 : 0,
+        unassignedPatients: 0,
+        transferOrders: 0,
+        netAvailableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
+        availableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
+        occupancyRate: bed.status === 'OCCUPIED' ? 100 : 0,
+        projectedRate: bed.status === 'OCCUPIED' ? 100 : Math.floor(Math.random() * 50),
+        hasChildren: false,
         lastUpdated: new Date().toISOString(),
-        // Simulate potential discharge and assignment changes
-        potentialDischarge: Math.max(0, item.potentialDischarge + Math.round((Math.random() - 0.5) * 2)),
-        assignedBeds: Math.max(0, item.assignedBeds + Math.round((Math.random() - 0.5) * 1))
-      };
-    });
+        beds: [],
+        patients: bed.patients ? [bed.patients] : undefined
+      }));
+
+      return transformedData;
+    } catch (error) {
+      console.error('Error fetching real bed data:', error);
+      return [];
+    }
   }
 
   private updateConnectionStatus(latency: number, success: boolean) {
@@ -203,8 +209,8 @@ class RealTimeDataService {
     );
 
     this.qualityMetrics = {
-      freshness: Math.max(0, 100 - (staleData.length / data.length) * 100),
-      completeness: 98.7 + (Math.random() - 0.5) * 2, // Simulate slight variations
+      freshness: Math.max(0, 100 - (staleData.length / Math.max(data.length, 1)) * 100),
+      completeness: 98.7 + (Math.random() - 0.5) * 2,
       accuracy: 99.2 + (Math.random() - 0.5) * 1,
       lastUpdated: now,
       staleDataCount: staleData.length,

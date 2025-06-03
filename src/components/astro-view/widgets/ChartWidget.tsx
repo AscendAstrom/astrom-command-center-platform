@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartType, ChartData } from '../types';
 import { BarChart3, TrendingUp, Maximize2 } from 'lucide-react';
+import { chartConfigurations, emptyStateMessages } from '@/config/constants';
 
 interface ChartWidgetProps {
   title: string;
@@ -12,58 +13,46 @@ interface ChartWidgetProps {
 }
 
 const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
-  // Sample data - in real implementation this would come from props or API
-  const sampleBarData = [
-    { name: '6AM', value: 12 },
-    { name: '9AM', value: 28 },
-    { name: '12PM', value: 45 },
-    { name: '3PM', value: 67 },
-    { name: '6PM', value: 52 },
-    { name: '9PM', value: 34 },
-  ];
-
-  const sampleLineData = [
-    { name: 'Mon', admissions: 45, discharges: 38 },
-    { name: 'Tue', admissions: 52, discharges: 47 },
-    { name: 'Wed', admissions: 38, discharges: 41 },
-    { name: 'Thu', admissions: 61, discharges: 55 },
-    { name: 'Fri', admissions: 48, discharges: 52 },
-    { name: 'Sat', admissions: 35, discharges: 38 },
-    { name: 'Sun', admissions: 29, discharges: 32 },
-  ];
-
-  const samplePieData = [
-    { name: 'Emergency', value: 35, color: '#ef4444' },
-    { name: 'Elective', value: 45, color: '#3b82f6' },
-    { name: 'Urgent', value: 20, color: '#f59e0b' },
-  ];
-
   const chartConfig = {
     value: {
       label: "Value",
-      color: "#06b6d4",
+      color: chartConfigurations.defaultColors.primary,
     },
     admissions: {
       label: "Admissions",
-      color: "#06b6d4",
+      color: chartConfigurations.defaultColors.primary,
     },
     discharges: {
       label: "Discharges",
-      color: "#10b981",
+      color: chartConfigurations.defaultColors.secondary,
     },
   };
 
   const handleDrillDown = () => {
     console.log(`Drilling down into ${title} chart`);
-    // Implementation for drill-down functionality
   };
 
+  // Handle empty data states
+  const hasData = data && Array.isArray(data) && data.length > 0;
+
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+      <BarChart3 className="h-12 w-12 mb-4" />
+      <p className="text-sm text-center">{emptyStateMessages.noChartData}</p>
+      <p className="text-xs text-center mt-2">Configure data sources to populate this chart</p>
+    </div>
+  );
+
   const renderChart = () => {
+    if (!hasData) {
+      return renderEmptyState();
+    }
+
     switch (type) {
       case 'bar':
         return (
           <ChartContainer config={chartConfig}>
-            <BarChart data={sampleBarData}>
+            <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="name" className="fill-muted-foreground" />
               <YAxis className="fill-muted-foreground" />
@@ -76,7 +65,7 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
       case 'line':
         return (
           <ChartContainer config={chartConfig}>
-            <LineChart data={sampleLineData}>
+            <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="name" className="fill-muted-foreground" />
               <YAxis className="fill-muted-foreground" />
@@ -105,7 +94,7 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={samplePieData}
+                data={data}
                 cx="50%"
                 cy="50%"
                 innerRadius={type === 'donut' ? 40 : 0}
@@ -113,8 +102,8 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
                 paddingAngle={5}
                 dataKey="value"
               >
-                {samplePieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                {data.map((entry: any, index: number) => (
+                  <Cell key={`cell-${index}`} fill={entry.color || chartConfigurations.defaultColors.primary} />
                 ))}
               </Pie>
               <ChartTooltip content={<ChartTooltipContent />} />
@@ -123,12 +112,7 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
         );
 
       default:
-        return (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            <BarChart3 className="h-12 w-12 mb-2" />
-            <p>Chart type not supported</p>
-          </div>
-        );
+        return renderEmptyState();
     }
   };
 
@@ -141,10 +125,12 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
             {title}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-xs text-green-400">
-              <TrendingUp className="h-3 w-3" />
-              <span>+12%</span>
-            </div>
+            {hasData && (
+              <div className="flex items-center gap-1 text-xs text-green-400">
+                <TrendingUp className="h-3 w-3" />
+                <span>Live</span>
+              </div>
+            )}
             <button
               onClick={handleDrillDown}
               className="p-1 hover:bg-muted rounded transition-colors"
@@ -160,19 +146,19 @@ const ChartWidget = ({ title, type, data }: ChartWidgetProps) => {
           {renderChart()}
         </div>
         
-        {type === 'pie' || type === 'donut' ? (
-          <div className="flex justify-center gap-4 mt-4">
-            {samplePieData.map((entry, index) => (
+        {hasData && (type === 'pie' || type === 'donut') && (
+          <div className="flex justify-center gap-4 mt-4 flex-wrap">
+            {data.map((entry: any, index: number) => (
               <div key={index} className="flex items-center gap-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: entry.color }}
+                  style={{ backgroundColor: entry.color || chartConfigurations.defaultColors.primary }}
                 />
                 <span className="text-sm text-foreground">{entry.name}</span>
               </div>
             ))}
           </div>
-        ) : null}
+        )}
       </CardContent>
     </Card>
   );
