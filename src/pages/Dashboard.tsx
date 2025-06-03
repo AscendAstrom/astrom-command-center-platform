@@ -26,20 +26,68 @@ import FinancialAnalyticsGrid from "@/components/hospital-dashboard/FinancialAna
 import PerformanceAnalyticsGrid from "@/components/hospital-dashboard/PerformanceAnalyticsGrid";
 import QualityAnalyticsGrid from "@/components/hospital-dashboard/QualityAnalyticsGrid";
 import LogoIcon from "@/components/ui/LogoIcon";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { analyticsService, AnalyticsData } from '@/services/analytics';
 
 const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const [isLive, setIsLive] = useState(true);
+  const [stopRealTimeUpdates, setStopRealTimeUpdates] = useState<(() => void) | null>(null);
 
-  const handleRefreshStats = () => {
+  useEffect(() => {
+    const unsubscribe = analyticsService.subscribe(setAnalyticsData);
+    
+    if (isLive) {
+      const stopUpdates = analyticsService.startRealTimeUpdates();
+      setStopRealTimeUpdates(() => stopUpdates);
+    } else {
+      if (stopRealTimeUpdates) {
+        stopRealTimeUpdates();
+        setStopRealTimeUpdates(null);
+      }
+    }
+
+    return () => {
+      unsubscribe();
+      if (stopRealTimeUpdates) {
+        stopRealTimeUpdates();
+      }
+    };
+  }, [isLive]);
+
+  const handleRefreshStats = async () => {
     setIsRefreshing(true);
     toast.info("Refreshing hospital statistics...");
     
-    setTimeout(() => {
+    try {
+      // Force a fresh data fetch
+      if (stopRealTimeUpdates) {
+        stopRealTimeUpdates();
+      }
+      const stopUpdates = analyticsService.startRealTimeUpdates();
+      setStopRealTimeUpdates(() => stopUpdates);
+      
+      setTimeout(() => {
+        setIsRefreshing(false);
+        toast.success("Hospital data refreshed successfully!");
+      }, 2000);
+    } catch (error) {
       setIsRefreshing(false);
-      toast.success("Hospital data refreshed successfully!");
-    }, 2000);
+      toast.error("Failed to refresh data");
+    }
+  };
+
+  // Calculate summary stats from analytics data
+  const summaryStats = {
+    totalBeds: analyticsData ? 
+      (analyticsData.emergencyDepartment.bedUtilization > 0 ? 
+        Math.round((analyticsData.emergencyDepartment.totalPatients * 100) / analyticsData.emergencyDepartment.bedUtilization) : 0) : 0,
+    activePatients: analyticsData?.emergencyDepartment.totalPatients || 0,
+    avgWaitTime: analyticsData?.emergencyDepartment.avgWaitTime || 0,
+    staffOnDuty: analyticsData?.emergencyDepartment.staffOnDuty || 0,
+    bedUtilization: analyticsData?.emergencyDepartment.bedUtilization || 0
   };
 
   return (
@@ -75,17 +123,21 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Hospital Overview Stats - Analytics Only */}
+        {/* Hospital Overview Stats - Real Data */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-card border-border group hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Beds</p>
-                  <p className="text-3xl font-bold text-foreground">245</p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {analyticsData ? summaryStats.totalBeds : '--'}
+                  </p>
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-green-400" />
-                    <p className="text-sm text-green-400 font-semibold">80.8% occupied</p>
+                    <p className="text-sm text-green-400 font-semibold">
+                      {summaryStats.bedUtilization > 0 ? `${summaryStats.bedUtilization}% occupied` : 'No data'}
+                    </p>
                   </div>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
@@ -95,7 +147,7 @@ const Dashboard = () => {
               <div className="mt-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-center text-sm text-muted-foreground">
                   <BarChart3 className="h-4 w-4 mr-2" />
-                  Analytics View Only
+                  {analyticsData ? 'Live Data' : 'Loading...'}
                 </div>
               </div>
             </CardContent>
@@ -106,8 +158,12 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Patients</p>
-                  <p className="text-3xl font-bold text-foreground">198</p>
-                  <p className="text-sm text-orange-400 font-semibold">28 new admissions</p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {analyticsData ? summaryStats.activePatients : '--'}
+                  </p>
+                  <p className="text-sm text-orange-400 font-semibold">
+                    {summaryStats.activePatients > 0 ? 'Currently admitted' : 'No active patients'}
+                  </p>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
                   <Users className="h-7 w-7 text-white" />
@@ -127,10 +183,14 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">ED Wait Time</p>
-                  <p className="text-3xl font-bold text-foreground">42m</p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {analyticsData ? (summaryStats.avgWaitTime > 0 ? `${summaryStats.avgWaitTime}m` : '--') : '--'}
+                  </p>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-orange-400" />
-                    <p className="text-sm text-orange-400 font-semibold">14 in queue</p>
+                    <p className="text-sm text-orange-400 font-semibold">
+                      {summaryStats.activePatients > 0 ? `${summaryStats.activePatients} in queue` : 'No queue'}
+                    </p>
                   </div>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
@@ -151,10 +211,14 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Staff On Duty</p>
-                  <p className="text-3xl font-bold text-foreground">87</p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {analyticsData ? summaryStats.staffOnDuty : '--'}
+                  </p>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-400" />
-                    <p className="text-sm text-green-400 font-semibold">Fully staffed</p>
+                    <p className="text-sm text-green-400 font-semibold">
+                      {summaryStats.staffOnDuty > 0 ? 'Active staff' : 'No staff data'}
+                    </p>
                   </div>
                 </div>
                 <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
@@ -164,7 +228,7 @@ const Dashboard = () => {
               <div className="mt-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-center text-sm text-muted-foreground">
                   <Activity className="h-4 w-4 mr-2" />
-                  Staffing Analytics
+                  {analyticsData ? 'Live Data' : 'Loading...'}
                 </div>
               </div>
             </CardContent>
