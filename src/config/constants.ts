@@ -21,8 +21,10 @@ export const chartConfigurations = {
 };
 
 export const emptyStateMessages = {
-  noBedData: 'No bed data available. Connect your data sources to see real-time bed management data.',
-  noChartData: 'No chart data available. Please check your data connections.',
-  noPatientData: 'No patient data found. Ensure your patient management system is connected.',
-  noStaffData: 'No staff data available. Please verify your HR system integration.'
+  noBedData: 'Ready for real data! Connect your bed management system or add bed records to see live data here.',
+  noChartData: 'No data available yet. Connect your data sources to populate analytics charts.',
+  noPatientData: 'No patient records found. Add patients to start tracking admissions and care metrics.',
+  noStaffData: 'No staff records available. Add staff members to monitor scheduling and resource allocation.',
+  dataCleared: 'Database has been cleared and is ready for your real healthcare data. Start by adding departments, beds, and staff records.',
+  readyForRealData: 'Your system is ready! Begin by configuring your data sources and adding real healthcare records.'
 };

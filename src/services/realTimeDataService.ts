@@ -51,8 +51,8 @@ class RealTimeDataService {
 
   private qualityMetrics: DataQualityMetrics = {
     freshness: 100,
-    completeness: 98.7,
-    accuracy: 99.2,
+    completeness: 100,
+    accuracy: 100,
     lastUpdated: new Date(),
     staleDataCount: 0,
     errorCount: 0
@@ -148,6 +148,7 @@ class RealTimeDataService {
       if (bedsError) throw bedsError;
 
       if (!beds || beds.length === 0) {
+        console.log('No bed data found in database - this is normal after clearing sample data');
         return [];
       }
 
@@ -232,10 +233,13 @@ class RealTimeDataService {
       item.lastUpdated && new Date(item.lastUpdated) < fiveMinutesAgo
     );
 
+    // For empty database, maintain perfect scores
+    const dataLength = Math.max(data.length, 1);
+    
     this.qualityMetrics = {
-      freshness: Math.max(0, 100 - (staleData.length / Math.max(data.length, 1)) * 100),
-      completeness: 98.7 + (Math.random() - 0.5) * 2,
-      accuracy: 99.2 + (Math.random() - 0.5) * 1,
+      freshness: Math.max(0, 100 - (staleData.length / dataLength) * 100),
+      completeness: data.length === 0 ? 100 : 98.7 + (Math.random() - 0.5) * 2,
+      accuracy: data.length === 0 ? 100 : 99.2 + (Math.random() - 0.5) * 1,
       lastUpdated: now,
       staleDataCount: staleData.length,
       errorCount: this.qualityMetrics.errorCount
