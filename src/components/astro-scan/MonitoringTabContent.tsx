@@ -31,7 +31,7 @@ const MonitoringTabContent = () => {
         { data: metricsSnapshots },
         { data: qualityScores }
       ] = await Promise.all([
-        supabase.from('data_sources').select('id, status').eq('status', 'ACTIVE'),
+        supabase.from('data_sources').select('id, status').eq('status', 'CONNECTED'),
         supabase.from('metrics_snapshots').select('*').order('created_at', { ascending: false }).limit(10),
         supabase.from('data_quality_scores').select('overall_score').order('evaluation_date', { ascending: false }).limit(1)
       ]);
