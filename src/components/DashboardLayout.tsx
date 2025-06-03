@@ -58,7 +58,7 @@ interface DashboardLayoutProps {
 interface NavItem {
   name: string;
   href: string;
-  icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const navItems: NavItem[] = [
