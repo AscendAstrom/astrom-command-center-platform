@@ -1,12 +1,91 @@
 
-const zones = [
-  { id: 'A', name: 'Processing Center', entities: 8, capacity: 12, status: 'normal' },
-  { id: 'B', name: 'Express Lane', entities: 15, capacity: 18, status: 'busy' },
-  { id: 'C', name: 'Main Service Area', entities: 22, capacity: 24, status: 'critical' },
-  { id: 'D', name: 'Quality Control', entities: 6, capacity: 10, status: 'normal' },
-];
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Zone {
+  id: string;
+  name: string;
+  entities: number;
+  capacity: number;
+  status: 'normal' | 'busy' | 'critical';
+}
 
 const ZoneMap = () => {
+  const [zones, setZones] = useState<Zone[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchZoneData = async () => {
+      setLoading(true);
+      try {
+        const { data: departments, error } = await supabase
+          .from('departments')
+          .select(`
+            id,
+            name,
+            capacity,
+            beds!inner(id, status)
+          `)
+          .eq('is_active', true);
+
+        if (error) {
+          console.error('Error fetching zone data:', error);
+          setZones([]);
+          return;
+        }
+
+        if (!departments || departments.length === 0) {
+          setZones([]);
+          return;
+        }
+
+        const zoneData: Zone[] = departments.map(dept => {
+          const beds = Array.isArray(dept.beds) ? dept.beds : [];
+          const totalBeds = beds.length;
+          const occupiedBeds = beds.filter(bed => bed.status === 'OCCUPIED').length;
+          const capacity = dept.capacity || totalBeds;
+          const occupancyRate = capacity > 0 ? (occupiedBeds / capacity) * 100 : 0;
+
+          let status: 'normal' | 'busy' | 'critical' = 'normal';
+          if (occupancyRate >= 90) status = 'critical';
+          else if (occupancyRate >= 75) status = 'busy';
+
+          return {
+            id: dept.id,
+            name: dept.name,
+            entities: occupiedBeds,
+            capacity,
+            status
+          };
+        });
+
+        setZones(zoneData);
+      } catch (error) {
+        console.error('Error fetching zone data:', error);
+        setZones([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchZoneData();
+
+    // Subscribe to real-time bed status changes
+    const channel = supabase
+      .channel('bed-status-changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'beds' },
+        () => {
+          fetchZoneData(); // Refresh data when beds change
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'normal':
@@ -21,8 +100,33 @@ const ZoneMap = () => {
   };
 
   const getOccupancyPercentage = (entities: number, capacity: number) => {
-    return Math.round((entities / capacity) * 100);
+    return capacity > 0 ? Math.round((entities / capacity) * 100) : 0;
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="h-24 bg-slate-500/20 rounded-lg border-2 border-slate-500"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (zones.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="p-6 rounded-lg border-2 border-slate-500/20 bg-slate-500/10 text-center">
+          <h3 className="text-lg font-semibold text-slate-300 mb-2">No Zones Available</h3>
+          <p className="text-sm text-slate-400">
+            Configure departments and beds to see zone status here.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -33,8 +137,7 @@ const ZoneMap = () => {
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg">Zone {zone.id}</span>
-              <span className="text-sm opacity-75">{zone.name}</span>
+              <span className="font-bold text-lg">{zone.name}</span>
             </div>
             <div className="text-right">
               <div className="text-sm font-medium">

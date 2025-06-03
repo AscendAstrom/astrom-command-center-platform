@@ -1309,6 +1309,48 @@ export type Database = {
           },
         ]
       }
+      patient_flow_events: {
+        Row: {
+          department_id: string | null
+          details: Json | null
+          event_type: string
+          id: string
+          patient_id: string | null
+          timestamp: string
+        }
+        Insert: {
+          department_id?: string | null
+          details?: Json | null
+          event_type: string
+          id?: string
+          patient_id?: string | null
+          timestamp?: string
+        }
+        Update: {
+          department_id?: string | null
+          details?: Json | null
+          event_type?: string
+          id?: string
+          patient_id?: string | null
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_flow_events_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_flow_events_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_visits: {
         Row: {
           admission_date: string
@@ -2036,6 +2078,44 @@ export type Database = {
             columns: ["staff_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_metrics: {
+        Row: {
+          department_id: string | null
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_unit: string | null
+          metric_value: number
+          timestamp: string
+        }
+        Insert: {
+          department_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_unit?: string | null
+          metric_value: number
+          timestamp?: string
+        }
+        Update: {
+          department_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_unit?: string | null
+          metric_value?: number
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_metrics_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]
