@@ -37,6 +37,17 @@ class MainAnalyticsService {
       const revenuePerPatient = patientMetrics.activePatients > 0 ? revenue / patientMetrics.activePatients : 0;
 
       const analyticsData: AnalyticsData = {
+        chartData: {
+          waitTimes: [],
+          patientFlow: [],
+          staffAllocation: [],
+          bedUtilization: [],
+          processingThroughput: [],
+          dataQuality: [],
+          revenue: [],
+          systemHealth: [],
+          modelPerformance: []
+        },
         emergencyDepartment: {
           totalPatients: patientMetrics.edPatients,
           avgWaitTime: patientMetrics.avgWaitTime,
@@ -44,7 +55,8 @@ class MainAnalyticsService {
           staffOnDuty: staffMetrics.onDuty,
           triageQueue: patientMetrics.triageQueue,
           criticalPatients: patientMetrics.criticalPatients,
-          criticalAlerts: Math.floor(patientMetrics.criticalPatients * 0.1)
+          criticalAlerts: Math.floor(patientMetrics.criticalPatients * 0.1),
+          lastUpdated: currentDate
         },
         beds: bedMetrics,
         staffing: staffMetrics,
@@ -115,6 +127,17 @@ class MainAnalyticsService {
   private getEmptyAnalyticsData(): AnalyticsData {
     const currentDate = new Date();
     return {
+      chartData: {
+        waitTimes: [],
+        patientFlow: [],
+        staffAllocation: [],
+        bedUtilization: [],
+        processingThroughput: [],
+        dataQuality: [],
+        revenue: [],
+        systemHealth: [],
+        modelPerformance: []
+      },
       emergencyDepartment: {
         totalPatients: 0,
         avgWaitTime: 0,
@@ -122,7 +145,8 @@ class MainAnalyticsService {
         staffOnDuty: 0,
         triageQueue: 0,
         criticalPatients: 0,
-        criticalAlerts: 0
+        criticalAlerts: 0,
+        lastUpdated: currentDate
       },
       beds: {
         total: 0,
@@ -134,6 +158,7 @@ class MainAnalyticsService {
       staffing: {
         total: 0,
         onDuty: 0,
+        active: 0,
         onCall: 0,
         overtime: 0,
         scheduledNext: 0
@@ -179,7 +204,7 @@ class MainAnalyticsService {
         scheduledProcedures: 0,
         resourceUtilization: 0,
         avgProcedureTime: 0,
-        equipmentStatus: 'unknown',
+        equipmentStatus: 'optimal',
         lastUpdated: currentDate
       },
       dataPipeline: {
@@ -187,7 +212,7 @@ class MainAnalyticsService {
         processingSpeed: 0,
         errorRate: 0,
         dataQuality: 0,
-        syncStatus: 'disconnected',
+        syncStatus: 'error',
         lastUpdated: currentDate
       },
       business: {

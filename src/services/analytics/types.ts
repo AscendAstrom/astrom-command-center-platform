@@ -38,6 +38,10 @@ export interface UpcomingActivity {
 }
 
 export interface QualityData {
+  overallScore: number;
+  patientSafety: number;
+  satisfaction: number;
+  incidents: number;
   accreditations: AccreditationData[];
   complianceAreas: ComplianceArea[];
   upcomingActivities: UpcomingActivity[];
@@ -45,6 +49,67 @@ export interface QualityData {
   activeCompliance: number;
   daysToExpiry: number;
   upcomingActivitiesCount: number;
+}
+
+export interface BedMetrics {
+  total: number;
+  occupied: number;
+  available: number;
+  outOfOrder: number;
+  utilization: number;
+}
+
+export interface StaffMetrics {
+  total: number;
+  onDuty: number;
+  active: number;
+  onCall: number;
+  overtime: number;
+  scheduledNext: number;
+}
+
+export interface ClinicalMetrics {
+  surgeries: {
+    total: number;
+    scheduled: number;
+    completed: number;
+    avgDuration: number;
+  };
+  vitals: {
+    monitored: number;
+    critical: number;
+    abnormal: number;
+  };
+  medications: {
+    adherence: number;
+    criticalMeds: number;
+    missedDoses: number;
+  };
+  labs: {
+    totalTests: number;
+    avgTurnaround: number;
+    criticalAlerts: number;
+  };
+}
+
+export interface EquipmentMetrics {
+  total: number;
+  available: number;
+  inUse: number;
+  maintenance: number;
+}
+
+export interface FinancialMetrics {
+  revenue: number;
+  revenuePerPatient: number;
+  monthlyGrowth: number;
+  yearOverYear: number;
+}
+
+export interface PerformanceMetrics {
+  throughput: number;
+  efficiency: number;
+  bottlenecks: number;
 }
 
 export interface AnalyticsData {
@@ -55,8 +120,16 @@ export interface AnalyticsData {
     bedUtilization: number;
     staffOnDuty: number;
     criticalAlerts: number;
+    triageQueue: number;
+    criticalPatients: number;
     lastUpdated: Date;
   };
+  beds: BedMetrics;
+  staffing: StaffMetrics;
+  clinical: ClinicalMetrics;
+  equipment: EquipmentMetrics;
+  financial: FinancialMetrics;
+  performance: PerformanceMetrics;
   clinicalOperations: {
     activeStaff: number;
     scheduledProcedures: number;
