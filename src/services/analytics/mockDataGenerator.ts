@@ -5,24 +5,30 @@ export class MockDataGenerator {
   generateBaseData(): Partial<AnalyticsData> {
     return {
       chartData: {
-        patientFlow: [],
-        bedOccupancy: [],
         waitTimes: [],
-        staffing: [],
-        alerts: [],
-        departments: []
+        patientFlow: [],
+        staffAllocation: [],
+        bedUtilization: [],
+        processingThroughput: [],
+        dataQuality: [],
+        revenue: [],
+        systemHealth: [],
+        modelPerformance: []
       }
     };
   }
 
   generateChartData(baseData: Partial<AnalyticsData>, chartHistory: any): any {
     return {
-      patientFlow: [],
-      bedOccupancy: [],
       waitTimes: [],
-      staffing: [],
-      alerts: [],
-      departments: []
+      patientFlow: [],
+      staffAllocation: [],
+      bedUtilization: [],
+      processingThroughput: [],
+      dataQuality: [],
+      revenue: [],
+      systemHealth: [],
+      modelPerformance: []
     };
   }
 }
