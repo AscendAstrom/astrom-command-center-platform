@@ -21,52 +21,52 @@ class AnalyticsDataService {
     return {
       chartData,
       emergencyDepartment: {
-        currentPatients: 0,
-        averageWaitTime: 0,
+        totalPatients: 0,
+        waitTime: 0,
         triageQueue: 0,
-        bedAvailability: 0,
+        bedOccupancy: 0,
         criticalCases: 0,
-        dischargesPending: 0
+        lastUpdated: new Date()
       },
       clinicalOperations: {
-        activeCases: 0,
         surgicalQueue: 0,
         labPending: 0,
         imagingQueue: 0,
         medicationOrders: 0,
-        dischargesPending: 0
+        dischargesPending: 0,
+        lastUpdated: new Date()
       },
       dataPipeline: {
-        recordsProcessed: 0,
+        recordsIngested: 0,
         errorRate: 0,
         latency: 0,
         throughput: 0,
         systemHealth: 0,
-        activeConnections: 0
+        lastUpdated: new Date()
       },
       business: {
         revenue: 0,
-        costs: 0,
-        margin: 0,
+        operatingCosts: 0,
+        profitMargin: 0,
         patientSatisfaction: 0,
         staffUtilization: 0,
-        resourceEfficiency: 0
+        lastUpdated: new Date()
       },
       aiMetrics: {
         modelAccuracy: 0,
-        predictionLatency: 0,
+        inferenceLatency: 0,
         trainingJobs: 0,
         dataQuality: 0,
         automationRate: 0,
-        anomaliesDetected: 0
+        lastUpdated: new Date()
       },
       systemHealth: {
         uptime: 0,
-        responseTime: 0,
+        avgResponseTime: 0,
         memoryUsage: 0,
         cpuUtilization: 0,
-        diskSpace: 0,
-        networkLatency: 0
+        diskUsage: 0,
+        lastUpdated: new Date()
       }
     };
   }

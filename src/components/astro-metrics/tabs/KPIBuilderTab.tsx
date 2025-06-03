@@ -20,7 +20,7 @@ const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {
       value: 0,
       unit: "%",
       target: 85,
-      trend: "stable" as const,
+      trend: "up" as const,
       hospital: "No Data"
     },
     {
@@ -29,7 +29,7 @@ const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {
       value: 0,
       unit: "days",
       target: 4.5,
-      trend: "stable" as const,
+      trend: "down" as const,
       hospital: "No Data"
     },
     {
