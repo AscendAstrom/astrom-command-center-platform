@@ -23,49 +23,49 @@ class AnalyticsDataService {
       emergencyDepartment: {
         totalPatients: 0,
         avgWaitTime: 0,
-        currentCapacity: 0,
-        bedOccupancy: 0,
-        criticalCases: 0,
+        bedUtilization: 0,
+        staffOnDuty: 0,
+        criticalAlerts: 0,
         lastUpdated: new Date()
       },
       clinicalOperations: {
-        activePatients: 0,
-        labPending: 0,
-        imagingQueue: 0,
-        medicationOrders: 0,
-        dischargesPending: 0,
+        activeStaff: 0,
+        scheduledProcedures: 0,
+        resourceUtilization: 0,
+        avgProcedureTime: 0,
+        equipmentStatus: 'optimal' as const,
         lastUpdated: new Date()
       },
       dataPipeline: {
-        recordsIngested: 0,
+        activeSources: 0,
+        processingSpeed: 0,
         errorRate: 0,
-        latency: 0,
-        throughput: 0,
-        systemHealth: 0,
+        dataQuality: 0,
+        syncStatus: 'healthy' as const,
         lastUpdated: new Date()
       },
       business: {
         revenue: 0,
-        costs: 0,
-        profitMargin: 0,
+        revenueGrowth: 0,
         patientSatisfaction: 0,
-        staffUtilization: 0,
+        operationalEfficiency: 0,
+        costPerPatient: 0,
         lastUpdated: new Date()
       },
       aiMetrics: {
         modelAccuracy: 0,
-        responseTime: 0,
-        trainingJobs: 0,
-        dataQuality: 0,
-        automationRate: 0,
+        automationSuccess: 0,
+        decisionsSupported: 0,
+        mlModelsActive: 0,
+        predictionConfidence: 0,
         lastUpdated: new Date()
       },
       systemHealth: {
-        uptime: 0,
-        responseTime: 0,
+        cpuUsage: 0,
         memoryUsage: 0,
-        cpuUtilization: 0,
-        diskUsage: 0,
+        networkLatency: 0,
+        uptime: 0,
+        securityScore: 0,
         lastUpdated: new Date()
       }
     };
