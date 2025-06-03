@@ -153,8 +153,14 @@ class RealTimeDataService {
 
       // Transform database data to BedData format
       const transformedData: BedData[] = beds.map((bed, index) => {
+        // Ensure patients is always an array - handle single object, array, or null cases
+        let patientsArray: any[] = [];
+        if (bed.patients) {
+          patientsArray = Array.isArray(bed.patients) ? bed.patients : [bed.patients];
+        }
+
         // Transform patient data to match PatientData interface
-        const transformedPatients: PatientData[] = bed.patients ? bed.patients.map((patient: any) => ({
+        const transformedPatients: PatientData[] = patientsArray.map((patient: any) => ({
           id: patient.id,
           nameAbbreviation: `${patient.first_name?.charAt(0) || ''}${patient.last_name?.charAt(0) || ''}`,
           mrn: patient.mrn,
@@ -167,7 +173,7 @@ class RealTimeDataService {
           },
           admissionDate: patient.admission_date || new Date().toISOString(),
           priority: 'medium' as const
-        })) : [];
+        }));
 
         return {
           id: bed.id,
@@ -179,8 +185,8 @@ class RealTimeDataService {
           totalBeds: 1,
           plannedBeds: 1,
           occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
-          assignedBeds: bed.status === 'RESERVED' ? 1 : 0, // Use RESERVED instead of ASSIGNED
-          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0, // Use MAINTENANCE instead of DIRTY
+          assignedBeds: bed.status === 'RESERVED' ? 1 : 0,
+          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0,
           confirmedDischarge: 0,
           potentialDischarge: bed.status === 'OCCUPIED' ? Math.random() > 0.8 ? 1 : 0 : 0,
           unassignedPatients: 0,
