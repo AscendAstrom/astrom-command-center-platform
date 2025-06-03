@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Play, Pause, Heart, Stethoscope, Database, TrendingUp, Shield, Server, Brain, Zap, BarChart3 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { analyticsDataService, AnalyticsData } from '@/services/analytics';
+import { analyticsService, AnalyticsData } from '@/services/analytics';
 import EmergencyDepartmentTab from './tabs/EmergencyDepartmentTab';
 import ClinicalOperationsTab from './tabs/ClinicalOperationsTab';
 import DataPipelineTab from './tabs/DataPipelineTab';
@@ -17,19 +16,26 @@ const DashboardAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [isLive, setIsLive] = useState(true);
   const [activeCategory, setActiveCategory] = useState('operations');
+  const [stopRealTimeUpdates, setStopRealTimeUpdates] = useState<(() => void) | null>(null);
 
   useEffect(() => {
-    const unsubscribe = analyticsDataService.subscribe(setAnalyticsData);
+    const unsubscribe = analyticsService.subscribe(setAnalyticsData);
     
     if (isLive) {
-      analyticsDataService.start();
+      const stopUpdates = analyticsService.startRealTimeUpdates();
+      setStopRealTimeUpdates(() => stopUpdates);
     } else {
-      analyticsDataService.stop();
+      if (stopRealTimeUpdates) {
+        stopRealTimeUpdates();
+        setStopRealTimeUpdates(null);
+      }
     }
 
     return () => {
       unsubscribe();
-      analyticsDataService.stop();
+      if (stopRealTimeUpdates) {
+        stopRealTimeUpdates();
+      }
     };
   }, [isLive]);
 
@@ -149,7 +155,7 @@ const DashboardAnalytics = () => {
                 <div>
                   <CardTitle className="text-foreground">{activeTabCategory.name}</CardTitle>
                   <CardDescription>
-                    {analyticsData && `Last updated: ${analyticsData.emergencyDepartment.lastUpdated.toLocaleTimeString()}`}
+                    Last updated: {new Date().toLocaleTimeString()}
                   </CardDescription>
                 </div>
               </div>
