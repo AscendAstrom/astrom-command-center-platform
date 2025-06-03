@@ -22,7 +22,7 @@ class AnalyticsDataService {
       chartData,
       emergencyDepartment: {
         totalPatients: 0,
-        waitTime: 0,
+        avgWaitTime: 0,
         triageQueue: 0,
         bedOccupancy: 0,
         criticalCases: 0,
