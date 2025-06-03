@@ -1,10 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Shield, AlertTriangle, CheckCircle, Clock, Zap, Bell } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { emptyStateMessages } from "@/config/constants";
 
 interface SLAMonitor {
   id: string;
@@ -17,42 +19,54 @@ interface SLAMonitor {
 }
 
 const AdvancedMonitoringPanel = () => {
-  const [slaMonitors] = useState<SLAMonitor[]>([
-    {
-      id: '1',
-      name: 'Data Freshness',
-      currentValue: 3.2,
-      threshold: 5.0,
-      status: 'healthy',
-      escalationLevel: 0
-    },
-    {
-      id: '2',
-      name: 'Quality Score',
-      currentValue: 94.2,
-      threshold: 95.0,
-      status: 'warning',
-      timeToBreach: 15,
-      escalationLevel: 1
-    },
-    {
-      id: '3',
-      name: 'Sync Latency',
-      currentValue: 8.7,
-      threshold: 10.0,
-      status: 'warning',
-      timeToBreach: 45,
-      escalationLevel: 1
-    },
-    {
-      id: '4',
-      name: 'Error Rate',
-      currentValue: 0.2,
-      threshold: 1.0,
-      status: 'healthy',
-      escalationLevel: 0
+  const [slaMonitors, setSlaMonitors] = useState<SLAMonitor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSLAData();
+  }, []);
+
+  const fetchSLAData = async () => {
+    try {
+      setLoading(true);
+      const { data: slas, error } = await supabase
+        .from('slas')
+        .select('*')
+        .eq('is_active', true);
+
+      if (error) {
+        console.error('Error fetching SLA data:', error);
+        setSlaMonitors([]);
+        return;
+      }
+
+      if (!slas || slas.length === 0) {
+        setSlaMonitors([]);
+        return;
+      }
+
+      // Transform SLA data to monitor format
+      const monitors: SLAMonitor[] = slas.map((sla) => {
+        // For real implementation, you would fetch actual metrics here
+        // For now, we'll show empty state as no real metrics exist yet
+        return {
+          id: sla.id,
+          name: sla.name,
+          currentValue: 0,
+          threshold: sla.target_value || 100,
+          status: 'healthy' as const,
+          escalationLevel: 0
+        };
+      });
+
+      setSlaMonitors(monitors);
+    } catch (error) {
+      console.error('Error fetching SLA data:', error);
+      setSlaMonitors([]);
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -78,6 +92,36 @@ const AdvancedMonitoringPanel = () => {
     }
     return Math.min(100, (current / threshold) * 100);
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="animate-pulse space-y-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-20 bg-muted/50 rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (slaMonitors.length === 0) {
+    return (
+      <div className="space-y-4">
+        <Card className="p-6 text-center border-dashed border-2">
+          <Shield className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
+          <h4 className="font-semibold text-foreground mb-2">No SLA Monitors Configured</h4>
+          <p className="text-sm text-muted-foreground mb-4">
+            {emptyStateMessages.readyForRealData}
+          </p>
+          <Button variant="outline" size="sm" onClick={fetchSLAData}>
+            <Zap className="h-3 w-3 mr-1" />
+            Refresh
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -132,21 +176,21 @@ const AdvancedMonitoringPanel = () => {
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" className="flex items-center gap-1">
           <Zap className="h-3 w-3" />
-          Auto-tune
+          Configure SLA
         </Button>
         <Button variant="outline" size="sm" className="flex items-center gap-1">
           <Bell className="h-3 w-3" />
-          Alerts
+          View Alerts
         </Button>
       </div>
 
-      {/* Escalation Status */}
+      {/* System Status */}
       <Card className="p-3 bg-muted/30">
-        <div className="text-xs font-medium text-foreground mb-2">Automated Escalation</div>
+        <div className="text-xs font-medium text-foreground mb-2">Monitoring Status</div>
         <div className="space-y-1 text-xs text-muted-foreground">
-          <div>• Level 1: Team notifications active</div>
-          <div>• Level 2: Manager alerts pending</div>
-          <div>• Level 3: Executive alerts standby</div>
+          <div>• Real-time monitoring: Ready</div>
+          <div>• Alert system: Standby</div>
+          <div>• Data sources: {slaMonitors.length} configured</div>
         </div>
       </Card>
     </div>

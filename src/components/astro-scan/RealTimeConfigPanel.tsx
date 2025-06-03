@@ -17,6 +17,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { realTimeDataService, ConnectionStatus, DataQualityMetrics, RealTimeConfig } from "@/services/realTimeDataService";
+import { emptyStateMessages } from "@/config/constants";
 
 const RealTimeConfigPanel = () => {
   const [config, setConfig] = useState<RealTimeConfig>(realTimeDataService.getConfig());
@@ -119,7 +120,7 @@ const RealTimeConfigPanel = () => {
           </div>
         </div>
 
-        {/* Data Quality Metrics */}
+        {/* Data Quality Metrics - Only show real data quality when available */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg">
           <div className="text-center">
             <div className="text-sm text-muted-foreground mb-1">Data Freshness</div>
@@ -132,6 +133,17 @@ const RealTimeConfigPanel = () => {
           <div className="text-center">
             <div className="text-sm text-muted-foreground mb-1">Accuracy</div>
             <div className="text-xl font-bold text-purple-600">{qualityMetrics.accuracy.toFixed(1)}%</div>
+          </div>
+        </div>
+
+        {/* Data Status Information */}
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="h-4 w-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">System Status</span>
+          </div>
+          <div className="text-xs text-blue-700">
+            {emptyStateMessages.readyForRealData}
           </div>
         </div>
 
@@ -214,7 +226,7 @@ const RealTimeConfigPanel = () => {
               </div>
             </div>
 
-            {/* Quality Alerts */}
+            {/* Quality Alerts - Only show when there are actual issues */}
             {(qualityMetrics.staleDataCount > 0 || qualityMetrics.errorCount > 0) && (
               <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
