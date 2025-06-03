@@ -1,30 +1,27 @@
+
 import { useState, useEffect } from 'react';
 import {
-  BellIcon,
-  CogIcon,
-  CreditCardIcon,
-  KeyIcon,
-  LockClosedIcon,
-  LogoutIcon,
-  PencilIcon,
-  UserIcon,
-  HomeIcon,
-  ChartBarIcon,
-  ClipboardCheckIcon,
-  UsersIcon,
-  ExclamationCircleIcon,
-  DocumentReportIcon,
-  QuestionMarkCircleIcon,
-  ShieldCheckIcon,
-  SunIcon,
-  MoonIcon
-} from '@heroicons/react/24/outline';
-import {
-  ChevronRightIcon,
-  EllipsisVerticalIcon
-} from '@heroicons/react/20/solid';
-import { Switch } from '@headlessui/react';
-import { useTheme } from 'next-themes';
+  Bell,
+  Settings,
+  CreditCard,
+  Key,
+  Lock,
+  LogOut,
+  Edit,
+  User,
+  Home,
+  BarChart3,
+  ClipboardCheck,
+  Users,
+  AlertTriangle,
+  FileText,
+  HelpCircle,
+  Shield,
+  Sun,
+  Moon,
+  ChevronRight,
+  MoreVertical
+} from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -65,14 +62,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-  { name: 'Tasks', href: '/tasks', icon: ClipboardCheckIcon },
-  { name: 'Users', href: '/users', icon: UsersIcon },
-  { name: 'Alerts', href: '/alerts', icon: ExclamationCircleIcon },
-  { name: 'Reports', href: '/reports', icon: DocumentReportIcon },
-  { name: 'Support', href: '/support', icon: QuestionMarkCircleIcon },
-  { name: 'Security', href: '/security', icon: ShieldCheckIcon },
+  { name: 'Dashboard', href: '/', icon: Home },
+  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+  { name: 'Tasks', href: '/tasks', icon: ClipboardCheck },
+  { name: 'Users', href: '/users', icon: Users },
+  { name: 'Alerts', href: '/alerts', icon: AlertTriangle },
+  { name: 'Reports', href: '/reports', icon: FileText },
+  { name: 'Support', href: '/support', icon: HelpCircle },
+  { name: 'Security', href: '/security', icon: Shield },
 ];
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
@@ -129,13 +126,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     const success = await notificationService.deleteNotification(id);
     if (success) {
       setNotifications(prev => prev.filter(notification => notification.id !== id));
-      setNotificationCount(prev => {
-        const deletedNotification = prev.find(notification => notification.id === id);
-        if (deletedNotification && !deletedNotification.is_read) {
-          return Math.max(0, prev - 1);
-        }
-        return prev;
-      });
+      const deletedNotification = notifications.find(notification => notification.id === id);
+      if (deletedNotification && !deletedNotification.is_read) {
+        setNotificationCount(prev => Math.max(0, prev - 1));
+      }
     }
   };
 
@@ -172,7 +166,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full h-10 w-10">
-                  <BellIcon className="h-5 w-5" />
+                  <Bell className="h-5 w-5" />
                   {notificationCount > 0 && (
                     <Badge className="absolute top-1 right-1 rounded-full px-2 py-0.5 text-xs font-bold">{notificationCount}</Badge>
                   )}
@@ -194,14 +188,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                               {new Date(notification.created_at).toLocaleTimeString()}
                             </span>
                             {!notification.is_read && (
-                              <Button variant="secondary" size="xs" onClick={() => handleMarkAsRead(notification.id)}>
+                              <Button variant="secondary" size="sm" onClick={() => handleMarkAsRead(notification.id)}>
                                 Mark as Read
                               </Button>
                             )}
                           </div>
                         </div>
                         <Button variant="ghost" size="icon" onClick={() => handleDeleteNotification(notification.id)}>
-                          <EllipsisVerticalIcon className="h-4 w-4" />
+                          <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuItem>
                     ))
@@ -236,30 +230,30 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <UserIcon className="h-4 w-4 mr-2" />
+                    <User className="h-4 w-4 mr-2" />
                     <span>Profile</span>
                     <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <CreditCardIcon className="h-4 w-4 mr-2" />
+                    <CreditCard className="h-4 w-4 mr-2" />
                     <span>Billing</span>
                     <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <KeyIcon className="h-4 w-4 mr-2" />
+                    <Key className="h-4 w-4 mr-2" />
                     <span>Security</span>
                     <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <CogIcon className="h-4 w-4 mr-2" />
+                  <Settings className="h-4 w-4 mr-2" />
                   <span>Settings</span>
                   <DropdownMenuShortcut>⌘,</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <LogoutIcon className="h-4 w-4 mr-2" />
+                  <LogOut className="h-4 w-4 mr-2" />
                   <span>Log out</span>
                   <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
