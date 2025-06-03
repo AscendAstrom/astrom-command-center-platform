@@ -23,13 +23,13 @@ class AnalyticsDataService {
       emergencyDepartment: {
         totalPatients: 0,
         avgWaitTime: 0,
-        triageQueue: 0,
+        currentCapacity: 0,
         bedOccupancy: 0,
         criticalCases: 0,
         lastUpdated: new Date()
       },
       clinicalOperations: {
-        surgicalQueue: 0,
+        activePatients: 0,
         labPending: 0,
         imagingQueue: 0,
         medicationOrders: 0,
@@ -46,7 +46,7 @@ class AnalyticsDataService {
       },
       business: {
         revenue: 0,
-        operatingCosts: 0,
+        costs: 0,
         profitMargin: 0,
         patientSatisfaction: 0,
         staffUtilization: 0,
@@ -54,7 +54,7 @@ class AnalyticsDataService {
       },
       aiMetrics: {
         modelAccuracy: 0,
-        inferenceLatency: 0,
+        responseTime: 0,
         trainingJobs: 0,
         dataQuality: 0,
         automationRate: 0,
@@ -62,7 +62,7 @@ class AnalyticsDataService {
       },
       systemHealth: {
         uptime: 0,
-        avgResponseTime: 0,
+        responseTime: 0,
         memoryUsage: 0,
         cpuUtilization: 0,
         diskUsage: 0,
