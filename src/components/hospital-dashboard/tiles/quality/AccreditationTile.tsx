@@ -1,9 +1,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Award, Calendar, CheckCircle, AlertTriangle } from "lucide-react";
+import { Award, Calendar, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { analyticsService, AnalyticsData } from '@/services/analytics';
+import { analyticsService } from '@/services/analytics/mainAnalyticsService';
+import { AnalyticsData } from '@/services/analytics/types';
 import { emptyStateMessages } from "@/config/constants";
 
 export const AccreditationTile = () => {
