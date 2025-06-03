@@ -10,7 +10,7 @@ class AnalyticsDataService {
   private chartDataService = new ChartDataService();
   private mockDataGenerator = new MockDataGenerator();
 
-  private generateMockData(): AnalyticsData {
+  private generateEmptyData(): AnalyticsData {
     const baseData = this.mockDataGenerator.generateBaseData();
     
     this.chartDataService.updateChartHistory(baseData as AnalyticsData);
@@ -19,7 +19,14 @@ class AnalyticsDataService {
     const chartData = this.mockDataGenerator.generateChartData(baseData, chartHistory);
 
     return {
-      ...baseData,
+      totalPatients: 0,
+      availableBeds: 0,
+      occupancyRate: 0,
+      avgWaitTime: 0,
+      staffOnDuty: 0,
+      criticalAlerts: 0,
+      pendingDischarges: 0,
+      emergencyCapacity: 0,
       chartData
     };
   }
@@ -38,12 +45,12 @@ class AnalyticsDataService {
     this.chartDataService.initializeChartHistory();
     
     this.intervalId = setInterval(() => {
-      const data = this.generateMockData();
+      const data = this.generateEmptyData();
       this.subscribers.forEach(callback => callback(data));
     }, this.refreshInterval);
 
     // Initial fetch
-    const initialData = this.generateMockData();
+    const initialData = this.generateEmptyData();
     this.subscribers.forEach(callback => callback(initialData));
   }
 

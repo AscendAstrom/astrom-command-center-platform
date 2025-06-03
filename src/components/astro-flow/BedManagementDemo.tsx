@@ -2,9 +2,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Hospital, AlertTriangle, Bot, CheckCircle } from "lucide-react";
 import BedManagementTable from "@/components/shared/BedManagementTable";
-import { mockBedData } from "@/data/mockBedData";
 
 const BedManagementDemo = () => {
+  const emptyBedData = [];
+
   return (
     <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
       <div className="flex items-center gap-2 mb-4">
@@ -57,7 +58,11 @@ const BedManagementDemo = () => {
         </div>
       </div>
 
-      <BedManagementTable data={mockBedData.slice(0, 2)} showArabicNames={true} showCompliance={true} />
+      <BedManagementTable data={emptyBedData} showArabicNames={true} showCompliance={true} />
+      
+      <div className="mt-4 p-3 bg-muted/30 rounded-lg text-center">
+        <p className="text-muted-foreground text-sm">No bed data available. Connect your data sources to see real-time bed management.</p>
+      </div>
     </div>
   );
 };
