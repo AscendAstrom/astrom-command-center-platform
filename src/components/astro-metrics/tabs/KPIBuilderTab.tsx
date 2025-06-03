@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Hospital, TrendingUp } from "lucide-react";
 import MetricBuilder from "@/components/astro-metrics/MetricBuilder";
 import BedManagementTable from "@/components/shared/BedManagementTable";
-import { mockBedData, mockKPIs } from "@/data/mockBedData";
 import { UserRole } from "@/components/astro-bricks/types";
 
 interface KPIBuilderTabProps {
@@ -12,6 +11,38 @@ interface KPIBuilderTabProps {
 }
 
 const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {
+  // Empty bed data and KPIs since mock data was removed
+  const emptyBedData: any[] = [];
+  const emptyKPIs = [
+    {
+      id: "bed-occupancy",
+      name: "Bed Occupancy Rate",
+      value: 0,
+      unit: "%",
+      target: 85,
+      trend: "stable" as const,
+      hospital: "No Data"
+    },
+    {
+      id: "avg-los",
+      name: "Average Length of Stay",
+      value: 0,
+      unit: "days",
+      target: 4.5,
+      trend: "stable" as const,
+      hospital: "No Data"
+    },
+    {
+      id: "discharge-efficiency",
+      name: "Discharge Efficiency",
+      value: 0,
+      unit: "%",
+      target: 90,
+      trend: "stable" as const,
+      hospital: "No Data"
+    }
+  ];
+
   return (
     <Card className="bg-card/80 border-border backdrop-blur-sm">
       <CardHeader>
@@ -38,7 +69,7 @@ const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            {mockKPIs.map((kpi) => (
+            {emptyKPIs.map((kpi) => (
               <div key={kpi.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
                 <div className="flex items-center justify-between mb-3">
                   <div className="font-medium text-foreground text-sm">{kpi.name}</div>
@@ -69,7 +100,11 @@ const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {
             ))}
           </div>
 
-          <BedManagementTable data={mockBedData.slice(0, 2)} showArabicNames={false} showCompliance={true} />
+          <BedManagementTable data={emptyBedData} showArabicNames={false} showCompliance={true} />
+          
+          <div className="mt-4 p-3 bg-muted/30 rounded-lg text-center">
+            <p className="text-muted-foreground text-sm">No bed data available. Connect your data sources to see real-time KPI data.</p>
+          </div>
         </div>
       </CardContent>
     </Card>

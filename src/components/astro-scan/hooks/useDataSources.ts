@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DataSource, SyncStatus } from '../types';
-import { mockEpicDataSources } from '@/data/mockEpicDataSources';
 import { useAuth } from '@/contexts/AuthContext';
 
 export const useDataSources = () => {
@@ -31,11 +30,8 @@ export const useDataSources = () => {
         throw fetchError;
       }
 
-      // If no real data sources exist, use mock Epic data sources
-      if (!data || data.length === 0) {
-        setDataSources(mockEpicDataSources);
-      } else {
-        // Transform the data to match our DataSource interface
+      // Transform the data to match our DataSource interface - no mock fallback
+      if (data && data.length > 0) {
         const transformedData: DataSource[] = data.map((source: any) => ({
           id: source.id,
           name: source.name,
@@ -48,12 +44,15 @@ export const useDataSources = () => {
           last_error: source.last_error
         }));
         setDataSources(transformedData);
+      } else {
+        // No mock data fallback - just empty array
+        setDataSources([]);
       }
     } catch (err) {
       console.error('Error fetching data sources:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
-      // Fallback to mock data on error
-      setDataSources(mockEpicDataSources);
+      // No mock data fallback - just empty array
+      setDataSources([]);
     } finally {
       setLoading(false);
     }

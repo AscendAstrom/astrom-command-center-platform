@@ -1,10 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Activity, AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { mockIngestionLogs } from "@/data/mockIngestionLogs";
 
 export const IngestionDashboard = () => {
   const [logs, setLogs] = useState<any[]>([]);
@@ -40,16 +40,12 @@ export const IngestionDashboard = () => {
 
       if (error) throw error;
       
-      // If no real data exists, use mock data
-      if (!data || data.length === 0) {
-        setLogs(mockIngestionLogs);
-      } else {
-        setLogs(data);
-      }
+      // No fallback to mock data - just use empty array
+      setLogs(data || []);
     } catch (error) {
       console.error('Error fetching logs:', error);
-      // Fallback to mock data on error
-      setLogs(mockIngestionLogs);
+      // No fallback to mock data - just use empty array
+      setLogs([]);
     } finally {
       setLoading(false);
     }
