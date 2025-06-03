@@ -1,210 +1,338 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from '@/integrations/supabase/client';
 
 export interface AnalyticsData {
-  business: {
-    revenue: number;
-    revenueGrowth: number;
-    patientSatisfaction: number;
-    operationalEfficiency: number;
-    costPerPatient: number;
-  };
-  clinicalOperations: {
-    activeStaff: number;
-    scheduledProcedures: number;
-    resourceUtilization: number;
-    avgProcedureTime: number;
-    equipmentStatus: string;
-  };
-  dataPipeline: {
-    activeSources: number;
-    processingSpeed: number;
-    errorRate: number;
-    dataQuality: number;
-    syncStatus: string;
-  };
-  systemHealth: {
-    cpuUsage: number;
-    memoryUsage: number;
-    networkLatency: number;
-    uptime: number;
-    securityScore: number;
-  };
-  aiMetrics: {
-    modelAccuracy: number;
-    automationSuccess: number;
-    decisionsSupported: number;
-    mlModelsActive: number;
-    predictionConfidence: number;
-  };
   emergencyDepartment: {
     totalPatients: number;
     avgWaitTime: number;
     bedUtilization: number;
     staffOnDuty: number;
-    criticalAlerts: number;
+    triageQueue: number;
+    criticalPatients: number;
   };
-  chartData: {
-    revenue: any[];
-    staffAllocation: any[];
-    processingThroughput: any[];
-    dataQuality: any[];
-    systemHealth: any[];
-    modelPerformance: any[];
-    waitTimes: any[];
-    patientFlow: any[];
-    bedUtilization: any[];
+  beds: {
+    total: number;
+    occupied: number;
+    available: number;
+    outOfOrder: number;
+    utilization: number;
+  };
+  staffing: {
+    total: number;
+    onDuty: number;
+    onCall: number;
+    overtime: number;
+    scheduledNext: number;
+  };
+  clinical: {
+    surgeries: {
+      total: number;
+      scheduled: number;
+      completed: number;
+      avgDuration: number;
+    };
+    vitals: {
+      monitored: number;
+      critical: number;
+      abnormal: number;
+    };
+    medications: {
+      adherence: number;
+      criticalMeds: number;
+      missedDoses: number;
+    };
+    labs: {
+      totalTests: number;
+      avgTurnaround: number;
+      criticalAlerts: number;
+    };
+  };
+  financial: {
+    revenue: number;
+    revenuePerPatient: number;
+    monthlyGrowth: number;
+    yearOverYear: number;
+  };
+  equipment: {
+    total: number;
+    available: number;
+    inUse: number;
+    maintenance: number;
+  };
+  quality: {
+    overallScore: number;
+    patientSafety: number;
+    satisfaction: number;
+    incidents: number;
+  };
+  performance: {
+    throughput: number;
+    efficiency: number;
+    bottlenecks: number;
   };
 }
 
 class AnalyticsService {
-  private updateCallbacks: ((data: AnalyticsData) => void)[] = [];
-  private currentData: AnalyticsData;
+  private subscribers: ((data: AnalyticsData | null) => void)[] = [];
+  private currentData: AnalyticsData | null = null;
+  private updateInterval: NodeJS.Timeout | null = null;
 
-  constructor() {
-    this.currentData = this.getEmptyData();
+  async fetchAnalyticsData(): Promise<AnalyticsData> {
+    console.log('Fetching analytics data from Supabase...');
+
+    try {
+      // Fetch all data in parallel
+      const [
+        bedsData,
+        patientsData,
+        staffData,
+        waitTimesData,
+        visitsData,
+        equipmentData,
+        schedulesData,
+        medicalRecordsData
+      ] = await Promise.all([
+        supabase.from('beds').select('*'),
+        supabase.from('patients').select('*'),
+        supabase.from('staff').select('*'),
+        supabase.from('wait_times').select('*'),
+        supabase.from('patient_visits').select('*'),
+        supabase.from('equipment').select('*'),
+        supabase.from('staff_schedules').select('*'),
+        supabase.from('medical_records').select('*')
+      ]);
+
+      const beds = bedsData.data || [];
+      const patients = patientsData.data || [];
+      const staff = staffData.data || [];
+      const waitTimes = waitTimesData.data || [];
+      const visits = visitsData.data || [];
+      const equipment = equipmentData.data || [];
+      const schedules = schedulesData.data || [];
+      const records = medicalRecordsData.data || [];
+
+      // Calculate metrics
+      const totalBeds = beds.length;
+      const occupiedBeds = beds.filter(bed => bed.status === 'OCCUPIED').length;
+      const availableBeds = beds.filter(bed => bed.status === 'AVAILABLE').length;
+      const outOfOrderBeds = beds.filter(bed => bed.status === 'OUT_OF_ORDER').length;
+      
+      const activePatients = patients.filter(p => p.status === 'ACTIVE').length;
+      const activeStaff = staff.filter(s => s.is_active).length;
+      
+      // Calculate average wait time
+      const currentWaitTimes = waitTimes.filter(wt => !wt.discharge_time);
+      const avgWaitTime = currentWaitTimes.length > 0 
+        ? Math.round(currentWaitTimes.reduce((sum, wt) => sum + (wt.total_wait_minutes || 0), 0) / currentWaitTimes.length)
+        : 0;
+
+      // ED metrics
+      const edPatients = visits.filter(v => v.status === 'ACTIVE').length;
+      const criticalPatients = visits.filter(v => v.status === 'CRITICAL').length;
+      
+      // Staff on duty calculation
+      const now = new Date();
+      const staffOnDuty = schedules.filter(s => {
+        const shiftStart = new Date(s.shift_start);
+        const shiftEnd = new Date(s.shift_end);
+        return s.status === 'ACTIVE' && shiftStart <= now && shiftEnd >= now;
+      }).length;
+
+      // Equipment metrics
+      const totalEquipment = equipment.length;
+      const availableEquipment = equipment.filter(e => e.status === 'AVAILABLE').length;
+      const inUseEquipment = equipment.filter(e => e.status === 'IN_USE').length;
+      const maintenanceEquipment = equipment.filter(e => e.status === 'MAINTENANCE').length;
+
+      // Financial metrics (mock calculations for demo)
+      const revenue = activePatients * 8500; // Rough calculation
+      const revenuePerPatient = activePatients > 0 ? revenue / activePatients : 0;
+
+      // Clinical metrics
+      const surgicalRecords = records.filter(r => r.record_type === 'SURGICAL');
+      const vitalRecords = records.filter(r => r.record_type === 'VITALS');
+      const medicationRecords = records.filter(r => r.record_type === 'MEDICATION');
+      const labRecords = records.filter(r => r.record_type === 'LAB');
+
+      const analyticsData: AnalyticsData = {
+        emergencyDepartment: {
+          totalPatients: edPatients,
+          avgWaitTime,
+          bedUtilization: totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0,
+          staffOnDuty: staffOnDuty || activeStaff,
+          triageQueue: currentWaitTimes.length,
+          criticalPatients
+        },
+        beds: {
+          total: totalBeds,
+          occupied: occupiedBeds,
+          available: availableBeds,
+          outOfOrder: outOfOrderBeds,
+          utilization: totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0
+        },
+        staffing: {
+          total: staff.length,
+          onDuty: staffOnDuty || activeStaff,
+          onCall: schedules.filter(s => s.is_on_call).length,
+          overtime: schedules.filter(s => s.status === 'OVERTIME').length,
+          scheduledNext: schedules.filter(s => new Date(s.shift_start) > now).length
+        },
+        clinical: {
+          surgeries: {
+            total: surgicalRecords.length,
+            scheduled: surgicalRecords.filter(r => r.content?.status === 'SCHEDULED').length,
+            completed: surgicalRecords.filter(r => r.content?.status === 'COMPLETED').length,
+            avgDuration: surgicalRecords.length > 0 ? 120 : 0 // Mock calculation
+          },
+          vitals: {
+            monitored: vitalRecords.length,
+            critical: vitalRecords.filter(r => r.content?.critical === true).length,
+            abnormal: vitalRecords.filter(r => r.content?.abnormal === true).length
+          },
+          medications: {
+            adherence: medicationRecords.length > 0 ? 89 : 0, // Mock percentage
+            criticalMeds: medicationRecords.filter(r => r.content?.critical === true).length,
+            missedDoses: medicationRecords.filter(r => r.content?.missed === true).length
+          },
+          labs: {
+            totalTests: labRecords.length,
+            avgTurnaround: labRecords.length > 0 ? 45 : 0, // Mock minutes
+            criticalAlerts: labRecords.filter(r => r.content?.critical === true).length
+          }
+        },
+        financial: {
+          revenue,
+          revenuePerPatient,
+          monthlyGrowth: activePatients > 0 ? 12.5 : 0, // Mock percentage
+          yearOverYear: activePatients > 0 ? 8.3 : 0 // Mock percentage
+        },
+        equipment: {
+          total: totalEquipment,
+          available: availableEquipment,
+          inUse: inUseEquipment,
+          maintenance: maintenanceEquipment
+        },
+        quality: {
+          overallScore: activePatients > 0 ? 90.5 : 0, // Mock score
+          patientSafety: activePatients > 0 ? 94 : 0,
+          satisfaction: activePatients > 0 ? 8.7 : 0,
+          incidents: 2 // Mock number
+        },
+        performance: {
+          throughput: activePatients > 0 ? 32 : 0,
+          efficiency: activePatients > 0 ? 87 : 0,
+          bottlenecks: activePatients > 0 ? 3 : 0
+        }
+      };
+
+      console.log('Analytics data fetched:', analyticsData);
+      return analyticsData;
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+      // Return empty data structure on error
+      return {
+        emergencyDepartment: {
+          totalPatients: 0,
+          avgWaitTime: 0,
+          bedUtilization: 0,
+          staffOnDuty: 0,
+          triageQueue: 0,
+          criticalPatients: 0
+        },
+        beds: {
+          total: 0,
+          occupied: 0,
+          available: 0,
+          outOfOrder: 0,
+          utilization: 0
+        },
+        staffing: {
+          total: 0,
+          onDuty: 0,
+          onCall: 0,
+          overtime: 0,
+          scheduledNext: 0
+        },
+        clinical: {
+          surgeries: { total: 0, scheduled: 0, completed: 0, avgDuration: 0 },
+          vitals: { monitored: 0, critical: 0, abnormal: 0 },
+          medications: { adherence: 0, criticalMeds: 0, missedDoses: 0 },
+          labs: { totalTests: 0, avgTurnaround: 0, criticalAlerts: 0 }
+        },
+        financial: {
+          revenue: 0,
+          revenuePerPatient: 0,
+          monthlyGrowth: 0,
+          yearOverYear: 0
+        },
+        equipment: {
+          total: 0,
+          available: 0,
+          inUse: 0,
+          maintenance: 0
+        },
+        quality: {
+          overallScore: 0,
+          patientSafety: 0,
+          satisfaction: 0,
+          incidents: 0
+        },
+        performance: {
+          throughput: 0,
+          efficiency: 0,
+          bottlenecks: 0
+        }
+      };
+    }
   }
 
-  private getEmptyData(): AnalyticsData {
-    return {
-      business: {
-        revenue: 0,
-        revenueGrowth: 0,
-        patientSatisfaction: 0,
-        operationalEfficiency: 0,
-        costPerPatient: 0
-      },
-      clinicalOperations: {
-        activeStaff: 0,
-        scheduledProcedures: 0,
-        resourceUtilization: 0,
-        avgProcedureTime: 0,
-        equipmentStatus: 'unknown'
-      },
-      dataPipeline: {
-        activeSources: 0,
-        processingSpeed: 0,
-        errorRate: 0,
-        dataQuality: 0,
-        syncStatus: 'unknown'
-      },
-      systemHealth: {
-        cpuUsage: 0,
-        memoryUsage: 0,
-        networkLatency: 0,
-        uptime: 0,
-        securityScore: 0
-      },
-      aiMetrics: {
-        modelAccuracy: 0,
-        automationSuccess: 0,
-        decisionsSupported: 0,
-        mlModelsActive: 0,
-        predictionConfidence: 0
-      },
-      emergencyDepartment: {
-        totalPatients: 0,
-        avgWaitTime: 0,
-        bedUtilization: 0,
-        staffOnDuty: 0,
-        criticalAlerts: 0
-      },
-      chartData: {
-        revenue: [],
-        staffAllocation: [],
-        processingThroughput: [],
-        dataQuality: [],
-        systemHealth: [],
-        modelPerformance: [],
-        waitTimes: [],
-        patientFlow: [],
-        bedUtilization: []
+  async refreshData(): Promise<void> {
+    const data = await this.fetchAnalyticsData();
+    this.currentData = data;
+    this.notifySubscribers(data);
+  }
+
+  subscribe(callback: (data: AnalyticsData | null) => void): () => void {
+    this.subscribers.push(callback);
+    
+    // Immediately provide current data if available
+    if (this.currentData) {
+      callback(this.currentData);
+    } else {
+      // Fetch initial data
+      this.refreshData();
+    }
+
+    // Return unsubscribe function
+    return () => {
+      this.subscribers = this.subscribers.filter(sub => sub !== callback);
+    };
+  }
+
+  private notifySubscribers(data: AnalyticsData | null): void {
+    this.subscribers.forEach(callback => callback(data));
+  }
+
+  startRealTimeUpdates(): () => void {
+    // Refresh data every 30 seconds
+    this.updateInterval = setInterval(() => {
+      this.refreshData();
+    }, 30000);
+
+    // Initial fetch
+    this.refreshData();
+
+    // Return function to stop updates
+    return () => {
+      if (this.updateInterval) {
+        clearInterval(this.updateInterval);
+        this.updateInterval = null;
       }
     };
   }
 
-  async fetchRealData(): Promise<AnalyticsData> {
-    try {
-      const [
-        { data: staff },
-        { data: patients },
-        { data: beds },
-        { data: dataSources },
-        { data: waitTimes }
-      ] = await Promise.all([
-        supabase.from('staff').select('id').eq('is_active', true),
-        supabase.from('patients').select('id').eq('status', 'ACTIVE'),
-        supabase.from('beds').select('status'),
-        supabase.from('data_sources').select('id, status'),
-        supabase.from('wait_times').select('total_wait_minutes').is('discharge_time', null)
-      ]);
-
-      const totalBeds = beds?.length || 0;
-      const occupiedBeds = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
-      const bedUtilization = totalBeds > 0 ? (occupiedBeds / totalBeds) * 100 : 0;
-
-      const avgWaitTime = waitTimes && waitTimes.length > 0 
-        ? waitTimes.reduce((sum, w) => sum + (w.total_wait_minutes || 0), 0) / waitTimes.length
-        : 0;
-
-      const connectedSources = dataSources?.filter(ds => ds.status === 'CONNECTED').length || 0;
-
-      this.currentData = {
-        ...this.getEmptyData(),
-        clinicalOperations: {
-          activeStaff: staff?.length || 0,
-          scheduledProcedures: 0,
-          resourceUtilization: bedUtilization,
-          avgProcedureTime: 0,
-          equipmentStatus: 'unknown'
-        },
-        dataPipeline: {
-          activeSources: connectedSources,
-          processingSpeed: 0,
-          errorRate: 0,
-          dataQuality: connectedSources > 0 ? 95 : 0,
-          syncStatus: connectedSources > 0 ? 'healthy' : 'offline'
-        },
-        emergencyDepartment: {
-          totalPatients: patients?.length || 0,
-          avgWaitTime: Math.round(avgWaitTime),
-          bedUtilization: Math.round(bedUtilization),
-          staffOnDuty: staff?.length || 0,
-          criticalAlerts: 0
-        }
-      };
-
-      this.notifySubscribers();
-      return this.currentData;
-    } catch (error) {
-      console.error('Error fetching analytics data:', error);
-      return this.getEmptyData();
-    }
-  }
-
-  subscribe(callback: (data: AnalyticsData) => void): () => void {
-    this.updateCallbacks.push(callback);
-    return () => {
-      this.updateCallbacks = this.updateCallbacks.filter(cb => cb !== callback);
-    };
-  }
-
-  private notifySubscribers(): void {
-    this.updateCallbacks.forEach(callback => callback(this.currentData));
-  }
-
-  getCurrentData(): AnalyticsData {
+  getCurrentData(): AnalyticsData | null {
     return this.currentData;
-  }
-
-  startRealTimeUpdates(intervalMs: number = 30000): () => void {
-    this.fetchRealData();
-    
-    const interval = setInterval(() => {
-      this.fetchRealData();
-    }, intervalMs);
-
-    return () => clearInterval(interval);
   }
 }
 
