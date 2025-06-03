@@ -1,5 +1,5 @@
 
-import { BedData } from "@/types/bedManagement";
+import { BedData, PatientData } from "@/types/bedManagement";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface DataQualityMetrics {
@@ -141,7 +141,7 @@ class RealTimeDataService {
         .select(`
           *,
           departments!inner(name, code, type),
-          patients(first_name, last_name, mrn, admission_date)
+          patients(id, first_name, last_name, mrn, admission_date)
         `)
         .eq('deleted_at', null);
 
@@ -152,31 +152,49 @@ class RealTimeDataService {
       }
 
       // Transform database data to BedData format
-      const transformedData: BedData[] = beds.map((bed, index) => ({
-        id: bed.id,
-        org: "Healthcare Organization",
-        hospital: "Main Hospital",
-        department: bed.departments?.name || "Unknown Department",
-        ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
-        level: "room" as const,
-        totalBeds: 1,
-        plannedBeds: 1,
-        occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
-        assignedBeds: bed.status === 'ASSIGNED' ? 1 : 0,
-        dirtyBeds: bed.status === 'DIRTY' ? 1 : 0,
-        confirmedDischarge: 0,
-        potentialDischarge: bed.status === 'OCCUPIED' ? Math.random() > 0.8 ? 1 : 0 : 0,
-        unassignedPatients: 0,
-        transferOrders: 0,
-        netAvailableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-        availableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-        occupancyRate: bed.status === 'OCCUPIED' ? 100 : 0,
-        projectedRate: bed.status === 'OCCUPIED' ? 100 : Math.floor(Math.random() * 50),
-        hasChildren: false,
-        lastUpdated: new Date().toISOString(),
-        beds: [],
-        patients: bed.patients ? [bed.patients] : undefined
-      }));
+      const transformedData: BedData[] = beds.map((bed, index) => {
+        // Transform patient data to match PatientData interface
+        const transformedPatients: PatientData[] = bed.patients ? bed.patients.map((patient: any) => ({
+          id: patient.id,
+          nameAbbreviation: `${patient.first_name?.charAt(0) || ''}${patient.last_name?.charAt(0) || ''}`,
+          mrn: patient.mrn,
+          los: Math.floor((new Date().getTime() - new Date(patient.admission_date || new Date()).getTime()) / (1000 * 60 * 60 * 24)) || 0,
+          bedLocation: {
+            department: bed.departments?.name || "Unknown Department",
+            ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
+            room: bed.room_number || `Room-${index + 1}`,
+            bedNumber: bed.bed_number
+          },
+          admissionDate: patient.admission_date || new Date().toISOString(),
+          priority: 'medium' as const
+        })) : [];
+
+        return {
+          id: bed.id,
+          org: "Healthcare Organization",
+          hospital: "Main Hospital",
+          department: bed.departments?.name || "Unknown Department",
+          ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
+          level: "room" as const,
+          totalBeds: 1,
+          plannedBeds: 1,
+          occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
+          assignedBeds: bed.status === 'RESERVED' ? 1 : 0, // Use RESERVED instead of ASSIGNED
+          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0, // Use MAINTENANCE instead of DIRTY
+          confirmedDischarge: 0,
+          potentialDischarge: bed.status === 'OCCUPIED' ? Math.random() > 0.8 ? 1 : 0 : 0,
+          unassignedPatients: 0,
+          transferOrders: 0,
+          netAvailableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
+          availableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
+          occupancyRate: bed.status === 'OCCUPIED' ? 100 : 0,
+          projectedRate: bed.status === 'OCCUPIED' ? 100 : Math.floor(Math.random() * 50),
+          hasChildren: false,
+          lastUpdated: new Date().toISOString(),
+          beds: [],
+          patients: transformedPatients
+        };
+      });
 
       return transformedData;
     } catch (error) {

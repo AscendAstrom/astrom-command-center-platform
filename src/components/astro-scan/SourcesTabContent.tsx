@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,8 +47,8 @@ const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
           totalBeds: 1,
           plannedBeds: 1,
           occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
-          assignedBeds: bed.status === 'ASSIGNED' ? 1 : 0,
-          dirtyBeds: bed.status === 'DIRTY' ? 1 : 0,
+          assignedBeds: bed.status === 'RESERVED' ? 1 : 0, // Use RESERVED instead of ASSIGNED
+          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0, // Use MAINTENANCE instead of DIRTY
           confirmedDischarge: 0,
           potentialDischarge: 0,
           unassignedPatients: 0,
