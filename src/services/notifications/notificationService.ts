@@ -1,22 +1,12 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: 'alert' | 'success' | 'info' | 'warning';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  recipient_id?: string;
-  is_read: boolean;
-  read_at?: string;
-  created_at: string;
-  updated_at: string;
-  metadata?: any;
-}
+type NotificationRow = Database['public']['Tables']['notifications']['Row'];
+type NotificationInsert = Database['public']['Tables']['notifications']['Insert'];
 
 export class NotificationService {
-  async getNotifications(limit = 10): Promise<Notification[]> {
+  async getNotifications(limit = 10): Promise<NotificationRow[]> {
     try {
       const { data, error } = await supabase
         .from('notifications')
@@ -42,8 +32,7 @@ export class NotificationService {
         .from('notifications')
         .update({ 
           is_read: true, 
-          read_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          read_at: new Date().toISOString()
         })
         .eq('id', id);
 
@@ -65,8 +54,7 @@ export class NotificationService {
         .from('notifications')
         .update({ 
           is_read: true, 
-          read_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          read_at: new Date().toISOString()
         })
         .eq('is_read', false);
 
@@ -101,14 +89,13 @@ export class NotificationService {
     }
   }
 
-  async createNotification(notification: Omit<Notification, 'id' | 'created_at' | 'updated_at'>): Promise<Notification | null> {
+  async createNotification(notification: Omit<NotificationInsert, 'id' | 'created_at'>): Promise<NotificationRow | null> {
     try {
       const { data, error } = await supabase
         .from('notifications')
         .insert({
           ...notification,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: new Date().toISOString()
         })
         .select()
         .single();
@@ -125,12 +112,12 @@ export class NotificationService {
     }
   }
 
-  subscribeToNotifications(callback: (notification: Notification) => void) {
+  subscribeToNotifications(callback: (notification: NotificationRow) => void) {
     return supabase
       .channel('notifications')
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'notifications' },
-        (payload) => callback(payload.new as Notification)
+        (payload) => callback(payload.new as NotificationRow)
       )
       .subscribe();
   }

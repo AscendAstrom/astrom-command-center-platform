@@ -1,42 +1,99 @@
+import { useState, useEffect } from 'react';
+import {
+  BellIcon,
+  CogIcon,
+  CreditCardIcon,
+  KeyIcon,
+  LockClosedIcon,
+  LogoutIcon,
+  PencilIcon,
+  UserIcon,
+  HomeIcon,
+  ChartBarIcon,
+  ClipboardCheckIcon,
+  UsersIcon,
+  ExclamationCircleIcon,
+  DocumentReportIcon,
+  QuestionMarkCircleIcon,
+  ShieldCheckIcon,
+  SunIcon,
+  MoonIcon
+} from '@heroicons/react/24/outline';
+import {
+  ChevronRightIcon,
+  EllipsisVerticalIcon
+} from '@heroicons/react/20/solid';
+import { Switch } from '@headlessui/react';
+import { useTheme } from 'next-themes';
 
-import { ReactNode, useState, useEffect } from "react";
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserMenu } from "@/components/UserMenu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Bell, Search, AlertTriangle, CheckCircle, Clock, X } from "lucide-react";
-import { toast } from "sonner";
-import { notificationService, Notification } from "@/services/notifications/notificationService";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+import { notificationService } from '@/services/notifications/notificationService';
+import type { Database } from '@/integrations/supabase/types';
+
+type NotificationRow = Database['public']['Tables']['notifications']['Row'];
 
 interface DashboardLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+interface NavItem {
+  name: string;
+  href: string;
+  icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+}
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+const navItems: NavItem[] = [
+  { name: 'Dashboard', href: '/', icon: HomeIcon },
+  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+  { name: 'Tasks', href: '/tasks', icon: ClipboardCheckIcon },
+  { name: 'Users', href: '/users', icon: UsersIcon },
+  { name: 'Alerts', href: '/alerts', icon: ExclamationCircleIcon },
+  { name: 'Reports', href: '/reports', icon: DocumentReportIcon },
+  { name: 'Support', href: '/support', icon: QuestionMarkCircleIcon },
+  { name: 'Security', href: '/security', icon: ShieldCheckIcon },
+];
+
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      setLoading(true);
-      const data = await notificationService.getNotifications(20);
+      const data = await notificationService.getNotifications(5);
       setNotifications(data);
-      setLoading(false);
+      setNotificationCount(data.filter(n => !n.is_read).length);
     };
 
     fetchNotifications();
 
     // Subscribe to real-time notifications
     const channel = notificationService.subscribeToNotifications((newNotification) => {
-      setNotifications(prev => [newNotification, ...prev]);
-      toast.info(`New notification: ${newNotification.title}`);
+      setNotifications(prev => [newNotification, ...prev.slice(0, 4)]);
+      if (!newNotification.is_read) {
+        setNotificationCount(prev => prev + 1);
+      }
     });
 
     return () => {
@@ -44,12 +101,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     };
   }, []);
 
-  const handleNotificationsClick = () => {
-    setShowNotifications(!showNotifications);
-    toast.info("Notifications panel toggled");
-  };
-
-  const markAsRead = async (id: string) => {
+  const handleMarkAsRead = async (id: string) => {
     const success = await notificationService.markAsRead(id);
     if (success) {
       setNotifications(prev => 
@@ -59,214 +111,168 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             : notification
         )
       );
-      toast.success("Notification marked as read");
-    } else {
-      toast.error("Failed to mark notification as read");
+      setNotificationCount(prev => Math.max(0, prev - 1));
     }
   };
 
-  const markAllAsRead = async () => {
+  const handleMarkAllAsRead = async () => {
     const success = await notificationService.markAllAsRead();
     if (success) {
       setNotifications(prev => 
-        prev.map(notification => ({ 
-          ...notification, 
-          is_read: true, 
-          read_at: new Date().toISOString() 
-        }))
+        prev.map(notification => ({ ...notification, is_read: true, read_at: new Date().toISOString() }))
       );
-      toast.success("All notifications marked as read");
-      setShowNotifications(false);
-    } else {
-      toast.error("Failed to mark all notifications as read");
+      setNotificationCount(0);
     }
   };
 
-  const dismissNotification = async (id: string) => {
+  const handleDeleteNotification = async (id: string) => {
     const success = await notificationService.deleteNotification(id);
     if (success) {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      toast.success("Notification dismissed");
-    } else {
-      toast.error("Failed to dismiss notification");
+      setNotifications(prev => prev.filter(notification => notification.id !== id));
+      setNotificationCount(prev => {
+        const deletedNotification = prev.find(notification => notification.id === id);
+        if (deletedNotification && !deletedNotification.is_read) {
+          return Math.max(0, prev - 1);
+        }
+        return prev;
+      });
     }
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      toast.info(`Searching for: ${searchQuery}`);
-      // Implement search functionality here
-    }
-  };
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'alert': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'info': return <Clock className="h-4 w-4 text-blue-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      default: return <Bell className="h-4 w-4" />;
-    }
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
-    return `${diffDays} days ago`;
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <AppSidebar />
-      <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b border-border relative">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4 flex-1 max-w-md">
-              <form onSubmit={handleSearch} className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search patients, rooms, data..."
-                  className="pl-10 bg-background/50"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Button 
-                  type="submit" 
-                  size="sm" 
-                  variant="ghost" 
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                >
-                  <Search className="h-3 w-3" />
-                </Button>
-              </form>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative hover:bg-accent hover:text-accent-foreground transition-all duration-200"
-                  onClick={handleNotificationsClick}
-                >
-                  <Bell className="h-4 w-4" />
-                  {unreadCount > 0 && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full animate-pulse flex items-center justify-center">
-                      <span className="text-xs text-white font-medium">{unreadCount}</span>
-                    </div>
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      {/* Left Sidebar */}
+      <div className="w-64 flex-shrink-0 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+        <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700">
+          <span className="text-lg font-semibold">AI Hospital</span>
+        </div>
+        <nav className="p-4">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="flex items-center p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              <item.icon className="h-5 w-5 mr-2" />
+              {item.name}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Navigation */}
+        <header className="h-16 flex items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4">
+          <div className="flex items-center">
+            <h1 className="text-xl font-semibold">Dashboard</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            {/* Notifications Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full h-10 w-10">
+                  <BellIcon className="h-5 w-5" />
+                  {notificationCount > 0 && (
+                    <Badge className="absolute top-1 right-1 rounded-full px-2 py-0.5 text-xs font-bold">{notificationCount}</Badge>
                   )}
+                  <span className="sr-only">Notifications</span>
                 </Button>
-                
-                {showNotifications && (
-                  <div className="absolute right-0 top-12 w-96 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
-                    <div className="p-4 border-b border-border">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-foreground">Notifications</h3>
-                          <p className="text-sm text-muted-foreground">{unreadCount} unread</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {unreadCount > 0 && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={markAllAsRead}
-                              className="text-xs"
-                            >
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              Mark all read
-                            </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowNotifications(false)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="divide-y divide-border overflow-y-auto max-h-80">
-                      {loading ? (
-                        <div className="p-4 text-center text-muted-foreground">
-                          Loading notifications...
-                        </div>
-                      ) : notifications.length === 0 ? (
-                        <div className="p-4 text-center text-muted-foreground">
-                          No notifications yet
-                        </div>
-                      ) : (
-                        notifications.map((notification) => (
-                          <div 
-                            key={notification.id} 
-                            className={`p-4 hover:bg-muted/50 transition-colors ${!notification.is_read ? 'bg-muted/20' : ''}`}
-                          >
-                            <div className="flex items-start gap-3">
-                              {getNotificationIcon(notification.type)}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <h4 className="text-sm font-medium text-foreground truncate">
-                                    {notification.title}
-                                  </h4>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-6 w-6 opacity-60 hover:opacity-100"
-                                    onClick={() => dismissNotification(notification.id)}
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                  {notification.message}
-                                </p>
-                                <div className="flex items-center justify-between mt-2">
-                                  <span className="text-xs text-muted-foreground">
-                                    {formatTimestamp(notification.created_at)}
-                                  </span>
-                                  {!notification.is_read && (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-6 text-xs hover:bg-blue-500/10"
-                                      onClick={() => markAsRead(notification.id)}
-                                    >
-                                      <CheckCircle className="h-3 w-3 mr-1" />
-                                      Mark as read
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-80 sm:w-96">
+                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <ScrollArea className="max-h-80">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <DropdownMenuItem key={notification.id} className="flex items-start space-x-2">
+                        <div className="flex-1">
+                          <div className="font-semibold">{notification.title}</div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{notification.message}</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-xs text-gray-400 dark:text-gray-500">
+                              {new Date(notification.created_at).toLocaleTimeString()}
+                            </span>
+                            {!notification.is_read && (
+                              <Button variant="secondary" size="xs" onClick={() => handleMarkAsRead(notification.id)}>
+                                Mark as Read
+                              </Button>
+                            )}
                           </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => handleDeleteNotification(notification.id)}>
+                          <EllipsisVerticalIcon className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuItem>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500 dark:text-gray-400">No notifications</div>
+                  )}
+                </ScrollArea>
+                {notifications.length > 0 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleMarkAllAsRead} className="justify-center">
+                      Mark All as Read
+                    </DropdownMenuItem>
+                  </>
                 )}
-              </div>
-              <ThemeToggle />
-              <UserMenu />
-            </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* User Profile Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full h-10 w-10">
+                  <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" alt="Shadcn" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <span className="sr-only">User Menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <UserIcon className="h-4 w-4 mr-2" />
+                    <span>Profile</span>
+                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <CreditCardIcon className="h-4 w-4 mr-2" />
+                    <span>Billing</span>
+                    <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <KeyIcon className="h-4 w-4 mr-2" />
+                    <span>Security</span>
+                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <CogIcon className="h-4 w-4 mr-2" />
+                  <span>Settings</span>
+                  <DropdownMenuShortcut>⌘,</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogoutIcon className="h-4 w-4 mr-2" />
+                  <span>Log out</span>
+                  <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto">
-          <div className="h-full">
-            {children}
-          </div>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4">
+          {children}
         </main>
-      </SidebarInset>
+      </div>
     </div>
   );
 };
