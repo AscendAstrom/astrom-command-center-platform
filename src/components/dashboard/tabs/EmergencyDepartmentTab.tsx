@@ -65,10 +65,10 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
           )}
         </h3>
         
-        {emergencyDepartment.criticalAlerts > 0 && (
+        {(emergencyDepartment as any).criticalAlerts && (emergencyDepartment as any).criticalAlerts > 0 && (
           <Badge variant="destructive" className="animate-bounce-subtle">
             <AlertTriangle className="h-3 w-3 mr-1" />
-            {emergencyDepartment.criticalAlerts} Critical Alerts
+            {(emergencyDepartment as any).criticalAlerts} Critical Alerts
           </Badge>
         )}
       </div>
@@ -121,7 +121,7 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
           </CardHeader>
           <CardContent>
             <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
-              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+              <p className="text-sm text-muted-foreground">{emptyStateMessages?.noChartData || 'No chart data available'}</p>
             </div>
           </CardContent>
         </Card>
@@ -135,7 +135,7 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
           </CardHeader>
           <CardContent>
             <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
-              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+              <p className="text-sm text-muted-foreground">{emptyStateMessages?.noChartData || 'No chart data available'}</p>
             </div>
           </CardContent>
         </Card>
@@ -149,7 +149,7 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
           </CardHeader>
           <CardContent>
             <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
-              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+              <p className="text-sm text-muted-foreground">{emptyStateMessages?.noChartData || 'No chart data available'}</p>
             </div>
           </CardContent>
         </Card>
@@ -163,7 +163,7 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
           </CardHeader>
           <CardContent>
             <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
-              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+              <p className="text-sm text-muted-foreground">{emptyStateMessages?.noChartData || 'No chart data available'}</p>
             </div>
           </CardContent>
         </Card>
