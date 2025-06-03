@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ViewUserRole, RefreshInterval, ExportFormat } from './types';
-import { Play, Pause, Download, Filter, RefreshCw } from 'lucide-react';
+import { Play, Pause, Download, RefreshCw } from 'lucide-react';
 import ZoneTileWidget from './widgets/ZoneTileWidget';
 import PatientTimerWidget from './widgets/PatientTimerWidget';
 import ChartWidget from './widgets/ChartWidget';
 import MetricCardWidget from './widgets/MetricCardWidget';
+import { supabase } from "@/integrations/supabase/client";
 
 interface RealtimeDashboardProps {
   userRole: ViewUserRole;
@@ -20,20 +21,75 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
   const [isRefreshing, setIsRefreshing] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [selectedDashboard, setSelectedDashboard] = useState('ed_operations');
+  const [metrics, setMetrics] = useState({
+    waitTime: 0,
+    bedUtilization: 0,
+    activePatients: 0,
+    staffOnDuty: 0
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isRefreshing) return;
 
     const interval = setInterval(() => {
       setLastUpdated(new Date());
+      fetchMetrics();
     }, autoRefresh * 1000);
 
     return () => clearInterval(interval);
   }, [autoRefresh, isRefreshing]);
 
+  useEffect(() => {
+    fetchMetrics();
+  }, []);
+
+  const fetchMetrics = async () => {
+    try {
+      setLoading(true);
+      const [
+        { data: waitTimes },
+        { data: beds },
+        { data: activePatients },
+        { data: staff }
+      ] = await Promise.all([
+        supabase.from('wait_times').select('total_wait_minutes').is('discharge_time', null),
+        supabase.from('beds').select('status'),
+        supabase.from('patients').select('id').eq('status', 'ACTIVE'),
+        supabase.from('staff').select('id').eq('is_active', true)
+      ]);
+
+      // Calculate average wait time
+      const avgWaitTime = waitTimes && waitTimes.length > 0 
+        ? Math.round(waitTimes.reduce((sum, w) => sum + (w.total_wait_minutes || 0), 0) / waitTimes.length)
+        : 0;
+
+      // Calculate bed utilization
+      const totalBeds = beds?.length || 0;
+      const occupiedBeds = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
+      const bedUtilization = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+
+      setMetrics({
+        waitTime: avgWaitTime,
+        bedUtilization,
+        activePatients: activePatients?.length || 0,
+        staffOnDuty: staff?.length || 0
+      });
+    } catch (error) {
+      console.error('Error fetching metrics:', error);
+      setMetrics({
+        waitTime: 0,
+        bedUtilization: 0,
+        activePatients: 0,
+        staffOnDuty: 0
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleExport = (format: ExportFormat) => {
     console.log(`Exporting dashboard as ${format}`);
-    // Implementation would depend on the specific export library used
   };
 
   const dashboardOptions = [
@@ -43,14 +99,10 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
   ];
 
   const canViewDashboard = (audience: string) => {
-    // ADMIN and ANALYST can view all dashboards
     if (userRole === 'ADMIN' || userRole === 'ANALYST') return true;
-    
-    // VIEWER and DATA_ENGINEER can view non-executive dashboards
     if (userRole === 'VIEWER' || userRole === 'DATA_ENGINEER') {
       return audience !== 'executives';
     }
-    
     return false;
   };
 
@@ -110,7 +162,10 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setLastUpdated(new Date())}
+            onClick={() => {
+              setLastUpdated(new Date());
+              fetchMetrics();
+            }}
             className="border-border text-foreground"
           >
             <RefreshCw className="h-4 w-4 mr-1" />
@@ -158,32 +213,54 @@ const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
       </div>
 
       {/* Dashboard Content */}
-      {selectedDashboard === 'ed_operations' && <EDOperationsDashboard />}
-      {selectedDashboard === 'ops_summary' && <OperationsSummaryDashboard />}
-      {selectedDashboard === 'executive_overview' && <ExecutiveOverviewDashboard />}
+      {selectedDashboard === 'ed_operations' && (
+        <EDOperationsDashboard metrics={metrics} loading={loading} />
+      )}
+      {selectedDashboard === 'ops_summary' && (
+        <OperationsSummaryDashboard metrics={metrics} loading={loading} />
+      )}
+      {selectedDashboard === 'executive_overview' && (
+        <ExecutiveOverviewDashboard metrics={metrics} loading={loading} />
+      )}
     </div>
   );
 };
 
-const EDOperationsDashboard = () => (
+const EDOperationsDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    {/* Zone Tiles */}
     <div className="lg:col-span-2">
       <ZoneTileWidget />
     </div>
     
-    {/* Patient Timers */}
     <div className="lg:col-span-2">
       <PatientTimerWidget />
     </div>
 
-    {/* Metrics Row */}
-    <MetricCardWidget title="Current Wait Time" value="23 min" trend="up" />
-    <MetricCardWidget title="Bed Utilization" value="78%" trend="stable" />
-    <MetricCardWidget title="Active Patients" value="142" trend="down" />
-    <MetricCardWidget title="Staff on Duty" value="28" trend="stable" />
+    <MetricCardWidget 
+      title="Current Wait Time" 
+      value={`${metrics.waitTime} min`} 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Bed Utilization" 
+      value={`${metrics.bedUtilization}%`} 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Active Patients" 
+      value={metrics.activePatients} 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Staff on Duty" 
+      value={metrics.staffOnDuty} 
+      trend="stable"
+      loading={loading}
+    />
 
-    {/* Charts */}
     <div className="lg:col-span-2">
       <ChartWidget title="Wait Times by Hour" type="bar" />
     </div>
@@ -193,11 +270,26 @@ const EDOperationsDashboard = () => (
   </div>
 );
 
-const OperationsSummaryDashboard = () => (
+const OperationsSummaryDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <MetricCardWidget title="Total Capacity" value="85%" trend="up" />
-    <MetricCardWidget title="Average LOS" value="4.2 hrs" trend="down" />
-    <MetricCardWidget title="Efficiency Score" value="92%" trend="up" />
+    <MetricCardWidget 
+      title="Total Capacity" 
+      value={`${metrics.bedUtilization}%`} 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Average Wait" 
+      value={`${metrics.waitTime} min`} 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Active Staff" 
+      value={metrics.staffOnDuty} 
+      trend="stable"
+      loading={loading}
+    />
     
     <div className="lg:col-span-3">
       <ChartWidget title="Departmental Performance" type="bar" />
@@ -205,12 +297,32 @@ const OperationsSummaryDashboard = () => (
   </div>
 );
 
-const ExecutiveOverviewDashboard = () => (
+const ExecutiveOverviewDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <MetricCardWidget title="Patient Satisfaction" value="4.8/5" trend="up" />
-    <MetricCardWidget title="Revenue per Hour" value="$12.4K" trend="up" />
-    <MetricCardWidget title="Cost per Patient" value="$284" trend="down" />
-    <MetricCardWidget title="Quality Score" value="96%" trend="stable" />
+    <MetricCardWidget 
+      title="Patient Satisfaction" 
+      value="--" 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Revenue per Hour" 
+      value="--" 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Cost per Patient" 
+      value="--" 
+      trend="stable"
+      loading={loading}
+    />
+    <MetricCardWidget 
+      title="Quality Score" 
+      value="--" 
+      trend="stable"
+      loading={loading}
+    />
     
     <div className="lg:col-span-2">
       <ChartWidget title="Monthly Trends" type="line" />

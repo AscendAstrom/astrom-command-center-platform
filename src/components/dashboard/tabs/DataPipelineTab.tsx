@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { Database, Zap, AlertCircle, CheckCircle, TrendingUp } from 'lucide-react';
-import RealtimeLineChart from '../charts/RealtimeLineChart';
-import RealtimeAreaChart from '../charts/RealtimeAreaChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface DataPipelineTabProps {
   data: AnalyticsData;
@@ -71,7 +70,7 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {dataPipeline.processingSpeed}
+                  {dataPipeline.processingSpeed || '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Records/sec</p>
               </div>
@@ -87,7 +86,7 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {dataPipeline.errorRate.toFixed(1)}%
+                  {dataPipeline.errorRate > 0 ? `${dataPipeline.errorRate.toFixed(1)}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Error Rate</p>
               </div>
@@ -103,7 +102,7 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {dataPipeline.dataQuality.toFixed(1)}%
+                  {dataPipeline.dataQuality > 0 ? `${dataPipeline.dataQuality.toFixed(1)}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Data Quality</p>
               </div>
@@ -121,12 +120,9 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeAreaChart
-              data={data.chartData.processingThroughput}
-              dataKeys={['throughput', 'target']}
-              colors={['#10b981', '#6366f1']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -138,12 +134,9 @@ const DataPipelineTab = ({ data, isLive }: DataPipelineTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeLineChart
-              data={data.chartData.dataQuality}
-              dataKeys={['quality', 'completeness']}
-              colors={['#8b5cf6', '#06b6d4']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -3,9 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { Heart, Users, Clock, Bed, AlertTriangle, TrendingUp } from 'lucide-react';
-import RealtimeLineChart from '../charts/RealtimeLineChart';
-import RealtimeAreaChart from '../charts/RealtimeAreaChart';
-import RealtimePieChart from '../charts/RealtimePieChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface EmergencyDepartmentTabProps {
   data: AnalyticsData;
@@ -22,25 +20,25 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
       icon: Users,
       color: "text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950/30",
-      trend: "+5%",
+      trend: "--",
       subtitle: "Active in ED"
     },
     {
       title: "Avg Wait Time",
-      value: `${emergencyDepartment.avgWaitTime} min`,
+      value: emergencyDepartment.avgWaitTime > 0 ? `${emergencyDepartment.avgWaitTime} min` : '--',
       icon: Clock,
       color: "text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950/30",
-      trend: "-8%",
+      trend: "--",
       subtitle: "From admission"
     },
     {
       title: "Bed Utilization",
-      value: `${emergencyDepartment.bedUtilization}%`,
+      value: emergencyDepartment.bedUtilization > 0 ? `${emergencyDepartment.bedUtilization}%` : '--',
       icon: Bed,
       color: "text-green-400",
       bgColor: "bg-green-50 dark:bg-green-950/30",
-      trend: "+3%",
+      trend: "--",
       subtitle: "Capacity used"
     },
     {
@@ -90,16 +88,8 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
                   <metric.icon className={`h-6 w-6 ${metric.color}`} />
                 </div>
                 <div className="flex items-center gap-1">
-                  <TrendingUp className={`h-3 w-3 ${
-                    metric.trend.includes('+') ? 'text-green-400' : 
-                    metric.trend.includes('-') ? 'text-red-400' : 
-                    'text-muted-foreground'
-                  }`} />
-                  <span className={`text-xs font-medium ${
-                    metric.trend.includes('+') ? 'text-green-400' : 
-                    metric.trend.includes('-') ? 'text-red-400' : 
-                    'text-muted-foreground'
-                  }`}>
+                  <TrendingUp className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">
                     {metric.trend}
                   </span>
                 </div>
@@ -130,12 +120,9 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeLineChart
-              data={data.chartData.waitTimes}
-              dataKeys={['waitTime', 'targetTime']}
-              colors={['#3b82f6', '#ef4444']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -147,13 +134,9 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeAreaChart
-              data={data.chartData.patientFlow}
-              dataKeys={['admissions', 'discharges']}
-              colors={['#10b981', '#f59e0b']}
-              height={200}
-              stacked={false}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -165,13 +148,9 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimePieChart
-              data={data.chartData.bedUtilization}
-              dataKey="value"
-              nameKey="name"
-              colors={['#8b5cf6', '#e5e7eb']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -183,13 +162,9 @@ const EmergencyDepartmentTab = ({ data, isLive }: EmergencyDepartmentTabProps) =
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimePieChart
-              data={data.chartData.staffAllocation}
-              dataKey="value"
-              nameKey="category"
-              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

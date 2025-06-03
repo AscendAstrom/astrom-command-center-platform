@@ -5,30 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bot, Send, Download, Share } from "lucide-react";
 import { useState } from "react";
+import { emptyStateMessages } from "@/config/constants";
 
 export const CopilotSummaryTile = () => {
   const [chatInput, setChatInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const recentSummary = {
-    timeframe: "Last 6 hours",
-    keyChanges: [
-      "ICU occupancy increased by 15%",
-      "3 new admissions to Emergency",
-      "2 equipment maintenance alerts resolved",
-      "Pharmacy restocked critical medications"
-    ],
-    recommendations: [
-      "Consider ICU discharge planning for 2 stable patients",
-      "Monitor Emergency wait times closely",
-      "Schedule equipment preventive maintenance"
-    ]
-  };
-
   const handleSendMessage = () => {
     if (!chatInput.trim()) return;
     setIsLoading(true);
-    // Simulate AI processing
     setTimeout(() => {
       setIsLoading(false);
       setChatInput("");
@@ -36,12 +21,10 @@ export const CopilotSummaryTile = () => {
   };
 
   const handleExportPDF = () => {
-    // Simulate PDF export
     console.log("Exporting summary to PDF...");
   };
 
   const handleSendSlack = () => {
-    // Simulate Slack report
     console.log("Sending report to Slack...");
   };
 
@@ -60,26 +43,26 @@ export const CopilotSummaryTile = () => {
           </div>
           <Badge variant="outline" className="text-purple-600 border-purple-200 bg-purple-50">
             <Bot className="h-3 w-3 mr-1" />
-            Active
+            Ready
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <div className="text-sm font-medium">Summary: {recentSummary.timeframe}</div>
-          <div className="bg-gray-50 p-3 rounded-lg space-y-1">
-            {recentSummary.keyChanges.map((change, index) => (
-              <div key={index} className="text-xs text-gray-700">• {change}</div>
-            ))}
+          <div className="text-sm font-medium">AI Summary</div>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <div className="text-xs text-gray-700 text-center py-4">
+              {emptyStateMessages.readyForRealData}
+            </div>
           </div>
         </div>
 
         <div className="space-y-2">
           <div className="text-sm font-medium">AI Recommendations</div>
-          <div className="bg-blue-50 p-3 rounded-lg space-y-1">
-            {recentSummary.recommendations.map((rec, index) => (
-              <div key={index} className="text-xs text-blue-700">• {rec}</div>
-            ))}
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <div className="text-xs text-blue-700 text-center py-4">
+              AI recommendations will appear when data is available
+            </div>
           </div>
         </div>
 
@@ -87,7 +70,7 @@ export const CopilotSummaryTile = () => {
           <div className="text-sm font-medium">Ask Copilot</div>
           <div className="flex gap-2">
             <Input
-              placeholder="What changed in last 6 hours?"
+              placeholder="Ask about your hospital data..."
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
@@ -96,7 +79,7 @@ export const CopilotSummaryTile = () => {
             <Button 
               size="icon" 
               onClick={handleSendMessage}
-              disabled={isLoading}
+              disabled={isLoading || !chatInput.trim()}
               className="h-8 w-8"
             >
               <Send className="h-3 w-3" />
@@ -126,7 +109,7 @@ export const CopilotSummaryTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-purple-50 p-2 rounded">
-          <strong>NLP Copilot:</strong> Ready to answer questions about hospital operations and trends.
+          <strong>NLP Copilot:</strong> Ready to provide insights when connected to your hospital data.
         </div>
       </CardContent>
     </Card>

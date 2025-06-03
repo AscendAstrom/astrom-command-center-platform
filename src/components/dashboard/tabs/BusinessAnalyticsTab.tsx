@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { DollarSign, TrendingUp, Star, Target, Users, BarChart3 } from 'lucide-react';
-import RealtimeLineChart from '../charts/RealtimeLineChart';
-import RealtimeAreaChart from '../charts/RealtimeAreaChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface BusinessAnalyticsTabProps {
   data: AnalyticsData;
@@ -29,7 +28,7 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
         
         <Badge variant="outline" className="text-green-400 border-green-400">
           <TrendingUp className="h-3 w-3 mr-1" />
-          Revenue Growth +{business.revenueGrowth.toFixed(1)}%
+          Revenue Growth {business.revenueGrowth > 0 ? `+${business.revenueGrowth.toFixed(1)}%` : '--'}
         </Badge>
       </div>
 
@@ -42,7 +41,7 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  ${business.revenue.toLocaleString()}
+                  {business.revenue > 0 ? `$${business.revenue.toLocaleString()}` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Revenue/Hour</p>
               </div>
@@ -58,7 +57,7 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {business.patientSatisfaction.toFixed(1)}/5
+                  {business.patientSatisfaction > 0 ? `${business.patientSatisfaction.toFixed(1)}/5` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Patient Satisfaction</p>
               </div>
@@ -74,7 +73,7 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {business.operationalEfficiency}%
+                  {business.operationalEfficiency > 0 ? `${business.operationalEfficiency}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Operational Efficiency</p>
               </div>
@@ -90,7 +89,7 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  ${business.costPerPatient}
+                  {business.costPerPatient > 0 ? `$${business.costPerPatient}` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Cost Per Patient</p>
               </div>
@@ -108,12 +107,9 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeAreaChart
-              data={data.chartData.revenue}
-              dataKeys={['revenue', 'target']}
-              colors={['#10b981', '#6366f1']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -125,12 +121,9 @@ const BusinessAnalyticsTab = ({ data, isLive }: BusinessAnalyticsTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeLineChart
-              data={data.chartData.revenue}
-              dataKeys={['revenue']}
-              colors={['#3b82f6']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

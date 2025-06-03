@@ -1,133 +1,162 @@
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ZoneTileData } from '../types';
-import { MapPin, Users, Clock, AlertTriangle } from 'lucide-react';
+import { MapPin, Users, Bed } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import { emptyStateMessages } from "@/config/constants";
+
+interface ZoneData {
+  id: string;
+  name: string;
+  department: string;
+  totalBeds: number;
+  occupiedBeds: number;
+  status: 'normal' | 'busy' | 'critical';
+}
 
 const ZoneTileWidget = () => {
-  const zoneData: ZoneTileData[] = [
-    {
-      zoneId: 'zone_a',
-      zoneName: 'Processing Center A',
-      status: 'warning',
-      occupancy: 42,
-      capacity: 50,
-      avgWaitTime: 23,
-      alertCount: 2
-    },
-    {
-      zoneId: 'zone_b',
-      zoneName: 'High Priority Zone',
-      status: 'critical',
-      occupancy: 18,
-      capacity: 20,
-      avgWaitTime: 0,
-      alertCount: 1
-    },
-    {
-      zoneId: 'zone_c',
-      zoneName: 'General Processing',
-      status: 'normal',
-      occupancy: 156,
-      capacity: 200,
-      avgWaitTime: 45,
-      alertCount: 0
-    },
-    {
-      zoneId: 'zone_d',
-      zoneName: 'Service Center',
-      status: 'normal',
-      occupancy: 8,
-      capacity: 12,
-      avgWaitTime: 0,
-      alertCount: 0
+  const [zones, setZones] = useState<ZoneData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchZoneData();
+  }, []);
+
+  const fetchZoneData = async () => {
+    try {
+      setLoading(true);
+      const { data: departments, error } = await supabase
+        .from('departments')
+        .select(`
+          id,
+          name,
+          capacity,
+          beds!inner(id, status)
+        `)
+        .eq('is_active', true);
+
+      if (error) {
+        console.error('Error fetching zone data:', error);
+        setZones([]);
+        return;
+      }
+
+      if (!departments || departments.length === 0) {
+        setZones([]);
+        return;
+      }
+
+      const zoneData: ZoneData[] = departments.map(dept => {
+        const beds = Array.isArray(dept.beds) ? dept.beds : [];
+        const totalBeds = beds.length;
+        const occupiedBeds = beds.filter(bed => bed.status === 'OCCUPIED').length;
+        const occupancyRate = totalBeds > 0 ? (occupiedBeds / totalBeds) * 100 : 0;
+
+        let status: 'normal' | 'busy' | 'critical' = 'normal';
+        if (occupancyRate >= 90) status = 'critical';
+        else if (occupancyRate >= 75) status = 'busy';
+
+        return {
+          id: dept.id,
+          name: dept.name,
+          department: dept.name,
+          totalBeds,
+          occupiedBeds,
+          status
+        };
+      });
+
+      setZones(zoneData);
+    } catch (error) {
+      console.error('Error fetching zone data:', error);
+      setZones([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'normal': return 'bg-green-600';
-      case 'warning': return 'bg-yellow-600';
-      case 'critical': return 'bg-red-600';
-      default: return 'bg-gray-600';
+      case 'critical': return 'bg-red-500/10 text-red-600 border-red-500/20';
+      case 'busy': return 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20';
+      default: return 'bg-green-500/10 text-green-600 border-green-500/20';
     }
   };
 
-  const getOccupancyColor = (occupancy: number, capacity: number) => {
-    const percentage = (occupancy / capacity) * 100;
-    if (percentage >= 90) return 'text-red-400';
-    if (percentage >= 75) return 'text-yellow-400';
-    return 'text-green-400';
-  };
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Zone Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-16 bg-muted rounded-lg"></div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (zones.length === 0) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Zone Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <Bed className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+            <h4 className="font-semibold text-foreground mb-2">No Zones Available</h4>
+            <p className="text-sm text-muted-foreground">
+              {emptyStateMessages.readyForRealData}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="bg-card border-border">
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-foreground flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-cyan-400" />
-          Zone Status Overview
+        <CardTitle className="flex items-center gap-2">
+          <MapPin className="h-5 w-5" />
+          Zone Status
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {zoneData.map((zone) => (
-            <div
-              key={zone.zoneId}
-              className="p-4 bg-background rounded-lg border border-border hover:border-muted-foreground transition-colors cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h4 className="font-medium text-foreground">{zone.zoneName}</h4>
-                  <p className="text-xs text-muted-foreground">Zone ID: {zone.zoneId}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={getStatusColor(zone.status)}>
-                    {zone.status}
-                  </Badge>
-                  {zone.alertCount > 0 && (
-                    <Badge variant="destructive" className="bg-red-600">
-                      <AlertTriangle className="h-3 w-3 mr-1" />
-                      {zone.alertCount}
-                    </Badge>
-                  )}
-                </div>
+      <CardContent className="space-y-3">
+        {zones.map((zone) => (
+          <div key={zone.id} className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-medium">{zone.name}</h4>
+              <Badge variant="outline" className={getStatusColor(zone.status)}>
+                {zone.status}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                {zone.occupiedBeds}/{zone.totalBeds}
               </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm text-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>Occupancy</span>
-                  </div>
-                  <span className={`text-sm font-medium ${getOccupancyColor(zone.occupancy, zone.capacity)}`}>
-                    {zone.occupancy}/{zone.capacity}
-                  </span>
-                </div>
-
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      (zone.occupancy / zone.capacity) >= 0.9 ? 'bg-red-500' :
-                      (zone.occupancy / zone.capacity) >= 0.75 ? 'bg-yellow-500' : 'bg-green-500'
-                    }`}
-                    style={{ width: `${Math.min((zone.occupancy / zone.capacity) * 100, 100)}%` }}
-                  />
-                </div>
-
-                {zone.avgWaitTime > 0 && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-sm text-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>Avg Wait</span>
-                    </div>
-                    <span className="text-sm font-medium text-cyan-400">
-                      {zone.avgWaitTime} min
-                    </span>
-                  </div>
-                )}
+              <div className="flex items-center gap-1">
+                <Bed className="h-4 w-4" />
+                {zone.totalBeds - zone.occupiedBeds} available
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );

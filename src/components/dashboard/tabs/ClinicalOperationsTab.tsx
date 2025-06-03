@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { Stethoscope, Users, Calendar, Activity, Settings, CheckCircle } from 'lucide-react';
-import RealtimeBarChart from '../charts/RealtimeBarChart';
-import RealtimePieChart from '../charts/RealtimePieChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface ClinicalOperationsTabProps {
   data: AnalyticsData;
@@ -38,7 +37,7 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
         
         <Badge variant="outline" className={getStatusColor(clinicalOperations.equipmentStatus)}>
           <CheckCircle className="h-3 w-3 mr-1" />
-          Equipment {clinicalOperations.equipmentStatus}
+          Equipment {clinicalOperations.equipmentStatus || 'unknown'}
         </Badge>
       </div>
 
@@ -67,7 +66,7 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {clinicalOperations.scheduledProcedures}
+                  {clinicalOperations.scheduledProcedures || '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Scheduled Procedures</p>
               </div>
@@ -83,7 +82,7 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {clinicalOperations.resourceUtilization}%
+                  {clinicalOperations.resourceUtilization > 0 ? `${clinicalOperations.resourceUtilization.toFixed(0)}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Resource Utilization</p>
               </div>
@@ -99,7 +98,7 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {clinicalOperations.avgProcedureTime}m
+                  {clinicalOperations.avgProcedureTime > 0 ? `${clinicalOperations.avgProcedureTime}m` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Avg Procedure Time</p>
               </div>
@@ -117,12 +116,9 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeBarChart
-              data={data.chartData.staffAllocation}
-              dataKeys={['value']}
-              colors={['#3b82f6']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -134,13 +130,9 @@ const ClinicalOperationsTab = ({ data, isLive }: ClinicalOperationsTabProps) => 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimePieChart
-              data={data.chartData.staffAllocation}
-              dataKey="value"
-              nameKey="category"
-              colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

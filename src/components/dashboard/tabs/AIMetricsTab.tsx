@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { Brain, Zap, Target, Activity, TrendingUp, CheckCircle } from 'lucide-react';
-import RealtimeLineChart from '../charts/RealtimeLineChart';
-import RealtimeAreaChart from '../charts/RealtimeAreaChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface AIMetricsTabProps {
   data: AnalyticsData;
@@ -29,7 +28,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
         
         <Badge variant="outline" className="text-pink-400 border-pink-400">
           <CheckCircle className="h-3 w-3 mr-1" />
-          {aiMetrics.mlModelsActive} Models Active
+          {aiMetrics.mlModelsActive || 0} Models Active
         </Badge>
       </div>
 
@@ -42,7 +41,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {aiMetrics.modelAccuracy.toFixed(1)}%
+                  {aiMetrics.modelAccuracy > 0 ? `${aiMetrics.modelAccuracy.toFixed(1)}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Model Accuracy</p>
               </div>
@@ -58,7 +57,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {aiMetrics.automationSuccess}%
+                  {aiMetrics.automationSuccess > 0 ? `${aiMetrics.automationSuccess}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Automation Success</p>
               </div>
@@ -74,7 +73,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {aiMetrics.decisionsSupported}
+                  {aiMetrics.decisionsSupported || '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Decisions Supported</p>
               </div>
@@ -90,7 +89,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {aiMetrics.mlModelsActive}
+                  {aiMetrics.mlModelsActive || 0}
                 </p>
                 <p className="text-sm text-muted-foreground">Active Models</p>
               </div>
@@ -106,7 +105,7 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {aiMetrics.predictionConfidence}%
+                  {aiMetrics.predictionConfidence > 0 ? `${aiMetrics.predictionConfidence}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Prediction Confidence</p>
               </div>
@@ -124,12 +123,9 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeLineChart
-              data={data.chartData.modelPerformance}
-              dataKeys={['accuracy', 'confidence']}
-              colors={['#ec4899', '#f59e0b']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -141,12 +137,9 @@ const AIMetricsTab = ({ data, isLive }: AIMetricsTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeAreaChart
-              data={data.chartData.modelPerformance}
-              dataKeys={['accuracy']}
-              colors={['#10b981']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

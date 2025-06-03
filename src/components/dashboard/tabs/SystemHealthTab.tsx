@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnalyticsData } from '@/services/analytics';
 import { Server, Shield, Activity, Cpu, HardDrive, Wifi } from 'lucide-react';
-import RealtimeLineChart from '../charts/RealtimeLineChart';
-import RealtimeAreaChart from '../charts/RealtimeAreaChart';
+import { emptyStateMessages } from "@/config/constants";
 
 interface SystemHealthTabProps {
   data: AnalyticsData;
@@ -29,7 +28,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
         
         <Badge variant="outline" className="text-green-400 border-green-400">
           <Shield className="h-3 w-3 mr-1" />
-          Uptime {systemHealth.uptime.toFixed(1)}%
+          Uptime {systemHealth.uptime > 0 ? `${systemHealth.uptime.toFixed(1)}%` : '--'}
         </Badge>
       </div>
 
@@ -42,7 +41,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {systemHealth.cpuUsage}%
+                  {systemHealth.cpuUsage > 0 ? `${systemHealth.cpuUsage}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">CPU Usage</p>
               </div>
@@ -58,7 +57,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {systemHealth.memoryUsage}%
+                  {systemHealth.memoryUsage > 0 ? `${systemHealth.memoryUsage}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Memory Usage</p>
               </div>
@@ -74,7 +73,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {systemHealth.networkLatency}ms
+                  {systemHealth.networkLatency > 0 ? `${systemHealth.networkLatency}ms` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Network Latency</p>
               </div>
@@ -90,7 +89,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {systemHealth.uptime.toFixed(1)}%
+                  {systemHealth.uptime > 0 ? `${systemHealth.uptime.toFixed(1)}%` : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Uptime</p>
               </div>
@@ -106,7 +105,7 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground animate-fade-in">
-                  {systemHealth.securityScore}
+                  {systemHealth.securityScore > 0 ? systemHealth.securityScore : '--'}
                 </p>
                 <p className="text-sm text-muted-foreground">Security Score</p>
               </div>
@@ -124,12 +123,9 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeLineChart
-              data={data.chartData.systemHealth}
-              dataKeys={['cpu', 'memory']}
-              colors={['#ef4444', '#3b82f6']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -141,12 +137,9 @@ const SystemHealthTab = ({ data, isLive }: SystemHealthTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RealtimeAreaChart
-              data={data.chartData.systemHealth}
-              dataKeys={['network']}
-              colors={['#10b981']}
-              height={200}
-            />
+            <div className="h-48 flex items-center justify-center border-2 border-dashed border-muted-foreground/25 rounded">
+              <p className="text-sm text-muted-foreground">{emptyStateMessages.noChartData}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

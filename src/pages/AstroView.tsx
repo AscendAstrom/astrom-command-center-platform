@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,11 +20,50 @@ import SemanticLayerBuilder from "@/components/astro-view/SemanticLayerBuilder";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const AstroView = () => {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "dashboards");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [stats, setStats] = useState({
+    dashboards: 0,
+    visualizations: 0,
+    activeUsers: 0,
+    dataSources: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const [
+        { data: dashboards },
+        { data: widgets },
+        { data: dataSources }
+      ] = await Promise.all([
+        supabase.from('dashboards').select('id'),
+        supabase.from('widgets').select('id'),
+        supabase.from('data_sources').select('id')
+      ]);
+
+      setStats({
+        dashboards: dashboards?.length || 0,
+        visualizations: widgets?.length || 0,
+        activeUsers: 0, // This would come from user sessions or auth data
+        dataSources: dataSources?.length || 0
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      setStats({ dashboards: 0, visualizations: 0, activeUsers: 0, dataSources: 0 });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -40,10 +79,10 @@ const AstroView = () => {
     setIsRefreshing(true);
     toast.info("Refreshing visualizations and dashboards...");
     
-    setTimeout(() => {
+    fetchStats().finally(() => {
       setIsRefreshing(false);
       toast.success("Dashboards refreshed successfully!");
-    }, 2000);
+    });
   };
 
   const handleCreateDashboard = () => {
@@ -148,7 +187,9 @@ const AstroView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Dashboards</p>
-                <p className="text-2xl font-bold text-foreground">24</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {loading ? "..." : stats.dashboards}
+                </p>
               </div>
               <Layout className="h-8 w-8 text-purple-400" />
             </div>
@@ -157,7 +198,9 @@ const AstroView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Visualizations</p>
-                <p className="text-2xl font-bold text-foreground">187</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {loading ? "..." : stats.visualizations}
+                </p>
               </div>
               <BarChart3 className="h-8 w-8 text-blue-400" />
             </div>
@@ -166,7 +209,9 @@ const AstroView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Users</p>
-                <p className="text-2xl font-bold text-foreground">342</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {loading ? "..." : stats.activeUsers}
+                </p>
               </div>
               <Eye className="h-8 w-8 text-green-400" />
             </div>
@@ -175,7 +220,9 @@ const AstroView = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Data Sources</p>
-                <p className="text-2xl font-bold text-foreground">56</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {loading ? "..." : stats.dataSources}
+                </p>
               </div>
               <Database className="h-8 w-8 text-orange-400" />
             </div>
