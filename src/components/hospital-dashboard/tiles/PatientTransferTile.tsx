@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -71,8 +70,12 @@ export const PatientTransferTile = () => {
 
       // Create transfer records from flow events
       const transfersData = todayEvents.slice(0, 10).map((event, index) => {
-        const details = event.details || {};
-        const fromDept = deptMap[details.from_department] || 'ER';
+        // Type guard for details object
+        const details = event.details && typeof event.details === 'object' && !Array.isArray(event.details) 
+          ? event.details as Record<string, any>
+          : {};
+        
+        const fromDept = details.from_department ? deptMap[details.from_department] || 'ER' : 'ER';
         const toDept = deptMap[event.department_id] || 'ICU';
         
         // Simulate transfer status based on timing
