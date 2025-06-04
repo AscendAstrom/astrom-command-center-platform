@@ -1,4 +1,3 @@
-
 import { AnalyticsData } from './types';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -124,7 +123,16 @@ export class RealtimeDataService {
         quality: {
           incidents: alertData.total,
           satisfaction: 0,
-          safety: 0
+          safety: 0,
+          overallScore: 0,
+          patientSafety: 0,
+          accreditations: [],
+          complianceAreas: [],
+          upcomingActivities: [],
+          totalAccreditations: 0,
+          activeCompliance: 0,
+          daysToExpiry: 0,
+          upcomingActivitiesCount: 0
         }
       };
     } catch (error) {
@@ -357,7 +365,16 @@ export class RealtimeDataService {
       quality: {
         incidents: 0,
         satisfaction: 0,
-        safety: 0
+        safety: 0,
+        overallScore: 0,
+        patientSafety: 0,
+        accreditations: [],
+        complianceAreas: [],
+        upcomingActivities: [],
+        totalAccreditations: 0,
+        activeCompliance: 0,
+        daysToExpiry: 0,
+        upcomingActivitiesCount: 0
       }
     };
   }

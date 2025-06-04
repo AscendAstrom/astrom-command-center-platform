@@ -1,4 +1,3 @@
-
 import { AnalyticsData } from './types';
 import { bedMetricsService } from './bedMetricsService';
 import { patientMetricsService } from './patientMetricsService';
@@ -185,6 +184,7 @@ class MainAnalyticsService {
         overallScore: 0,
         patientSafety: 0,
         satisfaction: 0,
+        safety: 0,
         incidents: 0,
         accreditations: [],
         complianceAreas: [],
