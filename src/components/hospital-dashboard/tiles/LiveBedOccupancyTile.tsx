@@ -13,7 +13,7 @@ export const LiveBedOccupancyTile = () => {
     occupied: 0,
     available: 0,
     utilization: 0,
-    outOfOrder: 0
+    maintenance: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -47,19 +47,19 @@ export const LiveBedOccupancyTile = () => {
       const total = beds?.length || 0;
       const occupied = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
       const available = beds?.filter(b => b.status === 'AVAILABLE').length || 0;
-      const outOfOrder = beds?.filter(b => b.status === 'OUT_OF_ORDER').length || 0;
+      const maintenance = beds?.filter(b => b.status === 'MAINTENANCE').length || 0;
       const utilization = total > 0 ? Math.round((occupied / total) * 100) : 0;
 
-      setMetrics({ total, occupied, available, outOfOrder, utilization });
+      setMetrics({ total, occupied, available, maintenance, utilization });
       
       setBedData([
         { name: 'Occupied', value: occupied, color: '#ef4444' },
         { name: 'Available', value: available, color: '#22c55e' },
-        { name: 'Out of Order', value: outOfOrder, color: '#f59e0b' }
+        { name: 'Maintenance', value: maintenance, color: '#f59e0b' }
       ]);
     } catch (error) {
       console.error('Error fetching bed data:', error);
-      setMetrics({ total: 0, occupied: 0, available: 0, utilization: 0, outOfOrder: 0 });
+      setMetrics({ total: 0, occupied: 0, available: 0, utilization: 0, maintenance: 0 });
       setBedData([]);
     } finally {
       setLoading(false);
@@ -165,8 +165,8 @@ export const LiveBedOccupancyTile = () => {
             <div className="text-muted-foreground">Occupied</div>
           </div>
           <div className="bg-orange-50 p-2 rounded text-center">
-            <div className="font-bold text-orange-600">{metrics.outOfOrder}</div>
-            <div className="text-muted-foreground">Out of Order</div>
+            <div className="font-bold text-orange-600">{metrics.maintenance}</div>
+            <div className="text-muted-foreground">Maintenance</div>
           </div>
         </div>
 

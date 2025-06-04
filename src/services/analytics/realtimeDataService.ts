@@ -123,7 +123,6 @@ export class RealtimeDataService {
         },
         quality: {
           incidents: alertData.total,
-          compliance: 0,
           satisfaction: 0,
           safety: 0
         }
@@ -143,13 +142,13 @@ export class RealtimeDataService {
     const total = beds?.length || 0;
     const occupied = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
     const available = beds?.filter(b => b.status === 'AVAILABLE').length || 0;
-    const outOfOrder = beds?.filter(b => b.status === 'OUT_OF_ORDER').length || 0;
+    const maintenance = beds?.filter(b => b.status === 'MAINTENANCE').length || 0;
 
     return {
       total,
       occupied,
       available,
-      outOfOrder,
+      outOfOrder: maintenance,
       utilization: total > 0 ? Math.round((occupied / total) * 100) : 0
     };
   }
@@ -357,7 +356,6 @@ export class RealtimeDataService {
       },
       quality: {
         incidents: 0,
-        compliance: 0,
         satisfaction: 0,
         safety: 0
       }

@@ -1,8 +1,8 @@
 
 export interface ChartDataPoint {
-  timestamp: string;
+  time: string;
   value: number;
-  label?: string;
+  [key: string]: any;
 }
 
 export interface ChartData {
@@ -17,41 +17,18 @@ export interface ChartData {
   modelPerformance: ChartDataPoint[];
 }
 
-export interface AccreditationData {
-  name: string;
-  status: string;
-  expiry: string;
-  score: number;
-  lastReview: string;
+export interface EmergencyDepartmentData {
+  totalPatients: number;
+  avgWaitTime: number;
+  bedUtilization: number;
+  staffOnDuty: number;
+  criticalAlerts: number;
+  triageQueue: number;
+  criticalPatients: number;
+  lastUpdated: Date;
 }
 
-export interface ComplianceArea {
-  area: string;
-  compliance: number;
-  target: number;
-}
-
-export interface UpcomingActivity {
-  activity: string;
-  date: string;
-  type: string;
-}
-
-export interface QualityData {
-  overallScore: number;
-  patientSafety: number;
-  satisfaction: number;
-  incidents: number;
-  accreditations: AccreditationData[];
-  complianceAreas: ComplianceArea[];
-  upcomingActivities: UpcomingActivity[];
-  totalAccreditations: number;
-  activeCompliance: number;
-  daysToExpiry: number;
-  upcomingActivitiesCount: number;
-}
-
-export interface BedMetrics {
+export interface BedData {
   total: number;
   occupied: number;
   available: number;
@@ -59,16 +36,16 @@ export interface BedMetrics {
   utilization: number;
 }
 
-export interface StaffMetrics {
+export interface StaffingData {
   total: number;
-  onDuty: number;
   active: number;
+  onDuty: number;
   onCall: number;
-  overtime: number;
   scheduledNext: number;
+  overtime: number;
 }
 
-export interface ClinicalMetrics {
+export interface ClinicalData {
   surgeries: {
     total: number;
     scheduled: number;
@@ -92,83 +69,90 @@ export interface ClinicalMetrics {
   };
 }
 
-export interface EquipmentMetrics {
+export interface EquipmentData {
   total: number;
   available: number;
   inUse: number;
   maintenance: number;
 }
 
-export interface FinancialMetrics {
+export interface FinancialData {
   revenue: number;
   revenuePerPatient: number;
   monthlyGrowth: number;
   yearOverYear: number;
 }
 
-export interface PerformanceMetrics {
+export interface PerformanceData {
   throughput: number;
   efficiency: number;
   bottlenecks: number;
 }
 
+export interface ClinicalOperationsData {
+  activeStaff: number;
+  scheduledProcedures: number;
+  resourceUtilization: number;
+  avgProcedureTime: number;
+  equipmentStatus: string;
+  lastUpdated: Date;
+}
+
+export interface DataPipelineData {
+  activeSources: number;
+  processingSpeed: number;
+  errorRate: number;
+  dataQuality: number;
+  syncStatus: string;
+  lastUpdated: Date;
+}
+
+export interface BusinessData {
+  revenue: number;
+  revenueGrowth: number;
+  patientSatisfaction: number;
+  operationalEfficiency: number;
+  costPerPatient: number;
+  lastUpdated: Date;
+}
+
+export interface AIMetricsData {
+  modelAccuracy: number;
+  automationSuccess: number;
+  decisionsSupported: number;
+  mlModelsActive: number;
+  predictionConfidence: number;
+  lastUpdated: Date;
+}
+
+export interface SystemHealthData {
+  cpuUsage: number;
+  memoryUsage: number;
+  networkLatency: number;
+  uptime: number;
+  securityScore: number;
+  lastUpdated: Date;
+}
+
+export interface QualityData {
+  incidents: number;
+  satisfaction: number;
+  safety: number;
+}
+
 export interface AnalyticsData {
   chartData: ChartData;
-  emergencyDepartment: {
-    totalPatients: number;
-    avgWaitTime: number;
-    bedUtilization: number;
-    staffOnDuty: number;
-    criticalAlerts: number;
-    triageQueue: number;
-    criticalPatients: number;
-    lastUpdated: Date;
-  };
-  beds: BedMetrics;
-  staffing: StaffMetrics;
-  clinical: ClinicalMetrics;
-  equipment: EquipmentMetrics;
-  financial: FinancialMetrics;
-  performance: PerformanceMetrics;
-  clinicalOperations: {
-    activeStaff: number;
-    scheduledProcedures: number;
-    resourceUtilization: number;
-    avgProcedureTime: number;
-    equipmentStatus: 'optimal' | 'warning' | 'critical';
-    lastUpdated: Date;
-  };
-  dataPipeline: {
-    activeSources: number;
-    processingSpeed: number;
-    errorRate: number;
-    dataQuality: number;
-    syncStatus: 'healthy' | 'warning' | 'error';
-    lastUpdated: Date;
-  };
-  business: {
-    revenue: number;
-    revenueGrowth: number;
-    patientSatisfaction: number;
-    operationalEfficiency: number;
-    costPerPatient: number;
-    lastUpdated: Date;
-  };
-  aiMetrics: {
-    modelAccuracy: number;
-    automationSuccess: number;
-    decisionsSupported: number;
-    mlModelsActive: number;
-    predictionConfidence: number;
-    lastUpdated: Date;
-  };
-  systemHealth: {
-    cpuUsage: number;
-    memoryUsage: number;
-    networkLatency: number;
-    uptime: number;
-    securityScore: number;
-    lastUpdated: Date;
-  };
+  emergencyDepartment: EmergencyDepartmentData;
+  beds: BedData;
+  staffing: StaffingData;
+  clinical: ClinicalData;
+  equipment: EquipmentData;
+  financial: FinancialData;
+  performance: PerformanceData;
+  clinicalOperations: ClinicalOperationsData;
+  dataPipeline: DataPipelineData;
+  business: BusinessData;
+  aiMetrics: AIMetricsData;
+  systemHealth: SystemHealthData;
   quality: QualityData;
 }
