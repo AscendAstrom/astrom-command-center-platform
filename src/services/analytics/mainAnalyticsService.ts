@@ -54,7 +54,7 @@ class MainAnalyticsService {
           staffOnDuty: staffMetrics.onDuty,
           triageQueue: patientMetrics.triageQueue,
           criticalPatients: patientMetrics.criticalPatients,
-          criticalAlerts: Math.floor(patientMetrics.criticalPatients * 0.1),
+          criticalAlerts: patientMetrics.criticalPatients > 0 ? Math.floor(patientMetrics.criticalPatients * 0.1) : 0,
           lastUpdated: currentDate
         },
         beds: bedMetrics,

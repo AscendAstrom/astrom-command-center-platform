@@ -13,39 +13,36 @@ export class QualityMetricsService {
       const indicators = indicatorsData.data || [];
       const measurements = measurementsData.data || [];
 
-      const accreditations = indicators.slice(0, 4).map((indicator, index) => ({
-        name: indicator.name,
-        status: 'Accredited',
-        expiry: new Date(Date.now() + (90 + index * 30) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        score: Math.floor(Math.random() * 10) + 90,
-        lastReview: new Date(Date.now() - (30 + index * 15) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-      }));
+      // Calculate actual quality scores from real data
+      const overallScore = measurements.length > 0 
+        ? measurements.reduce((sum, m) => sum + Number(m.value), 0) / measurements.length 
+        : 0;
 
-      const complianceAreas = indicators.slice(0, 4).map(indicator => ({
-        area: indicator.name,
-        compliance: Math.floor(Math.random() * 10) + 90,
-        target: indicator.target_value ? Number(indicator.target_value) : 95
-      }));
+      const patientSafetyScore = measurements
+        .filter(m => m.indicator_id && indicators.find(i => i.id === m.indicator_id && i.category === 'patient_safety'))
+        .reduce((sum, m, _, arr) => sum + Number(m.value) / (arr.length || 1), 0);
 
-      const upcomingActivities = [
-        { activity: 'Quality Audit Review', date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], type: 'Review' },
-        { activity: 'Compliance Assessment', date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], type: 'Assessment' },
-        { activity: 'Accreditation Renewal', date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], type: 'Renewal' }
-      ];
+      const satisfactionScore = measurements
+        .filter(m => m.indicator_id && indicators.find(i => i.id === m.indicator_id && i.category === 'satisfaction'))
+        .reduce((sum, m, _, arr) => sum + Number(m.value) / (arr.length || 1), 0);
+
+      const safetyScore = measurements
+        .filter(m => m.indicator_id && indicators.find(i => i.id === m.indicator_id && i.category === 'safety'))
+        .reduce((sum, m, _, arr) => sum + Number(m.value) / (arr.length || 1), 0);
 
       return {
-        overallScore: indicators.length > 0 ? 90.5 : 0,
-        patientSafety: indicators.length > 0 ? 94 : 0,
-        satisfaction: indicators.length > 0 ? 8.7 : 0,
-        safety: indicators.length > 0 ? 92 : 0,
-        incidents: 2,
-        accreditations,
-        complianceAreas,
-        upcomingActivities,
-        totalAccreditations: accreditations.length,
-        activeCompliance: complianceAreas.length > 0 ? Math.round(complianceAreas.reduce((sum, area) => sum + area.compliance, 0) / complianceAreas.length) : 0,
-        daysToExpiry: accreditations.length > 0 ? Math.min(...accreditations.map(acc => Math.ceil((new Date(acc.expiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))) : 0,
-        upcomingActivitiesCount: upcomingActivities.length
+        overallScore,
+        patientSafety: patientSafetyScore,
+        satisfaction: satisfactionScore,
+        safety: safetyScore,
+        incidents: 0, // This would come from incidents table if available
+        accreditations: [],
+        complianceAreas: [],
+        upcomingActivities: [],
+        totalAccreditations: 0,
+        activeCompliance: 0,
+        daysToExpiry: 0,
+        upcomingActivitiesCount: 0
       };
     } catch (error) {
       console.error('Error fetching quality metrics:', error);

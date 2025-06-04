@@ -2,16 +2,94 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Clock, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from '@/integrations/supabase/client';
 
 export const EDLoadStatusTile = () => {
-  const metrics = {
-    queueCount: 14,
-    avgWaitTime: 42,
+  const [metrics, setMetrics] = useState({
+    queueCount: 0,
+    avgWaitTime: 0,
     triageLevel: {
-      level1: 2,  // Critical
-      level2: 4,  // Urgent  
-      level3: 5,  // Less urgent
-      level4: 3   // Non-urgent
+      level1: 0,
+      level2: 0,
+      level3: 0,
+      level4: 0
+    }
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEDData();
+    
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('ed-updates')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'wait_times' },
+        () => fetchEDData()
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
+  const fetchEDData = async () => {
+    try {
+      setLoading(true);
+      
+      const { data: waitTimes, error } = await supabase
+        .from('wait_times')
+        .select('total_wait_minutes, priority_level')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      const queueCount = waitTimes?.length || 0;
+      const avgWaitTime = waitTimes?.length > 0 
+        ? Math.round(waitTimes.reduce((sum, w) => sum + (w.total_wait_minutes || 0), 0) / waitTimes.length)
+        : 0;
+
+      // Group by triage levels
+      const triageBreakdown = waitTimes?.reduce((acc: any, w) => {
+        const level = w.priority_level || 4;
+        if (level >= 1 && level <= 4) {
+          acc[`level${level}`] = (acc[`level${level}`] || 0) + 1;
+        }
+        return acc;
+      }, {
+        level1: 0,
+        level2: 0,
+        level3: 0,
+        level4: 0
+      }) || {
+        level1: 0,
+        level2: 0,
+        level3: 0,
+        level4: 0
+      };
+
+      setMetrics({
+        queueCount,
+        avgWaitTime,
+        triageLevel: triageBreakdown
+      });
+    } catch (error) {
+      console.error('Error fetching ED data:', error);
+      setMetrics({
+        queueCount: 0,
+        avgWaitTime: 0,
+        triageLevel: {
+          level1: 0,
+          level2: 0,
+          level3: 0,
+          level4: 0
+        }
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -22,6 +100,39 @@ export const EDLoadStatusTile = () => {
   };
 
   const status = getStatusLevel(metrics.avgWaitTime);
+
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-red-500/10 rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-red-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">ED Load Status</CardTitle>
+                <CardDescription>Emergency department monitoring</CardDescription>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="animate-pulse space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-16 bg-gray-200 rounded"></div>
+              <div className="h-16 bg-gray-200 rounded"></div>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-16 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
@@ -93,7 +204,7 @@ export const EDLoadStatusTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-orange-50 p-2 rounded">
-          <strong>Bottleneck Resolver:</strong> Room 3 discharge will reduce wait time by 8 minutes.
+          <strong>Real-time Data:</strong> Connected to hospital wait time tracking system.
         </div>
       </CardContent>
     </Card>
