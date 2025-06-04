@@ -28,11 +28,7 @@ const ZoneMap = () => {
           `)
           .eq('is_active', true);
 
-        if (error) {
-          console.error('Error fetching zone data:', error);
-          setZones([]);
-          return;
-        }
+        if (error) throw error;
 
         if (!departments || departments.length === 0) {
           setZones([]);

@@ -1,37 +1,69 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bed, TrendingUp, Activity } from "lucide-react";
+import { Bed, Activity } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useState, useEffect } from "react";
-import { analyticsService, AnalyticsData } from '@/services/analytics';
+import { supabase } from '@/integrations/supabase/client';
 
 export const LiveBedOccupancyTile = () => {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = analyticsService.subscribe(setAnalyticsData);
-    return unsubscribe;
-  }, []);
-
-  const bedData = analyticsData ? [
-    { name: 'Occupied', value: analyticsData.beds.occupied, color: '#ef4444' },
-    { name: 'Available', value: analyticsData.beds.available, color: '#22c55e' },
-    { name: 'Out of Order', value: analyticsData.beds.outOfOrder, color: '#f59e0b' }
-  ] : [];
-
-  const metrics = analyticsData ? {
-    total: analyticsData.beds.total,
-    occupied: analyticsData.beds.occupied,
-    available: analyticsData.beds.available,
-    utilization: analyticsData.beds.utilization,
-    outOfOrder: analyticsData.beds.outOfOrder
-  } : {
+  const [bedData, setBedData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState({
     total: 0,
     occupied: 0,
     available: 0,
     utilization: 0,
     outOfOrder: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBedData();
+    
+    // Subscribe to real-time bed updates
+    const channel = supabase
+      .channel('bed-updates')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'beds' },
+        () => fetchBedData()
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
+  const fetchBedData = async () => {
+    try {
+      setLoading(true);
+      const { data: beds, error } = await supabase
+        .from('beds')
+        .select('status')
+        .eq('deleted_at', null);
+
+      if (error) throw error;
+
+      const total = beds?.length || 0;
+      const occupied = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
+      const available = beds?.filter(b => b.status === 'AVAILABLE').length || 0;
+      const outOfOrder = beds?.filter(b => b.status === 'OUT_OF_ORDER').length || 0;
+      const utilization = total > 0 ? Math.round((occupied / total) * 100) : 0;
+
+      setMetrics({ total, occupied, available, outOfOrder, utilization });
+      
+      setBedData([
+        { name: 'Occupied', value: occupied, color: '#ef4444' },
+        { name: 'Available', value: available, color: '#22c55e' },
+        { name: 'Out of Order', value: outOfOrder, color: '#f59e0b' }
+      ]);
+    } catch (error) {
+      console.error('Error fetching bed data:', error);
+      setMetrics({ total: 0, occupied: 0, available: 0, utilization: 0, outOfOrder: 0 });
+      setBedData([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getUtilizationColor = (utilization: number) => {
@@ -39,6 +71,36 @@ export const LiveBedOccupancyTile = () => {
     if (utilization >= 75) return 'text-orange-600 border-orange-200 bg-orange-50';
     return 'text-green-600 border-green-200 bg-green-50';
   };
+
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Bed className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Live Bed Occupancy</CardTitle>
+                <CardDescription>Real-time bed availability</CardDescription>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-24 bg-gray-200 rounded"></div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="h-12 bg-gray-200 rounded"></div>
+              <div className="h-12 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
@@ -109,7 +171,7 @@ export const LiveBedOccupancyTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-blue-50 p-2 rounded">
-          <strong>Live Tracking:</strong> {analyticsData ? 'Connected to real hospital data' : 'Loading bed status...'}
+          <strong>Live Tracking:</strong> Connected to real hospital bed management system
         </div>
       </CardContent>
     </Card>

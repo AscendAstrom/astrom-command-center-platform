@@ -30,12 +30,7 @@ const AlertPanel = () => {
           .order('created_at', { ascending: false })
           .limit(10);
 
-        if (error) {
-          console.error('Error fetching alerts:', error);
-          setAlerts([]);
-          return;
-        }
-
+        if (error) throw error;
         setAlerts(data || []);
       } catch (error) {
         console.error('Error fetching alerts:', error);

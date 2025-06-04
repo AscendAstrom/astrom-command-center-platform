@@ -1,10 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { patientFlowService, FlowSummary } from '@/services/analytics/patientFlowService';
+import { supabase } from '@/integrations/supabase/client';
 
-interface FlowDataPoint extends FlowSummary {
+interface FlowDataPoint {
   time: string;
+  arrivals: number;
+  completions: number;
+  pending: number;
 }
 
 const PatientFlow = () => {
@@ -15,36 +18,21 @@ const PatientFlow = () => {
     const fetchFlowData = async () => {
       setLoading(true);
       try {
-        const flowSummary = await patientFlowService.getFlowSummary(24);
-        
-        // Create time labels for the last 24 hours in 4-hour intervals
-        const timeLabels = [];
-        for (let i = 5; i >= 0; i--) {
-          const time = new Date(Date.now() - i * 4 * 60 * 60 * 1000);
-          timeLabels.push(time.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false 
-          }));
-        }
+        // Fetch real patient flow events from the database
+        const { data: flowEvents, error } = await supabase
+          .from('patient_flow_events')
+          .select('*')
+          .order('timestamp', { ascending: false })
+          .limit(100);
 
-        const chartData: FlowDataPoint[] = flowSummary.map((summary, index) => ({
-          ...summary,
-          time: timeLabels[index] || `${index * 4}:00`
-        }));
+        if (error) throw error;
 
-        setData(chartData);
+        // Process the data into time-based aggregations
+        const processedData = processFlowEvents(flowEvents || []);
+        setData(processedData);
       } catch (error) {
         console.error('Error fetching patient flow data:', error);
-        // Fallback to empty data
-        setData([
-          { time: '00:00', arrivals: 0, completions: 0, pending: 0 },
-          { time: '04:00', arrivals: 0, completions: 0, pending: 0 },
-          { time: '08:00', arrivals: 0, completions: 0, pending: 0 },
-          { time: '12:00', arrivals: 0, completions: 0, pending: 0 },
-          { time: '16:00', arrivals: 0, completions: 0, pending: 0 },
-          { time: '20:00', arrivals: 0, completions: 0, pending: 0 },
-        ]);
+        setData([]);
       } finally {
         setLoading(false);
       }
@@ -54,14 +42,52 @@ const PatientFlow = () => {
 
     // Refresh data every 5 minutes
     const interval = setInterval(fetchFlowData, 5 * 60 * 1000);
-
     return () => clearInterval(interval);
   }, []);
+
+  const processFlowEvents = (events: any[]): FlowDataPoint[] => {
+    if (!events || events.length === 0) {
+      return [];
+    }
+
+    // Group events by hour for the last 24 hours
+    const hourlyData = new Map<string, { arrivals: number; completions: number; pending: number }>();
+    
+    events.forEach(event => {
+      const hour = new Date(event.timestamp).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      });
+      
+      if (!hourlyData.has(hour)) {
+        hourlyData.set(hour, { arrivals: 0, completions: 0, pending: 0 });
+      }
+      
+      const data = hourlyData.get(hour)!;
+      if (event.event_type === 'ARRIVAL') data.arrivals++;
+      if (event.event_type === 'DISCHARGE') data.completions++;
+      if (event.event_type === 'PENDING') data.pending++;
+    });
+
+    return Array.from(hourlyData.entries()).map(([time, values]) => ({
+      time,
+      ...values
+    }));
+  };
 
   if (loading) {
     return (
       <div className="h-64 flex items-center justify-center">
         <div className="text-slate-400">Loading patient flow data...</div>
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <div className="text-slate-400">No patient flow data available</div>
       </div>
     );
   }
