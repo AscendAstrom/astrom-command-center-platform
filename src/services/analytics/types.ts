@@ -138,6 +138,29 @@ export interface QualityData {
   incidents: number;
   satisfaction: number;
   safety: number;
+  overallScore: number;
+  patientSafety: number;
+  accreditations: Array<{
+    name: string;
+    status: string;
+    expiry: string;
+    score: number;
+    lastReview: string;
+  }>;
+  complianceAreas: Array<{
+    area: string;
+    compliance: number;
+    target: number;
+  }>;
+  upcomingActivities: Array<{
+    activity: string;
+    date: string;
+    type: string;
+  }>;
+  totalAccreditations: number;
+  activeCompliance: number;
+  daysToExpiry: number;
+  upcomingActivitiesCount: number;
 }
 
 export interface AnalyticsData {
