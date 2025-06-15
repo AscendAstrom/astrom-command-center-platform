@@ -1,5 +1,7 @@
-
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { formatDistanceToNow } from 'date-fns';
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,7 @@ import {
   TrendingUp,
   RefreshCw
 } from 'lucide-react';
+import { MLModel, TrainingJob } from './ml-platform/types';
 
 interface DecisionNode {
   id: string;
@@ -39,80 +42,114 @@ interface AutonomousWorkflow {
   status: 'running' | 'paused' | 'learning';
 }
 
-const AutonomousDecisionEngine = () => {
-  const [workflows, setWorkflows] = useState<AutonomousWorkflow[]>([
-    {
-      id: 'bed-opt',
-      name: 'Intelligent Bed Optimization',
-      category: 'bed-management',
-      autonomyLevel: 87,
-      interventions: 142,
-      accuracy: 94.2,
-      status: 'running',
-      nodes: [
-        {
-          id: 'predict-demand',
-          name: 'Demand Prediction',
-          type: 'condition',
-          status: 'active',
-          confidence: 92,
-          successRate: 89,
-          lastExecution: '2 min ago',
-          decisions: 1247
-        },
-        {
-          id: 'allocate-beds',
-          name: 'Dynamic Allocation',
-          type: 'action',
-          status: 'optimizing',
-          confidence: 85,
-          successRate: 91,
-          lastExecution: '1 min ago',
-          decisions: 894
-        }
-      ]
-    },
-    {
-      id: 'flow-management',
-      name: 'Patient Flow Intelligence',
-      category: 'patient-flow',
-      autonomyLevel: 92,
-      interventions: 267,
-      accuracy: 96.8,
-      status: 'running',
-      nodes: [
-        {
-          id: 'route-optimization',
-          name: 'Route Optimization',
-          type: 'action',
-          status: 'active',
-          confidence: 96,
-          successRate: 94,
-          lastExecution: '30 sec ago',
-          decisions: 2156
-        },
-        {
-          id: 'bottleneck-detection',
-          name: 'Bottleneck Prevention',
-          type: 'condition',
-          status: 'learning',
-          confidence: 78,
-          successRate: 82,
-          lastExecution: '3 min ago',
-          decisions: 567
-        }
-      ]
-    }
-  ]);
+const fetchAutonomousWorkflows = async () => {
+  const { data: models, error: modelsError } = await supabase.from('ml_models').select('*');
+  if (modelsError) throw new Error(`Failed to fetch models: ${modelsError.message}`);
 
-  const [systemMetrics, setSystemMetrics] = useState({
-    totalDecisions: 15247,
-    autonomousResolutions: 12896,
-    learningModels: 8,
-    activeWorkflows: 4,
-    avgConfidence: 89.3,
-    systemLoad: 23
+  const { data: jobs, error: jobsError } = await supabase.from('ml_training_jobs').select('*');
+  if (jobsError) throw new Error(`Failed to fetch jobs: ${jobsError.message}`);
+
+  const typedModels = models as unknown as MLModel[];
+  const typedJobs = jobs as unknown as TrainingJob[];
+
+  const workflows: AutonomousWorkflow[] = typedModels.map(model => {
+    const modelJobs = typedJobs.filter(job => job.modelName === model.name && job.status !== 'failed');
+
+    const mapModelTypeToCategory = (type: MLModel['type']): AutonomousWorkflow['category'] => {
+      switch (type) {
+        case 'optimization': return 'resource-allocation';
+        case 'prediction': return 'patient-flow';
+        case 'classification': return 'quality-assurance';
+        case 'nlp':
+        case 'vision':
+        default:
+          return 'bed-management';
+      }
+    };
+    
+    const mapModelStatus = (status: MLModel['status']): AutonomousWorkflow['status'] => {
+      switch (status) {
+        case 'deployed': return 'running';
+        case 'training':
+        case 'testing':
+        case 'updating':
+          return 'learning';
+        default: return 'paused';
+      }
+    };
+
+    const mapJobStatusToNodeStatus = (status: TrainingJob['status']): DecisionNode['status'] => {
+      switch (status) {
+        case 'deployed': return 'active';
+        case 'running':
+        case 'updating':
+          return 'optimizing';
+        case 'testing':
+        case 'queued':
+          return 'learning';
+        case 'completed': return 'complete';
+        default: return 'active';
+      }
+    }
+
+    return {
+      id: model.id,
+      name: model.name,
+      category: mapModelTypeToCategory(model.type),
+      autonomyLevel: model.accuracy ? Math.round(model.accuracy * 100) : 0,
+      interventions: model.dataPoints || 0,
+      accuracy: model.accuracy ? parseFloat(model.accuracy.toFixed(2)) : 0,
+      status: mapModelStatus(model.status),
+      nodes: modelJobs.map(job => ({
+        id: job.id,
+        name: `${job.modelName} Training`,
+        type: 'action',
+        status: mapJobStatusToNodeStatus(job.status),
+        confidence: model.accuracy ? Math.round(model.accuracy * 100) : 0,
+        successRate: model.accuracy ? Math.round(model.accuracy * 100) : 0,
+        lastExecution: formatDistanceToNow(new Date(job.lastTrained || model.lastTrained), { addSuffix: true }),
+        decisions: job.progress || 0,
+      })),
+    };
   });
+
+  // Calculate system metrics from fetched data
+  const totalDecisions = workflows.reduce((acc, wf) => acc + wf.nodes.reduce((nodeAcc, node) => nodeAcc + node.decisions, 0), 0);
+  const learningModels = workflows.filter(wf => wf.status === 'learning').length;
+  const activeWorkflows = workflows.filter(wf => wf.status === 'running').length;
+  const avgConfidence = workflows.length > 0 ? workflows.reduce((acc, wf) => acc + wf.autonomyLevel, 0) / workflows.length : 0;
+  
+  const runningJobs = typedJobs.filter(job => job.status === 'running');
+  const systemLoad = runningJobs.length > 0 ? runningJobs.reduce((acc, job) => acc + (job.gpuUtilization || 0), 0) / runningJobs.length : 0;
+  
+  const systemMetrics = {
+    totalDecisions: totalDecisions,
+    autonomousResolutions: Math.round(totalDecisions * (avgConfidence / 100)),
+    learningModels: learningModels,
+    activeWorkflows: activeWorkflows,
+    avgConfidence: parseFloat(avgConfidence.toFixed(1)),
+    systemLoad: Math.round(systemLoad),
+  };
+  
+  return { workflows, systemMetrics };
+}
+
+const AutonomousDecisionEngine = () => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['autonomousWorkflows'],
+    queryFn: fetchAutonomousWorkflows,
+    refetchInterval: 5000,
+  });
+  
+  const workflows = data?.workflows ?? [];
+  const systemMetrics = data?.systemMetrics ?? {
+    totalDecisions: 0,
+    autonomousResolutions: 0,
+    learningModels: 0,
+    activeWorkflows: 0,
+    avgConfidence: 0,
+    systemLoad: 0
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -134,19 +171,35 @@ const AutonomousDecisionEngine = () => {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSystemMetrics(prev => ({
-        ...prev,
-        totalDecisions: prev.totalDecisions + Math.floor(Math.random() * 5),
-        autonomousResolutions: prev.autonomousResolutions + Math.floor(Math.random() * 3),
-        avgConfidence: Math.max(85, Math.min(95, prev.avgConfidence + (Math.random() - 0.5) * 2)),
-        systemLoad: Math.max(15, Math.min(40, prev.systemLoad + (Math.random() - 0.5) * 5))
-      }));
-    }, 3000);
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-40 w-full" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+        <Skeleton className="h-48 w-full" />
+      </div>
+    );
+  }
 
-    return () => clearInterval(interval);
-  }, []);
+  if (error) {
+    return (
+      <Card className="bg-destructive/10 border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-destructive" />
+            Error Loading Decision Engine
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-destructive">Could not fetch autonomous workflow data. Please try again later.</p>
+          <p className="text-xs text-muted-foreground mt-2">{error instanceof Error ? error.message : 'An unknown error occurred'}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
