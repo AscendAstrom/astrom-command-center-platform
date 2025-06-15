@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -28,14 +27,17 @@ import { useSearchParams } from "react-router-dom";
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
   switch (userRole) {
-    case 'ADMIN':
+    case 'admin':
       return 'ADMIN';
-    case 'DATA_ENGINEER':
-      return 'ADMIN'; // Allow DATA_ENGINEER to have admin permissions for editing
+    case 'editor':
+      return 'EDITOR';
+    case 'viewer':
+      return 'VIEWER';
     case 'ANALYST':
-      return 'ADMIN'; // Allow ANALYST to have admin permissions for editing
+      return 'ANALYST';
     default:
-      return 'ADMIN'; // Default to ADMIN to allow editing
+      // Fallback for any unhandled roles
+      return 'VIEWER';
   }
 };
 

@@ -45,7 +45,7 @@ export type TriggerType =
   | 'threshold_exceeded'
   | 'time_based';
 
-export type AutomationRule = Omit<AutomationRuleDAO, 'trigger_conditions' | 'actions' | 'status' | 'id'> & {
+export type AutomationRule = Omit<AutomationRuleDAO, 'trigger_conditions' | 'actions' | 'status' | 'id' | 'execution_count' | 'created_by'> & {
   id: string;
   conditions: RuleCondition[];
   actions: RuleAction[];
@@ -68,7 +68,7 @@ export interface RuleExecution extends Omit<RuleExecutionDAO, 'details'> {
   errorMessage?: string;
 }
 
-export type AlertSubscription = Omit<AlertSubscriptionDAO, 'user_id' | 'rule_id'> & {
+export type AlertSubscription = Omit<AlertSubscriptionDAO, 'user_id' | 'rule_id' | 'channels'> & {
   userId: string;
   userRole: FlowUserRole;
   ruleIds: string[];
@@ -88,4 +88,15 @@ export interface DailySummary {
   createdAt: string;
 }
 
-export type SurgeModelPrediction = SurgePredictionDAO;
+// This type is for the SurgePredictor component's UI and mock data.
+// It should be reconciled with SurgePredictionDAO when data fetching is implemented.
+export interface SurgeModelPrediction {
+    id: string;
+    timestamp: string;
+    predictedCapacity: number;
+    currentCapacity: number;
+    confidenceScore: number;
+    timeFrame: string;
+    factors: string[];
+    recommendations: string[];
+}

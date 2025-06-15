@@ -30,7 +30,9 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       createdBy: 'current_user',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      last_executed: null
+      last_executed: null,
+      name: 'New Automation Rule',
+      description: 'A new rule ready to be configured.'
     };
     setSelectedRule(newRule);
     setIsCreating(true);

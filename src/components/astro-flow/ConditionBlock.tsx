@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,13 +24,12 @@ const ConditionBlock = ({ condition, onUpdate, onDelete, canEdit }: ConditionBlo
 
   const operators: Array<{ value: ConditionOperator; label: string; symbol: string }> = [
     { value: 'equals', label: 'Equals', symbol: '=' },
-    { value: 'not_equals', label: 'Not Equals', symbol: '≠' },
-    { value: 'greater_than', label: 'Greater Than', symbol: '>' },
-    { value: 'less_than', label: 'Less Than', symbol: '<' },
-    { value: 'greater_equal', label: 'Greater or Equal', symbol: '≥' },
-    { value: 'less_equal', label: 'Less or Equal', symbol: '≤' },
+    { value: 'notEquals', label: 'Not Equals', symbol: '≠' },
+    { value: 'greaterThan', label: 'Greater Than', symbol: '>' },
+    { value: 'lessThan', label: 'Less Than', symbol: '<' },
     { value: 'contains', label: 'Contains', symbol: '∋' },
-    { value: 'not_contains', label: 'Does Not Contain', symbol: '∌' }
+    { value: 'startsWith', label: 'Starts With', symbol: '^' },
+    { value: 'endsWith', label: 'Ends With', symbol: '$' },
   ];
 
   const currentOperator = operators.find(op => op.value === condition.operator);

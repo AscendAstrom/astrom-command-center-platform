@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
   const handleToggleSubscription = (subscriptionId: string) => {
     setSubscriptions(subscriptions.map(sub => 
       sub.id === subscriptionId 
-        ? { ...sub, isActive: !sub.isActive }
+        ? { ...sub, is_active: !sub.is_active }
         : sub
     ));
   };
@@ -92,11 +93,11 @@ const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground">
-                      {subscription.isActive ? 'Active' : 'Inactive'}
+                      {subscription.is_active ? 'Active' : 'Inactive'}
                     </span>
                     {canManageSubscriptions && (
                       <Switch
-                        checked={subscription.isActive}
+                        checked={subscription.is_active}
                         onCheckedChange={() => handleToggleSubscription(subscription.id)}
                       />
                     )}
