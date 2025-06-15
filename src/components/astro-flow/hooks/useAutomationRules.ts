@@ -17,7 +17,8 @@ const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
   last_executed: dao.last_executed,
   priority: (dao.trigger_conditions as any)?.priority || 'medium',
   triggerType: (dao.trigger_conditions as any)?.triggerType || 'threshold_exceeded',
-});
+  conditionLogic: (dao.trigger_conditions as any)?.logic || 'AND',
+} as AutomationRule);
 
 const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
     const status: 'ACTIVE' | 'DRAFT' = rule.isActive ? 'ACTIVE' : 'DRAFT';
@@ -28,6 +29,7 @@ const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
             conditions: rule.conditions,
             priority: rule.priority,
             triggerType: rule.triggerType,
+            logic: (rule as any).conditionLogic,
         } as any,
         actions: { actions: rule.actions } as any,
         status: status,

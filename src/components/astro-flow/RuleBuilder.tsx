@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { AutomationRule, FlowUserRole } from './types';
 import RulesList from './RulesList';
@@ -30,7 +31,8 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       last_executed: null,
-    };
+      conditionLogic: 'AND',
+    } as AutomationRule;
     setSelectedRule(newRule);
     setIsCreating(true);
   };
