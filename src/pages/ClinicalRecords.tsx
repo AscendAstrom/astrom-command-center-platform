@@ -15,7 +15,9 @@ import {
   ChevronRight,
   BarChart3,
   Download,
-  Zap
+  Zap,
+  Brain,
+  Bot
 } from 'lucide-react';
 import { useClinicalData, usePatients } from '@/hooks/useClinicalData';
 import { ClinicalDataType } from '@/types/clinical';
@@ -24,6 +26,9 @@ import ClinicalDetailDrawer from '@/components/clinical/ClinicalDetailDrawer';
 import PatientTimeline from '@/components/clinical/PatientTimeline';
 import AdvancedSearch, { SearchFilter } from '@/components/clinical/AdvancedSearch';
 import ClinicalInsights from '@/components/clinical/ClinicalInsights';
+import PredictiveAnalytics from '@/components/clinical/PredictiveAnalytics';
+import WorkflowAutomation from '@/components/clinical/WorkflowAutomation';
+import ClinicalAIAssistant from '@/components/clinical/ClinicalAIAssistant';
 import { ClinicalDataService } from '@/services/clinicalDataService';
 import { toast } from 'sonner';
 
@@ -33,6 +38,9 @@ const ClinicalRecords = () => {
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [showPatientTimeline, setShowPatientTimeline] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
+  const [showPredictiveAnalytics, setShowPredictiveAnalytics] = useState(false);
+  const [showWorkflowAutomation, setShowWorkflowAutomation] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [patientSearchTerm, setPatientSearchTerm] = useState('');
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +70,6 @@ const ClinicalRecords = () => {
         (payload) => {
           console.log(`Real-time update for ${type}:`, payload);
           toast.info(`${type} data updated in real-time`);
-          // The queries will automatically refetch due to cache invalidation
         }
       )
     );
@@ -131,7 +138,6 @@ const ClinicalRecords = () => {
     const recordType = type || selectedTab;
     setSelectedDetail({ data: item, type: recordType });
     
-    // Log data access
     ClinicalDataService.logDataAccess(recordType, item.id, 'VIEW');
   };
 
@@ -204,6 +210,133 @@ const ClinicalRecords = () => {
     };
   };
 
+  // Navigation handlers
+  const resetToMain = () => {
+    setShowInsights(false);
+    setShowPatientTimeline(false);
+    setShowPredictiveAnalytics(false);
+    setShowWorkflowAutomation(false);
+    setShowAIAssistant(false);
+  };
+
+  if (showAIAssistant) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Clinical AI Assistant</h1>
+            <p className="text-muted-foreground">
+              AI-powered clinical decision support and insights
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <ClinicalAIAssistant 
+              context="clinical_records"
+              patientId={selectedPatientId}
+            />
+          </div>
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => setShowPredictiveAnalytics(true)}
+                >
+                  <Brain className="h-4 w-4 mr-2" />
+                  Predictive Analytics
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => setShowInsights(true)}
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Clinical Insights
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => setShowWorkflowAutomation(true)}
+                >
+                  <Zap className="h-4 w-4 mr-2" />
+                  Workflow Automation
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (showWorkflowAutomation) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Workflow Automation</h1>
+            <p className="text-muted-foreground">
+              Intelligent automation for clinical workflows
+            </p>
+          </div>
+        </div>
+
+        <WorkflowAutomation />
+      </div>
+    );
+  }
+
+  if (showPredictiveAnalytics) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Predictive Analytics</h1>
+            <p className="text-muted-foreground">
+              AI-powered predictions and risk assessment
+            </p>
+          </div>
+        </div>
+
+        <PredictiveAnalytics 
+          data={getAllClinicalData()}
+          selectedPatientId={selectedPatientId}
+        />
+      </div>
+    );
+  }
+
   if (showInsights) {
     return (
       <div className="p-6 space-y-6">
@@ -211,7 +344,7 @@ const ClinicalRecords = () => {
           <div>
             <Button
               variant="ghost"
-              onClick={() => setShowInsights(false)}
+              onClick={resetToMain}
               className="mb-4"
             >
               ← Back to Clinical Records
@@ -240,7 +373,7 @@ const ClinicalRecords = () => {
           <div>
             <Button
               variant="ghost"
-              onClick={() => setShowPatientTimeline(false)}
+              onClick={resetToMain}
               className="mb-4"
             >
               ← Back to Clinical Records
@@ -252,13 +385,22 @@ const ClinicalRecords = () => {
               </p>
             )}
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowInsights(true)}
-          >
-            <BarChart3 className="h-4 w-4 mr-2" />
-            View Insights
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowInsights(true)}
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              View Insights
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowAIAssistant(true)}
+            >
+              <Bot className="h-4 w-4 mr-2" />
+              AI Assistant
+            </Button>
+          </div>
         </div>
 
         <PatientTimeline 
@@ -284,10 +426,31 @@ const ClinicalRecords = () => {
         <div>
           <h1 className="text-3xl font-bold">Clinical Records</h1>
           <p className="text-muted-foreground">
-            Manage patient clinical data with advanced search and real-time updates
+            Advanced clinical data management with AI-powered insights
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowAIAssistant(true)}
+          >
+            <Bot className="h-4 w-4 mr-2" />
+            AI Assistant
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowPredictiveAnalytics(true)}
+          >
+            <Brain className="h-4 w-4 mr-2" />
+            Predictive Analytics
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowWorkflowAutomation(true)}
+          >
+            <Zap className="h-4 w-4 mr-2" />
+            Automation
+          </Button>
           <Button
             variant="outline"
             onClick={() => setShowInsights(true)}
