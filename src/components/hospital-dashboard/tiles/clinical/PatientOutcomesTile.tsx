@@ -29,6 +29,7 @@ export const PatientOutcomesTile = () => {
         return;
       }
       
+      let avgLengthOfStay = 0;
       if (visits && visits.length > 0) {
         const totalStayDuration = visits.reduce((acc, visit) => {
           const admission = new Date(visit.admission_date);
@@ -36,28 +37,19 @@ export const PatientOutcomesTile = () => {
           const duration = (discharge.getTime() - admission.getTime()) / (1000 * 3600 * 24);
           return acc + duration;
         }, 0);
-
-        const avgLengthOfStay = totalStayDuration / visits.length;
-        
-        // Mocked data for other metrics until real data is available
-        const satisfactionScore = 8.7; 
-        const complicationRate = 5.2;
-        const mortalityRate = 2.8;
-
-        setMetrics({
-          avgLengthOfStay: parseFloat(avgLengthOfStay.toFixed(1)),
-          satisfactionScore,
-          complicationRate,
-          mortalityRate
-        });
-
-        setOutcomeData([
-            { name: 'Excellent', value: 45, color: '#22c55e' },
-            { name: 'Good', value: 35, color: '#3b82f6' },
-            { name: 'Fair', value: 15, color: '#f59e0b' },
-            { name: 'Poor', value: 5, color: '#ef4444' }
-        ]);
+        avgLengthOfStay = totalStayDuration / visits.length;
       }
+        
+      // Real data should be fetched for other metrics. For now, they are 0.
+      setMetrics({
+        avgLengthOfStay: parseFloat(avgLengthOfStay.toFixed(1)),
+        satisfactionScore: 0,
+        complicationRate: 0,
+        mortalityRate: 0
+      });
+
+      // outcomeData is cleared as it was mock data.
+      setOutcomeData([]);
       setLoading(false);
     };
 
@@ -148,7 +140,7 @@ export const PatientOutcomesTile = () => {
           </div>
         ) : (
             <div className="h-20 flex items-center justify-center bg-muted/20 rounded">
-                <p className="text-muted-foreground text-sm">No outcome data available</p>
+                <p className="text-muted-foreground text-sm">No satisfaction data</p>
             </div>
         )}
 
@@ -164,7 +156,7 @@ export const PatientOutcomesTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-green-50 p-2 rounded">
-          <strong>Clinical Insights:</strong> Patient satisfaction up 12% this quarter. Length of stay reduced by 0.8 days.
+          <strong>Clinical Insights:</strong> Connect to EHR for full outcome metrics.
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database, Target } from 'lucide-react';
@@ -13,27 +12,10 @@ interface DataMappingCanvasProps {
 }
 
 export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) => {
-  const [sourceFields] = useState<SourceField[]>([
-    { id: '1', name: 'patient_id', type: 'string', description: 'Unique patient identifier', sample: 'PAT001' },
-    { id: '2', name: 'admission_time', type: 'date', description: 'Patient admission timestamp', sample: '2024-01-15 14:30:00' },
-    { id: '3', name: 'chief_complaint', type: 'string', description: 'Primary reason for visit', sample: 'Chest pain' },
-    { id: '4', name: 'triage_level', type: 'number', description: 'Triage priority level', sample: '3' },
-    { id: '5', name: 'zone_assignment', type: 'string', description: 'Assigned treatment zone', sample: 'ZONE_A' },
-  ]);
-
-  const [targetFields] = useState<TargetField[]>([
-    { id: 't1', name: 'dim_patient_key', type: 'string', required: true, description: 'Patient dimension key' },
-    { id: 't2', name: 'dim_zone_key', type: 'string', required: true, description: 'Zone dimension key' },
-    { id: 't3', name: 'admission_datetime', type: 'date', required: true, description: 'Normalized admission time' },
-    { id: 't4', name: 'chief_complaint_text', type: 'string', required: false, description: 'Complaint description' },
-    { id: 't5', name: 'triage_priority', type: 'number', required: true, description: 'Triage priority score' },
-  ]);
-
-  const [mappings, setMappings] = useState<FieldMapping[]>([
-    { id: 'm1', sourceFieldId: '1', targetFieldId: 't1' },
-    { id: 'm2', sourceFieldId: '5', targetFieldId: 't2' },
-    { id: 'm3', sourceFieldId: '2', targetFieldId: 't3', transformationRule: 'TIMESTAMP_CLEAN' },
-  ]);
+  // Mock data removed. This data should be fetched based on a selected data source.
+  const [sourceFields, setSourceFields] = useState<SourceField[]>([]);
+  const [targetFields, setTargetFields] = useState<TargetField[]>([]);
+  const [mappings, setMappings] = useState<FieldMapping[]>([]);
 
   const [draggedField, setDraggedField] = useState<string | null>(null);
 
@@ -85,14 +67,18 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {sourceFields.map((field) => (
+            {sourceFields.length > 0 ? sourceFields.map((field) => (
               <SourceFieldCard
                 key={field.id}
                 field={field}
                 onDragStart={handleDragStart}
                 readOnly={readOnly}
               />
-            ))}
+            )) : (
+              <div className="text-center py-10 text-muted-foreground">
+                Select a data source to see its fields.
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -105,7 +91,7 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {targetFields.map((field) => {
+            {targetFields.length > 0 ? targetFields.map((field) => {
               const mapping = mappings.find(m => m.targetFieldId === field.id);
               const sourceField = mapping ? getSourceFieldById(mapping.sourceFieldId) : undefined;
 
@@ -120,7 +106,11 @@ export const DataMappingCanvas = ({ readOnly = false }: DataMappingCanvasProps) 
                   readOnly={readOnly}
                 />
               );
-            })}
+            }) : (
+              <div className="text-center py-10 text-muted-foreground">
+                Select a data pipeline to see the target schema.
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

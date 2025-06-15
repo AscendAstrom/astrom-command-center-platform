@@ -23,20 +23,20 @@ export const ServiceLevelsTile = () => {
         console.error("Error fetching SLAs:", error);
       } else if (data) {
         // NOTE: Compliance and breaches would be calculated based on real-time measurements against these SLAs.
-        // This is a simplified representation.
-        const breaches = data.filter(s => (s.target_value || 100) < 90).length;
-        const compliance = data.length > 0 ? ((data.length - breaches) / data.length) * 100 : 100;
+        // This is a simplified representation without mock data.
+        const breaches = 0; // Placeholder
+        const compliance = 100; // Placeholder
 
         setMetrics({
           overallCompliance: Math.round(compliance),
           slaBreaches: breaches,
-          avgResponseTime: 25.5 // Mocked for now
+          avgResponseTime: 0 // Placeholder
         });
         setSlaData(data.map(sla => ({
             service: sla.name,
             target: sla.target_value,
-            actual: (sla.target_value || 0) - Math.random() * 5, // mocked actual
-            compliance: 100 - Math.random() * 10 // mocked compliance
+            actual: null, // No mock data
+            compliance: null // No mock data
         })));
       }
       setLoading(false);
@@ -103,19 +103,8 @@ export const ServiceLevelsTile = () => {
         </div>
         
         {slaData.length > 0 ? (
-          <div className="h-24">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={slaData.slice(0, 4)}>
-                <XAxis dataKey="service" fontSize={8} />
-                <YAxis hide />
-                <Tooltip formatter={(value) => [`${value}%`, 'Compliance']} />
-                <Bar 
-                  dataKey="compliance" 
-                  fill="#3b82f6"
-                  radius={[2, 2, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-24 flex items-center justify-center bg-muted/20 rounded">
+            <p className="text-muted-foreground text-sm">No live SLA compliance data</p>
           </div>
         ) : (
             <div className="h-24 flex items-center justify-center bg-muted/20 rounded">
@@ -130,11 +119,8 @@ export const ServiceLevelsTile = () => {
             <div key={index} className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground truncate">{sla.service}</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs">{sla.actual?.toFixed(0)}m</span>
-                <div className={`w-2 h-2 rounded-full ${
-                  sla.compliance >= 95 ? 'bg-green-500' : 
-                  sla.compliance >= 90 ? 'bg-orange-500' : 'bg-red-500'
-                }`} />
+                <span className="text-xs">{sla.target}% Target</span>
+                <div className="w-2 h-2 rounded-full bg-gray-400" title="Status unknown" />
               </div>
             </div>
           )) : (
@@ -148,7 +134,7 @@ export const ServiceLevelsTile = () => {
             <span className="font-semibold text-orange-600">Recent Breaches</span>
           </div>
           <div className="text-muted-foreground">
-            {slaData.length > 0 ? "Pharmacy Delivery - 2 hours ago" : "No recent breaches"}
+            Connect to monitoring system for breach alerts.
           </div>
         </div>
       </CardContent>

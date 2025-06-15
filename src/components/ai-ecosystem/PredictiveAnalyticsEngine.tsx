@@ -1,11 +1,12 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp, Brain, AlertTriangle, Target, Zap, BarChart3 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { supabase } from '@/integrations/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PredictionModel {
   id: string;
@@ -32,95 +33,63 @@ interface Prediction {
 
 const PredictiveAnalyticsEngine = () => {
   const [selectedTimeHorizon, setSelectedTimeHorizon] = useState('4h');
-  const [models] = useState<PredictionModel[]>([
-    {
-      id: 'surge-predictor',
-      name: 'Patient Surge Predictor',
-      type: 'lstm',
-      target: 'patient_volume',
-      accuracy: 94,
-      confidence: 89,
-      lastTrained: '2 hours ago',
-      status: 'active'
-    },
-    {
-      id: 'sla-risk-scorer',
-      name: 'SLA Risk Scorer',
-      type: 'ensemble',
-      target: 'sla_breach_probability',
-      accuracy: 92,
-      confidence: 87,
-      lastTrained: '1 hour ago',
-      status: 'active'
-    },
-    {
-      id: 'resource-optimizer',
-      name: 'Resource Optimizer',
-      type: 'prophet',
-      target: 'resource_demand',
-      accuracy: 88,
-      confidence: 84,
-      lastTrained: '30 min ago',
-      status: 'training'
-    },
-    {
-      id: 'quality-forecaster',
-      name: 'Data Quality Forecaster',
-      type: 'arima',
-      target: 'data_quality_score',
-      accuracy: 91,
-      confidence: 86,
-      lastTrained: '45 min ago',
-      status: 'active'
-    }
-  ]);
+  const [models, setModels] = useState<PredictionModel[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [trendData, setTrendData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [predictions] = useState<Prediction[]>([
-    {
-      id: '1',
-      modelId: 'surge-predictor',
-      target: 'Patient Volume',
-      currentValue: 142,
-      predictedValue: 167,
-      confidence: 89,
-      timeHorizon: '4 hours',
-      riskLevel: 'medium',
-      recommendation: 'Consider activating surge protocol and alerting additional staff'
-    },
-    {
-      id: '2',
-      modelId: 'sla-risk-scorer',
-      target: 'SLA Breach Risk',
-      currentValue: 23,
-      predictedValue: 41,
-      confidence: 87,
-      timeHorizon: '2 hours',
-      riskLevel: 'high',
-      recommendation: 'Implement immediate workflow optimization to prevent SLA breaches'
-    },
-    {
-      id: '3',
-      modelId: 'resource-optimizer',
-      target: 'Staff Demand',
-      currentValue: 28,
-      predictedValue: 34,
-      confidence: 84,
-      timeHorizon: '6 hours',
-      riskLevel: 'low',
-      recommendation: 'Schedule additional staff for evening shift'
-    }
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
 
-  // Mock data for trend visualization
-  const trendData = [
-    { time: '00:00', actual: 120, predicted: 118, confidence: 85 },
-    { time: '04:00', actual: 95, predicted: 98, confidence: 87 },
-    { time: '08:00', actual: 140, predicted: 135, confidence: 89 },
-    { time: '12:00', actual: 165, predicted: 162, confidence: 91 },
-    { time: '16:00', actual: 180, predicted: 185, confidence: 88 },
-    { time: '20:00', actual: null, predicted: 195, confidence: 85 },
-    { time: '24:00', actual: null, predicted: 167, confidence: 82 }
-  ];
+      // Fetch models (assuming a table named 'ml_models' might exist)
+      // Since it doesn't, this will be an empty array, showing the empty state.
+      const { data: modelsData, error: modelsError } = await supabase.from('ml_models').select('*');
+      if (modelsData) setModels(modelsData as PredictionModel[]);
+
+      // Fetch predictions from 'capacity_forecasts'
+      const { data: forecastsData, error: forecastsError } = await supabase
+        .from('capacity_forecasts')
+        .select('*')
+        .order('forecast_date', { ascending: false })
+        .limit(3);
+
+      if (forecastsData) {
+        const formattedPredictions = forecastsData.map((p, i) => ({
+          id: p.id,
+          modelId: p.model_version || `model-${i}`,
+          target: p.forecast_type,
+          currentValue: p.predicted_value - (p.predicted_value * 0.1), // Placeholder for current value
+          predictedValue: p.predicted_value,
+          confidence: p.confidence_interval ? (100 - p.confidence_interval) : 85,
+          timeHorizon: '24 hours',
+          riskLevel: 'medium', // Placeholder
+          recommendation: `Monitor ${p.forecast_type} based on prediction.` // Placeholder
+        })) as Prediction[];
+        setPredictions(formattedPredictions);
+      }
+      
+      // Fetch trend data from 'metrics_snapshots'
+      const { data: trendData, error: trendError } = await supabase
+        .from('metrics_snapshots')
+        .select('timestamp, metric_value')
+        .order('timestamp', { ascending: true })
+        .limit(20);
+
+      if (trendData) {
+         const formattedTrendData = trendData.map(d => ({
+            time: new Date(d.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            actual: d.metric_value,
+            predicted: null // No predicted value in this table
+        }));
+        setTrendData(formattedTrendData);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   const getModelTypeColor = (type: string) => {
     switch (type) {
@@ -205,33 +174,41 @@ const PredictiveAnalyticsEngine = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {models.map((model) => (
-              <div key={model.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${getStatusColor(model.status)}`} />
-                    <div className="font-medium text-foreground">{model.name}</div>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
+            ) : models.length > 0 ? (
+              models.map((model) => (
+                <div key={model.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${getStatusColor(model.status)}`} />
+                      <div className="font-medium text-foreground">{model.name}</div>
+                    </div>
+                    <Badge className={getModelTypeColor(model.type)}>
+                      {model.type.toUpperCase()}
+                    </Badge>
                   </div>
-                  <Badge className={getModelTypeColor(model.type)}>
-                    {model.type.toUpperCase()}
-                  </Badge>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Accuracy:</span>
+                      <span className="text-foreground font-medium ml-1">{model.accuracy}%</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Confidence:</span>
+                      <span className="text-foreground font-medium ml-1">{model.confidence}%</span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Last trained:</span>
+                      <span className="text-foreground font-medium ml-1">{model.lastTrained}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Accuracy:</span>
-                    <span className="text-foreground font-medium ml-1">{model.accuracy}%</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Confidence:</span>
-                    <span className="text-foreground font-medium ml-1">{model.confidence}%</span>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="text-muted-foreground">Last trained:</span>
-                    <span className="text-foreground font-medium ml-1">{model.lastTrained}</span>
-                  </div>
-                </div>
+              ))
+            ) : (
+              <div className="text-center text-muted-foreground py-10">
+                No active ML models found.
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
@@ -244,34 +221,42 @@ const PredictiveAnalyticsEngine = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {predictions.map((prediction) => (
-              <div key={prediction.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="font-medium text-foreground">{prediction.target}</div>
-                  <Badge variant="outline" className={getRiskColor(prediction.riskLevel)}>
-                    {prediction.riskLevel} risk
-                  </Badge>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-36 w-full" />)
+            ) : predictions.length > 0 ? (
+              predictions.map((prediction) => (
+                <div key={prediction.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="font-medium text-foreground">{prediction.target}</div>
+                    <Badge variant="outline" className={getRiskColor(prediction.riskLevel)}>
+                      {prediction.riskLevel} risk
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Current:</span>
+                      <span className="text-foreground font-medium">{prediction.currentValue}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Predicted ({prediction.timeHorizon}):</span>
+                      <span className="text-foreground font-medium">{prediction.predictedValue}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Confidence:</span>
+                      <span className="text-foreground font-medium">{prediction.confidence}%</span>
+                    </div>
+                    <div className="mt-3 p-2 bg-blue-500/10 rounded border border-blue-500/20">
+                      <div className="text-xs text-blue-600 font-medium mb-1">AI Recommendation:</div>
+                      <div className="text-xs text-foreground">{prediction.recommendation}</div>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Current:</span>
-                    <span className="text-foreground font-medium">{prediction.currentValue}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Predicted ({prediction.timeHorizon}):</span>
-                    <span className="text-foreground font-medium">{prediction.predictedValue}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Confidence:</span>
-                    <span className="text-foreground font-medium">{prediction.confidence}%</span>
-                  </div>
-                  <div className="mt-3 p-2 bg-blue-500/10 rounded border border-blue-500/20">
-                    <div className="text-xs text-blue-600 font-medium mb-1">AI Recommendation:</div>
-                    <div className="text-xs text-foreground">{prediction.recommendation}</div>
-                  </div>
+              ))
+            ) : (
+                <div className="text-center text-muted-foreground py-10">
+                  No active predictions available.
                 </div>
-              </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       </div>
@@ -285,38 +270,48 @@ const PredictiveAnalyticsEngine = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="time" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="predicted"
-                  stackId="1"
-                  stroke="#3B82F6"
-                  fill="#3B82F6"
-                  fillOpacity={0.1}
-                  strokeWidth={2}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="actual"
-                  stroke="#10B981"
-                  strokeWidth={2}
-                  dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          {loading ? (
+            <Skeleton className="h-80 w-full" />
+          ) : trendData.length > 0 ? (
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="time" stroke="#9CA3AF" />
+                  <YAxis stroke="#9CA3AF" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1F2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="predicted"
+                    stackId="1"
+                    stroke="#3B82F6"
+                    fill="#3B82F6"
+                    fillOpacity={0.1}
+                    strokeWidth={2}
+                    name="Predicted"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="actual"
+                    stroke="#10B981"
+                    strokeWidth={2}
+                    dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
+                    name="Actual"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+             <div className="h-80 flex items-center justify-center text-muted-foreground">
+                No trend data available.
+              </div>
+          )}
           <div className="flex items-center justify-center gap-6 mt-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
