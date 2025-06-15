@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AutomationRule, RuleCondition, RuleAction, FlowUserRole } from './types';
 import RulesList from './RulesList';
@@ -10,41 +9,7 @@ interface RuleBuilderProps {
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const [rules, setRules] = useState<AutomationRule[]>([
-    {
-      id: '1',
-      name: 'SLA Breach Alert',
-      description: 'Alert when patient wait time exceeds SLA threshold',
-      triggerType: 'sla_breach',
-      conditions: [
-        {
-          id: '1',
-          field: 'wait_time_minutes',
-          operator: 'greater_than',
-          value: 45
-        }
-      ],
-      actions: [
-        {
-          id: '1',
-          type: 'email_alert',
-          config: {
-            recipients: ['ed-manager@hospital.com'],
-            message: 'SLA breach detected: Patient wait time exceeded threshold',
-            severity: 'high'
-          }
-        }
-      ],
-      isActive: true,
-      priority: 'high',
-      cooldownMinutes: 15,
-      executionCount: 47,
-      lastExecuted: '2024-01-20T14:30:00Z',
-      createdBy: 'admin',
-      createdAt: '2024-01-15T10:00:00Z',
-      updatedAt: '2024-01-20T14:30:00Z'
-    }
-  ]);
+  const [rules, setRules] = useState<AutomationRule[]>([]);
 
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);

@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -131,7 +130,6 @@ const AstroFlow = () => {
 
           <TabsContent value="workflow" className="space-y-6">
             <WorkflowOverview />
-            <BedManagementDemo />
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">

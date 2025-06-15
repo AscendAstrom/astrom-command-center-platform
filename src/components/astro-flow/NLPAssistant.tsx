@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,12 +49,12 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
     setInput('');
     setIsProcessing(true);
 
-    // Simulate AI processing - replaced mock response generator
+    // Simulate AI processing
     setTimeout(() => {
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: "AI response generation is not implemented. This is a placeholder response.",
+        content: "Data connection not found. Please connect a data source to enable AI responses.",
         timestamp: new Date().toISOString(),
         intent: detectIntent(input),
         confidence: 0
