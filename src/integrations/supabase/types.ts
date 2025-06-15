@@ -2948,6 +2948,9 @@ export type Database = {
         | "PEDIATRICS"
         | "MATERNITY"
         | "GENERAL"
+        | "NEUROLOGY"
+        | "ORTHOPEDICS"
+        | "RADIOLOGY"
       execution_status: "PENDING" | "RUNNING" | "SUCCESS" | "FAILED"
       ingestion_mode: "BATCH" | "STREAM"
       integration_status: "CONNECTED" | "DISCONNECTED" | "ERROR" | "SYNCING"
@@ -3100,6 +3103,9 @@ export const Constants = {
         "PEDIATRICS",
         "MATERNITY",
         "GENERAL",
+        "NEUROLOGY",
+        "ORTHOPEDICS",
+        "RADIOLOGY",
       ],
       execution_status: ["PENDING", "RUNNING", "SUCCESS", "FAILED"],
       ingestion_mode: ["BATCH", "STREAM"],
