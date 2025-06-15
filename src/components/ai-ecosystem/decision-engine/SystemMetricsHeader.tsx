@@ -15,7 +15,7 @@ const SystemMetricsHeader = ({ systemMetrics }: SystemMetricsHeaderProps) => {
         <CardTitle className="text-foreground flex items-center gap-2">
           <Brain className="h-6 w-6 text-purple-400" />
           Autonomous Decision Engine
-          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Phase 3A</Badge>
+          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Phase 3B</Badge>
         </CardTitle>
         <CardDescription>
           Self-learning AI system with autonomous decision-making and multi-agent coordination

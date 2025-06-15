@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Brain, 
@@ -78,8 +77,8 @@ const AIEcosystem = () => {
               AI Assistant
             </TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-green-500/20">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Predictive
+              <Brain className="h-4 w-4 mr-2" />
+              Cognitive
             </TabsTrigger>
             <TabsTrigger value="workflows" className="data-[state=active]:bg-orange-500/20">
               <Zap className="h-4 w-4 mr-2" />
