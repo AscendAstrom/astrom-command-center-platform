@@ -1,7 +1,8 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { MLModel, TrainingJob, FederatedSite, PlatformMetrics } from '@/components/ai-ecosystem/ml-platform/types';
+import { useEffect } from 'react';
 
 export interface MLPlatformData {
   models: MLModel[];
@@ -85,9 +86,29 @@ const fetchMLPlatformData = async (): Promise<MLPlatformData> => {
 };
 
 export const useMLPlatformData = () => {
-    return useQuery<MLPlatformData, Error>({
+    const queryClient = useQueryClient();
+    const queryResult = useQuery<MLPlatformData, Error>({
         queryKey: ['mlPlatformData'],
         queryFn: fetchMLPlatformData,
-        refetchInterval: 30000,
     });
+
+    useEffect(() => {
+        const channel = supabase.channel('ml-platform-realtime-updates')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'ml_models' }, () => {
+                queryClient.invalidateQueries({ queryKey: ['mlPlatformData'] });
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'ml_training_jobs' }, () => {
+                queryClient.invalidateQueries({ queryKey: ['mlPlatformData'] });
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'ml_federated_sites' }, () => {
+                queryClient.invalidateQueries({ queryKey: ['mlPlatformData'] });
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [queryClient]);
+
+    return queryResult;
 };

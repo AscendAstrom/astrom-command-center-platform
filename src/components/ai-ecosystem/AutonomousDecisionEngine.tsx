@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +19,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { MLModel, TrainingJob } from './ml-platform/types';
+import { useEffect } from 'react';
 
 interface DecisionNode {
   id: string;
@@ -135,11 +136,26 @@ const fetchAutonomousWorkflows = async () => {
 }
 
 const AutonomousDecisionEngine = () => {
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ['autonomousWorkflows'],
     queryFn: fetchAutonomousWorkflows,
-    refetchInterval: 5000,
   });
+
+  useEffect(() => {
+    const channel = supabase.channel('autonomous-workflows-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ml_models' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['autonomousWorkflows'] });
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ml_training_jobs' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['autonomousWorkflows'] });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    }
+  }, [queryClient]);
   
   const workflows = data?.workflows ?? [];
   const systemMetrics = data?.systemMetrics ?? {
