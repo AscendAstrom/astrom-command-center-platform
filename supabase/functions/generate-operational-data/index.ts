@@ -6,6 +6,7 @@ import { ensureBeds, updateBedStatuses } from './lib/beds.ts'
 import { ensureStaff, manageStaffSchedules } from './lib/staff.ts'
 import { managePatientVisits, manageWaitTimes } from './lib/patients.ts'
 import { ensureLabTestTypes, manageLabTests } from './lib/labs.ts'
+import { manageFinancials } from './lib/financials.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -35,6 +36,7 @@ serve(async (req) => {
       manageWaitTimes(supabaseClient),
       manageStaffSchedules(supabaseClient),
       manageLabTests(supabaseClient),
+      manageFinancials(supabaseClient),
     ]);
 
     return new Response(JSON.stringify({ message: 'Operational data updated successfully' }), {

@@ -370,6 +370,60 @@ export type Database = {
           },
         ]
       }
+      billing_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          patient_id: string
+          status: Database["public"]["Enums"]["billing_status"]
+          transaction_date: string
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at: string
+          visit_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id: string
+          status?: Database["public"]["Enums"]["billing_status"]
+          transaction_date?: string
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id?: string
+          status?: Database["public"]["Enums"]["billing_status"]
+          transaction_date?: string
+          transaction_type?: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_transactions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_transactions_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "patient_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       capacity_forecasts: {
         Row: {
           confidence_interval: number | null
@@ -440,6 +494,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      claim_denials: {
+        Row: {
+          appeal_status: Database["public"]["Enums"]["appeal_status"] | null
+          claim_id: string
+          created_at: string
+          denial_date: string
+          denial_reason: Database["public"]["Enums"]["denial_reason_code"]
+          details: string | null
+          id: string
+        }
+        Insert: {
+          appeal_status?: Database["public"]["Enums"]["appeal_status"] | null
+          claim_id: string
+          created_at?: string
+          denial_date?: string
+          denial_reason: Database["public"]["Enums"]["denial_reason_code"]
+          details?: string | null
+          id?: string
+        }
+        Update: {
+          appeal_status?: Database["public"]["Enums"]["appeal_status"] | null
+          claim_id?: string
+          created_at?: string
+          denial_date?: string
+          denial_reason?: Database["public"]["Enums"]["denial_reason_code"]
+          details?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claim_denials_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_claims"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       critical_lab_values: {
         Row: {
@@ -995,6 +1087,66 @@ export type Database = {
             columns: ["data_source_id"]
             isOneToOne: false
             referencedRelation: "data_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_claims: {
+        Row: {
+          created_at: string
+          id: string
+          insurer_name: string
+          paid_amount: number | null
+          patient_id: string
+          processing_time_days: number | null
+          resolution_date: string | null
+          status: Database["public"]["Enums"]["claim_status"]
+          submission_date: string | null
+          total_amount: number
+          updated_at: string
+          visit_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insurer_name: string
+          paid_amount?: number | null
+          patient_id: string
+          processing_time_days?: number | null
+          resolution_date?: string | null
+          status?: Database["public"]["Enums"]["claim_status"]
+          submission_date?: string | null
+          total_amount: number
+          updated_at?: string
+          visit_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insurer_name?: string
+          paid_amount?: number | null
+          patient_id?: string
+          processing_time_days?: number | null
+          resolution_date?: string | null
+          status?: Database["public"]["Enums"]["claim_status"]
+          submission_date?: string | null
+          total_amount?: number
+          updated_at?: string
+          visit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claims_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "patient_visits"
             referencedColumns: ["id"]
           },
         ]
@@ -3099,10 +3251,33 @@ export type Database = {
       alert_priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | "URGENT"
       alert_severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
       alert_status: "ACTIVE" | "ACKNOWLEDGED" | "RESOLVED"
+      appeal_status: "NONE" | "IN_PROGRESS" | "SUCCESSFUL" | "UNSUCCESSFUL"
       automation_status: "ACTIVE" | "PAUSED" | "DRAFT" | "ERROR"
       bed_status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE" | "RESERVED"
+      billing_status:
+        | "DRAFT"
+        | "BILLED"
+        | "PAID"
+        | "PARTIALLY_PAID"
+        | "VOID"
+        | "WRITEOFF"
+      claim_status:
+        | "SUBMITTED"
+        | "PENDING"
+        | "APPROVED"
+        | "DENIED"
+        | "APPEALED"
+        | "PAID"
       dashboard_type: "OPERATIONAL" | "EXECUTIVE" | "CLINICAL" | "FINANCIAL"
       data_source_type: "HL7" | "FHIR" | "API" | "CSV" | "MANUAL" | "EPIC"
+      denial_reason_code:
+        | "CODING_ERROR"
+        | "PRIOR_AUTH"
+        | "NOT_COVERED"
+        | "DUPLICATE_CLAIM"
+        | "MEDICAL_NECESSITY"
+        | "PATIENT_INELIGIBLE"
+        | "OTHER"
       department_type:
         | "EMERGENCY"
         | "ICU"
@@ -3139,6 +3314,7 @@ export type Database = {
       pipeline_status: "DRAFT" | "ACTIVE" | "PAUSED" | "DEPRECATED"
       rule_status: "DRAFT" | "ACTIVE" | "PAUSED"
       sync_status: "CONNECTED" | "SYNCING" | "ERROR" | "PAUSED"
+      transaction_type: "CHARGE" | "PAYMENT" | "ADJUSTMENT" | "REFUND"
       user_role: "ADMIN" | "DATA_ENGINEER" | "ANALYST" | "CLINICIAN"
       widget_type: "CHART" | "METRIC_CARD" | "TABLE" | "MAP" | "ALERT_PANEL"
       workflow_status: "DRAFT" | "ACTIVE" | "PAUSED" | "COMPLETED" | "FAILED"
@@ -3260,10 +3436,36 @@ export const Constants = {
       alert_priority: ["LOW", "MEDIUM", "HIGH", "CRITICAL", "URGENT"],
       alert_severity: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
       alert_status: ["ACTIVE", "ACKNOWLEDGED", "RESOLVED"],
+      appeal_status: ["NONE", "IN_PROGRESS", "SUCCESSFUL", "UNSUCCESSFUL"],
       automation_status: ["ACTIVE", "PAUSED", "DRAFT", "ERROR"],
       bed_status: ["AVAILABLE", "OCCUPIED", "MAINTENANCE", "RESERVED"],
+      billing_status: [
+        "DRAFT",
+        "BILLED",
+        "PAID",
+        "PARTIALLY_PAID",
+        "VOID",
+        "WRITEOFF",
+      ],
+      claim_status: [
+        "SUBMITTED",
+        "PENDING",
+        "APPROVED",
+        "DENIED",
+        "APPEALED",
+        "PAID",
+      ],
       dashboard_type: ["OPERATIONAL", "EXECUTIVE", "CLINICAL", "FINANCIAL"],
       data_source_type: ["HL7", "FHIR", "API", "CSV", "MANUAL", "EPIC"],
+      denial_reason_code: [
+        "CODING_ERROR",
+        "PRIOR_AUTH",
+        "NOT_COVERED",
+        "DUPLICATE_CLAIM",
+        "MEDICAL_NECESSITY",
+        "PATIENT_INELIGIBLE",
+        "OTHER",
+      ],
       department_type: [
         "EMERGENCY",
         "ICU",
@@ -3304,6 +3506,7 @@ export const Constants = {
       pipeline_status: ["DRAFT", "ACTIVE", "PAUSED", "DEPRECATED"],
       rule_status: ["DRAFT", "ACTIVE", "PAUSED"],
       sync_status: ["CONNECTED", "SYNCING", "ERROR", "PAUSED"],
+      transaction_type: ["CHARGE", "PAYMENT", "ADJUSTMENT", "REFUND"],
       user_role: ["ADMIN", "DATA_ENGINEER", "ANALYST", "CLINICIAN"],
       widget_type: ["CHART", "METRIC_CARD", "TABLE", "MAP", "ALERT_PANEL"],
       workflow_status: ["DRAFT", "ACTIVE", "PAUSED", "COMPLETED", "FAILED"],
