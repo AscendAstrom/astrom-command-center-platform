@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,35 +13,11 @@ interface AlertSubscriptionsProps {
 }
 
 const AlertSubscriptions = ({ userRole }: AlertSubscriptionsProps) => {
-  const [subscriptions, setSubscriptions] = useState<AlertSubscription[]>([
-    {
-      id: '1',
-      userId: 'user1',
-      userRole: 'OPS_MANAGER',
-      ruleIds: ['1', '2'],
-      channels: ['email_alert', 'slack_notification'],
-      frequency: 'immediate',
-      isActive: true
-    },
-    {
-      id: '2',
-      userId: 'user2',
-      userRole: 'EXEC',
-      ruleIds: ['2', '3'],
-      channels: ['email_alert'],
-      frequency: 'daily',
-      isActive: true
-    }
-  ]);
+  const [subscriptions, setSubscriptions] = useState<AlertSubscription[]>([]);
 
   const canManageSubscriptions = userRole === 'ADMIN' || userRole === 'OPS_MANAGER';
 
-  const availableRules = [
-    { id: '1', name: 'SLA Breach Alert', category: 'Performance' },
-    { id: '2', name: 'Surge Prediction Alert', category: 'Capacity' },
-    { id: '3', name: 'Data Anomaly Detection', category: 'Quality' },
-    { id: '4', name: 'Critical Patient Alert', category: 'Safety' }
-  ];
+  const availableRules: { id: string; name: string; category: string }[] = [];
 
   const availableChannels: Array<{ type: ActionType; label: string; icon: any }> = [
     { type: 'email_alert', label: 'Email', icon: Mail },

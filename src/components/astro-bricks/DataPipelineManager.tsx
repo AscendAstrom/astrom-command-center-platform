@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { DataPipeline } from './types';
 import { PipelineListCard } from './components/PipelineListCard';
@@ -12,42 +11,8 @@ interface DataPipelineManagerProps {
 }
 
 export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerProps) => {
-  const [pipelines, setPipelines] = useState<DataPipeline[]>([
-    {
-      id: '1',
-      name: 'ED Patient Intake Pipeline',
-      description: 'Process emergency department patient admission data',
-      version: 3,
-      status: 'active',
-      schedule: '*/15 * * * *',
-      steps: [
-        { id: 's1', type: 'extract', name: 'Extract HL7 Messages', config: {}, order: 1 },
-        { id: 's2', type: 'transform', name: 'Clean Timestamps', config: {}, order: 2 },
-        { id: 's3', type: 'transform', name: 'Map to Schema', config: {}, order: 3 },
-        { id: 's4', type: 'load', name: 'Load to Warehouse', config: {}, order: 4 }
-      ],
-      createdAt: '2024-01-10',
-      updatedAt: '2024-01-16',
-      createdBy: 'john.doe@hospital.com'
-    },
-    {
-      id: '2',
-      name: 'Zone Capacity Monitoring',
-      description: 'Track and analyze treatment zone capacity',
-      version: 1,
-      status: 'draft',
-      steps: [
-        { id: 's5', type: 'extract', name: 'Extract Zone Data', config: {}, order: 1 },
-        { id: 's6', type: 'transform', name: 'Calculate Metrics', config: {}, order: 2 },
-        { id: 's7', type: 'load', name: 'Update Dashboard', config: {}, order: 3 }
-      ],
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-15',
-      createdBy: 'jane.smith@hospital.com'
-    }
-  ]);
-
-  const [selectedPipeline, setSelectedPipeline] = useState<DataPipeline | null>(pipelines[0]);
+  const [pipelines, setPipelines] = useState<DataPipeline[]>([]);
+  const [selectedPipeline, setSelectedPipeline] = useState<DataPipeline | null>(null);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
 
   const handleCreatePipeline = () => {

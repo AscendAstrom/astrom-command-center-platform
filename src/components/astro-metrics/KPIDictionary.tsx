@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,45 +16,7 @@ interface KPIDictionaryProps {
 }
 
 const KPIDictionary = ({ userRole }: KPIDictionaryProps) => {
-  const [kpis, setKpis] = useState<KPIDefinition[]>([
-    {
-      id: '1',
-      name: 'Average Wait Time',
-      description: 'Average time patients wait before being seen',
-      category: 'operational',
-      unit: 'minutes',
-      formula: 'SUM(wait_time) / COUNT(patients)',
-      visualLogic: [],
-      thresholds: [
-        { id: '1', name: 'Optimal', condition: 'less_than', value: 15, severity: 'info', color: '#10B981' },
-        { id: '2', name: 'Warning', condition: 'between', value: 15, upperValue: 30, severity: 'warning', color: '#F59E0B' },
-        { id: '3', name: 'Critical', condition: 'greater_than', value: 30, severity: 'critical', color: '#EF4444' }
-      ],
-      status: 'active',
-      createdBy: 'admin',
-      approvedBy: 'admin',
-      createdAt: '2024-01-15T10:00:00Z',
-      updatedAt: '2024-01-15T10:00:00Z',
-      approvedAt: '2024-01-15T10:00:00Z'
-    },
-    {
-      id: '2',
-      name: 'SLA Breach Count',
-      description: 'Number of SLA breaches in the current period',
-      category: 'operational',
-      unit: 'count',
-      formula: 'COUNT(breaches WHERE resolved = false)',
-      visualLogic: [],
-      thresholds: [
-        { id: '4', name: 'Good', condition: 'less_than', value: 5, severity: 'info', color: '#10B981' },
-        { id: '5', name: 'Alert', condition: 'greater_than', value: 10, severity: 'critical', color: '#EF4444' }
-      ],
-      status: 'active',
-      createdBy: 'data_engineer',
-      createdAt: '2024-01-16T09:00:00Z',
-      updatedAt: '2024-01-16T09:00:00Z'
-    }
-  ]);
+  const [kpis, setKpis] = useState<KPIDefinition[]>([]);
   
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
