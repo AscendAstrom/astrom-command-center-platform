@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -12,10 +13,14 @@ interface Message {
   content: string;
 }
 
-export const AIAssistant = () => {
+interface AIAssistantProps {
+  context: string;
+}
+
+export const AIAssistant = ({ context }: AIAssistantProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: "Hello! I'm your ASTRO-SCAN AI assistant. Ask me anything about your data sources, ingestion status, or monitoring configurations." }
+    { role: 'assistant', content: "Hello! I'm your ASTRO AI assistant. How can I help you today?" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -43,8 +48,8 @@ export const AIAssistant = () => {
     const conversationHistory = [...messages, userMessage].slice(1);
 
     try {
-      const { data, error } = await supabase.functions.invoke('astro-scan-chat', {
-        body: { messages: conversationHistory },
+      const { data, error } = await supabase.functions.invoke('universal-ai-chat', {
+        body: { messages: conversationHistory, context },
       });
 
       if (error) {
@@ -73,10 +78,10 @@ export const AIAssistant = () => {
       <DialogContent className="sm:max-w-lg flex flex-col h-[80vh] max-h-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Bot /> ASTRO-SCAN Assistant
+            <Bot /> ASTRO AI Assistant
           </DialogTitle>
           <DialogDescription>
-            Your AI-powered guide for data source management.
+            Your AI-powered guide for the ASTRO platform.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="flex-grow pr-4 -mr-4 my-4">
@@ -106,7 +111,7 @@ export const AIAssistant = () => {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g., Explain FHIR data sources"
+              placeholder="Ask anything about the platform..."
               disabled={isLoading}
               autoFocus
             />

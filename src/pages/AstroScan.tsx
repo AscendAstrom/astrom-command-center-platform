@@ -11,7 +11,6 @@ import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection"
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
-import { AIAssistant } from "@/components/astro-scan/ai/AIAssistant";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -85,7 +84,6 @@ const AstroScan = () => {
           onDataSourceAdded={handleDataSourceAdded}
         />
       )}
-      <AIAssistant />
     </div>
   );
 };

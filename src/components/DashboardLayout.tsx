@@ -1,5 +1,6 @@
 
 import { ReactNode, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -10,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Bell, Search, AlertTriangle, CheckCircle, Clock, X } from "lucide-react";
 import { toast } from "sonner";
 import { notificationService, Notification } from "@/services/notifications/notificationService";
+import { AIAssistant } from "@/components/ai/AIAssistant";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -20,8 +22,27 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const [context, setContext] = useState('DEFAULT');
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    if (path.includes('/astroscan')) {
+      setContext('ASTRO_SCAN');
+    } else if (path.includes('/astroflow')) {
+      setContext('ASTRO_FLOW');
+    } else if (path.includes('/astrometrics')) {
+      setContext('ASTRO_METRICS');
+    } else if (path.includes('/astroview')) {
+      setContext('ASTRO_VIEW');
+    } else if (path.includes('/dashboard')) {
+      setContext('DASHBOARD');
+    } else {
+      setContext('DEFAULT');
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -267,6 +288,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
         </main>
       </SidebarInset>
+      <AIAssistant context={context} />
     </div>
   );
 };
