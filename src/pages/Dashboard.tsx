@@ -18,7 +18,8 @@ import {
   Building2,
   DollarSign,
   Zap,
-  Brain
+  Brain,
+  LogOut
 } from "lucide-react";
 import HospitalDashboardGrid from "@/components/hospital-dashboard/HospitalDashboardGrid";
 import ClinicalAnalyticsGrid from "@/components/hospital-dashboard/ClinicalAnalyticsGrid";
@@ -30,12 +31,16 @@ import LogoIcon from "@/components/ui/LogoIcon";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { analyticsService, AnalyticsData } from '@/services/analytics';
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [isLive, setIsLive] = useState(true);
   const [stopRealTimeUpdates, setStopRealTimeUpdates] = useState<(() => void) | null>(null);
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = analyticsService.subscribe(setAnalyticsData);
@@ -80,6 +85,12 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("You have been logged out.");
+    navigate('/auth');
+  };
+
   // Calculate summary stats from analytics data
   const summaryStats = {
     totalBeds: analyticsData ? 
@@ -115,6 +126,15 @@ const Dashboard = () => {
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                 {isRefreshing ? "Refreshing..." : "Refresh Data"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="hover:bg-red-500/10 border-red-500/20 text-red-500 hover:text-red-500"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
               </Button>
             </div>
           </div>
