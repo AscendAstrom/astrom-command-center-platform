@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { subMonths, format, subYears, startOfMonth, endOfMonth } from "date-fns";
@@ -109,6 +108,110 @@ export const useFinancialData = () => {
   return useQuery({
     queryKey: ['financial_data'],
     queryFn: getFinancialData,
+    refetchInterval: 60000,
+  });
+};
+
+// --- Cost Data Hook ---
+
+export interface CostData {
+  totalCosts: number;
+  budgetVariance: number;
+  costPerPatient: number;
+  savingsThisMonth: number;
+  costTrendData: { month: string; total: number; labor: number; supplies: number; overhead: number }[];
+  costCategories: { category: string; amount: number; variance: number; trend: 'increasing' | 'decreasing' | 'stable' }[];
+  costOptimizations: { initiative: string; savings: number; status: string }[];
+}
+
+const getCostData = async (): Promise<CostData> => {
+  const oneYearAgo = subYears(new Date(), 1);
+
+  const { data: expenses, error: expensesError } = await supabase
+    .from('hospital_expenses')
+    .select('expense_date, category, amount')
+    .gte('expense_date', oneYearAgo.toISOString());
+    
+  if (expensesError) {
+    console.error('Error fetching cost data:', expensesError);
+    throw new Error(expensesError.message);
+  }
+  if (!expenses) throw new Error("Could not fetch expenses");
+
+  const now = new Date();
+  const currentMonthStart = startOfMonth(now);
+  const currentMonthExpenses = expenses.filter(e => new Date(e.expense_date) >= currentMonthStart);
+  
+  const totalCostsThisMonth = currentMonthExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+  
+  const lastMonthStart = startOfMonth(subMonths(now, 1));
+  const lastMonthEnd = endOfMonth(subMonths(now, 1));
+  
+  const totalCostsLastMonth = expenses
+    .filter(e => {
+        const expenseDate = new Date(e.expense_date);
+        return expenseDate >= lastMonthStart && expenseDate <= lastMonthEnd;
+    })
+    .reduce((sum, e) => sum + (e.amount || 0), 0);
+
+  const savingsThisMonth = totalCostsLastMonth > 0 ? totalCostsLastMonth - totalCostsThisMonth : 0;
+  
+  const costTrendData: { month: string; total: number; labor: number; supplies: number; overhead: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = subMonths(new Date(), i);
+    const monthKey = format(d, 'MMM');
+    const monthStart = startOfMonth(d);
+    const monthEnd = endOfMonth(d);
+
+    const monthExpenses = expenses.filter(e => {
+        const expenseDate = new Date(e.expense_date);
+        return expenseDate >= monthStart && expenseDate <= monthEnd;
+    });
+
+    const total = monthExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+    const labor = monthExpenses.filter(e => e.category === 'Labor').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const supplies = monthExpenses.filter(e => e.category === 'Supplies').reduce((sum, e) => sum + (e.amount || 0), 0);
+    const overhead = monthExpenses.filter(e => e.category === 'Overhead').reduce((sum, e) => sum + (e.amount || 0), 0);
+
+    costTrendData.push({ month: monthKey, total, labor, supplies, overhead });
+  }
+
+  const costCategoriesMap: { [key: string]: number } = {};
+  currentMonthExpenses.forEach(e => {
+      costCategoriesMap[e.category] = (costCategoriesMap[e.category] || 0) + (e.amount || 0);
+  });
+  
+  const costCategories = Object.entries(costCategoriesMap).map(([category, amount]) => ({
+    category,
+    amount,
+    variance: -2.1, // Mock data
+    trend: 'decreasing' as const // Mock data
+  }));
+
+  // Mock data for metrics not yet available in the backend
+  const budgetVariance = -2.3;
+  const costPerPatient = 6180;
+  const costOptimizations = [
+    { initiative: 'Supply Chain Optimization', savings: 25000, status: 'Active' },
+    { initiative: 'Energy Efficiency', savings: 12000, status: 'Completed' },
+    { initiative: 'Staffing Optimization', savings: 18000, status: 'In Progress' }
+  ];
+
+  return {
+    totalCosts: totalCostsThisMonth,
+    budgetVariance,
+    costPerPatient,
+    savingsThisMonth,
+    costTrendData,
+    costCategories,
+    costOptimizations
+  };
+};
+
+export const useCostData = () => {
+  return useQuery<CostData>({
+    queryKey: ['cost_data'],
+    queryFn: getCostData,
     refetchInterval: 60000,
   });
 };

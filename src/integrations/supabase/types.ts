@@ -1152,6 +1152,44 @@ export type Database = {
           },
         ]
       }
+      hospital_expenses: {
+        Row: {
+          amount: number
+          category: Database["public"]["Enums"]["expense_category"]
+          created_at: string
+          department_id: string | null
+          description: string | null
+          expense_date: string
+          id: string
+        }
+        Insert: {
+          amount: number
+          category: Database["public"]["Enums"]["expense_category"]
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          expense_date: string
+          id?: string
+        }
+        Update: {
+          amount?: number
+          category?: Database["public"]["Enums"]["expense_category"]
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          expense_date?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hospital_expenses_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ingestion_logs: {
         Row: {
           completed_at: string | null
@@ -3600,6 +3638,13 @@ export type Database = {
         | "ORTHOPEDICS"
         | "RADIOLOGY"
       execution_status: "PENDING" | "RUNNING" | "SUCCESS" | "FAILED"
+      expense_category:
+        | "Labor"
+        | "Supplies"
+        | "Utilities"
+        | "Equipment"
+        | "Overhead"
+        | "Administrative"
       ingestion_mode: "BATCH" | "STREAM"
       initiative_status: "PLANNING" | "IN_PROGRESS" | "COMPLETED" | "ON_HOLD"
       integration_status: "CONNECTED" | "DISCONNECTED" | "ERROR" | "SYNCING"
@@ -3799,6 +3844,14 @@ export const Constants = {
         "RADIOLOGY",
       ],
       execution_status: ["PENDING", "RUNNING", "SUCCESS", "FAILED"],
+      expense_category: [
+        "Labor",
+        "Supplies",
+        "Utilities",
+        "Equipment",
+        "Overhead",
+        "Administrative",
+      ],
       ingestion_mode: ["BATCH", "STREAM"],
       initiative_status: ["PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD"],
       integration_status: ["CONNECTED", "DISCONNECTED", "ERROR", "SYNCING"],
