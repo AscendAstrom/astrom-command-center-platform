@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RefreshCw } from 'lucide-react';
 import { getStatusColor } from './utils.tsx';
-import { AutonomousWorkflow, SystemMetrics } from '@/hooks/useAutonomousWorkflows';
+import { AutonomousWorkflow, SystemMetrics, DecisionNode } from '@/hooks/useAutonomousWorkflows';
 import { useMemo } from "react";
 
 interface LearningStatusPanelProps {
@@ -26,7 +26,7 @@ const LearningStatusPanel = ({ workflows, systemMetrics }: LearningStatusPanelPr
           ? wf.nodes.reduce((acc, node) => acc + (node.progress || 0), 0) / wf.nodes.length
           : 0;
         
-        let status = wf.status;
+        let status: AutonomousWorkflow['status'] | DecisionNode['status'] = wf.status;
         if (nodeForStatus) {
             status = nodeForStatus.status;
         }
