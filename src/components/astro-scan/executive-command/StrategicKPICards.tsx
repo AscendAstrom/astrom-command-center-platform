@@ -33,6 +33,10 @@ const StrategicKPICards = ({ strategicKPIs }: StrategicKPICardsProps) => {
            <TrendingDown className="h-4 w-4 text-red-400" />;
   };
 
+  const formatChange = (change: number) => {
+    return `${change >= 0 ? '+' : ''}${change.toFixed(1)}`;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
@@ -46,7 +50,7 @@ const StrategicKPICards = ({ strategicKPIs }: StrategicKPICardsProps) => {
         <div className="space-y-1">
           <div className="text-2xl font-bold text-blue-400">{strategicKPIs.marketPosition.current}%</div>
           <div className="text-xs text-muted-foreground">
-            Target: {strategicKPIs.marketPosition.target}% (+{strategicKPIs.marketPosition.change}%)
+            Target: {strategicKPIs.marketPosition.target}% ({formatChange(strategicKPIs.marketPosition.change)}%)
           </div>
         </div>
       </Card>
@@ -62,7 +66,7 @@ const StrategicKPICards = ({ strategicKPIs }: StrategicKPICardsProps) => {
         <div className="space-y-1">
           <div className="text-2xl font-bold text-purple-400">{strategicKPIs.innovationIndex.current}</div>
           <div className="text-xs text-muted-foreground">
-            Target: {strategicKPIs.innovationIndex.target} (+{strategicKPIs.innovationIndex.change}%)
+            Target: {strategicKPIs.innovationIndex.target} ({formatChange(strategicKPIs.innovationIndex.change)})
           </div>
         </div>
       </Card>
@@ -76,9 +80,9 @@ const StrategicKPICards = ({ strategicKPIs }: StrategicKPICardsProps) => {
           {getTrendIcon(strategicKPIs.competitiveAdvantage.trend)}
         </div>
         <div className="space-y-1">
-          <div className="text-2xl font-bold text-green-400">{strategicKPIs.competitiveAdvantage.current}%</div>
+          <div className="text-2xl font-bold text-green-400">{strategicKPIs.competitiveAdvantage.current}s</div>
           <div className="text-xs text-muted-foreground">
-            Target: {strategicKPIs.competitiveAdvantage.target}% (+{strategicKPIs.competitiveAdvantage.change}%)
+            Target: {strategicKPIs.competitiveAdvantage.target.toFixed(1)}s ({formatChange(strategicKPIs.competitiveAdvantage.change)}s)
           </div>
         </div>
       </Card>
@@ -94,7 +98,7 @@ const StrategicKPICards = ({ strategicKPIs }: StrategicKPICardsProps) => {
         <div className="space-y-1">
           <div className="text-2xl font-bold text-orange-400">${strategicKPIs.stakeholderValue.current}M</div>
           <div className="text-xs text-muted-foreground">
-            Target: ${strategicKPIs.stakeholderValue.target}M (+{strategicKPIs.stakeholderValue.change}%)
+            Target: ${strategicKPIs.stakeholderValue.target}M ({formatChange(strategicKPIs.stakeholderValue.change)}M)
           </div>
         </div>
       </Card>
