@@ -1,36 +1,56 @@
 
 import { useSidebar } from "@/components/ui/sidebar";
-import LogoIcon from "@/components/ui/LogoIcon";
+import { Badge } from "@/components/ui/badge";
+import { useClinical } from "@/contexts/ClinicalContext";
+import { Heart, AlertTriangle } from "lucide-react";
 
 export function SidebarHeader() {
   const { state } = useSidebar();
+  const { metrics, alerts } = useClinical();
   const collapsed = state === "collapsed";
-
-  if (collapsed) {
-    return (
-      <div className="flex-shrink-0 p-2 mb-2 flex justify-center">
-        <div className="w-10 h-10 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg border border-border/50 hover:scale-105 transition-transform duration-300">
-          <LogoIcon size="sm" animate={true} />
-        </div>
-      </div>
-    );
-  }
+  const criticalAlerts = alerts.filter(a => a.type === 'critical' && !a.acknowledged).length;
 
   return (
-    <div className="flex-shrink-0 p-4 mb-2">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-background/50 to-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0 border border-border/50 hover:scale-105 transition-transform duration-300">
-          <LogoIcon size="md" animate={true} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Astrom
-          </h1>
-          <p className="text-sm text-muted-foreground font-medium">
-            Intelligence Platform
-          </p>
-        </div>
+    <div className={`p-4 border-b border-border/50 ${collapsed ? 'px-2' : ''}`}>
+      <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
+        {!collapsed && (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-sm">
+              <span className="text-white font-bold text-sm">A</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-foreground text-lg leading-tight">AstroMed</span>
+              <span className="text-xs text-muted-foreground font-medium">Hospital Platform</span>
+            </div>
+          </div>
+        )}
+        
+        {collapsed && (
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-sm">
+            <span className="text-white font-bold text-sm">A</span>
+          </div>
+        )}
       </div>
+      
+      {/* Clinical Status Indicators */}
+      {!collapsed && (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Clinical Status</span>
+            <div className="flex items-center gap-1">
+              <Heart className="h-3 w-3 text-red-500" />
+              <span className="font-medium">{metrics.activePatientsCount}</span>
+            </div>
+          </div>
+          
+          {criticalAlerts > 0 && (
+            <Badge variant="destructive" className="w-full justify-center text-xs animate-pulse">
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              {criticalAlerts} Critical Alert{criticalAlerts > 1 ? 's' : ''}
+            </Badge>
+          )}
+        </div>
+      )}
     </div>
   );
 }

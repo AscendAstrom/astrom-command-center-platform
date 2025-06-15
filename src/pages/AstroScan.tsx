@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -9,6 +10,7 @@ import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
 import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSection";
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
+import { ClinicalDataSources } from "@/components/astro-scan/ClinicalDataSources";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
 
@@ -51,6 +53,9 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
+            {/* Clinical Data Sources Section */}
+            <ClinicalDataSources />
+            
             <SourcesTabContent
               dataSourceVersion={dataSourceVersion}
               onAddSourceClick={() => {
