@@ -460,6 +460,44 @@ export type Database = {
           },
         ]
       }
+      budget_allocations: {
+        Row: {
+          budget_amount: number
+          budget_period_end: string
+          budget_period_start: string
+          category: string
+          created_at: string
+          department_id: string | null
+          id: string
+        }
+        Insert: {
+          budget_amount: number
+          budget_period_end: string
+          budget_period_start: string
+          category: string
+          created_at?: string
+          department_id?: string | null
+          id?: string
+        }
+        Update: {
+          budget_amount?: number
+          budget_period_end?: string
+          budget_period_start?: string
+          category?: string
+          created_at?: string
+          department_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_allocations_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       capacity_forecasts: {
         Row: {
           confidence_interval: number | null
@@ -1151,6 +1189,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      financial_forecasts: {
+        Row: {
+          confidence_level: number | null
+          created_at: string
+          forecast_date: string
+          forecasted_value: number
+          id: string
+          metric_name: string
+          model_version: string | null
+        }
+        Insert: {
+          confidence_level?: number | null
+          created_at?: string
+          forecast_date: string
+          forecasted_value: number
+          id?: string
+          metric_name: string
+          model_version?: string | null
+        }
+        Update: {
+          confidence_level?: number | null
+          created_at?: string
+          forecast_date?: string
+          forecasted_value?: number
+          id?: string
+          metric_name?: string
+          model_version?: string | null
+        }
+        Relationships: []
       }
       hospital_expenses: {
         Row: {

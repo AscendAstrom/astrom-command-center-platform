@@ -23,11 +23,17 @@ async function manageHospitalExpenses(supabase: SupabaseClient) {
   }
 
   if (count === 0) {
+    const { data: departments, error: deptError } = await supabase.from('departments').select('id');
+    if (deptError || !departments || departments.length === 0) {
+      console.error('Error fetching departments for expenses', deptError);
+      return;
+    }
+    
     console.log('Populating hospital_expenses...');
     const expensesToInsert = [];
-    const categories: ('Labor' | 'Supplies' | 'Utilities' | 'Equipment' | 'Overhead' | 'Administrative')[] = ['Labor', 'Supplies', 'Utilities', 'Equipment', 'Overhead'];
+    const categories: ('Labor' | 'Supplies' | 'Utilities' | 'Equipment' | 'Overhead' | 'Administrative')[] = ['Labor', 'Supplies', 'Utilities', 'Equipment', 'Overhead', 'Administrative'];
 
-    for (let i = 0; i < 6; i++) { // For the last 6 months
+    for (let i = 0; i < 12; i++) { // For the last 12 months
       const date = faker.date.past({ months: i });
       for (const category of categories) {
         let amount = 0;
@@ -43,7 +49,8 @@ async function manageHospitalExpenses(supabase: SupabaseClient) {
           expense_date: date,
           category: category,
           amount: amount,
-          description: `Monthly ${category} cost for ${faker.date.month()}`
+          description: `Monthly ${category} cost for ${faker.date.month()}`,
+          department_id: faker.helpers.arrayElement(departments).id
         });
       }
     }
@@ -54,6 +61,68 @@ async function manageHospitalExpenses(supabase: SupabaseClient) {
     } else {
       console.log(`Inserted ${expensesToInsert.length} records into hospital_expenses`);
     }
+  }
+}
+
+async function manageBudgetAllocations(supabase: SupabaseClient) {
+  const { count, error } = await supabase.from('budget_allocations').select('*', { count: 'exact', head: true });
+  if (error) {
+    console.error('Error counting budget_allocations', error);
+    return;
+  }
+
+  if (count === 0) {
+    console.log('Populating budget_allocations...');
+    const allocations = [];
+    const categories = ['Labor', 'Supplies', 'Utilities', 'Equipment', 'Overhead', 'Administrative', 'Revenue'];
+    const now = new Date();
+
+    for (const category of categories) {
+      const isRevenue = category === 'Revenue';
+      const amount = isRevenue 
+        ? faker.number.int({ min: 3500000, max: 4500000 }) 
+        : faker.number.int({ min: 50000, max: 700000 });
+
+      allocations.push({
+        category: category,
+        budget_amount: amount,
+        budget_period_start: new Date(now.getFullYear(), now.getMonth(), 1),
+        budget_period_end: new Date(now.getFullYear(), now.getMonth() + 1, 0)
+      });
+    }
+
+    const { error: insertError } = await supabase.from('budget_allocations').insert(allocations);
+    if (insertError) console.error('Error inserting budget_allocations', insertError);
+    else console.log('Inserted budget allocations for current month.');
+  }
+}
+
+async function manageFinancialForecasts(supabase: SupabaseClient) {
+  const { count, error } = await supabase.from('financial_forecasts').select('*', { count: 'exact', head: true });
+  if (error) {
+    console.error('Error counting financial_forecasts', error);
+    return;
+  }
+
+  if (count === 0) {
+    console.log('Populating financial_forecasts...');
+    const forecasts = [];
+    for (let i = 0; i < 6; i++) {
+        const forecastDate = new Date();
+        forecastDate.setMonth(forecastDate.getMonth() + i);
+        
+        forecasts.push({
+            forecast_date: forecastDate,
+            metric_name: 'revenue',
+            forecasted_value: faker.number.int({ min: 3200000, max: 3800000 }) + i * 50000,
+            confidence_level: faker.number.float({ min: 0.75, max: 0.95, precision: 0.01 }),
+            model_version: 'v1.2'
+        });
+    }
+
+    const { error: insertError } = await supabase.from('financial_forecasts').insert(forecasts);
+    if (insertError) console.error('Error inserting financial_forecasts', insertError);
+    else console.log('Inserted financial forecasts.');
   }
 }
 
@@ -75,6 +144,8 @@ serve(async (req) => {
     await ensureLabTestTypes(supabaseClient);
     await ensureQualityData(supabaseClient);
     await manageHospitalExpenses(supabaseClient);
+    await manageBudgetAllocations(supabaseClient);
+    await manageFinancialForecasts(supabaseClient);
 
     await Promise.all([
       updateBedStatuses(supabaseClient),

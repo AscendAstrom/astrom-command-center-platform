@@ -115,13 +115,14 @@ export const useFinancialData = () => {
 // --- Cost Data Hook ---
 
 export interface CostData {
-  totalCosts: number;
+  totalCosts: number; // This will now be YTD
   budgetVariance: number;
   costPerPatient: number;
   savingsThisMonth: number;
   costTrendData: { month: string; total: number; labor: number; supplies: number; overhead: number }[];
   costCategories: { category: string; amount: number; variance: number; trend: 'increasing' | 'decreasing' | 'stable' }[];
   costOptimizations: { initiative: string; savings: number; status: string }[];
+  departmentCosts: { department: string; cost: number; }[];
 }
 
 const getCostData = async (): Promise<CostData> => {
@@ -129,7 +130,7 @@ const getCostData = async (): Promise<CostData> => {
 
   const { data: expenses, error: expensesError } = await supabase
     .from('hospital_expenses')
-    .select('expense_date, category, amount')
+    .select('expense_date, category, amount, departments(name)')
     .gte('expense_date', oneYearAgo.toISOString());
     
   if (expensesError) {
@@ -138,6 +139,8 @@ const getCostData = async (): Promise<CostData> => {
   }
   if (!expenses) throw new Error("Could not fetch expenses");
 
+  const totalCosts = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+  
   const now = new Date();
   const currentMonthStart = startOfMonth(now);
   const currentMonthExpenses = expenses.filter(e => new Date(e.expense_date) >= currentMonthStart);
@@ -187,6 +190,17 @@ const getCostData = async (): Promise<CostData> => {
     variance: -2.1, // Mock data
     trend: 'decreasing' as const // Mock data
   }));
+  
+  const departmentCostsMap: { [key: string]: number } = {};
+  expenses.forEach(e => {
+    const deptName = (e.departments as any)?.name || 'Unknown';
+    departmentCostsMap[deptName] = (departmentCostsMap[deptName] || 0) + (e.amount || 0);
+  });
+  
+  const departmentCosts = Object.entries(departmentCostsMap).map(([department, cost]) => ({
+    department,
+    cost
+  }));
 
   // Mock data for metrics not yet available in the backend
   const budgetVariance = -2.3;
@@ -198,13 +212,14 @@ const getCostData = async (): Promise<CostData> => {
   ];
 
   return {
-    totalCosts: totalCostsThisMonth,
+    totalCosts: totalCosts,
     budgetVariance,
     costPerPatient,
     savingsThisMonth,
     costTrendData,
     costCategories,
-    costOptimizations
+    costOptimizations,
+    departmentCosts,
   };
 };
 
