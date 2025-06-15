@@ -17,7 +17,10 @@ import {
   Download,
   Zap,
   Brain,
-  Bot
+  Bot,
+  Shield,
+  Monitor,
+  TrendingUp
 } from 'lucide-react';
 import { useClinicalData, usePatients } from '@/hooks/useClinicalData';
 import { ClinicalDataType } from '@/types/clinical';
@@ -29,6 +32,9 @@ import ClinicalInsights from '@/components/clinical/ClinicalInsights';
 import PredictiveAnalytics from '@/components/clinical/PredictiveAnalytics';
 import WorkflowAutomation from '@/components/clinical/WorkflowAutomation';
 import ClinicalAIAssistant from '@/components/clinical/ClinicalAIAssistant';
+import ClinicalDecisionSupport from '@/components/clinical/ClinicalDecisionSupport';
+import RealTimeMonitoring from '@/components/clinical/RealTimeMonitoring';
+import ClinicalReporting from '@/components/clinical/ClinicalReporting';
 import { ClinicalDataService } from '@/services/clinicalDataService';
 import { toast } from 'sonner';
 
@@ -41,6 +47,9 @@ const ClinicalRecords = () => {
   const [showPredictiveAnalytics, setShowPredictiveAnalytics] = useState(false);
   const [showWorkflowAutomation, setShowWorkflowAutomation] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showDecisionSupport, setShowDecisionSupport] = useState(false);
+  const [showRealTimeMonitoring, setShowRealTimeMonitoring] = useState(false);
+  const [showReporting, setShowReporting] = useState(false);
   const [patientSearchTerm, setPatientSearchTerm] = useState('');
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -217,7 +226,88 @@ const ClinicalRecords = () => {
     setShowPredictiveAnalytics(false);
     setShowWorkflowAutomation(false);
     setShowAIAssistant(false);
+    setShowDecisionSupport(false);
+    setShowRealTimeMonitoring(false);
+    setShowReporting(false);
   };
+
+  if (showReporting) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Clinical Reporting & Analytics</h1>
+            <p className="text-muted-foreground">
+              Comprehensive reporting and quality metrics dashboard
+            </p>
+          </div>
+        </div>
+
+        <ClinicalReporting />
+      </div>
+    );
+  }
+
+  if (showRealTimeMonitoring) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Real-Time Patient Monitoring</h1>
+            <p className="text-muted-foreground">
+              Live vital signs and patient status monitoring
+            </p>
+          </div>
+        </div>
+
+        <RealTimeMonitoring 
+          patientId={selectedPatientId}
+          department="ICU"
+        />
+      </div>
+    );
+  }
+
+  if (showDecisionSupport) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={resetToMain}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Clinical Decision Support</h1>
+            <p className="text-muted-foreground">
+              AI-powered clinical decision support and safety alerts
+            </p>
+          </div>
+        </div>
+
+        <ClinicalDecisionSupport 
+          patientId={selectedPatientId}
+          data={getAllClinicalData()}
+        />
+      </div>
+    );
+  }
 
   if (showAIAssistant) {
     return (
@@ -264,19 +354,28 @@ const ClinicalRecords = () => {
                   variant="outline" 
                   size="sm" 
                   className="w-full justify-start"
-                  onClick={() => setShowInsights(true)}
+                  onClick={() => setShowDecisionSupport(true)}
                 >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Clinical Insights
+                  <Shield className="h-4 w-4 mr-2" />
+                  Decision Support
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="w-full justify-start"
-                  onClick={() => setShowWorkflowAutomation(true)}
+                  onClick={() => setShowRealTimeMonitoring(true)}
                 >
-                  <Zap className="h-4 w-4 mr-2" />
-                  Workflow Automation
+                  <Monitor className="h-4 w-4 mr-2" />
+                  Real-Time Monitoring
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => setShowReporting(true)}
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Reporting & Analytics
                 </Button>
               </CardContent>
             </Card>
@@ -436,6 +535,27 @@ const ClinicalRecords = () => {
           >
             <Bot className="h-4 w-4 mr-2" />
             AI Assistant
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowDecisionSupport(true)}
+          >
+            <Shield className="h-4 w-4 mr-2" />
+            Decision Support
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowRealTimeMonitoring(true)}
+          >
+            <Monitor className="h-4 w-4 mr-2" />
+            Live Monitoring
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowReporting(true)}
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Reporting
           </Button>
           <Button
             variant="outline"
