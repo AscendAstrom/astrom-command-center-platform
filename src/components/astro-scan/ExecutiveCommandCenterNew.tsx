@@ -14,7 +14,6 @@ const ExecutiveCommandCenterNew = () => {
     stakeholderValue: { current: 0, target: 0, trend: 'neutral', change: 0 }
   });
   const [riskAssessments, setRiskAssessments] = useState<any[]>([]);
-  const [aiInsights, setAiInsights] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +32,7 @@ const ExecutiveCommandCenterNew = () => {
       <RiskManagementPanel riskAssessments={riskAssessments} />
 
       {/* AI Strategic Insights */}
-      <AIStrategicInsights aiInsights={aiInsights} />
+      <AIStrategicInsights />
 
       {/* Executive Actions */}
       <ExecutiveActions />
