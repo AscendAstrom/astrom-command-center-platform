@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { MLModel, TrainingJob } from './ml-platform/types';
 import { useEffect } from 'react';
+import { toast } from "sonner";
 
 interface DecisionNode {
   id: string;
@@ -141,6 +142,26 @@ const AutonomousDecisionEngine = () => {
     queryKey: ['autonomousWorkflows'],
     queryFn: fetchAutonomousWorkflows,
   });
+
+  const retrainMutation = useMutation({
+    mutationFn: async (workflow: AutonomousWorkflow) => {
+      const { data, error } = await supabase.functions.invoke('retrain-model', {
+        body: { modelId: workflow.id, modelName: workflow.name },
+      });
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Retraining job for "${data.job.model_name}" started successfully!`);
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to start retraining job: ${error.message}`);
+    }
+  });
+
+  const handleRetrain = (workflow: AutonomousWorkflow) => {
+    retrainMutation.mutate(workflow);
+  };
 
   useEffect(() => {
     const channel = supabase.channel('autonomous-workflows-realtime')
@@ -319,6 +340,16 @@ const AutonomousDecisionEngine = () => {
                 <Button variant="outline" size="sm" className="flex-1">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   Analytics
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => handleRetrain(workflow)}
+                  disabled={retrainMutation.isPending && retrainMutation.variables?.id === workflow.id}
+                >
+                  <RefreshCw className={`h-3 w-3 mr-1 ${retrainMutation.isPending && retrainMutation.variables?.id === workflow.id ? 'animate-spin' : ''}`} />
+                  {retrainMutation.isPending && retrainMutation.variables?.id === workflow.id ? 'Starting...' : 'Retrain'}
                 </Button>
               </div>
             </CardContent>
