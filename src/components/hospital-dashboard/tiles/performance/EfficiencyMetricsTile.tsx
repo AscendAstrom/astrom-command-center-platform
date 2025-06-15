@@ -78,7 +78,7 @@ export const EfficiencyMetricsTile = () => {
               <LineChart data={trendData}>
                 <XAxis dataKey="week" fontSize={10} />
                 <YAxis hide />
-                <Tooltip formatter={(value, name) => [`${value}%`, name.replace(' %', '')]} />
+                <Tooltip formatter={(value, name) => [`${value}%`, String(name).replace(' %', '')]} />
                 <Line 
                   type="monotone" 
                   dataKey="efficiency" 
