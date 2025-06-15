@@ -14,9 +14,10 @@ interface RulesListProps {
   onCreateRule: () => void;
   onToggleRule: (ruleId: string) => void;
   userRole: FlowUserRole;
+  onRefresh: () => Promise<any>;
 }
 
-const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRule, userRole }: RulesListProps) => {
+const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRule, userRole, onRefresh }: RulesListProps) => {
   const canEdit = userRole === 'ADMIN';
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -47,14 +48,19 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
     onToggleRule(ruleId);
   };
 
-  const handleRefreshRules = () => {
+  const handleRefreshRules = async () => {
     setIsRefreshing(true);
     toast.info("Refreshing automation rules...");
     
-    setTimeout(() => {
-      setIsRefreshing(false);
+    try {
+      await onRefresh();
       toast.success("Rules refreshed successfully");
-    }, 1500);
+    } catch (error) {
+      toast.error("Failed to refresh rules.");
+      console.error(error);
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const activeRules = rules.filter(rule => rule.isActive).length;
@@ -75,8 +81,6 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
               onClick={handleRefreshRules}
               disabled={isRefreshing}
               className="hover:bg-cyan-500/10"
-              showToast={true}
-              toastMessage="Refreshing rules..."
             >
               <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
@@ -85,8 +89,6 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
                 onClick={handleCreateRule} 
                 size="sm" 
                 className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg"
-                showToast={true}
-                toastMessage="Creating new automation rule..."
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -108,8 +110,6 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
                 onClick={handleCreateRule}
                 variant="outline"
                 className="mt-3"
-                showToast={true}
-                toastMessage="Creating first automation rule..."
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Create Rule

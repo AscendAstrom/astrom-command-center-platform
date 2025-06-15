@@ -40,7 +40,7 @@ const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
 export const useAutomationRules = () => {
   const queryClient = useQueryClient();
 
-  const { data: rules = [], isLoading, error } = useQuery<AutomationRule[]>({
+  const { data: rules = [], isLoading, error, refetch } = useQuery<AutomationRule[]>({
     queryKey: ['automation_rules'],
     queryFn: async () => {
       const { data, error } = await supabase.from('automation_rules').select('*');
@@ -91,5 +91,6 @@ export const useAutomationRules = () => {
     createRule: createRuleMutation.mutateAsync,
     updateRule: updateRuleMutation.mutateAsync,
     deleteRule: deleteRuleMutation.mutateAsync,
+    refetchRules: refetch,
   };
 };

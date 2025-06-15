@@ -12,7 +12,7 @@ interface RuleBuilderProps {
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const { rules, createRule, updateRule, deleteRule, isLoading } = useAutomationRules();
+  const { rules, createRule, updateRule, deleteRule, isLoading, refetchRules } = useAutomationRules();
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -103,6 +103,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
           onCreateRule={handleCreateRule}
           onToggleRule={handleToggleRule}
           userRole={userRole}
+          onRefresh={refetchRules}
         />
       </div>
 
