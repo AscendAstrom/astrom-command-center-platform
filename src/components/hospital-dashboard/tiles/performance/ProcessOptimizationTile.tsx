@@ -1,149 +1,24 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Settings, TrendingUp, Clock } from "lucide-react";
+import { Settings, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-import { useState, useEffect } from "react";
-import { supabase } from '@/integrations/supabase/client';
+import { useProcessOptimizationData } from "@/hooks/useProcessOptimizationData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const ProcessOptimizationTile = () => {
-  const [optimizationData, setOptimizationData] = useState<any[]>([]);
-  const [processes, setProcesses] = useState<any[]>([]);
-  const [metrics, setMetrics] = useState({
-    overallEfficiency: 0,
-    automatedProcesses: 0,
-    timeSavedToday: 0,
-    costSavings: 0
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchOptimizationData();
-    
-    // Subscribe to real-time updates
-    const channel = supabase
-      .channel('optimization-updates')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'automation_rules' },
-        () => fetchOptimizationData()
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
-
-  const fetchOptimizationData = async () => {
-    try {
-      setLoading(true);
-      
-      // Fetch automation rules for process optimization
-      const { data: automationRules, error: automationError } = await supabase
-        .from('automation_rules')
-        .select('*')
-        .eq('status', 'ACTIVE');
-
-      if (automationError) throw automationError;
-
-      // Fetch workflow executions for efficiency tracking
-      const { data: workflows, error: workflowError } = await supabase
-        .from('workflow_executions')
-        .select('*')
-        .order('started_at', { ascending: false })
-        .limit(50);
-
-      if (workflowError) throw workflowError;
-
-      // Calculate process metrics
-      const automatedProcesses = automationRules?.length || 0;
-      const completedWorkflows = workflows?.filter(w => w.status === 'COMPLETED').length || 0;
-      const totalWorkflows = workflows?.length || 1;
-      
-      const overallEfficiency = Math.round((completedWorkflows / totalWorkflows) * 100);
-      
-      // Calculate time saved based on automation execution
-      const timeSavedToday = automationRules?.reduce((total, rule) => {
-        return total + (rule.execution_count * 15); // Estimate 15 min saved per execution
-      }, 0) || 0;
-
-      const costSavings = timeSavedToday * 2.5; // Estimate $2.5 per minute saved
-
-      // Generate optimization trend data (4 weeks)
-      const optimizationDataArray = Array.from({ length: 4 }, (_, i) => {
-        const weekEfficiency = Math.max(70, overallEfficiency - ((3 - i) * 3));
-        const weekAutomation = Math.min(70, automatedProcesses * 2 + (i * 5));
-        const weekTimeSaved = Math.max(2, timeSavedToday / 30 + i);
-        
-        return {
-          week: `W${i + 1}`,
-          efficiency: weekEfficiency,
-          automation: Math.round(weekAutomation),
-          timesSaved: Number(weekTimeSaved.toFixed(1))
-        };
-      });
-
-      // Generate process status data
-      const processesData = [
-        { 
-          name: 'Patient Admission', 
-          efficiency: Math.min(100, overallEfficiency + 5), 
-          timeSaved: `${Math.floor(timeSavedToday * 0.3)} min`, 
-          status: overallEfficiency > 85 ? 'Optimized' : 'In Progress' 
-        },
-        { 
-          name: 'Discharge Planning', 
-          efficiency: Math.min(100, overallEfficiency - 5), 
-          timeSaved: `${Math.floor(timeSavedToday * 0.4)} min`, 
-          status: overallEfficiency > 80 ? 'Optimized' : 'In Progress' 
-        },
-        { 
-          name: 'Lab Results', 
-          efficiency: Math.min(100, overallEfficiency + 7), 
-          timeSaved: `${Math.floor(timeSavedToday * 0.2)} min`, 
-          status: overallEfficiency > 90 ? 'Optimized' : 'In Progress' 
-        },
-        { 
-          name: 'Medication Orders', 
-          efficiency: Math.min(100, overallEfficiency - 2), 
-          timeSaved: `${Math.floor(timeSavedToday * 0.1)} min`, 
-          status: overallEfficiency > 85 ? 'Optimized' : 'In Progress' 
-        }
-      ];
-
-      setOptimizationData(optimizationDataArray);
-      setProcesses(processesData);
-      setMetrics({
-        overallEfficiency,
-        automatedProcesses,
-        timeSavedToday,
-        costSavings: Math.round(costSavings)
-      });
-    } catch (error) {
-      console.error('Error fetching optimization data:', error);
-      setOptimizationData([]);
-      setProcesses([]);
-      setMetrics({
-        overallEfficiency: 0,
-        automatedProcesses: 0,
-        timeSavedToday: 0,
-        costSavings: 0
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: metrics, isLoading } = useProcessOptimizationData();
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Optimized': return 'text-green-600 bg-green-50';
-      case 'In Progress': return 'text-blue-600 bg-blue-50';
-      case 'Needs Attention': return 'text-orange-600 bg-orange-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'Optimized': return 'text-green-600 bg-green-50 border-green-200';
+      case 'In Progress': return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'Needs Attention': return 'text-orange-600 bg-orange-50 border-orange-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   };
 
-  if (loading) {
+  if (isLoading || !metrics) {
     return (
       <Card className="h-full">
         <CardHeader className="pb-3">
@@ -162,15 +37,19 @@ export const ProcessOptimizationTile = () => {
         <CardContent className="space-y-4">
           <div className="animate-pulse space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="h-16 bg-gray-200 rounded"></div>
-              <div className="h-16 bg-gray-200 rounded"></div>
+              <Skeleton className="h-16 rounded" />
+              <Skeleton className="h-16 rounded" />
             </div>
-            <div className="h-24 bg-gray-200 rounded"></div>
+            <Skeleton className="h-24 rounded" />
+            <Skeleton className="h-24 rounded" />
           </div>
         </CardContent>
       </Card>
     );
   }
+
+  const { automatedProcesses, timeSavedToday, overallEfficiency, costSavings, optimizationData, processes } = metrics;
+  const efficiencyGain = overallEfficiency - 78;
 
   return (
     <Card className="h-full">
@@ -187,18 +66,18 @@ export const ProcessOptimizationTile = () => {
           </div>
           <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
             <TrendingUp className="h-3 w-3 mr-1" />
-            +{metrics.overallEfficiency - 78}% Efficiency
+            {efficiencyGain >= 0 ? '+' : ''}{efficiencyGain}% Efficiency
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
-            <div className="text-xl font-bold text-blue-600">{metrics.timeSavedToday}</div>
+            <div className="text-xl font-bold text-blue-600">{timeSavedToday}</div>
             <div className="text-xs text-muted-foreground">Minutes Saved Today</div>
           </div>
           <div>
-            <div className="text-xl font-bold text-green-600">{metrics.automatedProcesses}</div>
+            <div className="text-xl font-bold text-green-600">{automatedProcesses}</div>
             <div className="text-xs text-muted-foreground">Automated Processes</div>
           </div>
         </div>
@@ -209,7 +88,7 @@ export const ProcessOptimizationTile = () => {
               <LineChart data={optimizationData}>
                 <XAxis dataKey="week" fontSize={10} />
                 <YAxis hide />
-                <Tooltip />
+                <Tooltip formatter={(value, name) => [typeof value === 'number' ? `${value.toFixed(1)}` : value, name]}/>
                 <Line 
                   type="monotone" 
                   dataKey="efficiency" 
@@ -249,7 +128,7 @@ export const ProcessOptimizationTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-blue-50 p-2 rounded">
-          <strong>Savings:</strong> ${metrics.costSavings.toLocaleString()} saved this month through process optimization.
+          <strong>Savings:</strong> ${costSavings.toLocaleString()} saved this month through process optimization.
         </div>
       </CardContent>
     </Card>
