@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,10 +14,10 @@ interface PredictionModel {
   name: string;
   type: 'lstm' | 'prophet' | 'arima' | 'ensemble';
   target: string;
-  accuracy: number;
-  confidence: number;
+  accuracy: number | null;
+  confidence: number | null;
   lastTrained: string;
-  status: 'active' | 'training' | 'pending';
+  status: 'active' | 'training' | 'pending' | null;
 }
 
 interface Prediction {
@@ -42,10 +43,23 @@ const PredictiveAnalyticsEngine = () => {
     const fetchData = async () => {
       setLoading(true);
 
-      // Fetch models (assuming a table named 'ml_models' might exist)
-      // Since it doesn't, this will be an empty array, showing the empty state.
       const { data: modelsData, error: modelsError } = await supabase.from('ml_models').select('*');
-      if (modelsData) setModels(modelsData as PredictionModel[]);
+      if (modelsData) {
+        const formattedModels = modelsData.map(m => ({
+          id: m.id,
+          name: m.name,
+          type: m.type as PredictionModel['type'],
+          target: m.target,
+          accuracy: m.accuracy,
+          confidence: m.confidence,
+          lastTrained: m.last_trained ? new Date(m.last_trained).toLocaleDateString() : 'N/A',
+          status: m.status as PredictionModel['status'],
+        }));
+        setModels(formattedModels);
+      } else {
+        if (modelsError) console.error("Error fetching ml_models:", modelsError);
+        setModels([]);
+      }
 
       // Fetch predictions from 'capacity_forecasts'
       const { data: forecastsData, error: forecastsError } = await supabase
@@ -181,7 +195,7 @@ const PredictiveAnalyticsEngine = () => {
                 <div key={model.id} className="p-4 bg-muted/50 rounded-lg border border-border/50">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${getStatusColor(model.status)}`} />
+                      <div className={`w-3 h-3 rounded-full ${getStatusColor(model.status || '')}`} />
                       <div className="font-medium text-foreground">{model.name}</div>
                     </div>
                     <Badge className={getModelTypeColor(model.type)}>
@@ -191,11 +205,11 @@ const PredictiveAnalyticsEngine = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <span className="text-muted-foreground">Accuracy:</span>
-                      <span className="text-foreground font-medium ml-1">{model.accuracy}%</span>
+                      <span className="text-foreground font-medium ml-1">{model.accuracy ? `${model.accuracy}%` : 'N/A'}</span>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Confidence:</span>
-                      <span className="text-foreground font-medium ml-1">{model.confidence}%</span>
+                      <span className="text-foreground font-medium ml-1">{model.confidence ? `${model.confidence}%` : 'N/A'}</span>
                     </div>
                     <div className="col-span-2">
                       <span className="text-muted-foreground">Last trained:</span>

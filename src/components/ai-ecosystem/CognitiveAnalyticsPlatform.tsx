@@ -23,27 +23,27 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface NLPTask {
   id: string;
   type: 'clinical_notes' | 'discharge_summary' | 'lab_report' | 'imaging_report';
-  status: 'processing' | 'completed' | 'queued';
-  confidence: number;
-  entities: number;
-  processingTime: string;
+  status: 'processing' | 'completed' | 'queued' | null;
+  confidence: number | null;
+  entities: number | null;
+  processingTime: string | null;
 }
 
 interface VisionTask {
   id: string;
   type: 'bed_status' | 'equipment_detection' | 'patient_monitoring' | 'safety_compliance';
-  status: 'analyzing' | 'completed' | 'failed';
-  accuracy: number;
-  objectsDetected: number;
-  processingTime: string;
+  status: 'analyzing' | 'completed' | 'failed' | null;
+  accuracy: number | null;
+  objectsDetected: number | null;
+  processingTime: string | null;
 }
 
 interface KnowledgeGraphNode {
   id: string;
   label: string;
-  type: 'patient' | 'department' | 'equipment' | 'staff' | 'outcome';
-  connections: number;
-  relevanceScore: number;
+  type: 'patient' | 'department' | 'equipment' | 'staff' | 'outcome' | null;
+  connections: number | null;
+  relevanceScore: number | null;
 }
 
 const CognitiveAnalyticsPlatform = () => {
@@ -64,7 +64,7 @@ const CognitiveAnalyticsPlatform = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  const getTaskStatusColor = (status: string) => {
+  const getTaskStatusColor = (status: string | null) => {
     switch (status) {
       case 'completed': return 'bg-green-500/10 text-green-600 border-green-500/20';
       case 'processing': case 'analyzing': return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
@@ -74,7 +74,7 @@ const CognitiveAnalyticsPlatform = () => {
     }
   };
 
-  const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type: string | null) => {
     switch (type) {
       case 'clinical_notes': case 'discharge_summary': case 'lab_report': case 'imaging_report':
         return <FileText className="h-4 w-4" />;
@@ -127,14 +127,52 @@ const CognitiveAnalyticsPlatform = () => {
       });
 
       // Fetch tasks - will be empty as tables don't exist
-      const { data: nlpData } = await supabase.from('nlp_tasks').select('*').limit(3);
-      if (nlpData) setNlpTasks(nlpData as NLPTask[]);
+      const { data: nlpData, error: nlpError } = await supabase.from('nlp_tasks').select('*').limit(3);
+      if (nlpData) {
+        const formattedTasks = nlpData.map(task => ({
+          id: task.id,
+          type: task.type as NLPTask['type'],
+          status: task.status as NLPTask['status'],
+          confidence: task.confidence,
+          entities: task.entities,
+          processingTime: task.processing_time,
+        }));
+        setNlpTasks(formattedTasks);
+      } else {
+        if (nlpError) console.error("Error fetching nlp_tasks:", nlpError);
+        setNlpTasks([]);
+      }
 
-      const { data: visionData } = await supabase.from('vision_tasks').select('*').limit(2);
-      if (visionData) setVisionTasks(visionData as VisionTask[]);
+      const { data: visionData, error: visionError } = await supabase.from('vision_tasks').select('*').limit(2);
+      if (visionData) {
+        const formattedTasks = visionData.map(task => ({
+          id: task.id,
+          type: task.type as VisionTask['type'],
+          status: task.status as VisionTask['status'],
+          accuracy: task.accuracy,
+          objectsDetected: task.objects_detected,
+          processingTime: task.processing_time,
+        }));
+        setVisionTasks(formattedTasks);
+      } else {
+        if (visionError) console.error("Error fetching vision_tasks:", visionError);
+        setVisionTasks([]);
+      }
       
-      const { data: graphData } = await supabase.from('knowledge_graph_nodes').select('*').limit(5);
-      if (graphData) setKnowledgeGraph(graphData as KnowledgeGraphNode[]);
+      const { data: graphData, error: graphError } = await supabase.from('knowledge_graph_nodes').select('*').limit(5);
+      if (graphData) {
+        const formattedNodes = graphData.map(node => ({
+          id: node.id,
+          label: node.label,
+          type: node.type as KnowledgeGraphNode['type'],
+          connections: node.connections,
+          relevanceScore: node.relevance_score,
+        }));
+        setKnowledgeGraph(formattedNodes);
+      } else {
+        if (graphError) console.error("Error fetching knowledge_graph_nodes:", graphError);
+        setKnowledgeGraph([]);
+      }
 
       setLoading(false);
     };
@@ -233,12 +271,12 @@ const CognitiveAnalyticsPlatform = () => {
                       </Badge>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-2">
-                      <div>Confidence: {task.confidence.toFixed(1)}%</div>
-                      <div>Entities: {task.entities}</div>
-                      <div>Time: {task.processingTime}</div>
+                      <div>Confidence: {task.confidence ? `${task.confidence.toFixed(1)}%` : 'N/A'}</div>
+                      <div>Entities: {task.entities ?? 'N/A'}</div>
+                      <div>Time: {task.processingTime ?? 'N/A'}</div>
                     </div>
                     {task.status === 'processing' && (
-                      <Progress value={task.confidence} className="h-1" />
+                      <Progress value={task.confidence ?? 0} className="h-1" />
                     )}
                   </div>
                 ))
@@ -276,12 +314,12 @@ const CognitiveAnalyticsPlatform = () => {
                       </Badge>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-2">
-                      <div>Accuracy: {task.accuracy.toFixed(1)}%</div>
-                      <div>Objects: {task.objectsDetected}</div>
-                      <div>Time: {task.processingTime}</div>
+                      <div>Accuracy: {task.accuracy ? `${task.accuracy.toFixed(1)}%` : 'N/A'}</div>
+                      <div>Objects: {task.objectsDetected ?? 'N/A'}</div>
+                      <div>Time: {task.processingTime ?? 'N/A'}</div>
                     </div>
                     {task.status === 'analyzing' && (
-                      <Progress value={task.accuracy} className="h-1" />
+                      <Progress value={task.accuracy ?? 0} className="h-1" />
                     )}
                   </div>
                 ))
@@ -373,11 +411,11 @@ const CognitiveAnalyticsPlatform = () => {
                         </Badge>
                       </div>
                       <div className="text-xs text-muted-foreground mb-1">
-                        {node.connections} connections
+                        {node.connections ?? 0} connections
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-orange-400">Relevance: {node.relevanceScore}%</span>
-                        <Progress value={node.relevanceScore} className="h-1 w-16" />
+                        <span className="text-xs text-orange-400">Relevance: {node.relevanceScore ?? 0}%</span>
+                        <Progress value={node.relevanceScore ?? 0} className="h-1 w-16" />
                       </div>
                     </div>
                   ))}

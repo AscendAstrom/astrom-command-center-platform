@@ -916,6 +916,33 @@ export type Database = {
           },
         ]
       }
+      knowledge_graph_nodes: {
+        Row: {
+          connections: number | null
+          created_at: string
+          id: string
+          label: string
+          relevance_score: number | null
+          type: string
+        }
+        Insert: {
+          connections?: number | null
+          created_at?: string
+          id?: string
+          label: string
+          relevance_score?: number | null
+          type: string
+        }
+        Update: {
+          connections?: number | null
+          created_at?: string
+          id?: string
+          label?: string
+          relevance_score?: number | null
+          type?: string
+        }
+        Relationships: []
+      }
       kpis: {
         Row: {
           category: Database["public"]["Enums"]["kpi_category"]
@@ -1180,6 +1207,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ml_models: {
+        Row: {
+          accuracy: number | null
+          confidence: number | null
+          created_at: string
+          id: string
+          last_trained: string | null
+          name: string
+          status: string | null
+          target: string
+          type: string
+        }
+        Insert: {
+          accuracy?: number | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          last_trained?: string | null
+          name: string
+          status?: string | null
+          target: string
+          type: string
+        }
+        Update: {
+          accuracy?: number | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          last_trained?: string | null
+          name?: string
+          status?: string | null
+          target?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      nlp_tasks: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          entities: number | null
+          id: string
+          processing_time: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          entities?: number | null
+          id?: string
+          processing_time?: string | null
+          status: string
+          type: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          entities?: number | null
+          id?: string
+          processing_time?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: []
       }
       notification_channels: {
         Row: {
@@ -2190,6 +2283,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vision_tasks: {
+        Row: {
+          accuracy: number | null
+          created_at: string
+          id: string
+          objects_detected: number | null
+          processing_time: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          objects_detected?: number | null
+          processing_time?: string | null
+          status: string
+          type: string
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          objects_detected?: number | null
+          processing_time?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: []
       }
       wait_times: {
         Row: {
