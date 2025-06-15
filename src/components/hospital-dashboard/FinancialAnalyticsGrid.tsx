@@ -7,6 +7,7 @@ import { ProfitabilityTile } from "./tiles/financial/ProfitabilityTile";
 import { BudgetVarianceTile } from "./tiles/financial/BudgetVarianceTile";
 import { PayerMixTile } from "./tiles/financial/PayerMixTile";
 import { FinancialForecastTile } from "./tiles/financial/FinancialForecastTile";
+import { ClaimDenialAnalysisTile } from "./tiles/financial/ClaimDenialAnalysisTile";
 
 const FinancialAnalyticsGrid = () => {
   return (
@@ -15,6 +16,7 @@ const FinancialAnalyticsGrid = () => {
       <CostManagementTile />
       <BillingEfficiencyTile />
       <InsuranceClaimsTile />
+      <ClaimDenialAnalysisTile />
       <ProfitabilityTile />
       <BudgetVarianceTile />
       <PayerMixTile />
