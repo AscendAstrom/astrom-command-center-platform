@@ -1,11 +1,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, CheckCircle, Loader2 } from "lucide-react";
+import { Play, CheckCircle, Loader2, Sparkles } from "lucide-react";
 import { ConfigurationSummary } from "./testing/ConfigurationSummary";
 import { TestPayloadSection } from "./testing/TestPayloadSection";
 import { TestResults } from "./testing/TestResults";
-import { runTestValidation } from "./testing/TestingStepUtils";
+import { runTestValidation, generateAIPayload } from "./testing/TestingStepUtils";
+import { toast } from "sonner";
 
 interface TestingStepProps {
   formData: any;
@@ -19,10 +20,24 @@ export const TestingStep = ({ formData, onComplete }: TestingStepProps) => {
     message: string;
     data?: any;
   } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGeneratePayload = async () => {
+    setIsGenerating(true);
+    setTestResult(null);
+    const result = await generateAIPayload(formData);
+    if (result.success) {
+      setTestPayload(result.payload);
+      toast.success("AI-generated payload is ready!");
+    } else {
+      toast.error(result.message || "Failed to generate payload.");
+    }
+    setIsGenerating(false);
+  };
 
   const runTest = async () => {
-    setIsLoading(true);
+    setIsTesting(true);
     setTestResult(null);
 
     try {
@@ -34,7 +49,7 @@ export const TestingStep = ({ formData, onComplete }: TestingStepProps) => {
         message: "Test failed: Connection error or invalid configuration."
       });
     } finally {
-      setIsLoading(false);
+      setIsTesting(false);
     }
   };
 
@@ -55,14 +70,16 @@ export const TestingStep = ({ formData, onComplete }: TestingStepProps) => {
         formData={formData}
         testPayload={testPayload}
         setTestPayload={setTestPayload}
+        onGenerate={handleGeneratePayload}
+        isGenerating={isGenerating}
       />
 
       <Button
         onClick={runTest}
-        disabled={isLoading || !testPayload.trim()}
+        disabled={isTesting || isGenerating || !testPayload.trim()}
         className="bg-blue-600 hover:bg-blue-700"
       >
-        {isLoading ? (
+        {isTesting ? (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             Running Test...
