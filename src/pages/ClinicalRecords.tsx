@@ -19,13 +19,6 @@ import { ClinicalDataType } from '@/types/clinical';
 import ClinicalDataTable from '@/components/clinical/ClinicalDataTable';
 import ClinicalDetailDrawer from '@/components/clinical/ClinicalDetailDrawer';
 import PatientTimeline from '@/components/clinical/PatientTimeline';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const ClinicalRecords = () => {
   const [selectedTab, setSelectedTab] = useState<ClinicalDataType>('encounters');
@@ -80,7 +73,7 @@ const ClinicalRecords = () => {
   };
 
   const getTotalRecords = () => {
-    return Object.values(clinicalData).reduce((total, query) => total + query.data.length, 0);
+    return Object.values(clinicalData).reduce((total, query) => total + (query.data?.length || 0), 0);
   };
 
   if (showPatientTimeline && selectedPatientId) {
@@ -190,23 +183,23 @@ const ClinicalRecords = () => {
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="encounters" className="flex items-center gap-2">
             {getTabIcon('encounters')}
-            Encounters ({encountersQuery.data.length})
+            Encounters ({encountersQuery.data?.length || 0})
           </TabsTrigger>
           <TabsTrigger value="conditions" className="flex items-center gap-2">
             {getTabIcon('conditions')}
-            Conditions ({conditionsQuery.data.length})
+            Conditions ({conditionsQuery.data?.length || 0})
           </TabsTrigger>
           <TabsTrigger value="allergies" className="flex items-center gap-2">
             {getTabIcon('allergies')}
-            Allergies ({allergiesQuery.data.length})
+            Allergies ({allergiesQuery.data?.length || 0})
           </TabsTrigger>
           <TabsTrigger value="careplans" className="flex items-center gap-2">
             {getTabIcon('careplans')}
-            Care Plans ({carePlansQuery.data.length})
+            Care Plans ({carePlansQuery.data?.length || 0})
           </TabsTrigger>
           <TabsTrigger value="devices" className="flex items-center gap-2">
             {getTabIcon('devices')}
-            Devices ({devicesQuery.data.length})
+            Devices ({devicesQuery.data?.length || 0})
           </TabsTrigger>
         </TabsList>
 
@@ -228,7 +221,7 @@ const ClinicalRecords = () => {
               </Card>
             ) : (
               <ClinicalDataTable
-                data={query.data}
+                data={query.data || []}
                 type={type as ClinicalDataType}
                 onRowClick={handleRowClick}
                 patients={patientsQuery.patients}
@@ -247,7 +240,7 @@ const ClinicalRecords = () => {
           type={selectedDetail.type}
           onNavigateToPatient={handlePatientSelect}
           onNavigateToEncounter={(encounterId) => {
-            const encounter = encountersQuery.data.find(e => e.id === encounterId);
+            const encounter = encountersQuery.data?.find((e: any) => e.id === encounterId);
             if (encounter) {
               handleRowClick(encounter, 'encounters');
             }

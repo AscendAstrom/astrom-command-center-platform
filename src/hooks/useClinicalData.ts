@@ -92,12 +92,10 @@ const fetchPatients = async (): Promise<Patient[]> => {
   return data || [];
 };
 
-// Hook for clinical data
+// Hook for clinical data with proper typing
 export const useClinicalData = (type: ClinicalDataType) => {
-  const queryClient = useQueryClient();
-
   const queryKey = [type];
-  let queryFn;
+  let queryFn: () => Promise<any[]>;
 
   switch (type) {
     case 'allergies':
