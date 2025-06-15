@@ -68,7 +68,7 @@ const AutonomousDecisionEngine = () => {
         ))}
       </div>
 
-      <LearningStatusPanel />
+      <LearningStatusPanel workflows={workflows} systemMetrics={systemMetrics} />
     </div>
   );
 };
