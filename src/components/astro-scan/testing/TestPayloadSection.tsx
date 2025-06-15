@@ -1,8 +1,6 @@
 
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getSamplePayload } from "./TestingStepUtils";
 
 interface TestPayloadSectionProps {
   formData: any;
@@ -15,14 +13,7 @@ export const TestPayloadSection = ({ formData, testPayload, setTestPayload }: Te
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Label className="text-slate-300">Test Payload</Label>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setTestPayload(getSamplePayload(formData.type))}
-          className="border-slate-700 text-slate-300"
-        >
-          Load Sample
-        </Button>
+        {/* "Load Sample" button removed as mock data is no longer used. */}
       </div>
       <Textarea
         value={testPayload}
@@ -31,7 +22,7 @@ export const TestPayloadSection = ({ formData, testPayload, setTestPayload }: Te
         className="bg-slate-800 border-slate-700 text-white font-mono text-sm min-h-[200px]"
       />
       <div className="text-xs text-slate-400">
-        💡 Load a sample template and modify it with your real data structure
+        💡 Enter a real payload from your data source to test the configuration.
       </div>
     </div>
   );

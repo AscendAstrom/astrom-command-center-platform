@@ -23,12 +23,7 @@ const BedManagementDemo = () => {
             <AlertTriangle className="h-4 w-4 text-pink-400" />
             Automated Triggers
           </h4>
-          <ul className="text-muted-foreground text-sm space-y-1">
-            <li>• High occupancy alerts (&gt;90%)</li>
-            <li>• Discharge delay notifications</li>
-            <li>• Transfer bottleneck detection</li>
-            <li>• MOH compliance violations</li>
-          </ul>
+          <p className="text-muted-foreground text-sm">Connect data sources to define automated triggers based on real-time events.</p>
         </div>
         
         <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
@@ -36,12 +31,7 @@ const BedManagementDemo = () => {
             <Bot className="h-4 w-4 text-blue-400" />
             AI Workflow Actions
           </h4>
-          <ul className="text-muted-foreground text-sm space-y-1">
-            <li>• Auto-assign incoming patients</li>
-            <li>• Optimize bed cleaning schedules</li>
-            <li>• Generate discharge summaries</li>
-            <li>• Update MOH dashboards</li>
-          </ul>
+          <p className="text-muted-foreground text-sm">Configure AI-driven actions to automate responses and streamline operations.</p>
         </div>
         
         <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
@@ -49,12 +39,7 @@ const BedManagementDemo = () => {
             <CheckCircle className="h-4 w-4 text-green-400" />
             Cultural Automation
           </h4>
-          <ul className="text-muted-foreground text-sm space-y-1">
-            <li>• Gender-separated ward assignments</li>
-            <li>• Family accommodation priority</li>
-            <li>• Prayer time scheduling</li>
-            <li>• Hajj season surge handling</li>
-          </ul>
+          <p className="text-muted-foreground text-sm">Implement custom automation rules to handle specific regional or cultural requirements.</p>
         </div>
       </div>
 

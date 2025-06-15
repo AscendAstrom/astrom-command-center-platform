@@ -24,7 +24,7 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
     {
       id: '1',
       type: 'assistant',
-      content: "Hello! I'm your ASTRO-FLOW AI assistant. I can help you query data, explain insights, set alerts, and generate reports. Try asking me about SLA breaches, zone status, or surge predictions.",
+      content: "Hello! I'm your ASTRO-FLOW AI assistant. Connect me to your data to query insights, set alerts, and generate reports.",
       timestamp: new Date().toISOString(),
       intent: 'explanation',
       confidence: 100
@@ -34,14 +34,7 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const sampleQueries = [
-    "Which zones are currently over SLA?",
-    "Set alert for wait time breach over 30 mins in Zone A",
-    "Why did Zone C have an anomaly this morning?",
-    "Generate daily report for ops meeting",
-    "What's the surge prediction for next 2 hours?",
-    "Show me patients with high ETTB risk"
-  ];
+  // sampleQueries array removed
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
@@ -57,15 +50,15 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
     setInput('');
     setIsProcessing(true);
 
-    // Simulate AI processing
+    // Simulate AI processing - replaced mock response generator
     setTimeout(() => {
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: generateResponse(input),
+        content: "AI response generation is not implemented. This is a placeholder response.",
         timestamp: new Date().toISOString(),
         intent: detectIntent(input),
-        confidence: Math.floor(Math.random() * 20) + 80
+        confidence: 0
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -87,31 +80,7 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
     return 'query';
   };
 
-  const generateResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes('sla') || lowerQuery.includes('breach')) {
-      return "Currently, Zone C has 4 patients at risk of SLA breach with an average wait time of 52 minutes. Zone B has 2 patients at medium risk. AI confidence: 94%. Recommended action: Prioritize Zone C patients and consider opening overflow capacity.";
-    }
-    
-    if (lowerQuery.includes('surge') || lowerQuery.includes('prediction')) {
-      return "Surge prediction shows 94% capacity expected in Zone B within 2 hours. Historical patterns and current trends indicate a moderate surge. Recommended preparation: Alert additional staff, prepare overflow beds, and optimize discharge queue.";
-    }
-    
-    if (lowerQuery.includes('anomaly') || lowerQuery.includes('zone c')) {
-      return "Zone C anomaly this morning was caused by: 1) Unexpected EMS arrival cluster (6 patients in 20 mins), 2) Delayed discharge of 3 patients due to lab results, 3) Staff shift change overlap issue. AI detected this 15 minutes before manual identification.";
-    }
-    
-    if (lowerQuery.includes('report') || lowerQuery.includes('daily')) {
-      return "Daily Operations Report Generated:\n• Total ED visits: 147\n• Average wait time: 34 minutes\n• SLA compliance: 89%\n• Top performing zone: Zone A (98% compliance)\n• Attention needed: Zone C (78% compliance)\n• AI predictions accuracy: 91.3%\n• Recommended focus areas: Improve Zone C throughput, monitor surge patterns";
-    }
-    
-    if (lowerQuery.includes('alert') || lowerQuery.includes('set')) {
-      return "Alert configured successfully! You'll now receive notifications when wait times in Zone A exceed 30 minutes. Alert channels: Dashboard banner, email notification. You can modify this in Alert Subscriptions.";
-    }
-    
-    return "I understand your query about " + query + ". Based on current data and AI analysis, I can provide detailed insights. Would you like me to focus on specific metrics, zones, or time periods?";
-  };
+  // generateResponse function removed
 
   const getIntentIcon = (intent?: string) => {
     switch (intent) {
@@ -146,22 +115,12 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col">
-        {/* Sample Queries */}
+        {/* Sample Queries removed */}
         <div className="mb-4">
-          <div className="text-sm font-medium text-foreground mb-2">Try asking:</div>
-          <div className="flex flex-wrap gap-2">
-            {sampleQueries.slice(0, 3).map((query, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => setInput(query)}
-                className="text-xs"
-              >
-                "{query}"
-              </Button>
-            ))}
-          </div>
+          <div className="text-sm font-medium text-foreground mb-2">You can ask things like:</div>
+          <p className="text-xs text-muted-foreground italic">
+            "Which zones are currently over SLA?" or "Generate daily report for ops meeting"
+          </p>
         </div>
 
         {/* Messages */}
@@ -186,9 +145,13 @@ const NLPAssistant = ({ userRole }: NLPAssistantProps) => {
                       <span className="text-xs text-muted-foreground capitalize">
                         {message.intent}
                       </span>
-                      {message.confidence && (
+                      {message.confidence && message.confidence > 0 ? (
                         <Badge variant="outline" className="text-xs">
                           {message.confidence}% confidence
+                        </Badge>
+                      ) : message.type === 'assistant' && (
+                        <Badge variant="outline" className="text-xs border-dashed">
+                          Not connected
                         </Badge>
                       )}
                     </div>
