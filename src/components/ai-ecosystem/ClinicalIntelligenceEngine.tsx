@@ -9,6 +9,7 @@ import {
   GitMerge,
   AlertTriangle,
   Bot,
+  AlertCircle,
 } from 'lucide-react';
 import {
   Table,
@@ -18,29 +19,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useClinicalIntelligenceData } from "@/hooks/useClinicalIntelligenceData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ClinicalIntelligenceEngine = () => {
+  const { data, isLoading, error } = useClinicalIntelligenceData();
 
-  const protocolAdherence = {
-    sepsis: 98,
-    stroke: 95,
-    mi: 97,
-  };
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-24 w-full" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    );
+  }
 
-  const medicationAlerts = [
-    { id: 1, patient: 'John D.', alert: 'High Risk: Warfarin + Aspirin', action: 'Pharmacist review pending' },
-    { id: 2, patient: 'Jane S.', alert: 'Allergy: Penicillin', action: 'Alternative prescribed' },
-  ];
+  if (error) {
+    return (
+      <Card className="bg-destructive/10 border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-destructive" />
+            Error Loading Clinical Intelligence Data
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-destructive">Could not fetch data for the Clinical Intelligence Engine.</p>
+          <p className="text-xs text-muted-foreground mt-2">{error.message}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  const diagnosticSuggestions = [
-    { id: 1, patient: 'Robert B.', condition: 'Possible Sepsis', confidence: 85, evidence: 'High lactate, fever' },
-    { id: 2, patient: 'Emily W.', condition: 'Early-stage Pneumonia', confidence: 78, evidence: 'Chest X-ray anomalies' },
-  ];
-
-  const carePathways = [
-    { id: 1, name: 'Knee Replacement', avgLOS: '3.2 days', compliance: 96, outcome: '99% positive' },
-    { id: 2, name: 'COPD Management', avgLOS: '5.1 days', compliance: 92, outcome: '88% readmission reduction' },
-  ];
+  const { 
+    protocolAdherence = {}, 
+    medicationAlerts = [], 
+    diagnosticSuggestions = [], 
+    carePathways = [] 
+  } = data || {};
 
   return (
     <div className="space-y-6">

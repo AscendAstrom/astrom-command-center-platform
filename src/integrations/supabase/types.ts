@@ -414,6 +414,33 @@ export type Database = {
           },
         ]
       }
+      care_pathway_analytics: {
+        Row: {
+          avg_los_days: string
+          compliance_percent: number
+          id: string
+          outcome_summary: string
+          pathway_name: string
+          updated_at: string
+        }
+        Insert: {
+          avg_los_days: string
+          compliance_percent: number
+          id?: string
+          outcome_summary: string
+          pathway_name: string
+          updated_at?: string
+        }
+        Update: {
+          avg_los_days?: string
+          compliance_percent?: number
+          id?: string
+          outcome_summary?: string
+          pathway_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       daily_summaries: {
         Row: {
           content: Json
@@ -1140,6 +1167,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      medication_safety_alerts: {
+        Row: {
+          alert_details: string
+          created_at: string
+          id: string
+          patient_name: string
+          status: string
+        }
+        Insert: {
+          alert_details: string
+          created_at?: string
+          id?: string
+          patient_name: string
+          status: string
+        }
+        Update: {
+          alert_details?: string
+          created_at?: string
+          id?: string
+          patient_name?: string
+          status?: string
+        }
+        Relationships: []
       }
       message_templates: {
         Row: {
@@ -1868,6 +1919,33 @@ export type Database = {
           },
         ]
       }
+      predictive_diagnostic_suggestions: {
+        Row: {
+          confidence: number
+          created_at: string
+          evidence: string | null
+          id: string
+          patient_name: string
+          suggestion: string
+        }
+        Insert: {
+          confidence: number
+          created_at?: string
+          evidence?: string | null
+          id?: string
+          patient_name: string
+          suggestion: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          evidence?: string | null
+          id?: string
+          patient_name?: string
+          suggestion?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1909,6 +1987,27 @@ export type Database = {
           phone?: string | null
           position?: string | null
           preferences?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      protocol_adherence_metrics: {
+        Row: {
+          adherence_value: number
+          id: string
+          protocol_name: string
+          updated_at: string
+        }
+        Insert: {
+          adherence_value: number
+          id?: string
+          protocol_name: string
+          updated_at?: string
+        }
+        Update: {
+          adherence_value?: number
+          id?: string
+          protocol_name?: string
           updated_at?: string
         }
         Relationships: []
