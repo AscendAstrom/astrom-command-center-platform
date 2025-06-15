@@ -9,17 +9,17 @@ import { CommonConfigurationFields } from "./configuration/CommonConfigurationFi
 
 interface ConfigurationStepProps {
   formData: any;
-  updateFormData: (updates: any) => void;
+  updateFormData: (updater: any) => void;
 }
 
 export const ConfigurationStep = ({ formData, updateFormData }: ConfigurationStepProps) => {
   const updateConfig = (key: string, value: any) => {
-    updateFormData({
+    updateFormData((prev: any) => ({
       config: {
-        ...formData.config,
+        ...prev.config,
         [key]: value
       }
-    });
+    }));
   };
 
   const renderConfigFields = () => {

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,8 +42,11 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
     fieldMappings: {}
   });
 
-  const updateFormData = (updates: Partial<DataSourceForm>) => {
-    setFormData(prev => ({ ...prev, ...updates }));
+  const updateFormData = (updater: Partial<DataSourceForm> | ((prev: DataSourceForm) => Partial<DataSourceForm>)) => {
+    setFormData(prev => {
+      const updates = typeof updater === 'function' ? updater(prev) : updater;
+      return { ...prev, ...updates };
+    });
   };
 
   const handleSubmit = async () => {
