@@ -18,6 +18,7 @@ const SLATable = ({ slaConfigs, canEdit, onToggleStatus }: SLATableProps) => {
           <TableHead className="text-foreground">Zone</TableHead>
           <TableHead className="text-foreground">Metric</TableHead>
           <TableHead className="text-foreground">Threshold</TableHead>
+          <TableHead className="text-foreground">Current Value</TableHead>
           <TableHead className="text-foreground">Alerts</TableHead>
           <TableHead className="text-foreground">Status</TableHead>
           {canEdit && <TableHead className="text-foreground">Actions</TableHead>}

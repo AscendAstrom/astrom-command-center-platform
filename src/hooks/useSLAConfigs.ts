@@ -1,8 +1,8 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { SLAConfiguration as SLAConfig } from '@/components/astro-metrics/types';
 import { toast } from "sonner";
+import { useState, useEffect } from 'react';
 
 const fromSnakeCase = (data: any): SLAConfig => ({
   id: data.id,
@@ -67,10 +67,46 @@ const updateSLAStatus = async ({ slaId, status }: { slaId: string, status: strin
 
 export const useSLAConfigs = () => {
     const queryClient = useQueryClient();
-    const { data: slaConfigs, isLoading, error } = useQuery<SLAConfig[]>({
+    const { data: slaConfigsData, isLoading, error } = useQuery<SLAConfig[]>({
         queryKey: ['slaConfigs'],
         queryFn: fetchSLAConfigs,
     });
+
+    const [slaConfigs, setSlaConfigs] = useState<SLAConfig[]>([]);
+
+    useEffect(() => {
+        if (slaConfigsData) {
+            const initialConfigs = slaConfigsData.map(c => {
+                const baseValue = c.threshold * 0.8; // Start below threshold
+                const initialFluctuation = (Math.random() - 0.5) * (c.threshold * 0.2);
+                return {
+                    ...c, 
+                    currentValue: Math.max(0, parseFloat((baseValue + initialFluctuation).toFixed(2)))
+                };
+            });
+            setSlaConfigs(initialConfigs);
+        }
+    }, [slaConfigsData]);
+
+
+    useEffect(() => {
+        if (slaConfigs.length === 0) return;
+
+        const interval = setInterval(() => {
+            setSlaConfigs(prevConfigs => 
+                prevConfigs.map(config => {
+                    if (config.status !== 'active') return config;
+                    
+                    const fluctuation = (Math.random() - 0.49) * (config.threshold * 0.1); // Tend to increase slightly
+                    const newValue = (config.currentValue ?? config.threshold * 0.8) + fluctuation;
+                    
+                    return { ...config, currentValue: Math.max(0, parseFloat(newValue.toFixed(2))) };
+                })
+            );
+        }, 2000); // Update every 2 seconds
+
+        return () => clearInterval(interval);
+    }, [slaConfigs.length]);
 
     const createSlaMutation = useMutation({
         mutationFn: createSLAConfig,
@@ -95,8 +131,8 @@ export const useSLAConfigs = () => {
     });
 
     return {
-        slaConfigs: slaConfigs ?? [],
-        isLoading,
+        slaConfigs: slaConfigs,
+        isLoading: isLoading && slaConfigs.length === 0,
         error,
         createSlaMutation,
         updateSlaStatusMutation

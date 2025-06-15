@@ -48,6 +48,7 @@ export interface SLAConfiguration {
   status: string;
   createdAt: string;
   updatedAt: string;
+  currentValue?: number;
 }
 
 export interface EscalationRule {

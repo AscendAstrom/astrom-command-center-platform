@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -30,8 +29,10 @@ const SLATableRow = ({ sla, canEdit, onToggleStatus }: SLATableRowProps) => {
     }
   };
 
+  const isBreached = sla.currentValue !== undefined && sla.currentValue > sla.threshold;
+
   return (
-    <TableRow className="border-slate-800">
+    <TableRow className={`border-slate-800 transition-colors ${isBreached ? 'bg-red-900/50 hover:bg-red-900/60' : 'hover:bg-slate-800/50'}`}>
       <TableCell>
         <div>
           <div className="font-medium text-white">{sla.name}</div>
@@ -54,6 +55,18 @@ const SLATableRow = ({ sla, canEdit, onToggleStatus }: SLATableRowProps) => {
       </TableCell>
       <TableCell className="text-slate-300">
         {sla.threshold} {sla.unit}
+      </TableCell>
+      <TableCell>
+        {sla.currentValue !== undefined ? (
+          <div className="flex items-center gap-2">
+            <span className={`font-bold ${isBreached ? 'text-red-400 animate-pulse' : 'text-green-400'}`}>
+              {sla.currentValue} {sla.unit}
+            </span>
+            {isBreached && <AlertTriangle className="h-4 w-4 text-red-400" />}
+          </div>
+        ) : (
+          <span className="text-slate-500">N/A</span>
+        )}
       </TableCell>
       <TableCell>
         {sla.alertEnabled ? (
