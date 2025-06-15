@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,61 +29,20 @@ import PerformanceAnalyticsGrid from "@/components/hospital-dashboard/Performanc
 import QualityAnalyticsGrid from "@/components/hospital-dashboard/QualityAnalyticsGrid";
 import PredictiveAnalyticsEngine from "@/components/ai-ecosystem/PredictiveAnalyticsEngine";
 import LogoIcon from "@/components/ui/LogoIcon";
-import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { analyticsService, AnalyticsData } from '@/services/analytics';
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useHospitalStats } from "@/hooks/useHospitalStats";
 
 const Dashboard = () => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
-  const [isLive, setIsLive] = useState(true);
-  const [stopRealTimeUpdates, setStopRealTimeUpdates] = useState<(() => void) | null>(null);
   const { signOut } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const unsubscribe = analyticsService.subscribe(setAnalyticsData);
-    
-    if (isLive) {
-      const stopUpdates = analyticsService.startRealTimeUpdates();
-      setStopRealTimeUpdates(() => stopUpdates);
-    } else {
-      if (stopRealTimeUpdates) {
-        stopRealTimeUpdates();
-        setStopRealTimeUpdates(null);
-      }
-    }
-
-    return () => {
-      unsubscribe();
-      if (stopRealTimeUpdates) {
-        stopRealTimeUpdates();
-      }
-    };
-  }, [isLive]);
+  const { data: analyticsData, isLoading: isRefreshing, refetch } = useHospitalStats();
 
   const handleRefreshStats = async () => {
-    setIsRefreshing(true);
     toast.info("Refreshing hospital statistics...");
-    
-    try {
-      // Force a fresh data fetch
-      if (stopRealTimeUpdates) {
-        stopRealTimeUpdates();
-      }
-      const stopUpdates = analyticsService.startRealTimeUpdates();
-      setStopRealTimeUpdates(() => stopUpdates);
-      
-      setTimeout(() => {
-        setIsRefreshing(false);
-        toast.success("Hospital data refreshed successfully!");
-      }, 2000);
-    } catch (error) {
-      setIsRefreshing(false);
-      toast.error("Failed to refresh data");
-    }
+    await refetch();
+    toast.success("Hospital data refreshed successfully!");
   };
 
   const handleLogout = async () => {
@@ -93,13 +53,11 @@ const Dashboard = () => {
 
   // Calculate summary stats from analytics data
   const summaryStats = {
-    totalBeds: analyticsData ? 
-      (analyticsData.emergencyDepartment.bedUtilization > 0 ? 
-        Math.round((analyticsData.emergencyDepartment.totalPatients * 100) / analyticsData.emergencyDepartment.bedUtilization) : 0) : 0,
-    activePatients: analyticsData?.emergencyDepartment.totalPatients || 0,
-    avgWaitTime: analyticsData?.emergencyDepartment.avgWaitTime || 0,
-    staffOnDuty: analyticsData?.emergencyDepartment.staffOnDuty || 0,
-    bedUtilization: analyticsData?.emergencyDepartment.bedUtilization || 0
+    totalBeds: analyticsData?.totalBeds ?? 0,
+    activePatients: analyticsData?.activePatients ?? 0,
+    avgWaitTime: analyticsData?.avgWaitTime ?? 0,
+    staffOnDuty: analyticsData?.staffOnDuty ?? 0,
+    bedUtilization: analyticsData?.bedUtilization ?? 0,
   };
 
   return (
@@ -152,7 +110,7 @@ const Dashboard = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Total Beds</p>
                   <p className="text-3xl font-bold text-foreground">
-                    {analyticsData ? summaryStats.totalBeds : '--'}
+                    {isRefreshing ? '--' : summaryStats.totalBeds}
                   </p>
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-green-400" />
@@ -168,7 +126,7 @@ const Dashboard = () => {
               <div className="mt-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-center text-sm text-muted-foreground">
                   <BarChart3 className="h-4 w-4 mr-2" />
-                  {analyticsData ? 'Live Data' : 'Loading...'}
+                  {isRefreshing ? 'Loading...' : 'Live Data'}
                 </div>
               </div>
             </CardContent>
@@ -180,7 +138,7 @@ const Dashboard = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Active Patients</p>
                   <p className="text-3xl font-bold text-foreground">
-                    {analyticsData ? summaryStats.activePatients : '--'}
+                    {isRefreshing ? '--' : summaryStats.activePatients}
                   </p>
                   <p className="text-sm text-orange-400 font-semibold">
                     {summaryStats.activePatients > 0 ? 'Currently admitted' : 'No active patients'}
@@ -205,7 +163,7 @@ const Dashboard = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">ED Wait Time</p>
                   <p className="text-3xl font-bold text-foreground">
-                    {analyticsData ? (summaryStats.avgWaitTime > 0 ? `${summaryStats.avgWaitTime}m` : '--') : '--'}
+                    {isRefreshing ? '--' : (summaryStats.avgWaitTime > 0 ? `${summaryStats.avgWaitTime}m` : '--')}
                   </p>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-orange-400" />
@@ -233,7 +191,7 @@ const Dashboard = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Staff On Duty</p>
                   <p className="text-3xl font-bold text-foreground">
-                    {analyticsData ? summaryStats.staffOnDuty : '--'}
+                    {isRefreshing ? '--' : summaryStats.staffOnDuty}
                   </p>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-400" />
@@ -249,7 +207,7 @@ const Dashboard = () => {
               <div className="mt-4 pt-4 border-t border-border">
                 <div className="flex items-center justify-center text-sm text-muted-foreground">
                   <Activity className="h-4 w-4 mr-2" />
-                  {analyticsData ? 'Live Data' : 'Loading...'}
+                  {isRefreshing ? 'Loading...' : 'Live Data'}
                 </div>
               </div>
             </CardContent>
