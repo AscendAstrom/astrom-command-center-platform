@@ -12,36 +12,10 @@ import DataPipelineTab from "@/components/dashboard/tabs/DataPipelineTab";
 import ClinicalOperationsTab from "@/components/dashboard/tabs/ClinicalOperationsTab";
 import { ClinicalDashboardWidget } from "@/components/clinical/ClinicalDashboardWidget";
 import { useClinical } from "@/contexts/ClinicalContext";
+import { AnalyticsData } from "@/services/analytics/types";
 
 const Dashboard = () => {
-  const [data, setData] = useState({
-    overview: {
-      totalPatients: 0,
-      activeBeds: 0,
-      pendingDischarges: 0,
-      emergencyAdmissions: 0,
-      avgWaitTime: 0,
-      bedOccupancyRate: 0,
-      patientSatisfactionScore: 0
-    },
-    dataPipeline: {
-      activeSources: 0,
-      processingSpeed: 0,
-      errorRate: 0,
-      dataQuality: 0,
-      syncStatus: 'unknown',
-      lastUpdated: new Date().toISOString()
-    },
-    clinicalOperations: {
-      activeStaff: 0,
-      scheduledProcedures: 0,
-      resourceUtilization: 0,
-      equipmentStatus: 'unknown',
-      avgProcedureTime: 0,
-      lastUpdated: new Date().toISOString()
-    }
-  });
-  
+  const [data, setData] = useState<AnalyticsData | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLive, setIsLive] = useState(false);
   const { metrics: clinicalMetrics } = useClinical();
@@ -60,35 +34,9 @@ const Dashboard = () => {
 
   const loadAnalytics = async () => {
     try {
-      // Use mock data for now since analyticsService structure needs to be verified
-      const mockData = {
-        overview: {
-          totalPatients: 1247,
-          activeBeds: 245,
-          pendingDischarges: 18,
-          emergencyAdmissions: 23,
-          avgWaitTime: 12,
-          bedOccupancyRate: 87,
-          patientSatisfactionScore: 94
-        },
-        dataPipeline: {
-          activeSources: 12,
-          processingSpeed: 98.5,
-          errorRate: 0.02,
-          dataQuality: 96.8,
-          syncStatus: 'operational',
-          lastUpdated: new Date().toISOString()
-        },
-        clinicalOperations: {
-          activeStaff: 156,
-          scheduledProcedures: 34,
-          resourceUtilization: 82,
-          equipmentStatus: 'operational',
-          avgProcedureTime: 45,
-          lastUpdated: new Date().toISOString()
-        }
-      };
-      setData(mockData);
+      await analyticsService.refreshData();
+      const analyticsData = analyticsService.getCurrentData();
+      setData(analyticsData);
     } catch (error) {
       console.error('Failed to load analytics:', error);
       toast.error("Failed to load dashboard data");
@@ -99,6 +47,21 @@ const Dashboard = () => {
     setIsLive(!isLive);
     toast.success(isLive ? "Live mode disabled" : "Live mode enabled");
   };
+
+  if (!data) {
+    return (
+      <div className="h-full bg-background">
+        <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading dashboard...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full bg-background">
@@ -137,7 +100,7 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{data.overview.totalPatients}</div>
+              <div className="text-2xl font-bold">{data.emergencyDepartment.totalPatients}</div>
               <Badge variant="secondary" className="mt-1">
                 <TrendingUp className="h-3 w-3 mr-1" />
                 +12% from last week
@@ -152,9 +115,9 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{data.overview.bedOccupancyRate}%</div>
+              <div className="text-2xl font-bold">{data.beds.utilization}%</div>
               <Badge variant="secondary" className="mt-1">
-                {data.overview.activeBeds} active beds
+                {data.beds.occupied} active beds
               </Badge>
             </CardContent>
           </Card>
@@ -166,7 +129,7 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{data.overview.avgWaitTime}min</div>
+              <div className="text-2xl font-bold">{data.emergencyDepartment.avgWaitTime}min</div>
               <Badge variant="secondary" className="mt-1">
                 Emergency dept
               </Badge>
@@ -210,7 +173,7 @@ const Dashboard = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-semibold text-blue-500">
-                      {data.clinicalOperations.activeStaff}
+                      {data.staffing.active}
                     </div>
                     <div className="text-sm text-muted-foreground">Active Staff</div>
                   </div>
