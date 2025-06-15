@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AutomationRule } from '../types';
@@ -16,8 +15,8 @@ const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
   executionCount: dao.execution_count || 0,
   createdBy: dao.created_by || 'system',
   last_executed: dao.last_executed,
-  priority: 'medium', // Not in DB, but in UI type.
-  triggerType: 'threshold_exceeded', // Not in DB
+  priority: (dao.trigger_conditions as any)?.priority || 'medium',
+  triggerType: (dao.trigger_conditions as any)?.triggerType || 'threshold_exceeded',
 });
 
 const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
@@ -25,7 +24,11 @@ const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
     return {
         name: rule.name,
         description: rule.description,
-        trigger_conditions: { conditions: rule.conditions } as any,
+        trigger_conditions: {
+            conditions: rule.conditions,
+            priority: rule.priority,
+            triggerType: rule.triggerType,
+        } as any,
         actions: { actions: rule.actions } as any,
         status: status,
     }
