@@ -86,7 +86,7 @@ const LearningStatusPanel = ({ workflows, systemMetrics }: LearningStatusPanelPr
                 <div className="text-xs text-muted-foreground">Zero-Touch Resolution</div>
               </div>
               <div className="p-3 bg-muted/30 rounded-lg text-center">
-                <div className="text-lg font-bold text-blue-400">2.3s</div>
+                <div className="text-lg font-bold text-blue-400">{systemMetrics.avgDecisionTime.toFixed(1)}s</div>
                 <div className="text-xs text-muted-foreground">Avg Decision Time</div>
               </div>
               <div className="p-3 bg-muted/30 rounded-lg text-center">
@@ -94,7 +94,7 @@ const LearningStatusPanel = ({ workflows, systemMetrics }: LearningStatusPanelPr
                 <div className="text-xs text-muted-foreground">Model Accuracy</div>
               </div>
               <div className="p-3 bg-muted/30 rounded-lg text-center">
-                <div className="text-lg font-bold text-orange-400">15.6%</div>
+                <div className="text-lg font-bold text-orange-400">{systemMetrics.performanceGain.toFixed(1)}%</div>
                 <div className="text-xs text-muted-foreground">Performance Gain</div>
               </div>
             </div>
