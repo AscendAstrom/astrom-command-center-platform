@@ -1,29 +1,22 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Workflow, 
   Bot, 
-  Settings,
-  AlertTriangle,
-  TrendingUp,
-  Brain,
-  Bell
+  Bell,
+  Zap
 } from "lucide-react";
-import RuleBuilder from "@/components/astro-flow/RuleBuilder";
-import SLABreachRadar from "@/components/astro-flow/SLABreachRadar";
-import SurgePredictor from "@/components/astro-flow/SurgePredictor";
-import NLPAssistant from "@/components/astro-flow/NLPAssistant";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSection";
 import AstroFlowHeader from "@/components/astro-flow/AstroFlowHeader";
-import WorkflowOverview from "@/components/astro-flow/WorkflowOverview";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import EnhancedRuleBuilder from "@/components/astro-flow/EnhancedRuleBuilder";
+import AdvancedWorkflowAutomation from "@/components/ai-ecosystem/AdvancedWorkflowAutomation";
 
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
@@ -45,7 +38,7 @@ const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
 const AstroFlow = () => {
   const { userRole, isLoading } = useUserRole();
   const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "workflow");
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "ai-automation");
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -79,7 +72,14 @@ const AstroFlow = () => {
         <AstroFlowHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+            <TabsTrigger 
+              value="ai-automation" 
+              className="data-[state=active]:bg-purple-500/20 transition-all duration-200 hover:bg-purple-500/10"
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              AI Automation
+            </TabsTrigger>
             <TabsTrigger 
               value="workflow" 
               className="data-[state=active]:bg-pink-500/20 transition-all duration-200 hover:bg-pink-500/10"
@@ -95,34 +95,6 @@ const AstroFlow = () => {
               AI Roles
             </TabsTrigger>
             <TabsTrigger 
-              value="rules" 
-              className="data-[state=active]:bg-orange-500/20 transition-all duration-200 hover:bg-orange-500/10"
-            >
-              <Settings className="h-4 w-4 mr-2" />
-              Rules
-            </TabsTrigger>
-            <TabsTrigger 
-              value="monitoring" 
-              className="data-[state=active]:bg-red-500/20 transition-all duration-200 hover:bg-red-500/10"
-            >
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              SLA Monitor
-            </TabsTrigger>
-            <TabsTrigger 
-              value="predictions" 
-              className="data-[state=active]:bg-blue-500/20 transition-all duration-200 hover:bg-blue-500/10"
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Predictions
-            </TabsTrigger>
-            <TabsTrigger 
-              value="nlp" 
-              className="data-[state=active]:bg-green-500/20 transition-all duration-200 hover:bg-green-500/10"
-            >
-              <Brain className="h-4 w-4 mr-2" />
-              NLP
-            </TabsTrigger>
-            <TabsTrigger 
               value="alerts" 
               className="data-[state=active]:bg-purple-500/20 transition-all duration-200 hover:bg-purple-500/10"
             >
@@ -131,8 +103,12 @@ const AstroFlow = () => {
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="ai-automation">
+             <EnhancedRuleBuilder userRole={flowUserRole} />
+          </TabsContent>
+
           <TabsContent value="workflow" className="space-y-6">
-            <WorkflowOverview />
+            <AdvancedWorkflowAutomation />
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">
@@ -148,74 +124,6 @@ const AstroFlow = () => {
               </CardHeader>
               <CardContent>
                 <AIFlowRolesSection />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="rules" className="space-y-6">
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-pink-400" />
-                  Rule Builder
-                </CardTitle>
-                <CardDescription>
-                  Create and manage automation rules for healthcare workflows
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RuleBuilder userRole={flowUserRole} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="monitoring" className="space-y-6">
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-pink-400" />
-                  SLA Breach Radar
-                </CardTitle>
-                <CardDescription>
-                  Real-time monitoring and prediction of SLA violations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SLABreachRadar userRole={flowUserRole} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="predictions" className="space-y-6">
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-pink-400" />
-                  Surge Predictor
-                </CardTitle>
-                <CardDescription>
-                  AI-powered patient volume and surge prediction models
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <SurgePredictor userRole={flowUserRole} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="nlp" className="space-y-6">
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-pink-400" />
-                  NLP Assistant
-                </CardTitle>
-                <CardDescription>
-                  Natural language interface for healthcare operations management
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <NLPAssistant userRole={flowUserRole} />
               </CardContent>
             </Card>
           </TabsContent>
