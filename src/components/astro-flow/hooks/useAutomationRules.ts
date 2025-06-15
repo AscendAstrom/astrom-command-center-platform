@@ -20,13 +20,16 @@ const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
   triggerType: 'threshold_exceeded', // Not in DB
 });
 
-const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => ({
-    name: rule.name,
-    description: rule.description,
-    trigger_conditions: { conditions: rule.conditions } as any,
-    actions: { actions: rule.actions } as any,
-    status: rule.isActive ? 'ACTIVE' : 'DRAFT',
-});
+const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
+    const status: 'ACTIVE' | 'DRAFT' = rule.isActive ? 'ACTIVE' : 'DRAFT';
+    return {
+        name: rule.name,
+        description: rule.description,
+        trigger_conditions: { conditions: rule.conditions } as any,
+        actions: { actions: rule.actions } as any,
+        status: status,
+    }
+};
 
 
 export const useAutomationRules = () => {

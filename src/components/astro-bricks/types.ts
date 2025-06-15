@@ -90,4 +90,4 @@ export interface DuplicateResolutionRule {
     description: string;
 }
 
-export type UserRole = 'admin' | 'editor' | 'viewer' | 'ANALYST';
+export type UserRole = 'ADMIN' | 'EDITOR' | 'VIEWER' | 'ANALYST';

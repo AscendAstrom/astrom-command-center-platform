@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -27,11 +28,11 @@ import { useSearchParams } from "react-router-dom";
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
   switch (userRole) {
-    case 'admin':
+    case 'ADMIN':
       return 'ADMIN';
-    case 'editor':
+    case 'EDITOR':
       return 'EDITOR';
-    case 'viewer':
+    case 'VIEWER':
       return 'VIEWER';
     case 'ANALYST':
       return 'ANALYST';

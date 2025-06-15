@@ -26,7 +26,11 @@ export const useUserRole = () => {
             setUserRole('ANALYST'); // Default to ANALYST on error
           } else {
             // Default to ANALYST if no role is found in the database
-            setUserRole((data?.role as UserRole) || 'ANALYST');
+            if (data && data.role) {
+                setUserRole(String(data.role).toUpperCase() as UserRole);
+            } else {
+                setUserRole('ANALYST');
+            }
           }
         } else {
           setUserRole(null); // No user is logged in
