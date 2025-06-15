@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -84,9 +83,16 @@ const updateBedStatuses = async (supabase: SupabaseClient) => {
 const managePatientVisits = async (supabase: SupabaseClient) => {
     // Add a new patient visit sometimes
     if (Math.random() < 0.5) {
-        const { data: availableBeds } = await supabase.from('beds').select('id').eq('status', 'AVAILABLE').limit(1);
+        const { data: availableBeds } = await supabase.from('beds').select('id, department_id').eq('status', 'AVAILABLE').limit(1);
         if (availableBeds && availableBeds.length > 0) {
-            const bedId = availableBeds[0].id;
+            const bed = availableBeds[0];
+            const bedId = bed.id;
+            const departmentId = bed.department_id;
+
+            if (!departmentId) {
+                console.error(`Bed ${bedId} is missing department_id, cannot create patient visit.`);
+                return;
+            }
 
             let { data: patient, error: patientError } = await supabase.from('patients').insert({
                 first_name: `PatientFirst${Math.floor(Math.random() * 1000)}`,
@@ -95,14 +101,24 @@ const managePatientVisits = async (supabase: SupabaseClient) => {
                 admission_date: new Date().toISOString(),
             }).select('id').single();
 
-            if (patientError) throw patientError;
+            if (patientError) {
+                console.error('Error creating patient:', patientError);
+                throw patientError;
+            }
             
-            await supabase.from('patient_visits').insert({
+            const { error: visitError } = await supabase.from('patient_visits').insert({
                 patient_id: patient.id,
                 bed_id: bedId,
+                department_id: departmentId,
+                visit_number: `V${Math.floor(Math.random() * 1000000)}`,
                 status: 'ACTIVE',
                 admission_date: new Date().toISOString(),
             });
+
+            if (visitError) {
+                console.error('Error creating patient visit:', visitError);
+                throw visitError;
+            }
 
             await supabase.from('beds').update({ status: 'OCCUPIED' }).eq('id', bedId);
         }
@@ -192,4 +208,3 @@ serve(async (req) => {
     })
   }
 })
-
