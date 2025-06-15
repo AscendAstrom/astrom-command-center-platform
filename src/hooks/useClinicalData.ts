@@ -11,6 +11,15 @@ import {
   ClinicalDataType 
 } from '@/types/clinical';
 
+// Define the return type mapping
+type ClinicalDataMap = {
+  allergies: Allergy[];
+  careplans: CarePlan[];
+  conditions: Condition[];
+  devices: Device[];
+  encounters: Encounter[];
+};
+
 // Fetch functions
 const fetchAllergies = async (): Promise<Allergy[]> => {
   const { data, error } = await supabase
@@ -92,25 +101,31 @@ const fetchPatients = async (): Promise<Patient[]> => {
 };
 
 // Hook for clinical data with proper typing
-export const useClinicalData = (type: ClinicalDataType) => {
+export const useClinicalData = <T extends ClinicalDataType>(type: T) => {
   const queryKey = [type];
   
   const { data, isLoading, error } = useQuery({
     queryKey,
-    queryFn: () => {
+    queryFn: async (): Promise<ClinicalDataMap[T]> => {
       switch (type) {
-        case 'allergies': return fetchAllergies();
-        case 'careplans': return fetchCarePlans();
-        case 'conditions': return fetchConditions();
-        case 'devices': return fetchDevices();
-        case 'encounters': return fetchEncounters();
-        default: throw new Error(`Unknown clinical data type: ${type}`);
+        case 'allergies': 
+          return fetchAllergies() as Promise<ClinicalDataMap[T]>;
+        case 'careplans': 
+          return fetchCarePlans() as Promise<ClinicalDataMap[T]>;
+        case 'conditions': 
+          return fetchConditions() as Promise<ClinicalDataMap[T]>;
+        case 'devices': 
+          return fetchDevices() as Promise<ClinicalDataMap[T]>;
+        case 'encounters': 
+          return fetchEncounters() as Promise<ClinicalDataMap[T]>;
+        default: 
+          throw new Error(`Unknown clinical data type: ${type}`);
       }
     },
   });
 
   return {
-    data: data || [],
+    data: (data || []) as ClinicalDataMap[T],
     isLoading,
     error,
   };
