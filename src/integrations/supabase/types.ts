@@ -139,6 +139,54 @@ export type Database = {
           },
         ]
       }
+      allergies: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string | null
+          encounter_id: string | null
+          id: string
+          patient_id: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "allergies_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "allergies_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_keys: {
         Row: {
           created_at: string | null
@@ -569,6 +617,57 @@ export type Database = {
         }
         Relationships: []
       }
+      careplans: {
+        Row: {
+          created_at: string
+          description: string | null
+          encounter_id: string | null
+          id: string
+          patient_id: string | null
+          reason_description: string | null
+          start_date: string
+          stop_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          reason_description?: string | null
+          start_date: string
+          stop_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          reason_description?: string | null
+          start_date?: string
+          stop_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "careplans_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "careplans_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       claim_denials: {
         Row: {
           appeal_status: Database["public"]["Enums"]["appeal_status"] | null
@@ -642,6 +741,57 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      conditions: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string | null
+          encounter_id: string | null
+          id: string
+          patient_id: string | null
+          start_date: string
+          stop_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date: string
+          stop_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date?: string
+          stop_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conditions_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conditions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       critical_lab_values: {
         Row: {
@@ -1031,6 +1181,57 @@ export type Database = {
           },
         ]
       }
+      devices: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string | null
+          encounter_id: string | null
+          id: string
+          patient_id: string | null
+          start_date: string
+          udi: string | null
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date: string
+          udi?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string | null
+          start_date?: string
+          udi?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devices_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devices_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       education_materials: {
         Row: {
           created_at: string
@@ -1060,6 +1261,56 @@ export type Database = {
           url?: string | null
         }
         Relationships: []
+      }
+      encounters: {
+        Row: {
+          created_at: string
+          description: string | null
+          encounter_class: string | null
+          id: string
+          patient_id: string | null
+          payer_coverage: number | null
+          reason_description: string | null
+          start_date: string
+          stop_date: string | null
+          total_claim_cost: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          encounter_class?: string | null
+          id?: string
+          patient_id?: string | null
+          payer_coverage?: number | null
+          reason_description?: string | null
+          start_date: string
+          stop_date?: string | null
+          total_claim_cost?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          encounter_class?: string | null
+          id?: string
+          patient_id?: string | null
+          payer_coverage?: number | null
+          reason_description?: string | null
+          start_date?: string
+          stop_date?: string | null
+          total_claim_cost?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encounters_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       equipment: {
         Row: {

@@ -1,3 +1,4 @@
+
 import { 
   Layers,
   Target,
@@ -7,6 +8,7 @@ import {
   Settings,
   Shield,
   LayoutDashboard,
+  Heart,
 } from "lucide-react";
 import { NavigationItem, SystemItem } from "./types";
 
@@ -70,6 +72,16 @@ export const navigationItems: NavigationItem[] = [
     bg: "bg-pink-50 dark:bg-pink-950/50",
     activeBg: "bg-pink-100 dark:bg-pink-900/30",
     iconBg: "bg-gradient-to-br from-pink-500 to-pink-600"
+  },
+  { 
+    title: "Clinical", 
+    subtitle: "PATIENT RECORDS", 
+    url: "/clinical-records", 
+    icon: Heart, 
+    color: "text-red-600 dark:text-red-400", 
+    bg: "bg-red-50 dark:bg-red-950/50",
+    activeBg: "bg-red-100 dark:bg-red-900/30",
+    iconBg: "bg-gradient-to-br from-red-500 to-red-600"
   },
 ];
 

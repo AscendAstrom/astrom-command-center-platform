@@ -10,6 +10,7 @@ import AstroBricks from "./pages/AstroBricks";
 import AstroMetrics from "./pages/AstroMetrics";
 import AstroFlow from "./pages/AstroFlow";
 import AstroView from "./pages/AstroView";
+import ClinicalRecords from "./pages/ClinicalRecords";
 import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
@@ -97,6 +98,15 @@ function App() {
                   <SidebarProvider>
                     <DashboardLayout>
                       <AstroView />
+                    </DashboardLayout>
+                  </SidebarProvider>
+                </AuthGuard>
+              } />
+              <Route path="/clinical-records" element={
+                <AuthGuard>
+                  <SidebarProvider>
+                    <DashboardLayout>
+                      <ClinicalRecords />
                     </DashboardLayout>
                   </SidebarProvider>
                 </AuthGuard>
