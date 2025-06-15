@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,13 +17,15 @@ import {
   Stethoscope,
   Building2,
   DollarSign,
-  Zap
+  Zap,
+  Brain
 } from "lucide-react";
 import HospitalDashboardGrid from "@/components/hospital-dashboard/HospitalDashboardGrid";
 import ClinicalAnalyticsGrid from "@/components/hospital-dashboard/ClinicalAnalyticsGrid";
 import FinancialAnalyticsGrid from "@/components/hospital-dashboard/FinancialAnalyticsGrid";
 import PerformanceAnalyticsGrid from "@/components/hospital-dashboard/PerformanceAnalyticsGrid";
 import QualityAnalyticsGrid from "@/components/hospital-dashboard/QualityAnalyticsGrid";
+import PredictiveAnalyticsEngine from "@/components/ai-ecosystem/PredictiveAnalyticsEngine";
 import LogoIcon from "@/components/ui/LogoIcon";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -237,7 +238,7 @@ const Dashboard = () => {
 
         {/* Tabbed Analytics Interface */}
         <Tabs defaultValue="operations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="operations" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               Operations
@@ -257,6 +258,10 @@ const Dashboard = () => {
             <TabsTrigger value="quality" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               Quality
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              AI & Automation
             </TabsTrigger>
           </TabsList>
 
@@ -313,6 +318,17 @@ const Dashboard = () => {
             </div>
             <QualityAnalyticsGrid />
           </TabsContent>
+
+          <TabsContent value="ai" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">AI & Automation Hub</h2>
+              <Badge variant="outline" className="text-purple-400 border-purple-400 bg-purple-400/10 px-4 py-2">
+                <Brain className="h-3 w-3 mr-1" />
+                Predictive Analytics
+              </Badge>
+            </div>
+            <PredictiveAnalyticsEngine />
+          </TabsContent>
         </Tabs>
 
         {/* Analytics Summary Footer */}
@@ -329,7 +345,7 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
               <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
                 <div className="flex items-center gap-3 mb-2">
                   <Building2 className="h-5 w-5 text-blue-500" />
@@ -373,6 +389,15 @@ const Dashboard = () => {
                 </div>
                 <p className="text-sm text-red-600/80 dark:text-red-400/80">
                   Patient safety, compliance, and quality improvement
+                </p>
+              </div>
+              <div className="bg-indigo-50 dark:bg-indigo-950/20 p-4 rounded-lg border border-indigo-200/50 dark:border-indigo-800/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Brain className="h-5 w-5 text-indigo-500" />
+                  <span className="font-semibold text-indigo-600 dark:text-indigo-400">AI & Automation</span>
+                </div>
+                <p className="text-sm text-indigo-600/80 dark:text-indigo-400/80">
+                  Predictive analytics and intelligent decision support
                 </p>
               </div>
             </div>
