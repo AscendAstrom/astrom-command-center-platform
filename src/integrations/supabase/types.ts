@@ -441,6 +441,44 @@ export type Database = {
         }
         Relationships: []
       }
+      critical_lab_values: {
+        Row: {
+          created_at: string
+          critical_high: number | null
+          critical_low: number | null
+          description: string | null
+          id: string
+          test_type_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          critical_high?: number | null
+          critical_low?: number | null
+          description?: string | null
+          id?: string
+          test_type_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          critical_high?: number | null
+          critical_low?: number | null
+          description?: string | null
+          id?: string
+          test_type_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critical_lab_values_test_type_id_fkey"
+            columns: ["test_type_id"]
+            isOneToOne: false
+            referencedRelation: "lab_test_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_summaries: {
         Row: {
           content: Json
@@ -1100,6 +1138,131 @@ export type Database = {
             columns: ["data_source_id"]
             isOneToOne: false
             referencedRelation: "data_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lab_test_types: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string
+          id: string
+          name: string
+          reference_range_high: number | null
+          reference_range_low: number | null
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          reference_range_high?: number | null
+          reference_range_low?: number | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          reference_range_high?: number | null
+          reference_range_low?: number | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lab_tests: {
+        Row: {
+          created_at: string
+          id: string
+          is_abnormal: boolean
+          is_critical: boolean
+          notes: string | null
+          ordered_at: string
+          ordered_by_staff_id: string | null
+          patient_id: string
+          result_received_at: string | null
+          result_unit: string | null
+          result_value: string | null
+          specimen_collected_at: string | null
+          status: Database["public"]["Enums"]["lab_test_status"]
+          test_type_id: string
+          turnaround_time_minutes: number | null
+          updated_at: string
+          visit_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_abnormal?: boolean
+          is_critical?: boolean
+          notes?: string | null
+          ordered_at?: string
+          ordered_by_staff_id?: string | null
+          patient_id: string
+          result_received_at?: string | null
+          result_unit?: string | null
+          result_value?: string | null
+          specimen_collected_at?: string | null
+          status?: Database["public"]["Enums"]["lab_test_status"]
+          test_type_id: string
+          turnaround_time_minutes?: number | null
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_abnormal?: boolean
+          is_critical?: boolean
+          notes?: string | null
+          ordered_at?: string
+          ordered_by_staff_id?: string | null
+          patient_id?: string
+          result_received_at?: string | null
+          result_unit?: string | null
+          result_value?: string | null
+          specimen_collected_at?: string | null
+          status?: Database["public"]["Enums"]["lab_test_status"]
+          test_type_id?: string
+          turnaround_time_minutes?: number | null
+          updated_at?: string
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_tests_ordered_by_staff_id_fkey"
+            columns: ["ordered_by_staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lab_tests_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lab_tests_test_type_id_fkey"
+            columns: ["test_type_id"]
+            isOneToOne: false
+            referencedRelation: "lab_test_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lab_tests_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "patient_visits"
             referencedColumns: ["id"]
           },
         ]
@@ -2960,6 +3123,12 @@ export type Database = {
         | "FINANCIAL"
         | "QUALITY"
         | "SAFETY"
+      lab_test_status:
+        | "ORDERED"
+        | "IN_PROGRESS"
+        | "COMPLETED"
+        | "CANCELED"
+        | "ERROR"
       module_type:
         | "ASTRO_SCAN"
         | "ASTRO_BRICKS"
@@ -3116,6 +3285,13 @@ export const Constants = {
         "FINANCIAL",
         "QUALITY",
         "SAFETY",
+      ],
+      lab_test_status: [
+        "ORDERED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "CANCELED",
+        "ERROR",
       ],
       module_type: [
         "ASTRO_SCAN",

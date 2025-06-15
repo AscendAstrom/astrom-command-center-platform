@@ -5,6 +5,7 @@ import { ensureDepartments } from './lib/departments.ts'
 import { ensureBeds, updateBedStatuses } from './lib/beds.ts'
 import { ensureStaff, manageStaffSchedules } from './lib/staff.ts'
 import { managePatientVisits, manageWaitTimes } from './lib/patients.ts'
+import { ensureLabTestTypes, manageLabTests } from './lib/labs.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,12 +27,14 @@ serve(async (req) => {
     await ensureDepartments(supabaseClient);
     await ensureBeds(supabaseClient);
     await ensureStaff(supabaseClient);
+    await ensureLabTestTypes(supabaseClient);
 
     await Promise.all([
       updateBedStatuses(supabaseClient),
       managePatientVisits(supabaseClient),
       manageWaitTimes(supabaseClient),
       manageStaffSchedules(supabaseClient),
+      manageLabTests(supabaseClient),
     ]);
 
     return new Response(JSON.stringify({ message: 'Operational data updated successfully' }), {
