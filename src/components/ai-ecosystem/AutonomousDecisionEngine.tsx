@@ -31,6 +31,7 @@ interface DecisionNode {
   successRate: number;
   lastExecution: string;
   decisions: number;
+  progress: number;
 }
 
 interface AutonomousWorkflow {
@@ -94,6 +95,8 @@ const fetchAutonomousWorkflows = async () => {
       }
     }
 
+    const totalJobsForModel = modelJobs.length > 0 ? modelJobs.length : 1;
+
     return {
       id: model.id,
       name: model.name,
@@ -110,7 +113,8 @@ const fetchAutonomousWorkflows = async () => {
         confidence: model.accuracy ? Math.round(model.accuracy * 100) : 0,
         successRate: model.accuracy ? Math.round(model.accuracy * 100) : 0,
         lastExecution: formatDistanceToNow(new Date(job.updatedAt || model.lastTrained), { addSuffix: true }),
-        decisions: job.progress || 0,
+        decisions: Math.floor((model.dataPoints || 0) / totalJobsForModel),
+        progress: job.progress || 0,
       })),
     };
   });
@@ -328,6 +332,15 @@ const AutonomousDecisionEngine = () => {
                       <div>Success: {node.successRate}%</div>
                       <div>Decisions: {node.decisions}</div>
                     </div>
+                    {node.status === 'optimizing' && (
+                      <div className="mt-2 space-y-1">
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>Training Progress</span>
+                          <span>{node.progress}%</span>
+                        </div>
+                        <Progress value={node.progress} className="h-1" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

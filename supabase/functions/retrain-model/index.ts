@@ -52,6 +52,15 @@ serve(async (req) => {
       throw error
     }
 
+    // Invoke the simulation function but don't wait for it
+    supabaseClient.functions.invoke('simulate-training-job', {
+      body: { jobId: job.id, modelName: job.model_name },
+    }).then(({ error: invokeError }) => {
+      if (invokeError) {
+        console.error(`Failed to invoke simulation for job ${job.id}:`, invokeError.message);
+      }
+    });
+
     return new Response(JSON.stringify({ job }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
@@ -63,3 +72,4 @@ serve(async (req) => {
     })
   }
 })
+
