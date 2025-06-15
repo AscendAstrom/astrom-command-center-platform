@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      accreditations: {
+        Row: {
+          accrediting_body: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          issue_date: string | null
+          name: string
+          next_review_date: string | null
+          status: Database["public"]["Enums"]["accreditation_status"]
+          updated_at: string
+        }
+        Insert: {
+          accrediting_body: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          name: string
+          next_review_date?: string | null
+          status?: Database["public"]["Enums"]["accreditation_status"]
+          updated_at?: string
+        }
+        Update: {
+          accrediting_body?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          name?: string
+          next_review_date?: string | null
+          status?: Database["public"]["Enums"]["accreditation_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       alert_subscriptions: {
         Row: {
           channels: string[]
@@ -533,6 +569,42 @@ export type Database = {
           },
         ]
       }
+      compliance_areas: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_assessed_date: string | null
+          name: string
+          owner_name: string | null
+          regulation: string
+          status: Database["public"]["Enums"]["compliance_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_assessed_date?: string | null
+          name: string
+          owner_name?: string | null
+          regulation: string
+          status?: Database["public"]["Enums"]["compliance_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_assessed_date?: string | null
+          name?: string
+          owner_name?: string | null
+          regulation?: string
+          status?: Database["public"]["Enums"]["compliance_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       critical_lab_values: {
         Row: {
           created_at: string
@@ -920,6 +992,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      education_materials: {
+        Row: {
+          created_at: string
+          format: string
+          id: string
+          title: string
+          topic: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          format: string
+          id?: string
+          title: string
+          topic: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          format?: string
+          id?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
       }
       equipment: {
         Row: {
@@ -1940,6 +2042,64 @@ export type Database = {
           },
         ]
       }
+      patient_education_log: {
+        Row: {
+          completion_status: string | null
+          created_at: string
+          delivered_by_staff_name: string | null
+          delivery_date: string
+          id: string
+          material_id: string
+          patient_feedback_score: number | null
+          patient_id: string
+          visit_id: string | null
+        }
+        Insert: {
+          completion_status?: string | null
+          created_at?: string
+          delivered_by_staff_name?: string | null
+          delivery_date?: string
+          id?: string
+          material_id: string
+          patient_feedback_score?: number | null
+          patient_id: string
+          visit_id?: string | null
+        }
+        Update: {
+          completion_status?: string | null
+          created_at?: string
+          delivered_by_staff_name?: string | null
+          delivery_date?: string
+          id?: string
+          material_id?: string
+          patient_feedback_score?: number | null
+          patient_id?: string
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_education_log_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "education_materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_education_log_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_education_log_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "patient_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_flow_events: {
         Row: {
           department_id: string | null
@@ -1978,6 +2138,50 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_surveys: {
+        Row: {
+          cleanliness_rating: number | null
+          comments: string | null
+          communication_rating: number | null
+          created_at: string
+          id: string
+          overall_satisfaction: number | null
+          survey_date: string
+          visit_id: string | null
+          wait_time_rating: number | null
+        }
+        Insert: {
+          cleanliness_rating?: number | null
+          comments?: string | null
+          communication_rating?: number | null
+          created_at?: string
+          id?: string
+          overall_satisfaction?: number | null
+          survey_date: string
+          visit_id?: string | null
+          wait_time_rating?: number | null
+        }
+        Update: {
+          cleanliness_rating?: number | null
+          comments?: string | null
+          communication_rating?: number | null
+          created_at?: string
+          id?: string
+          overall_satisfaction?: number | null
+          survey_date?: string
+          visit_id?: string | null
+          wait_time_rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_surveys_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "patient_visits"
             referencedColumns: ["id"]
           },
         ]
@@ -2327,6 +2531,56 @@ export type Database = {
         }
         Relationships: []
       }
+      quality_improvement_initiatives: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          metrics_impacted: Json | null
+          name: string
+          owner_name: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["initiative_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics_impacted?: Json | null
+          name: string
+          owner_name?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["initiative_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics_impacted?: Json | null
+          name?: string
+          owner_name?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["initiative_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_improvement_initiatives_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quality_indicators: {
         Row: {
           calculation_method: string | null
@@ -2533,6 +2787,56 @@ export type Database = {
             columns: ["report_definition_id"]
             isOneToOne: false
             referencedRelation: "report_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      risk_assessments: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          id: string
+          identified_date: string
+          mitigation_plan: string | null
+          owner_name: string | null
+          review_date: string | null
+          risk_description: string
+          risk_level: Database["public"]["Enums"]["risk_level"]
+          status: Database["public"]["Enums"]["risk_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          identified_date?: string
+          mitigation_plan?: string | null
+          owner_name?: string | null
+          review_date?: string | null
+          risk_description: string
+          risk_level: Database["public"]["Enums"]["risk_level"]
+          status?: Database["public"]["Enums"]["risk_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          identified_date?: string
+          mitigation_plan?: string | null
+          owner_name?: string | null
+          review_date?: string | null
+          risk_description?: string
+          risk_level?: Database["public"]["Enums"]["risk_level"]
+          status?: Database["public"]["Enums"]["risk_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "risk_assessments_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]
@@ -3248,6 +3552,7 @@ export type Database = {
       }
     }
     Enums: {
+      accreditation_status: "ACCREDITED" | "PENDING" | "EXPIRED" | "REVOKED"
       alert_priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | "URGENT"
       alert_severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
       alert_status: "ACTIVE" | "ACKNOWLEDGED" | "RESOLVED"
@@ -3268,6 +3573,11 @@ export type Database = {
         | "DENIED"
         | "APPEALED"
         | "PAID"
+      compliance_status:
+        | "COMPLIANT"
+        | "NON_COMPLIANT"
+        | "IN_PROGRESS"
+        | "AT_RISK"
       dashboard_type: "OPERATIONAL" | "EXECUTIVE" | "CLINICAL" | "FINANCIAL"
       data_source_type: "HL7" | "FHIR" | "API" | "CSV" | "MANUAL" | "EPIC"
       denial_reason_code:
@@ -3291,6 +3601,7 @@ export type Database = {
         | "RADIOLOGY"
       execution_status: "PENDING" | "RUNNING" | "SUCCESS" | "FAILED"
       ingestion_mode: "BATCH" | "STREAM"
+      initiative_status: "PLANNING" | "IN_PROGRESS" | "COMPLETED" | "ON_HOLD"
       integration_status: "CONNECTED" | "DISCONNECTED" | "ERROR" | "SYNCING"
       kpi_category:
         | "OPERATIONAL"
@@ -3312,6 +3623,8 @@ export type Database = {
         | "ASTRO_FLOW"
       patient_status: "ACTIVE" | "DISCHARGED" | "TRANSFERRED" | "DECEASED"
       pipeline_status: "DRAFT" | "ACTIVE" | "PAUSED" | "DEPRECATED"
+      risk_level: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
+      risk_status: "OPEN" | "MITIGATED" | "CLOSED" | "ACCEPTED"
       rule_status: "DRAFT" | "ACTIVE" | "PAUSED"
       sync_status: "CONNECTED" | "SYNCING" | "ERROR" | "PAUSED"
       transaction_type: "CHARGE" | "PAYMENT" | "ADJUSTMENT" | "REFUND"
@@ -3433,6 +3746,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      accreditation_status: ["ACCREDITED", "PENDING", "EXPIRED", "REVOKED"],
       alert_priority: ["LOW", "MEDIUM", "HIGH", "CRITICAL", "URGENT"],
       alert_severity: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
       alert_status: ["ACTIVE", "ACKNOWLEDGED", "RESOLVED"],
@@ -3454,6 +3768,12 @@ export const Constants = {
         "DENIED",
         "APPEALED",
         "PAID",
+      ],
+      compliance_status: [
+        "COMPLIANT",
+        "NON_COMPLIANT",
+        "IN_PROGRESS",
+        "AT_RISK",
       ],
       dashboard_type: ["OPERATIONAL", "EXECUTIVE", "CLINICAL", "FINANCIAL"],
       data_source_type: ["HL7", "FHIR", "API", "CSV", "MANUAL", "EPIC"],
@@ -3480,6 +3800,7 @@ export const Constants = {
       ],
       execution_status: ["PENDING", "RUNNING", "SUCCESS", "FAILED"],
       ingestion_mode: ["BATCH", "STREAM"],
+      initiative_status: ["PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD"],
       integration_status: ["CONNECTED", "DISCONNECTED", "ERROR", "SYNCING"],
       kpi_category: [
         "OPERATIONAL",
@@ -3504,6 +3825,8 @@ export const Constants = {
       ],
       patient_status: ["ACTIVE", "DISCHARGED", "TRANSFERRED", "DECEASED"],
       pipeline_status: ["DRAFT", "ACTIVE", "PAUSED", "DEPRECATED"],
+      risk_level: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      risk_status: ["OPEN", "MITIGATED", "CLOSED", "ACCEPTED"],
       rule_status: ["DRAFT", "ACTIVE", "PAUSED"],
       sync_status: ["CONNECTED", "SYNCING", "ERROR", "PAUSED"],
       transaction_type: ["CHARGE", "PAYMENT", "ADJUSTMENT", "REFUND"],
