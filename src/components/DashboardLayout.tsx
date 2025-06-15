@@ -5,8 +5,6 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 import DashboardHeader from "./layout/DashboardHeader";
 import { AIAssistant } from "@/components/ai/AIAssistant";
-import { ClinicalProvider } from "@/contexts/ClinicalContext";
-import { GlobalClinicalAlerts } from "@/components/clinical/GlobalClinicalAlerts";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -26,8 +24,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       setContext('ASTRO_METRICS');
     } else if (path.includes('/astroview')) {
       setContext('ASTRO_VIEW');
-    } else if (path.includes('/clinical-records')) {
-      setContext('CLINICAL_RECORDS');
     } else if (path.includes('/dashboard')) {
       setContext('DASHBOARD');
     } else {
@@ -36,21 +32,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <ClinicalProvider>
-      <div className="flex h-screen w-full overflow-hidden">
-        <AppSidebar />
-        <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <DashboardHeader />
-          <main className="flex-1 overflow-y-auto">
-            <div className="h-full">
-              {children}
-            </div>
-          </main>
-        </SidebarInset>
-        <GlobalClinicalAlerts />
-        <AIAssistant context={context} />
-      </div>
-    </ClinicalProvider>
+    <div className="flex h-screen w-full overflow-hidden">
+      <AppSidebar />
+      <SidebarInset className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <DashboardHeader />
+        <main className="flex-1 overflow-y-auto">
+          <div className="h-full">
+            {children}
+          </div>
+        </main>
+      </SidebarInset>
+      <AIAssistant context={context} />
+    </div>
   );
 };
 
