@@ -1,4 +1,3 @@
-
 export interface MLModel {
   id: string;
   name: string;
@@ -17,6 +16,7 @@ export interface TrainingJob {
   estimatedTime: string;
   status: 'running' | 'queued' | 'completed' | 'failed' | 'updating' | 'testing' | 'deployed';
   gpuUtilization: number | null;
+  updatedAt?: string;
 }
 
 export interface FederatedSite {

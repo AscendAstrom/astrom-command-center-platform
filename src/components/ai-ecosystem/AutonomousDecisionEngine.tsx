@@ -107,7 +107,7 @@ const fetchAutonomousWorkflows = async () => {
         status: mapJobStatusToNodeStatus(job.status),
         confidence: model.accuracy ? Math.round(model.accuracy * 100) : 0,
         successRate: model.accuracy ? Math.round(model.accuracy * 100) : 0,
-        lastExecution: formatDistanceToNow(new Date(job.lastTrained || model.lastTrained), { addSuffix: true }),
+        lastExecution: formatDistanceToNow(new Date(job.updatedAt || model.lastTrained), { addSuffix: true }),
         decisions: job.progress || 0,
       })),
     };
