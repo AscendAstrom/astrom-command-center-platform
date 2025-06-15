@@ -1,15 +1,15 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DatePickerWithRange } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   FileText, 
   Download, 
-  Calendar,
+  Calendar as CalendarIcon,
   BarChart3,
   TrendingUp,
   Users,
@@ -369,10 +369,23 @@ const ClinicalReporting = () => {
                   </SelectContent>
                 </Select>
 
-                <Button variant="outline">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Date Range
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">
+                      <CalendarIcon className="h-4 w-4 mr-2" />
+                      Date Range
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      initialFocus
+                      className="p-3 pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
