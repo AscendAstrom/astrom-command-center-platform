@@ -1,4 +1,3 @@
-
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
@@ -39,14 +38,25 @@ export interface SystemMetrics {
 }
 
 const fetchAutonomousWorkflows = async () => {
-  const { data: models, error: modelsError } = await supabase.from('ml_models').select('*');
+  const { data: rawModels, error: modelsError } = await supabase.from('ml_models').select('*');
   if (modelsError) throw new Error(`Failed to fetch models: ${modelsError.message}`);
 
-  const { data: jobs, error: jobsError } = await supabase.from('ml_training_jobs').select('*');
+  const { data: rawJobs, error: jobsError } = await supabase.from('ml_training_jobs').select('*');
   if (jobsError) throw new Error(`Failed to fetch jobs: ${jobsError.message}`);
 
-  const typedModels = models as unknown as MLModel[];
-  const typedJobs = jobs as unknown as TrainingJob[];
+  const typedModels: MLModel[] = (rawModels || []).map((model: any) => ({
+    ...model,
+    lastTrained: model.last_trained,
+    dataPoints: model.data_points,
+  }));
+
+  const typedJobs: TrainingJob[] = (rawJobs || []).map((job: any) => ({
+      ...job,
+      modelName: job.model_name,
+      estimatedTime: job.estimated_time_remaining_mins?.toString() ?? 'N/A',
+      gpuUtilization: job.gpu_utilization,
+      updatedAt: job.updated_at,
+  }));
 
   const workflows: AutonomousWorkflow[] = typedModels.map(model => {
     const modelJobs = typedJobs.filter(job => job.modelName === model.name && job.status !== 'failed');
@@ -105,7 +115,7 @@ const fetchAutonomousWorkflows = async () => {
         status: mapJobStatusToNodeStatus(job.status),
         confidence: model.accuracy ? Math.round(model.accuracy * 100) : 0,
         successRate: model.accuracy ? Math.round(model.accuracy * 100) : 0,
-        lastExecution: formatDistanceToNow(new Date(job.updated_at || model.last_trained || new Date()), { addSuffix: true }),
+        lastExecution: formatDistanceToNow(new Date(job.updatedAt || model.lastTrained || new Date()), { addSuffix: true }),
         decisions: Math.floor((model.dataPoints || 0) / totalJobsForModel),
         progress: job.progress || 0,
       })),
