@@ -9,16 +9,28 @@ interface SystemMetricsHeaderProps {
 }
 
 const SystemMetricsHeader = ({ systemMetrics }: SystemMetricsHeaderProps) => {
+  const getSystemStatus = () => {
+    if (systemMetrics.avgConfidence > 90 && systemMetrics.systemLoad < 50) {
+      return { text: "Optimal", className: "bg-green-500/10 text-green-500 border-green-500/20" };
+    }
+    if (systemMetrics.avgConfidence > 80) {
+      return { text: "Healthy", className: "bg-blue-500/10 text-blue-500 border-blue-500/20" };
+    }
+    return { text: "Monitoring", className: "bg-orange-500/10 text-orange-500 border-orange-500/20" };
+  };
+
+  const systemStatus = getSystemStatus();
+
   return (
     <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
           <Brain className="h-6 w-6 text-purple-400" />
           Autonomous Decision Engine
-          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">Phase 3B</Badge>
+          <Badge className={systemStatus.className}>{systemStatus.text}</Badge>
         </CardTitle>
         <CardDescription>
-          Self-learning AI system with autonomous decision-making and multi-agent coordination
+          {`System is operating at ${systemMetrics.avgConfidence.toFixed(1)}% average confidence. Overseeing ${systemMetrics.activeWorkflows} active workflows and ${systemMetrics.learningModels} learning models.`}
         </CardDescription>
       </CardHeader>
       <CardContent>
