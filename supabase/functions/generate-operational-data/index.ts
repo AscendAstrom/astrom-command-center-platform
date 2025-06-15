@@ -9,6 +9,27 @@ const corsHeaders = {
 const TOTAL_BEDS = 50;
 const TOTAL_STAFF = 25;
 
+// Ensure departments exist
+const ensureDepartments = async (supabase: SupabaseClient) => {
+    const { count, error } = await supabase.from('departments').select('*', { count: 'exact', head: true });
+    if (error) throw error;
+
+    if (count === null || count === 0) {
+        console.log('Departments not found, creating departments...');
+        const departmentsToInsert = [
+            { name: 'Emergency Department', code: 'ED', type: 'EMERGENCY', description: 'Handles emergency cases.' },
+            { name: 'Cardiology', code: 'CARD', type: 'CARDIOLOGY', description: 'Heart-related issues.' },
+            { name: 'Neurology', code: 'NEURO', type: 'NEUROLOGY', description: 'Nervous system disorders.' },
+            { name: 'Orthopedics', code: 'ORTHO', type: 'ORTHOPEDICS', description: 'Musculoskeletal system.' },
+            { name: 'Radiology', code: 'RADIO', type: 'RADIOLOGY', description: 'Medical imaging.' },
+            { name: 'Surgery', code: 'SURG', type: 'SURGERY', description: 'Surgical procedures.' },
+        ];
+        const { error: insertError } = await supabase.from('departments').insert(departmentsToInsert);
+        if (insertError) throw insertError;
+        console.log(`${departmentsToInsert.length} departments created.`);
+    }
+};
+
 // Ensure beds exist
 const ensureBeds = async (supabase: SupabaseClient) => {
     const { count, error: countError } = await supabase.from('beds').select('*', { count: 'exact', head: true });
@@ -146,9 +167,13 @@ const manageWaitTimes = async (supabase: SupabaseClient) => {
 const manageStaffSchedules = async (supabase: SupabaseClient) => {
     await supabase.from('staff_schedules').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
-    const { data: staff, error: staffError } = await supabase.from('staff').select('id');
+    const { data: staff, error: staffError } = await supabase.from('staff').select('id, role');
     if (staffError) throw staffError;
     if (!staff || staff.length === 0) return;
+
+    const { data: departments, error: deptsError } = await supabase.from('departments').select('id');
+    if (deptsError) throw deptsError;
+    if (!departments || departments.length === 0) return;
 
     const schedules = [];
     const now = new Date();
@@ -166,6 +191,8 @@ const manageStaffSchedules = async (supabase: SupabaseClient) => {
             staff_id: s.id,
             shift_start: shiftStart.toISOString(),
             shift_end: shiftEnd.toISOString(),
+            department_id: departments[Math.floor(Math.random() * departments.length)].id,
+            role: (s as any).role,
         });
     }
     if(schedules.length > 0) {
@@ -186,6 +213,7 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    await ensureDepartments(supabaseClient);
     await ensureBeds(supabaseClient);
     await ensureStaff(supabaseClient);
 
