@@ -143,7 +143,7 @@ class RealTimeDataService {
           departments!inner(name, code, type),
           patients(id, first_name, last_name, mrn, admission_date)
         `)
-        .eq('deleted_at', null);
+        .is('deleted_at', null);
 
       if (bedsError) throw bedsError;
 

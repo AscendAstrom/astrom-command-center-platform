@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { SchemaTable, SchemaRelationship } from './types';
 import { SchemaVisualizationToolbar } from './components/SchemaVisualizationToolbar';
@@ -5,9 +6,9 @@ import { SchemaCanvas } from './components/SchemaCanvas';
 import { SchemaTableDetails } from './components/SchemaTableDetails';
 
 export const SchemaVisualization = () => {
-  const [tables] = useState<SchemaTable[]>([]);
+  const [tables, setTables] = useState<SchemaTable[]>([]);
 
-  const [relationships] = useState<SchemaRelationship[]>([]);
+  const [relationships, setRelationships] = useState<SchemaRelationship[]>([]);
 
   const [scale, setScale] = useState(1);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);

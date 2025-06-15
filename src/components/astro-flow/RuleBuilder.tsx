@@ -1,22 +1,24 @@
+
 import { useState } from 'react';
-import { AutomationRule, RuleCondition, RuleAction, FlowUserRole } from './types';
+import { AutomationRule } from './types';
 import RulesList from './RulesList';
 import RuleEditor from './RuleEditor';
 import EmptyState from './EmptyState';
+import { useAutomationRules } from './hooks/useAutomationRules';
+import { toast } from "sonner";
 
 interface RuleBuilderProps {
   userRole: FlowUserRole;
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const [rules, setRules] = useState<AutomationRule[]>([]);
-
+  const { rules, createRule, updateRule, isLoading } = useAutomationRules();
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateRule = () => {
     const newRule: AutomationRule = {
-      id: Math.random().toString(),
+      id: '', // Will be set by db
       name: 'New Rule',
       description: '',
       triggerType: 'threshold_exceeded',
@@ -29,33 +31,50 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    setRules([...rules, newRule]);
     setSelectedRule(newRule);
     setIsCreating(true);
   };
 
-  const handleSaveRule = () => {
+  const handleSaveRule = async () => {
     if (selectedRule) {
-      setRules(rules.map(rule => 
-        rule.id === selectedRule.id 
-          ? { ...selectedRule, updatedAt: new Date().toISOString() }
-          : rule
-      ));
-      setIsCreating(false);
+      try {
+        if (isCreating) {
+          const { id, createdAt, updatedAt, createdBy, executionCount, ...newRuleData } = selectedRule;
+          await createRule(newRuleData);
+          toast.success("Rule created successfully.");
+        } else {
+          await updateRule(selectedRule);
+          toast.success("Rule updated successfully.");
+        }
+        setIsCreating(false);
+        setSelectedRule(null); // Deselect after saving
+      } catch (error) {
+        toast.error("Failed to save the rule.");
+        console.error(error);
+      }
     }
   };
 
-  const handleToggleRule = (ruleId: string) => {
-    setRules(rules.map(rule => 
-      rule.id === ruleId 
-        ? { ...rule, isActive: !rule.isActive, updatedAt: new Date().toISOString() }
-        : rule
-    ));
+  const handleToggleRule = async (ruleId: string) => {
+    const rule = rules.find(r => r.id === ruleId);
+    if (rule) {
+      try {
+        await updateRule({ ...rule, isActive: !rule.isActive });
+        toast.success(`Rule ${rule.isActive ? 'deactivated' : 'activated'}.`);
+      } catch (error) {
+        toast.error("Failed to toggle rule status.");
+        console.error(error);
+      }
+    }
   };
 
   const handleUpdateRule = (updatedRule: AutomationRule) => {
     setSelectedRule(updatedRule);
   };
+  
+  if (isLoading) {
+    return <div>Loading rules...</div>
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -64,7 +83,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
         <RulesList
           rules={rules}
           selectedRule={selectedRule}
-          onSelectRule={setSelectedRule}
+          onSelectRule={(rule) => { setSelectedRule(rule); setIsCreating(false); }}
           onCreateRule={handleCreateRule}
           onToggleRule={handleToggleRule}
           userRole={userRole}
@@ -75,6 +94,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       <div className="lg:col-span-2">
         {selectedRule ? (
           <RuleEditor
+            key={selectedRule.id || 'new-rule'}
             selectedRule={selectedRule}
             onUpdateRule={handleUpdateRule}
             onSaveRule={handleSaveRule}
