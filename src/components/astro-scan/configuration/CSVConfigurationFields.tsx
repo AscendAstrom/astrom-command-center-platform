@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 interface CSVConfigurationFieldsProps {
@@ -15,7 +15,6 @@ interface CSVConfigurationFieldsProps {
 
 export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfigurationFieldsProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isReadingFile, setIsReadingFile] = useState(false);
 
   const clearUploadedFile = () => {
     updateConfig('uploadedFileName', null);
@@ -28,7 +27,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setIsReadingFile(true);
+      updateConfig('isReadingFile', true);
       updateConfig('uploadedFileName', file.name);
       updateConfig('filePath', ''); // Clear the path when file is uploaded
 
@@ -49,12 +48,12 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
           // Clear the invalid file
           clearUploadedFile();
         } finally {
-          setIsReadingFile(false);
+          updateConfig('isReadingFile', false);
         }
       };
       reader.onerror = () => {
         toast.error("Failed to read the uploaded file.");
-        setIsReadingFile(false);
+        updateConfig('isReadingFile', false);
         clearUploadedFile();
       };
       reader.readAsText(file);
@@ -68,6 +67,8 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
       clearUploadedFile();
     }
   };
+
+  const isReadingFile = !!config.isReadingFile;
 
   return (
     <>
