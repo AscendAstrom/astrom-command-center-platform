@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -17,7 +18,6 @@ import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSection";
 import AstroFlowHeader from "@/components/astro-flow/AstroFlowHeader";
 import WorkflowOverview from "@/components/astro-flow/WorkflowOverview";
-import BedManagementDemo from "@/components/astro-flow/BedManagementDemo";
 import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { UserRole } from "@/components/astro-bricks/types";
 import { FlowUserRole } from "@/components/astro-flow/types";
