@@ -9,12 +9,12 @@ export interface DenialData {
   denialsByReason: { name: string; value: number }[];
 }
 
-const getClaimDenialData = async (): Promise<DenialData> => {
-  const thirtyDaysAgo = subDays(new Date(), 30);
+const getClaimDenialData = async (days: number): Promise<DenialData> => {
+  const startDate = subDays(new Date(), days);
   const { data, error, count } = await supabase
     .from("claim_denials")
     .select("denial_reason", { count: "exact" })
-    .gte("denial_date", thirtyDaysAgo.toISOString());
+    .gte("denial_date", startDate.toISOString());
 
   if (error) throw new Error(error.message);
 
@@ -39,10 +39,10 @@ const getClaimDenialData = async (): Promise<DenialData> => {
   };
 };
 
-export const useClaimDenialData = () => {
+export const useClaimDenialData = (days: number = 30) => {
   return useQuery({
-    queryKey: ["claim_denial_data"],
-    queryFn: getClaimDenialData,
+    queryKey: ["claim_denial_data", days],
+    queryFn: () => getClaimDenialData(days),
     refetchInterval: 60000,
   });
 };
