@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -79,7 +78,7 @@ export const PipelineListCard = ({
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                <span>{pipeline.schedule || 'Manual'}</span>
+                <span>{pipeline.schedule_cron || 'Manual'}</span>
               </div>
             </div>
             

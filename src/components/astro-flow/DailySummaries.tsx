@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -143,7 +142,7 @@ const DailySummaries = ({ userRole }: DailySummariesProps) => {
                   </div>
 
                   {/* Executive Summary for EXEC role */}
-                  {userRole === 'EXEC' && (
+                  {userRole === 'EXEC' && summary.topTriggeredRules.length > 0 && (
                     <div className="mb-6 p-4 bg-slate-800 rounded-lg border-l-4 border-purple-400">
                       <h4 className="text-sm font-medium text-purple-400 mb-2">Executive Summary</h4>
                       <p className="text-slate-300 text-sm leading-relaxed">

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
   const [executions] = useState<RuleExecution[]>([
     {
       id: '1',
-      ruleId: '1',
+      rule_id: '1',
       ruleName: 'SLA Breach Alert',
       timestamp: '2024-01-20T14:30:00Z',
       status: 'success',
@@ -25,11 +24,13 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
         patient_id: 'P12345',
         zone: 'Emergency'
       },
-      actionsExecuted: ['Email sent to ed-manager@hospital.com', 'Slack notification posted']
+      actionsExecuted: ['Email sent to ed-manager@hospital.com', 'Slack notification posted'],
+      executed_at: '2024-01-20T14:30:00Z',
+      created_at: '2024-01-20T14:30:00Z',
     },
     {
       id: '2',
-      ruleId: '2',
+      rule_id: '2',
       ruleName: 'Surge Prediction Alert',
       timestamp: '2024-01-20T14:15:00Z',
       status: 'success',
@@ -38,11 +39,13 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
         current_capacity: 78,
         time_frame: '2h'
       },
-      actionsExecuted: ['Dashboard banner displayed', 'API call to staffing system']
+      actionsExecuted: ['Dashboard banner displayed', 'API call to staffing system'],
+      executed_at: '2024-01-20T14:15:00Z',
+      created_at: '2024-01-20T14:15:00Z',
     },
     {
       id: '3',
-      ruleId: '1',
+      rule_id: '1',
       ruleName: 'SLA Breach Alert',
       timestamp: '2024-01-20T13:45:00Z',
       status: 'failed',
@@ -52,11 +55,13 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
         zone: 'Emergency'
       },
       actionsExecuted: [],
-      errorMessage: 'Failed to send email: SMTP server unavailable'
+      errorMessage: 'Failed to send email: SMTP server unavailable',
+      executed_at: '2024-01-20T13:45:00Z',
+      created_at: '2024-01-20T13:45:00Z',
     },
     {
       id: '4',
-      ruleId: '3',
+      rule_id: '3',
       ruleName: 'Data Anomaly Detection',
       timestamp: '2024-01-20T13:30:00Z',
       status: 'pending',
@@ -66,7 +71,9 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
         actual_value: 35,
         deviation: 133
       },
-      actionsExecuted: ['Investigation workflow started']
+      actionsExecuted: ['Investigation workflow started'],
+      executed_at: '2024-01-20T13:30:00Z',
+      created_at: '2024-01-20T13:30:00Z',
     }
   ]);
 
@@ -101,7 +108,7 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
 
   const filteredExecutions = executions.filter(execution => {
     if (statusFilter !== 'all' && execution.status !== statusFilter) return false;
-    if (ruleFilter !== 'all' && execution.ruleId !== ruleFilter) return false;
+    if (ruleFilter !== 'all' && execution.rule_id !== ruleFilter) return false;
     return true;
   });
 
@@ -109,10 +116,10 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
     return new Date(timestamp).toLocaleString();
   };
 
-  const uniqueRules = Array.from(new Set(executions.map(e => e.ruleId)))
+  const uniqueRules = Array.from(new Set(executions.map(e => e.rule_id)))
     .map(ruleId => ({
       id: ruleId,
-      name: executions.find(e => e.ruleId === ruleId)?.ruleName || 'Unknown'
+      name: executions.find(e => e.rule_id === ruleId)?.ruleName || 'Unknown'
     }));
 
   return (
@@ -184,7 +191,7 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
                   <TableCell className="text-slate-300">
                     <div>
                       <div className="font-medium">{execution.ruleName}</div>
-                      <div className="text-xs text-slate-400">ID: {execution.ruleId}</div>
+                      <div className="text-xs text-slate-400">ID: {execution.rule_id}</div>
                     </div>
                   </TableCell>
                   <TableCell className="text-slate-300">
@@ -194,7 +201,7 @@ const RuleExecutions = ({ userRole }: RuleExecutionsProps) => {
                     <div className="max-w-xs">
                       {Object.entries(execution.triggerData).map(([key, value]) => (
                         <div key={key} className="text-xs text-slate-400">
-                          <span className="font-medium">{key}:</span> {value}
+                          <span className="font-medium">{key}:</span> {String(value)}
                         </div>
                       ))}
                     </div>

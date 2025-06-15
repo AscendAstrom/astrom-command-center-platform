@@ -26,7 +26,7 @@ export const DataPipelineManager = ({ readOnly = false }: DataPipelineManagerPro
       description: 'Description for new pipeline',
       status: 'DRAFT',
       steps: [],
-      createdBy: 'current.user@hospital.com',
+      created_by: 'current.user@hospital.com',
       target_schema: {} as any,
     };
     

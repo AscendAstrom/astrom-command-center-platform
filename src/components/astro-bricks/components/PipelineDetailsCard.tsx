@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -82,12 +81,12 @@ export const PipelineDetailsCard = ({
           <div>
             <span className="text-muted-foreground">Schedule:</span>
             <div className="mt-1 text-foreground font-mono text-xs">
-              {pipeline.schedule || 'Manual execution'}
+              {pipeline.schedule_cron || 'Manual execution'}
             </div>
           </div>
           <div>
             <span className="text-muted-foreground">Created by:</span>
-            <div className="mt-1 text-foreground text-xs">{pipeline.createdBy}</div>
+            <div className="mt-1 text-foreground text-xs">{pipeline.created_by}</div>
           </div>
         </div>
       </CardContent>

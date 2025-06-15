@@ -13,9 +13,6 @@ const fromDataPipelineDAO = (dao: DataPipelineDAO): DataPipeline => ({
   id: dao.id,
   description: dao.description || '',
   steps: (dao.transformation_rules as any)?.steps || [],
-  createdAt: dao.created_at,
-  updatedAt: dao.updated_at,
-  createdBy: dao.created_by || 'system',
 });
 
 const toDataPipelineDAOforUpdate = (pipeline: DataPipeline): DataPipelineUpdate => ({
@@ -25,6 +22,7 @@ const toDataPipelineDAOforUpdate = (pipeline: DataPipeline): DataPipelineUpdate 
     status: pipeline.status,
     schedule_cron: pipeline.schedule_cron,
     target_schema: pipeline.target_schema,
+    version: pipeline.version,
 });
 
 export const useDataPipelines = () => {
@@ -47,8 +45,9 @@ export const useDataPipelines = () => {
         status: newPipeline.status!,
         transformation_rules: { steps: newPipeline.steps || [] } as any,
         target_schema: (newPipeline as any).target_schema || {},
-        created_by: newPipeline.createdBy,
-        schedule_cron: newPipeline.schedule_cron
+        created_by: (newPipeline as any).created_by,
+        schedule_cron: newPipeline.schedule_cron,
+        version: 1,
       };
       const { data, error } = await supabase.from('data_pipelines').insert(newPipelineDAO).select().single();
       if (error) throw error;

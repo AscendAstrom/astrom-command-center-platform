@@ -1,4 +1,3 @@
-
 import { Database } from '@/integrations/supabase/types';
 
 export type DataPipelineDAO = Database['public']['Tables']['data_pipelines']['Row'];
@@ -91,4 +90,4 @@ export interface DuplicateResolutionRule {
     description: string;
 }
 
-export type UserRole = 'admin' | 'editor' | 'viewer';
+export type UserRole = 'admin' | 'editor' | 'viewer' | 'ANALYST';

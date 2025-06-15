@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { AutomationRule } from './types';
+import { AutomationRule, FlowUserRole } from './types';
 import RulesList from './RulesList';
 import RuleEditor from './RuleEditor';
 import EmptyState from './EmptyState';
@@ -28,8 +28,9 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       priority: 'medium',
       executionCount: 0,
       createdBy: 'current_user',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      last_executed: null
     };
     setSelectedRule(newRule);
     setIsCreating(true);
@@ -39,7 +40,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
     if (selectedRule) {
       try {
         if (isCreating) {
-          const { id, createdAt, updatedAt, createdBy, executionCount, ...newRuleData } = selectedRule;
+          const { id, created_at, updated_at, createdBy, executionCount, ...newRuleData } = selectedRule;
           await createRule(newRuleData);
           toast.success("Rule created successfully.");
         } else {

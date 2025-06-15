@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      alert_subscriptions: {
+        Row: {
+          channels: string[]
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          rule_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channels: string[]
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          rule_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channels?: string[]
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          rule_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alert_subscriptions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "automation_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alerts: {
         Row: {
           acknowledged_at: string | null
@@ -173,7 +214,7 @@ export type Database = {
           description: string | null
           execution_count: number | null
           id: string
-          last_execution: string | null
+          last_executed: string | null
           name: string
           status: Database["public"]["Enums"]["automation_status"] | null
           trigger_conditions: Json
@@ -186,7 +227,7 @@ export type Database = {
           description?: string | null
           execution_count?: number | null
           id?: string
-          last_execution?: string | null
+          last_executed?: string | null
           name: string
           status?: Database["public"]["Enums"]["automation_status"] | null
           trigger_conditions: Json
@@ -199,7 +240,7 @@ export type Database = {
           description?: string | null
           execution_count?: number | null
           id?: string
-          last_execution?: string | null
+          last_executed?: string | null
           name?: string
           status?: Database["public"]["Enums"]["automation_status"] | null
           trigger_conditions?: Json
@@ -373,6 +414,30 @@ export type Database = {
           },
         ]
       }
+      daily_summaries: {
+        Row: {
+          content: Json
+          created_at: string
+          generated_by: string | null
+          id: string
+          summary_date: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          summary_date: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          summary_date?: string
+        }
+        Relationships: []
+      }
       dashboards: {
         Row: {
           created_at: string
@@ -480,6 +545,7 @@ export type Database = {
           target_schema: Json
           transformation_rules: Json | null
           updated_at: string
+          version: number
         }
         Insert: {
           created_at?: string
@@ -493,6 +559,7 @@ export type Database = {
           target_schema: Json
           transformation_rules?: Json | null
           updated_at?: string
+          version?: number
         }
         Update: {
           created_at?: string
@@ -506,6 +573,7 @@ export type Database = {
           target_schema?: Json
           transformation_rules?: Json | null
           updated_at?: string
+          version?: number
         }
         Relationships: [
           {
@@ -1980,6 +2048,41 @@ export type Database = {
           },
         ]
       }
+      rule_executions: {
+        Row: {
+          created_at: string
+          details: Json | null
+          executed_at: string
+          id: string
+          rule_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          executed_at?: string
+          id?: string
+          rule_id: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          executed_at?: string
+          id?: string
+          rule_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rule_executions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "automation_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       slas: {
         Row: {
           created_at: string
@@ -2171,6 +2274,44 @@ export type Database = {
             columns: ["staff_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surge_predictions: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          department_id: string | null
+          id: string
+          model_version: string | null
+          predicted_admissions: number
+          prediction_datetime: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          model_version?: string | null
+          predicted_admissions: number
+          prediction_datetime: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          department_id?: string | null
+          id?: string
+          model_version?: string | null
+          predicted_admissions?: number
+          prediction_datetime?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "surge_predictions_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
             referencedColumns: ["id"]
           },
         ]

@@ -17,10 +17,10 @@ export const VersionHistoryCard = ({ pipeline }: VersionHistoryCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {[...Array(pipeline.version)].map((_, i) => (
+          {[...Array(pipeline.version || 1)].map((_, i) => (
             <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
               <div>
-                <span className="font-medium text-foreground">Version {pipeline.version - i}</span>
+                <span className="font-medium text-foreground">Version {(pipeline.version || 1) - i}</span>
                 <p className="text-sm text-muted-foreground">
                   {i === 0 ? 'Current version' : 'Previous version'}
                 </p>

@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AutomationRule } from '../types';
@@ -14,13 +15,12 @@ const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
   isActive: dao.status === 'ACTIVE',
   executionCount: dao.execution_count || 0,
   createdBy: dao.created_by || 'system',
-  createdAt: dao.created_at,
-  updatedAt: dao.updated_at,
+  last_executed: dao.last_executed,
   priority: 'medium', // Not in DB, but in UI type.
   triggerType: 'threshold_exceeded', // Not in DB
 });
 
-const toAutomationRuleDAO = (rule: Partial<AutomationRule>): Partial<AutomationRuleDAO> => ({
+const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => ({
     name: rule.name,
     description: rule.description,
     trigger_conditions: { conditions: rule.conditions } as any,
@@ -42,11 +42,11 @@ export const useAutomationRules = () => {
   });
 
   const createRuleMutation = useMutation({
-    mutationFn: async (newRule: Omit<AutomationRule, 'id' | 'createdAt' | 'updatedAt' | 'executionCount' | 'createdBy'>) => {
+    mutationFn: async (newRule: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at' | 'executionCount' | 'createdBy' | 'last_executed'>) => {
       const dao = toAutomationRuleDAO(newRule);
-      const { data, error } = await supabase.from('automation_rules').insert(dao).single();
+      const { data, error } = await supabase.from('automation_rules').insert(dao).select().single();
       if (error) throw error;
-      return fromAutomationRuleDAO(data);
+      return fromAutomationRuleDAO(data as AutomationRuleDAO);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['automation_rules'] });
@@ -56,9 +56,9 @@ export const useAutomationRules = () => {
   const updateRuleMutation = useMutation({
     mutationFn: async (rule: AutomationRule) => {
       const dao = toAutomationRuleDAO(rule);
-      const { data, error } = await supabase.from('automation_rules').update(dao).eq('id', rule.id).single();
+      const { data, error } = await supabase.from('automation_rules').update(dao).eq('id', rule.id).select().single();
       if (error) throw error;
-      return fromAutomationRuleDAO(data);
+      return fromAutomationRuleDAO(data as AutomationRuleDAO);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['automation_rules'] });

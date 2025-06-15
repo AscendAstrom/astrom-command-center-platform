@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -158,9 +157,9 @@ const RulesList = ({ rules, selectedRule, onSelectRule, onCreateRule, onToggleRu
                   <span className="text-green-400">{rule.executionCount} runs</span>
                 </div>
               </div>
-              {rule.lastExecuted && (
+              {rule.last_executed && (
                 <div className="text-xs text-muted-foreground mt-2">
-                  Last executed: {new Date(rule.lastExecuted).toLocaleString()}
+                  Last executed: {new Date(rule.last_executed).toLocaleString()}
                 </div>
               )}
             </div>
