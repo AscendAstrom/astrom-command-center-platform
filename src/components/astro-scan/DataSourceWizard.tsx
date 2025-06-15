@@ -27,8 +27,8 @@ interface DataSourceForm {
 
 const STEP_TITLES = [
   "Basic Information",
-  "Field Mapping", 
   "Configuration",
+  "Field Mapping", 
   "Test & Deploy"
 ];
 
@@ -74,9 +74,9 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
       case 0:
         return <BasicInformationStep formData={formData} updateFormData={updateFormData} />;
       case 1:
-        return <FieldMappingStep formData={formData} updateFormData={updateFormData} />;
-      case 2:
         return <ConfigurationStep formData={formData} updateFormData={updateFormData} />;
+      case 2:
+        return <FieldMappingStep formData={formData} updateFormData={updateFormData} />;
       case 3:
         return <TestingStep formData={formData} onComplete={handleSubmit} />;
       default:
@@ -84,14 +84,37 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
     }
   };
 
+  const isConfigStepValid = () => {
+    if (!formData.type) return false;
+
+    const { config } = formData;
+    switch(formData.type) {
+      case 'EPIC':
+        return !!config.serverUrl && !!config.clientId;
+      case 'HL7':
+        return !!config.host && !!config.port;
+      case 'FHIR':
+        return !!config.baseUrl;
+      case 'API':
+        return !!config.endpoint;
+      case 'CSV':
+        return !!config.filePath || !!config.uploadedFile;
+      case 'MANUAL':
+        return true;
+      default:
+        // By default, if we don't have specific validation, just check if any config is set.
+        return Object.keys(config).length > 0;
+    }
+  }
+
   const canProceed = () => {
     switch (currentStep) {
       case 0:
         return formData.name.trim() !== '';
       case 1:
-        return Object.keys(formData.fieldMappings).length > 0;
+        return isConfigStepValid();
       case 2:
-        return Object.keys(formData.config).length > 0;
+        return Object.keys(formData.fieldMappings).length > 0;
       default:
         return true;
     }

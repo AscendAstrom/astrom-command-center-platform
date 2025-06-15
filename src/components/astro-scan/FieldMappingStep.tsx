@@ -1,10 +1,12 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, MapPin } from "lucide-react";
+import { Plus, Trash2, MapPin, RefreshCw } from "lucide-react";
+import { autoDetectAndMapFields } from "../utils/autoMappingUtils";
+import { toast } from "sonner";
 
 interface FieldMappingStepProps {
   formData: any;
@@ -40,6 +42,7 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
       required: source.required || false
     }))
   );
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const addMapping = () => {
     setMappings([...mappings, {
@@ -79,6 +82,28 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
     updateFormData({ fieldMappings });
   };
 
+  const handleAutoMap = async () => {
+    setIsDetecting(true);
+    try {
+      const autoMappings = await autoDetectAndMapFields(formData.type, formData.config);
+      setMappings(autoMappings);
+      updateMappings(autoMappings);
+    } catch (error) {
+      console.error("Failed to auto-map fields:", error);
+      toast.error("Could not automatically map fields. Please try again or map manually.");
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mappings.length === 0 && !isDetecting) {
+      handleAutoMap();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   const addCommonField = (field: typeof COMMON_BUSINESS_FIELDS[0]) => {
     const newMappings = [...mappings, {
       sourceField: '',
@@ -100,7 +125,7 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
       </div>
       
       <p className="text-muted-foreground">
-        Map source fields from your {formData.type} data to standardized business fields.
+        Map source fields from your {formData.type} data to standardized business fields. We've attempted to map them automatically for you.
       </p>
 
       {/* Quick Add Common Fields */}
@@ -125,13 +150,29 @@ export const FieldMappingStep = ({ formData, updateFormData }: FieldMappingStepP
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Label className="text-foreground font-semibold">Field Mappings</Label>
-          <Button onClick={addMapping} size="sm" variant="outline" className="border-border hover:bg-muted">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Mapping
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleAutoMap} size="sm" variant="outline" className="border-border hover:bg-muted" disabled={isDetecting}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${isDetecting ? 'animate-spin' : ''}`} />
+              Auto-map Fields
+            </Button>
+            <Button onClick={addMapping} size="sm" variant="outline" className="border-border hover:bg-muted">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Mapping
+            </Button>
+          </div>
         </div>
 
-        {mappings.length === 0 ? (
+        {isDetecting ? (
+          <div className="text-center py-12 surface-elevated rounded-xl border-border/30">
+            <div className="w-16 h-16 mx-auto rounded-full bg-muted/50 flex items-center justify-center mb-4">
+              <RefreshCw className="h-8 w-8 text-muted-foreground animate-spin" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Detecting Fields...</h3>
+            <p className="text-muted-foreground">
+              Attempting to automatically map fields from your {formData.type} source.
+            </p>
+          </div>
+        ) : mappings.length === 0 ? (
           <div className="text-center py-12 surface-elevated rounded-xl border-border/30">
             <div className="w-16 h-16 mx-auto rounded-full bg-muted/50 flex items-center justify-center mb-4">
               <MapPin className="h-8 w-8 text-muted-foreground" />
