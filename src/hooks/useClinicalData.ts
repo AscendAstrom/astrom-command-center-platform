@@ -1,5 +1,5 @@
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Allergy, 
@@ -10,7 +10,6 @@ import {
   Patient,
   ClinicalDataType 
 } from '@/types/clinical';
-import { toast } from 'sonner';
 
 // Fetch functions
 const fetchAllergies = async (): Promise<Allergy[]> => {
@@ -95,31 +94,19 @@ const fetchPatients = async (): Promise<Patient[]> => {
 // Hook for clinical data with proper typing
 export const useClinicalData = (type: ClinicalDataType) => {
   const queryKey = [type];
-  let queryFn: () => Promise<any[]>;
-
-  switch (type) {
-    case 'allergies':
-      queryFn = fetchAllergies;
-      break;
-    case 'careplans':
-      queryFn = fetchCarePlans;
-      break;
-    case 'conditions':
-      queryFn = fetchConditions;
-      break;
-    case 'devices':
-      queryFn = fetchDevices;
-      break;
-    case 'encounters':
-      queryFn = fetchEncounters;
-      break;
-    default:
-      throw new Error(`Unknown clinical data type: ${type}`);
-  }
-
+  
   const { data, isLoading, error } = useQuery({
     queryKey,
-    queryFn,
+    queryFn: () => {
+      switch (type) {
+        case 'allergies': return fetchAllergies();
+        case 'careplans': return fetchCarePlans();
+        case 'conditions': return fetchConditions();
+        case 'devices': return fetchDevices();
+        case 'encounters': return fetchEncounters();
+        default: throw new Error(`Unknown clinical data type: ${type}`);
+      }
+    },
   });
 
   return {
@@ -147,7 +134,7 @@ export const usePatients = () => {
 export const usePatientTimeline = (patientId: string) => {
   const allergiesQuery = useQuery({
     queryKey: ['patient-allergies', patientId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Allergy[]> => {
       const { data, error } = await supabase
         .from('allergies')
         .select(`*, encounter:encounters(*)`)
@@ -162,7 +149,7 @@ export const usePatientTimeline = (patientId: string) => {
 
   const carePlansQuery = useQuery({
     queryKey: ['patient-careplans', patientId],
-    queryFn: async () => {
+    queryFn: async (): Promise<CarePlan[]> => {
       const { data, error } = await supabase
         .from('careplans')
         .select(`*, encounter:encounters(*)`)
@@ -177,7 +164,7 @@ export const usePatientTimeline = (patientId: string) => {
 
   const conditionsQuery = useQuery({
     queryKey: ['patient-conditions', patientId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Condition[]> => {
       const { data, error } = await supabase
         .from('conditions')
         .select(`*, encounter:encounters(*)`)
@@ -192,7 +179,7 @@ export const usePatientTimeline = (patientId: string) => {
 
   const devicesQuery = useQuery({
     queryKey: ['patient-devices', patientId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Device[]> => {
       const { data, error } = await supabase
         .from('devices')
         .select(`*, encounter:encounters(*)`)
@@ -207,7 +194,7 @@ export const usePatientTimeline = (patientId: string) => {
 
   const encountersQuery = useQuery({
     queryKey: ['patient-encounters', patientId],
-    queryFn: async () => {
+    queryFn: async (): Promise<Encounter[]> => {
       const { data, error } = await supabase
         .from('encounters')
         .select('*')

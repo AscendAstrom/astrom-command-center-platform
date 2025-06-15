@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -130,7 +129,7 @@ const PatientTimeline = ({ patientId, onItemClick }: PatientTimelineProps) => {
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         <span>{format(new Date(item.start_date), 'MMM dd, yyyy')}</span>
-                        {item.code && <Badge variant="outline" className="h-5">{item.code}</Badge>}
+                        {(item as any).code && <Badge variant="outline" className="h-5">{(item as any).code}</Badge>}
                       </div>
                     </div>
                   </div>
@@ -199,7 +198,7 @@ const PatientTimeline = ({ patientId, onItemClick }: PatientTimelineProps) => {
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         <span>{format(new Date(item.start_date), 'MMM dd, yyyy')}</span>
-                        {('code' in item && item.code) && <Badge variant="outline" className="h-5">{item.code}</Badge>}
+                        {(item as any).code && <Badge variant="outline" className="h-5">{(item as any).code}</Badge>}
                       </div>
                     </div>
                   </div>
