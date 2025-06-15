@@ -3,22 +3,45 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-import { useState, useEffect } from "react";
-import { analyticsService, AnalyticsData } from '@/services/analytics';
+import { useFinancialData } from "@/hooks/useFinancialData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const RevenueAnalyticsTile = () => {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
+  const { data: financialData, isLoading } = useFinancialData();
 
-  useEffect(() => {
-    const unsubscribe = analyticsService.subscribe(setAnalyticsData);
-    return unsubscribe;
-  }, []);
+  if (isLoading) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <DollarSign className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Revenue Analytics</CardTitle>
+                <CardDescription>Financial performance tracking</CardDescription>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-12" />
+            <Skeleton className="h-12" />
+          </div>
+          <Skeleton className="h-24" />
+          <Skeleton className="h-12" />
+        </CardContent>
+      </Card>
+    );
+  }
 
-  const metrics = analyticsData ? {
-    totalRevenue: analyticsData.financial.revenue,
-    monthlyGrowth: analyticsData.financial.monthlyGrowth,
-    yearOverYear: analyticsData.financial.yearOverYear,
-    revenuePerPatient: analyticsData.financial.revenuePerPatient
+  const metrics = financialData ? {
+    totalRevenue: financialData.totalRevenue,
+    monthlyGrowth: financialData.monthlyGrowth,
+    yearOverYear: financialData.yearOverYear,
+    revenuePerPatient: financialData.revenuePerPatient
   } : {
     totalRevenue: 0,
     monthlyGrowth: 0,
@@ -26,22 +49,8 @@ export const RevenueAnalyticsTile = () => {
     revenuePerPatient: 0
   };
 
-  // Generate revenue data based on real metrics
-  const revenueData = metrics.totalRevenue > 0 ? [
-    { month: 'Jan', revenue: metrics.totalRevenue * 0.8, target: metrics.totalRevenue * 0.85 },
-    { month: 'Feb', revenue: metrics.totalRevenue * 0.75, target: metrics.totalRevenue * 0.85 },
-    { month: 'Mar', revenue: metrics.totalRevenue * 0.95, target: metrics.totalRevenue * 0.85 },
-    { month: 'Apr', revenue: metrics.totalRevenue * 0.9, target: metrics.totalRevenue * 0.85 },
-    { month: 'May', revenue: metrics.totalRevenue * 1.1, target: metrics.totalRevenue * 0.85 },
-    { month: 'Jun', revenue: metrics.totalRevenue, target: metrics.totalRevenue * 0.85 }
-  ] : [];
-
-  const departmentRevenue = metrics.totalRevenue > 0 ? [
-    { department: 'Surgery', revenue: metrics.totalRevenue * 0.3, percentage: 30 },
-    { department: 'Emergency', revenue: metrics.totalRevenue * 0.2, percentage: 20 },
-    { department: 'Cardiology', revenue: metrics.totalRevenue * 0.15, percentage: 15 },
-    { department: 'Oncology', revenue: metrics.totalRevenue * 0.1, percentage: 10 }
-  ] : [];
+  const revenueData = financialData?.revenueHistory.map(item => ({...item, revenue: item.revenue, target: item.revenue * 0.85})) || [];
+  const departmentRevenue = financialData?.departmentRevenue || [];
 
   return (
     <Card className="h-full">
@@ -56,9 +65,9 @@ export const RevenueAnalyticsTile = () => {
               <CardDescription>Financial performance tracking</CardDescription>
             </div>
           </div>
-          <Badge variant="outline" className={metrics.monthlyGrowth > 0 ? "text-green-600 border-green-200 bg-green-50" : "text-gray-600 border-gray-200 bg-gray-50"}>
-            <TrendingUp className="h-3 w-3 mr-1" />
-            {metrics.monthlyGrowth > 0 ? `+${metrics.monthlyGrowth}%` : 'No Growth'}
+          <Badge variant="outline" className={metrics.monthlyGrowth >= 0 ? "text-green-600 border-green-200 bg-green-50" : "text-red-600 border-red-200 bg-red-50"}>
+            <TrendingUp className={`h-3 w-3 mr-1 ${metrics.monthlyGrowth < 0 ? 'rotate-180' : ''}`} />
+            {metrics.monthlyGrowth >= 0 ? `+${metrics.monthlyGrowth}%` : `${metrics.monthlyGrowth}%`}
           </Badge>
         </div>
       </CardHeader>
@@ -78,13 +87,21 @@ export const RevenueAnalyticsTile = () => {
           </div>
         </div>
 
-        {revenueData.length > 0 ? (
+        {revenueData.length > 0 && metrics.totalRevenue > 0 ? (
           <div className="h-24">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData}>
+              <AreaChart data={revenueData} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
                 <XAxis dataKey="month" fontSize={10} />
                 <YAxis hide />
-                <Tooltip formatter={(value) => [`$${typeof value === 'number' ? (value / 1000000).toFixed(1) : 0}M`, 'Revenue']} />
+                <Tooltip 
+                  formatter={(value) => [`$${typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 0 }) : 0}`, 'Revenue']}
+                  labelStyle={{ fontWeight: 'bold' }}
+                  contentStyle={{
+                    borderRadius: '0.5rem',
+                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: 'hsl(var(--background))'
+                  }}
+                />
                 <Area 
                   type="monotone" 
                   dataKey="revenue" 
@@ -110,7 +127,7 @@ export const RevenueAnalyticsTile = () => {
                   <div className="w-12 h-1.5 bg-gray-200 rounded">
                     <div 
                       className="h-full bg-green-500 rounded" 
-                      style={{ width: `${dept.percentage * 3}%` }}
+                      style={{ width: `${Math.min(dept.percentage, 100)}%` }}
                     />
                   </div>
                   <span className="font-medium">${(dept.revenue / 1000000).toFixed(1)}M</span>
@@ -127,7 +144,7 @@ export const RevenueAnalyticsTile = () => {
         )}
 
         <div className="text-xs text-muted-foreground bg-green-50 p-2 rounded">
-          <strong>Revenue AI:</strong> {analyticsData ? `YoY growth: ${metrics.yearOverYear}%. Financial performance tracking active.` : 'Connect billing systems for revenue analysis.'}
+          <strong>Revenue AI:</strong> {financialData ? `YoY growth: ${metrics.yearOverYear}%. Financial performance tracking active.` : 'Connect billing systems for revenue analysis.'}
         </div>
       </CardContent>
     </Card>
