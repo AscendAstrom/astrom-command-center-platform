@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Target, Hospital, Activity, AlertTriangle, TrendingUp, CheckCircle } from "lucide-react";
 import SLAConfiguration from "@/components/astro-metrics/SLAConfiguration";
-import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
 
 interface SLAConfigurationTabProps {
-  userRole: UserRole | null;
+  userRole: MetricsUserRole | null;
 }
 
 const SLAConfigurationTab = ({ userRole }: SLAConfigurationTabProps) => {

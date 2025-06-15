@@ -1,16 +1,15 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Hospital, TrendingUp } from "lucide-react";
 import MetricBuilder from "@/components/astro-metrics/MetricBuilder";
 import BedManagementTable from "@/components/shared/BedManagementTable";
-import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
 import { emptyStateMessages } from "@/config/constants";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface KPIBuilderTabProps {
-  userRole: UserRole | null;
+  userRole: MetricsUserRole | null;
 }
 
 const KPIBuilderTab = ({ userRole }: KPIBuilderTabProps) => {

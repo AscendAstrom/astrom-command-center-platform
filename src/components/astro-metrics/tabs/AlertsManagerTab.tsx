@@ -2,10 +2,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell } from "lucide-react";
 import AlertsManager from "@/components/astro-metrics/AlertsManager";
-import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
 
 interface AlertsManagerTabProps {
-  userRole: UserRole | null;
+  userRole: MetricsUserRole | null;
 }
 
 const AlertsManagerTab = ({ userRole }: AlertsManagerTabProps) => {

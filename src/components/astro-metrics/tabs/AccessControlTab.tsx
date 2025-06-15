@@ -2,10 +2,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 import AccessControl from "@/components/astro-metrics/AccessControl";
-import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
 
 interface AccessControlTabProps {
-  userRole: UserRole | null;
+  userRole: MetricsUserRole | null;
 }
 
 const AccessControlTab = ({ userRole }: AccessControlTabProps) => {

@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Target, Hospital } from "lucide-react";
 import KPIDictionary from "@/components/astro-metrics/KPIDictionary";
-import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
 
 interface KPIDictionaryTabProps {
-  userRole: UserRole | null;
+  userRole: MetricsUserRole | null;
 }
 
 const KPIDictionaryTab = ({ userRole }: KPIDictionaryTabProps) => {

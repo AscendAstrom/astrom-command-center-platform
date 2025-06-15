@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BarChart3, 
@@ -17,6 +16,26 @@ import { useUserRole } from "@/components/astro-bricks/hooks/useUserRole";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import { UserRole } from "@/components/astro-bricks/types";
+import { MetricsUserRole } from "@/components/astro-metrics/types";
+
+// Helper function to map UserRole to MetricsUserRole
+const mapUserRoleToMetricsUserRole = (userRole: UserRole | null): MetricsUserRole | null => {
+  if (!userRole) return null;
+  switch (userRole) {
+    case 'ADMIN':
+      return 'ADMIN';
+    case 'EDITOR':
+      return 'ANALYST'; // Map EDITOR to ANALYST for metrics context
+    case 'VIEWER':
+      return 'VIEWER';
+    case 'ANALYST':
+      return 'ANALYST';
+    default:
+      // This case should not be reached with the current UserRole type, but it's good practice
+      return 'VIEWER';
+  }
+};
 
 const AstroMetrics = () => {
   const { userRole, isLoading } = useUserRole();
@@ -44,6 +63,8 @@ const AstroMetrics = () => {
       </div>
     );
   }
+
+  const metricsUserRole = mapUserRoleToMetricsUserRole(userRole);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -75,23 +96,23 @@ const AstroMetrics = () => {
           </TabsList>
 
           <TabsContent value="kpi-builder" className="space-y-6">
-            <KPIBuilderTab userRole={userRole} />
+            <KPIBuilderTab userRole={metricsUserRole} />
           </TabsContent>
 
           <TabsContent value="dictionary" className="space-y-6">
-            <KPIDictionaryTab userRole={userRole} />
+            <KPIDictionaryTab userRole={metricsUserRole} />
           </TabsContent>
 
           <TabsContent value="sla-config" className="space-y-6">
-            <SLAConfigurationTab userRole={userRole} />
+            <SLAConfigurationTab userRole={metricsUserRole} />
           </TabsContent>
 
           <TabsContent value="alerts" className="space-y-6">
-            <AlertsManagerTab userRole={userRole} />
+            <AlertsManagerTab userRole={metricsUserRole} />
           </TabsContent>
 
           <TabsContent value="access" className="space-y-6">
-            <AccessControlTab userRole={userRole} />
+            <AccessControlTab userRole={metricsUserRole} />
           </TabsContent>
         </Tabs>
 
