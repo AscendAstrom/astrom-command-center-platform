@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DataSource, SyncStatus } from '../types';
@@ -114,6 +113,22 @@ export const useDataSources = () => {
 
   useEffect(() => {
     fetchDataSources();
+
+    const channel = supabase
+      .channel('public-data_sources-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'data_sources' },
+        (payload) => {
+          console.log('Data source change detected, refetching...', payload);
+          fetchDataSources();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const refetch = () => {

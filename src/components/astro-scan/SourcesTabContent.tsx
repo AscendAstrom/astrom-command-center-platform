@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,9 +12,10 @@ import { BedData } from "@/types/bedManagement";
 
 interface SourcesTabContentProps {
   onAddSourceClick: () => void;
+  dataSourceVersion: number;
 }
 
-const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
+const SourcesTabContent = ({ onAddSourceClick, dataSourceVersion }: SourcesTabContentProps) => {
   const [bedData, setBedData] = useState<BedData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +33,7 @@ const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
           departments(name, code, type),
           patients(first_name, last_name, mrn)
         `)
-        .eq('deleted_at', null)
+        .is('deleted_at', null)
         .limit(20);
 
       if (error) throw error;
@@ -92,7 +94,7 @@ const SourcesTabContent = ({ onAddSourceClick }: SourcesTabContentProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <DataSourceList />
+        <DataSourceList key={dataSourceVersion} />
 
         {/* Real Bed Management Data Sources */}
         <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
