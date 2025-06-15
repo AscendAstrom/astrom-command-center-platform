@@ -1,75 +1,65 @@
 
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SLAConfiguration as SLAConfig, MetricsUserRole } from './types';
 import SLACreateDialog from './SLACreateDialog';
 import SLATable from './SLATable';
+import { useSLAConfigs } from '@/hooks/useSLAConfigs';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 interface SLAConfigurationProps {
   userRole: MetricsUserRole | null;
 }
 
 const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
-  const [slaConfigs, setSlaConfigs] = useState<SLAConfig[]>([
-    {
-      id: '1',
-      name: 'ED Wait Time SLA',
-      description: 'Maximum wait time for emergency department patients',
-      zoneId: 'zone_1',
-      zoneName: 'Emergency Department',
-      metricType: 'wait_time',
-      threshold: 30,
-      unit: 'minutes',
-      timeWindow: 'real_time',
-      alertEnabled: true,
-      escalationRules: [
-        {
-          id: '1',
-          delay: 5,
-          delayUnit: 'minutes',
-          recipients: [
-            { type: 'email', address: 'ed-manager@hospital.com', name: 'ED Manager' }
-          ],
-          actions: [
-            { type: 'notification', config: { message: 'SLA breach detected' } }
-          ]
-        }
-      ],
-      status: 'active',
-      createdAt: '2024-01-15T10:00:00Z',
-      updatedAt: '2024-01-15T10:00:00Z'
-    },
-    {
-      id: '2',
-      name: 'ICU Bed Utilization',
-      description: 'ICU bed utilization threshold',
-      zoneId: 'zone_2',
-      zoneName: 'Intensive Care Unit',
-      metricType: 'utilization',
-      threshold: 85,
-      unit: 'percentage',
-      timeWindow: 'hourly',
-      alertEnabled: true,
-      escalationRules: [],
-      status: 'active',
-      createdAt: '2024-01-16T09:00:00Z',
-      updatedAt: '2024-01-16T09:00:00Z'
-    }
-  ]);
+  const { slaConfigs, isLoading, error, createSlaMutation, updateSlaStatusMutation } = useSLAConfigs();
 
   const canEdit = userRole === 'ADMIN' || userRole === 'ANALYST';
 
   const handleCreateSLA = (sla: SLAConfig) => {
-    setSlaConfigs([...slaConfigs, sla]);
+    createSlaMutation.mutate(sla);
   };
 
   const toggleSLAStatus = (slaId: string) => {
-    setSlaConfigs(slaConfigs.map(sla => 
-      sla.id === slaId 
-        ? { ...sla, status: sla.status === 'active' ? 'paused' : 'active' }
-        : sla
-    ));
+    const sla = slaConfigs.find(s => s.id === slaId);
+    if (sla) {
+      const newStatus = sla.status === 'active' ? 'paused' : 'active';
+      updateSlaStatusMutation.mutate({ slaId, status: newStatus });
+    }
   };
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="space-y-2 mt-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <Alert variant="destructive" className="mt-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            Failed to load SLA configurations: {error instanceof Error ? error.message : 'Unknown error'}
+          </AlertDescription>
+        </Alert>
+      );
+    }
+    
+    return (
+        <SLATable 
+          slaConfigs={slaConfigs}
+          canEdit={canEdit}
+          onToggleStatus={toggleSLAStatus}
+        />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -84,11 +74,7 @@ const SLAConfiguration = ({ userRole }: SLAConfigurationProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <SLATable 
-            slaConfigs={slaConfigs}
-            canEdit={canEdit}
-            onToggleStatus={toggleSLAStatus}
-          />
+          {renderContent()}
         </CardContent>
       </Card>
     </div>
