@@ -15,14 +15,20 @@ interface CSVConfigurationFieldsProps {
 
 export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfigurationFieldsProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(config.uploadedFileName || null);
   const [isReadingFile, setIsReadingFile] = useState(false);
+
+  const clearUploadedFile = () => {
+    updateConfig('uploadedFileName', null);
+    updateConfig('csvHeaders', null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setIsReadingFile(true);
-      setUploadedFileName(file.name);
       updateConfig('uploadedFileName', file.name);
       updateConfig('filePath', ''); // Clear the path when file is uploaded
 
@@ -55,18 +61,9 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
     }
   };
 
-  const clearUploadedFile = () => {
-    setUploadedFileName(null);
-    updateConfig('uploadedFileName', null);
-    updateConfig('csvHeaders', null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
   const handleFilePathChange = (value: string) => {
     updateConfig('filePath', value);
-    if (value && uploadedFileName) {
+    if (value && config.uploadedFileName) {
       // Clear uploaded file if user starts typing a path
       clearUploadedFile();
     }
@@ -98,9 +95,9 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
               onChange={handleFileUpload}
               className="hidden"
             />
-            {uploadedFileName && !isReadingFile && (
+            {config.uploadedFileName && !isReadingFile && (
               <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-md">
-                <span className="text-sm text-foreground">{uploadedFileName}</span>
+                <span className="text-sm text-foreground">{config.uploadedFileName}</span>
                 <Button
                   type="button"
                   variant="ghost"
@@ -130,7 +127,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
             onChange={(e) => handleFilePathChange(e.target.value)}
             placeholder="/path/to/files or https://example.com/data.csv"
             className="bg-background border-border text-foreground"
-            disabled={!!uploadedFileName || isReadingFile}
+            disabled={!!config.uploadedFileName || isReadingFile}
           />
         </div>
       </div>
@@ -152,7 +149,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
       
       <div className="flex items-center space-x-2">
         <Switch
-          checked={config.hasHeader || false}
+          checked={config.hasHeader === undefined ? true : config.hasHeader}
           onCheckedChange={(checked) => updateConfig('hasHeader', checked)}
         />
         <Label className="text-foreground font-medium">File has header row</Label>
