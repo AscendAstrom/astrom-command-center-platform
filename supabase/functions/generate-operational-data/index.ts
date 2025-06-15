@@ -147,20 +147,41 @@ const managePatientVisits = async (supabase: SupabaseClient) => {
 };
 
 const manageWaitTimes = async (supabase: SupabaseClient) => {
+    // This is probably inefficient but simple. We clear all wait times and regenerate for active patients.
     await supabase.from('wait_times').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     
     const { data: activeVisits, error: visitsError } = await supabase
         .from('patient_visits')
-        .select('id')
+        .select('id, department_id, patient_id, admission_date')
         .eq('status', 'ACTIVE');
-    if(visitsError) throw visitsError;
+
+    if(visitsError) {
+        console.error('Error fetching active visits:', visitsError);
+        throw visitsError;
+    }
 
     if (activeVisits && activeVisits.length > 0) {
-        const waitTimesToInsert = activeVisits.map(visit => ({
-            patient_visit_id: visit.id,
-            total_wait_minutes: Math.floor(Math.random() * 120), // 0-120 minutes wait
-        }));
-        await supabase.from('wait_times').insert(waitTimesToInsert);
+        const waitTimesToInsert = activeVisits.map(visit => {
+            const admissionDate = new Date(visit.admission_date);
+            const now = new Date();
+            // Calculate wait time since admission
+            const total_wait_minutes = Math.max(0, Math.floor((now.getTime() - admissionDate.getTime()) / 60000));
+
+            return {
+                visit_id: visit.id,
+                department_id: visit.department_id,
+                patient_id: visit.patient_id,
+                total_wait_minutes,
+                arrival_time: visit.admission_date,
+            };
+        });
+        if (waitTimesToInsert.length > 0) {
+            const { error: insertError } = await supabase.from('wait_times').insert(waitTimesToInsert);
+            if (insertError) {
+                console.error('Error inserting wait times:', insertError);
+                throw insertError;
+            }
+        }
     }
 };
 
