@@ -16,7 +16,7 @@ interface RuleEditorProps {
   userRole: FlowUserRole;
 }
 
-const RuleEditor = ({ selectedRule, onUpdateRule, onSaveRule, onDeleterule, isCreating, userRole }: RuleEditorProps) => {
+const RuleEditor = ({ selectedRule, onUpdateRule, onSaveRule, onDeleteRule, isCreating, userRole }: RuleEditorProps) => {
   const canEdit = userRole === 'ADMIN';
 
   const handleBasicInfoUpdate = (updatedFields: Partial<AutomationRule>) => {
