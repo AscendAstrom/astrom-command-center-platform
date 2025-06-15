@@ -1,30 +1,99 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, TrendingUp, Users } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const PatientOutcomesTile = () => {
-  const outcomeData = [
-    { name: 'Excellent', value: 45, color: '#22c55e' },
-    { name: 'Good', value: 35, color: '#3b82f6' },
-    { name: 'Fair', value: 15, color: '#f59e0b' },
-    { name: 'Poor', value: 5, color: '#ef4444' }
-  ];
+  const [metrics, setMetrics] = useState({
+    avgLengthOfStay: 0,
+    satisfactionScore: 0,
+    complicationRate: 0,
+    mortalityRate: 0
+  });
+  const [outcomeData, setOutcomeData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const mortalityData = [
-    { department: 'ICU', rate: 8.2 },
-    { department: 'Surgery', rate: 2.1 },
-    { department: 'Emergency', rate: 3.5 },
-    { department: 'General', rate: 1.8 }
-  ];
+  useEffect(() => {
+    const fetchOutcomes = async () => {
+      setLoading(true);
+      const { data: visits, error } = await supabase
+        .from('patient_visits')
+        .select('admission_date, discharge_date')
+        .not('discharge_date', 'is', null);
 
-  const metrics = {
-    avgLengthOfStay: 4.2,
-    mortalityRate: 2.8,
-    satisfactionScore: 8.7,
-    complicationRate: 5.2
-  };
+      if (error) {
+        console.error("Error fetching patient outcomes:", error);
+        setLoading(false);
+        return;
+      }
+      
+      if (visits && visits.length > 0) {
+        const totalStayDuration = visits.reduce((acc, visit) => {
+          const admission = new Date(visit.admission_date);
+          const discharge = new Date(visit.discharge_date!);
+          const duration = (discharge.getTime() - admission.getTime()) / (1000 * 3600 * 24);
+          return acc + duration;
+        }, 0);
+
+        const avgLengthOfStay = totalStayDuration / visits.length;
+        
+        // Mocked data for other metrics until real data is available
+        const satisfactionScore = 8.7; 
+        const complicationRate = 5.2;
+        const mortalityRate = 2.8;
+
+        setMetrics({
+          avgLengthOfStay: parseFloat(avgLengthOfStay.toFixed(1)),
+          satisfactionScore,
+          complicationRate,
+          mortalityRate
+        });
+
+        setOutcomeData([
+            { name: 'Excellent', value: 45, color: '#22c55e' },
+            { name: 'Good', value: 35, color: '#3b82f6' },
+            { name: 'Fair', value: 15, color: '#f59e0b' },
+            { name: 'Poor', value: 5, color: '#ef4444' }
+        ]);
+      }
+      setLoading(false);
+    };
+
+    fetchOutcomes();
+  }, []);
+  
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-red-500/10 rounded-lg">
+                <Heart className="h-5 w-5 text-red-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Patient Outcomes</CardTitle>
+                <CardDescription>Clinical results & satisfaction</CardDescription>
+              </div>
+            </div>
+            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Improving
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="animate-pulse space-y-4">
+            <div className="grid grid-cols-2 gap-4"><div className="h-12 bg-gray-200 rounded"></div><div className="h-12 bg-gray-200 rounded"></div></div>
+            <div className="h-20 bg-gray-200 rounded-full w-20 mx-auto"></div>
+            <div className="grid grid-cols-2 gap-2"><div className="h-10 bg-gray-200 rounded"></div><div className="h-10 bg-gray-200 rounded"></div></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
@@ -57,25 +126,31 @@ export const PatientOutcomesTile = () => {
           </div>
         </div>
 
-        <div className="h-20">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={outcomeData}
-                cx="50%"
-                cy="50%"
-                innerRadius={20}
-                outerRadius={35}
-                dataKey="value"
-              >
-                {outcomeData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        {outcomeData.length > 0 ? (
+          <div className="h-20">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={outcomeData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={20}
+                  outerRadius={35}
+                  dataKey="value"
+                >
+                  {outcomeData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+            <div className="h-20 flex items-center justify-center bg-muted/20 rounded">
+                <p className="text-muted-foreground text-sm">No outcome data available</p>
+            </div>
+        )}
 
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="bg-red-50 p-2 rounded text-center">

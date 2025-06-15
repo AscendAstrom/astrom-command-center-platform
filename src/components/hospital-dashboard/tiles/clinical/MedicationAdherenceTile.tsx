@@ -3,23 +3,53 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Pill, AlertTriangle } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const MedicationAdherenceTile = () => {
-  const adherenceData = [
-    { month: 'Jan', adherence: 85, doseMissed: 15 },
-    { month: 'Feb', adherence: 87, doseMissed: 13 },
-    { month: 'Mar', adherence: 89, doseMissed: 11 },
-    { month: 'Apr', adherence: 91, doseMissed: 9 },
-    { month: 'May', adherence: 88, doseMissed: 12 },
-    { month: 'Jun', adherence: 93, doseMissed: 7 }
-  ];
+  const [metrics, setMetrics] = useState({
+    overallAdherence: 0,
+    criticalMeds: 0,
+    missedDoses: 0,
+    interventions: 0
+  });
+  const [adherenceData, setAdherenceData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const metrics = {
-    overallAdherence: 89,
-    criticalMeds: 96,
-    missedDoses: 45,
-    interventions: 12
-  };
+  useEffect(() => {
+    // TODO: Implement data fetching from a medication adherence table when available.
+    // For now, we will just show the empty state.
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Pill className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Medication Adherence</CardTitle>
+                <CardDescription>Patient compliance tracking</CardDescription>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="animate-pulse space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-16 bg-gray-200 rounded"></div>
+              <div className="h-16 bg-gray-200 rounded"></div>
+            </div>
+            <div className="h-24 bg-gray-200 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
@@ -52,22 +82,28 @@ export const MedicationAdherenceTile = () => {
           </div>
         </div>
 
-        <div className="h-24">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={adherenceData}>
-              <XAxis dataKey="month" fontSize={10} />
-              <YAxis hide />
-              <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="adherence" 
-                stroke="#22c55e" 
-                strokeWidth={2}
-                name="Adherence %"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        {adherenceData.length > 0 ? (
+          <div className="h-24">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={adherenceData}>
+                <XAxis dataKey="month" fontSize={10} />
+                <YAxis hide />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="adherence" 
+                  stroke="#22c55e" 
+                  strokeWidth={2}
+                  name="Adherence %"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="h-24 flex items-center justify-center bg-muted/20 rounded">
+            <p className="text-muted-foreground text-sm">No adherence data available</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="bg-orange-50 p-2 rounded text-center">
@@ -81,7 +117,7 @@ export const MedicationAdherenceTile = () => {
         </div>
 
         <div className="text-xs text-muted-foreground bg-blue-50 p-2 rounded">
-          <strong>Medication AI:</strong> Automated reminders improved adherence by 8% for chronic conditions.
+          <strong>Medication AI:</strong> Connect to pharmacy systems for adherence tracking.
         </div>
       </CardContent>
     </Card>
