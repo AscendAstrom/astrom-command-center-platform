@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +22,7 @@ interface DataSourceForm {
   config: Record<string, any>;
   fieldMappings: Record<string, any>;
   scheduleCron?: string;
+  file_content?: string;
 }
 
 const STEP_TITLES = [
@@ -39,7 +39,8 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
     type: 'HL7',
     ingestionMode: 'BATCH',
     config: {},
-    fieldMappings: {}
+    fieldMappings: {},
+    file_content: '',
   });
 
   const updateFormData = (updater: Partial<DataSourceForm> | ((prev: DataSourceForm) => Partial<DataSourceForm>)) => {
@@ -59,7 +60,8 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
           ingestion_mode: formData.ingestionMode,
           config: formData.config,
           field_mappings: formData.fieldMappings,
-          schedule_cron: formData.scheduleCron
+          schedule_cron: formData.scheduleCron,
+          file_content: formData.file_content
         });
 
       if (error) throw error;

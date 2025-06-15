@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,6 +18,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
   const clearUploadedFile = () => {
     updateConfig('uploadedFileName', null);
     updateConfig('csvHeaders', null);
+    updateConfig('file_content', null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -37,6 +37,8 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
       reader.onload = (e) => {
         try {
           const text = e.target?.result as string;
+          updateConfig('file_content', text); // Store the entire file content
+
           // Simple CSV header extraction (split by newline, take first line, split by delimiter)
           const delimiter = config.delimiter || ',';
           const headerLine = text.split('\n')[0].trim();

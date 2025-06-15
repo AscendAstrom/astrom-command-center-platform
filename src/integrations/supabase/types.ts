@@ -649,6 +649,7 @@ export type Database = {
           created_by: string | null
           description: string | null
           field_mappings: Json
+          file_content: string | null
           health_score: number | null
           id: string
           ingestion_mode: Database["public"]["Enums"]["ingestion_mode"]
@@ -670,6 +671,7 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           field_mappings?: Json
+          file_content?: string | null
           health_score?: number | null
           id?: string
           ingestion_mode?: Database["public"]["Enums"]["ingestion_mode"]
@@ -691,6 +693,7 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           field_mappings?: Json
+          file_content?: string | null
           health_score?: number | null
           id?: string
           ingestion_mode?: Database["public"]["Enums"]["ingestion_mode"]

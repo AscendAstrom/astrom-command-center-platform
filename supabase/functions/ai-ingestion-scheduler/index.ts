@@ -21,19 +21,21 @@ serve(async (_req) => {
 
     console.log("AI Ingestion Scheduler: Waking up...");
 
+    // Fetch BATCH sources that are CONNECTED and have file content to process
     const { data: dataSources, error: fetchError } = await supabaseAdmin
       .from('data_sources')
       .select('*')
       .eq('ingestion_mode', 'BATCH')
-      .in('status', ['CONNECTED', 'SYNCED', 'ERROR']);
+      .eq('status', 'CONNECTED')
+      .not('file_content', 'is', null);
       
     if (fetchError) {
       throw new Error(`Failed to fetch data sources: ${fetchError.message}`);
     }
 
     if (!dataSources || dataSources.length === 0) {
-      console.log("AI Ingestion Scheduler: No data sources to process. Going back to sleep.");
-      return new Response(JSON.stringify({ message: 'No BATCH data sources to process.' }), {
+      console.log("AI Ingestion Scheduler: No data sources with file content to process. Going back to sleep.");
+      return new Response(JSON.stringify({ message: 'No BATCH data sources with file content to process.' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       });
@@ -45,27 +47,39 @@ serve(async (_req) => {
       console.log(`[${source.name}] Starting ingestion process for source ID: ${source.id}`);
 
       try {
+        // Set status to SYNCING to provide visual feedback in the UI
         await supabaseAdmin
           .from('data_sources')
-          .update({ status: 'INGESTING' })
+          .update({ status: 'SYNCING' })
           .eq('id', source.id);
 
-        console.log(`[${source.name}] Simulating data fetching and processing...`);
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 4000 + 1000));
-        const newRecordsCount = Math.floor(Math.random() * 1000);
+        console.log(`[${source.name}] Processing file content...`);
+        
+        const fileContent = source.file_content || '';
+        const lines = fileContent.split('\n').filter(line => line.trim() !== ''); // Filter out empty lines
+        
+        // Check if there's a header row to exclude from count
+        const hasHeader = source.config?.hasHeader === undefined ? true : source.config.hasHeader;
+        const newRecordsCount = hasHeader ? Math.max(0, lines.length - 1) : lines.length;
+
+        console.log(`[${source.name}] Found ${newRecordsCount} records.`);
+        
+        // Simulate processing time
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         const { error: updateSuccessError } = await supabaseAdmin
           .from('data_sources')
           .update({ 
-            status: 'SYNCED', 
+            status: 'CONNECTED', // Set back to connected, ready for another file
             last_sync: new Date().toISOString(),
-            records_count: (source.records_count || 0) + newRecordsCount,
+            records_count: newRecordsCount,
+            file_content: null, // Clear file content to prevent reprocessing
             last_error: null 
           })
           .eq('id', source.id);
         
         if (updateSuccessError) {
-            throw new Error(`Failed to update source to SYNCED state: ${updateSuccessError.message}`);
+            throw new Error(`Failed to update source to CONNECTED state: ${updateSuccessError.message}`);
         }
         
         console.log(`[${source.name}] Ingestion successful. ${newRecordsCount} new records processed.`);
