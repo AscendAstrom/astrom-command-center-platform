@@ -11,11 +11,12 @@ interface RuleEditorProps {
   selectedRule: AutomationRule;
   onUpdateRule: (rule: AutomationRule) => void;
   onSaveRule: () => void;
+  onDeleteRule: () => void;
   isCreating: boolean;
   userRole: FlowUserRole;
 }
 
-const RuleEditor = ({ selectedRule, onUpdateRule, onSaveRule, isCreating, userRole }: RuleEditorProps) => {
+const RuleEditor = ({ selectedRule, onUpdateRule, onSaveRule, onDeleterule, isCreating, userRole }: RuleEditorProps) => {
   const canEdit = userRole === 'ADMIN';
 
   const handleBasicInfoUpdate = (updatedFields: Partial<AutomationRule>) => {
@@ -28,6 +29,7 @@ const RuleEditor = ({ selectedRule, onUpdateRule, onSaveRule, isCreating, userRo
         isCreating={isCreating}
         canEdit={canEdit}
         onSaveRule={onSaveRule}
+        onDeleteRule={onDeleteRule}
       />
       <CardContent className="space-y-6 pt-6">
         <RuleEditorBasicInfo

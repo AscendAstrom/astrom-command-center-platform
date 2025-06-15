@@ -71,11 +71,23 @@ export const useAutomationRules = () => {
     },
   });
 
+  const deleteRuleMutation = useMutation({
+    mutationFn: async (ruleId: string) => {
+      const { error } = await supabase.from('automation_rules').delete().eq('id', ruleId);
+      if (error) throw error;
+      return ruleId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['automation_rules'] });
+    },
+  });
+
   return {
     rules,
     isLoading,
     error,
     createRule: createRuleMutation.mutateAsync,
     updateRule: updateRuleMutation.mutateAsync,
+    deleteRule: deleteRuleMutation.mutateAsync,
   };
 };

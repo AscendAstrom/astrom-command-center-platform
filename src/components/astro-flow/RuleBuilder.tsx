@@ -11,7 +11,7 @@ interface RuleBuilderProps {
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const { rules, createRule, updateRule, isLoading } = useAutomationRules();
+  const { rules, createRule, updateRule, deleteRule, isLoading } = useAutomationRules();
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -50,6 +50,20 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
         setSelectedRule(null); // Deselect after saving
       } catch (error) {
         toast.error("Failed to save the rule.");
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDeleteRule = async () => {
+    if (selectedRule && !isCreating) {
+      try {
+        await deleteRule(selectedRule.id);
+        toast.success("Rule deleted successfully.");
+        setSelectedRule(null);
+        setIsCreating(false);
+      } catch (error) {
+        toast.error("Failed to delete the rule.");
         console.error(error);
       }
     }
@@ -98,6 +112,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
             selectedRule={selectedRule}
             onUpdateRule={handleUpdateRule}
             onSaveRule={handleSaveRule}
+            onDeleteRule={handleDeleteRule}
             isCreating={isCreating}
             userRole={userRole}
           />
