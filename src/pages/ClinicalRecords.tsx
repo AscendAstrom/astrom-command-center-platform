@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,20 +12,31 @@ import {
   Users,
   Search,
   User,
-  ChevronRight
+  ChevronRight,
+  BarChart3,
+  Download,
+  Zap
 } from 'lucide-react';
 import { useClinicalData, usePatients } from '@/hooks/useClinicalData';
 import { ClinicalDataType } from '@/types/clinical';
 import ClinicalDataTable from '@/components/clinical/ClinicalDataTable';
 import ClinicalDetailDrawer from '@/components/clinical/ClinicalDetailDrawer';
 import PatientTimeline from '@/components/clinical/PatientTimeline';
+import AdvancedSearch, { SearchFilter } from '@/components/clinical/AdvancedSearch';
+import ClinicalInsights from '@/components/clinical/ClinicalInsights';
+import { ClinicalDataService } from '@/services/clinicalDataService';
+import { toast } from 'sonner';
 
 const ClinicalRecords = () => {
   const [selectedTab, setSelectedTab] = useState<ClinicalDataType>('encounters');
   const [selectedDetail, setSelectedDetail] = useState<{ data: any; type: ClinicalDataType } | null>(null);
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [showPatientTimeline, setShowPatientTimeline] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
   const [patientSearchTerm, setPatientSearchTerm] = useState('');
+  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [realtimeChannels, setRealtimeChannels] = useState<any[]>([]);
 
   // Fetch data for all clinical types
   const allergiesQuery = useClinicalData('allergies');
@@ -43,13 +54,85 @@ const ClinicalRecords = () => {
     encounters: encountersQuery,
   };
 
+  // Setup real-time subscriptions
+  useEffect(() => {
+    const channels = Object.keys(clinicalData).map(type => 
+      ClinicalDataService.subscribeToUpdates(
+        type as ClinicalDataType,
+        (payload) => {
+          console.log(`Real-time update for ${type}:`, payload);
+          toast.info(`${type} data updated in real-time`);
+          // The queries will automatically refetch due to cache invalidation
+        }
+      )
+    );
+
+    setRealtimeChannels(channels);
+
+    return () => {
+      channels.forEach(channel => channel.unsubscribe());
+    };
+  }, []);
+
+  // Filter data based on search and filters
+  const getFilteredData = (data: any[]) => {
+    let filtered = [...data];
+
+    // Apply text search
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(item =>
+        item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.reason_description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply advanced filters
+    searchFilters.forEach(filter => {
+      filtered = filtered.filter(item => {
+        const fieldValue = item[filter.field];
+        
+        switch (filter.operator) {
+          case 'equals':
+            return fieldValue === filter.value;
+          case 'contains':
+            return fieldValue?.toLowerCase().includes((filter.value as string).toLowerCase());
+          case 'starts_with':
+            return fieldValue?.toLowerCase().startsWith((filter.value as string).toLowerCase());
+          case 'greater_than':
+            return Number(fieldValue) > Number(filter.value);
+          case 'less_than':
+            return Number(fieldValue) < Number(filter.value);
+          case 'date_range':
+            if (typeof filter.value === 'object' && 'start' in filter.value) {
+              const itemDate = new Date(fieldValue);
+              const startDate = new Date(filter.value.start);
+              const endDate = new Date(filter.value.end);
+              return itemDate >= startDate && itemDate <= endDate;
+            }
+            return true;
+          default:
+            return true;
+        }
+      });
+    });
+
+    return filtered;
+  };
+
   const currentData = clinicalData[selectedTab];
+  const filteredData = getFilteredData(currentData.data || []);
+  
   const filteredPatients = patientsQuery.patients.filter(patient =>
     `${patient.first_name} ${patient.last_name}`.toLowerCase().includes(patientSearchTerm.toLowerCase())
   );
 
   const handleRowClick = (item: any, type?: ClinicalDataType) => {
-    setSelectedDetail({ data: item, type: type || selectedTab });
+    const recordType = type || selectedTab;
+    setSelectedDetail({ data: item, type: recordType });
+    
+    // Log data access
+    ClinicalDataService.logDataAccess(recordType, item.id, 'VIEW');
   };
 
   const handleCloseDetail = () => {
@@ -59,6 +142,41 @@ const ClinicalRecords = () => {
   const handlePatientSelect = (patientId: string) => {
     setSelectedPatientId(patientId);
     setShowPatientTimeline(true);
+  };
+
+  const handleSearch = (query: string, filters: SearchFilter[]) => {
+    setSearchQuery(query);
+    setSearchFilters(filters);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSearchFilters([]);
+  };
+
+  const handleExportData = async () => {
+    try {
+      const csvContent = await ClinicalDataService.exportToCsv(
+        selectedTab,
+        filteredData,
+        selectedPatientId
+      );
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${selectedTab}-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success(`${selectedTab} data exported successfully`);
+    } catch (error) {
+      toast.error('Failed to export data');
+      console.error('Export error:', error);
+    }
   };
 
   const getTabIcon = (type: ClinicalDataType) => {
@@ -75,6 +193,43 @@ const ClinicalRecords = () => {
   const getTotalRecords = () => {
     return Object.values(clinicalData).reduce((total, query) => total + (query.data?.length || 0), 0);
   };
+
+  const getAllClinicalData = () => {
+    return {
+      allergies: allergiesQuery.data || [],
+      careplans: carePlansQuery.data || [],
+      conditions: conditionsQuery.data || [],
+      devices: devicesQuery.data || [],
+      encounters: encountersQuery.data || []
+    };
+  };
+
+  if (showInsights) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              onClick={() => setShowInsights(false)}
+              className="mb-4"
+            >
+              ← Back to Clinical Records
+            </Button>
+            <h1 className="text-3xl font-bold">Clinical Data Insights</h1>
+            <p className="text-muted-foreground">
+              Comprehensive analytics and insights from clinical data
+            </p>
+          </div>
+        </div>
+
+        <ClinicalInsights 
+          data={getAllClinicalData()}
+          selectedPatientId={selectedPatientId}
+        />
+      </div>
+    );
+  }
 
   if (showPatientTimeline && selectedPatientId) {
     const selectedPatient = patientsQuery.patients.find(p => p.id === selectedPatientId);
@@ -97,6 +252,13 @@ const ClinicalRecords = () => {
               </p>
             )}
           </div>
+          <Button
+            variant="outline"
+            onClick={() => setShowInsights(true)}
+          >
+            <BarChart3 className="h-4 w-4 mr-2" />
+            View Insights
+          </Button>
         </div>
 
         <PatientTimeline 
@@ -122,10 +284,17 @@ const ClinicalRecords = () => {
         <div>
           <h1 className="text-3xl font-bold">Clinical Records</h1>
           <p className="text-muted-foreground">
-            Manage patient clinical data including allergies, care plans, conditions, devices, and encounters
+            Manage patient clinical data with advanced search and real-time updates
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowInsights(true)}
+          >
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Insights
+          </Button>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-muted-foreground" />
@@ -133,6 +302,10 @@ const ClinicalRecords = () => {
                 <p className="text-sm text-muted-foreground">Total Records</p>
                 <p className="text-2xl font-bold">{getTotalRecords()}</p>
               </div>
+              <Badge variant="secondary" className="ml-2">
+                <Zap className="h-3 w-3 mr-1" />
+                Live
+              </Badge>
             </div>
           </Card>
         </div>
@@ -157,6 +330,7 @@ const ClinicalRecords = () => {
                 className="pl-10"
               />
             </div>
+            
             <div className="flex gap-2 flex-wrap">
               {filteredPatients.slice(0, 5).map((patient) => (
                 <Button
@@ -178,30 +352,50 @@ const ClinicalRecords = () => {
         </CardContent>
       </Card>
 
+      {/* Advanced Search */}
+      <AdvancedSearch
+        dataType={selectedTab}
+        onSearch={handleSearch}
+        onClear={handleClearSearch}
+        isLoading={currentData.isLoading}
+      />
+
       {/* Clinical Data Tabs */}
       <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as ClinicalDataType)}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="encounters" className="flex items-center gap-2">
-            {getTabIcon('encounters')}
-            Encounters ({encountersQuery.data?.length || 0})
-          </TabsTrigger>
-          <TabsTrigger value="conditions" className="flex items-center gap-2">
-            {getTabIcon('conditions')}
-            Conditions ({conditionsQuery.data?.length || 0})
-          </TabsTrigger>
-          <TabsTrigger value="allergies" className="flex items-center gap-2">
-            {getTabIcon('allergies')}
-            Allergies ({allergiesQuery.data?.length || 0})
-          </TabsTrigger>
-          <TabsTrigger value="careplans" className="flex items-center gap-2">
-            {getTabIcon('careplans')}
-            Care Plans ({carePlansQuery.data?.length || 0})
-          </TabsTrigger>
-          <TabsTrigger value="devices" className="flex items-center gap-2">
-            {getTabIcon('devices')}
-            Devices ({devicesQuery.data?.length || 0})
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between">
+          <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+            <TabsTrigger value="encounters" className="flex items-center gap-2">
+              {getTabIcon('encounters')}
+              Encounters ({encountersQuery.data?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="conditions" className="flex items-center gap-2">
+              {getTabIcon('conditions')}
+              Conditions ({conditionsQuery.data?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="allergies" className="flex items-center gap-2">
+              {getTabIcon('allergies')}
+              Allergies ({allergiesQuery.data?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="careplans" className="flex items-center gap-2">
+              {getTabIcon('careplans')}
+              Care Plans ({carePlansQuery.data?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="devices" className="flex items-center gap-2">
+              {getTabIcon('devices')}
+              Devices ({devicesQuery.data?.length || 0})
+            </TabsTrigger>
+          </TabsList>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportData}
+            disabled={filteredData.length === 0}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export ({filteredData.length})
+          </Button>
+        </div>
 
         {Object.entries(clinicalData).map(([type, query]) => (
           <TabsContent key={type} value={type}>
@@ -221,7 +415,7 @@ const ClinicalRecords = () => {
               </Card>
             ) : (
               <ClinicalDataTable
-                data={query.data || []}
+                data={filteredData}
                 type={type as ClinicalDataType}
                 onRowClick={handleRowClick}
                 patients={patientsQuery.patients}
