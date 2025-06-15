@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const ClinicalIndicatorsTile = () => {
   const [indicatorsData, setIndicatorsData] = useState<any[]>([]);
-  const [performanceMetrics, setPerformanceMetrics] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [metrics, setMetrics] = useState({
     overallPerformance: 0,
@@ -25,13 +24,17 @@ export const ClinicalIndicatorsTile = () => {
     const channel = supabase
       .channel('clinical-updates')
       .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'quality_measurements' },
+        () => fetchClinicalData()
+      )
+      .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'quality_indicators' },
         () => fetchClinicalData()
       )
       .subscribe();
 
     return () => {
-      channel.unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, []);
 
@@ -51,77 +54,73 @@ export const ClinicalIndicatorsTile = () => {
       // Fetch quality measurements
       const { data: measurements, error: measurementsError } = await supabase
         .from('quality_measurements')
-        .select('*')
+        .select('*, quality_indicators(name)')
         .order('measurement_date', { ascending: false })
-        .limit(50);
+        .limit(100);
 
       if (measurementsError) throw measurementsError;
 
       // Process indicators data
-      const indicatorsDataArray = indicators?.slice(0, 5).map((indicator, index) => {
+      const indicatorsDataArray = indicators?.slice(0, 4).map((indicator) => {
         const relatedMeasurements = measurements?.filter(m => m.indicator_id === indicator.id) || [];
         const currentValue = relatedMeasurements.length > 0 
           ? relatedMeasurements[0].value 
-          : 85 + (index * 2);
+          : faker.number.float({ min: indicator.target_value - 5, max: indicator.target_value + 5, precision: 1 });
         
         // Determine trend based on recent measurements
         let trend = 'stable';
         if (relatedMeasurements.length >= 2) {
           const recent = Number(relatedMeasurements[0].value);
           const previous = Number(relatedMeasurements[1].value);
-          trend = recent > previous ? 'improving' : recent < previous ? 'declining' : 'stable';
+          if (indicator.name.toLowerCase().includes('rate')) { // For rates, lower is better
+            trend = recent < previous ? 'improving' : recent > previous ? 'declining' : 'stable';
+          } else { // For compliance etc, higher is better
+            trend = recent > previous ? 'improving' : recent < previous ? 'declining' : 'stable';
+          }
         }
         
         return {
-          indicator: indicator.name.split(' ').slice(0, 2).join(' '), // Shortened name
+          indicator: indicator.name.replace(/\s\(.+\)/, '').split(' ').slice(0, 3).join(' '), // Shortened name
           value: Number(currentValue),
-          target: indicator.target_value || 90,
+          target: indicator.target_value,
+          unit: indicator.unit,
           trend
         };
       }) || [];
 
-      // Generate performance metrics based on real data
-      const performanceMetricsArray = [
-        { 
-          name: 'Hand Hygiene', 
-          compliance: indicatorsDataArray[0]?.value || 94, 
-          benchmark: 90 
-        },
-        { 
-          name: 'Fall Prevention', 
-          compliance: indicatorsDataArray[1]?.value || 87, 
-          benchmark: 85 
-        },
-        { 
-          name: 'Medication Reconciliation', 
-          compliance: indicatorsDataArray[2]?.value || 92, 
-          benchmark: 90 
-        },
-        { 
-          name: 'Pressure Ulcer Prevention', 
-          compliance: indicatorsDataArray[3]?.value || 96, 
-          benchmark: 95 
-        }
-      ];
-
       // Generate alerts based on performance
-      const alertsArray = performanceMetricsArray
-        .filter(metric => metric.compliance < metric.benchmark)
+      const alertsArray = indicatorsDataArray
+        .filter(metric => {
+            if (metric.indicator.toLowerCase().includes('rate')) {
+                return metric.value > metric.target;
+            }
+            return metric.value < metric.target;
+        })
         .map(metric => ({
-          indicator: metric.name,
-          status: metric.compliance < (metric.benchmark - 10) ? 'Below Target' : 'Above Target',
-          severity: metric.compliance < (metric.benchmark - 10) ? 'High' : 'Medium'
+          indicator: metric.indicator,
+          status: metric.value < (metric.target * 0.9) ? 'Critically Low' : 'Below Target',
+          severity: metric.value < (metric.target * 0.9) ? 'High' : 'Medium'
         }));
 
-      const totalIndicators = indicators?.length || 12;
-      const indicatorsMet = indicatorsDataArray.filter(ind => ind.value >= ind.target).length;
+      const totalIndicators = indicators?.length || 0;
+      const indicatorsMet = indicatorsDataArray.filter(ind => {
+        if (ind.indicator.toLowerCase().includes('rate')) {
+            return ind.value <= ind.target;
+        }
+        return ind.value >= ind.target
+      }).length;
+
       const overallPerformance = indicatorsDataArray.length > 0 
-        ? Math.round(indicatorsDataArray.reduce((sum, ind) => sum + ind.value, 0) / indicatorsDataArray.length)
+        ? Math.round(indicatorsDataArray.reduce((sum, ind) => {
+            const performanceRatio = ind.indicator.toLowerCase().includes('rate')
+                ? (ind.target / (ind.value || 1)) * 100
+                : (ind.value / ind.target) * 100;
+            return sum + Math.min(performanceRatio, 120); // Cap at 120% to avoid extreme outliers skewing average
+        }, 0) / indicatorsDataArray.length)
         : 0;
       const trendsImproving = indicatorsDataArray.filter(ind => ind.trend === 'improving').length;
 
       setIndicatorsData(indicatorsDataArray);
-      setPerformanceMetrics(performanceMetricsArray);
       setAlerts(alertsArray);
       setMetrics({
         overallPerformance,
@@ -132,7 +131,6 @@ export const ClinicalIndicatorsTile = () => {
     } catch (error) {
       console.error('Error fetching clinical data:', error);
       setIndicatorsData([]);
-      setPerformanceMetrics([]);
       setAlerts([]);
       setMetrics({
         overallPerformance: 0,
@@ -212,20 +210,28 @@ export const ClinicalIndicatorsTile = () => {
           </div>
         </div>
 
-        {performanceMetrics.length > 0 ? (
+        {indicatorsData.length > 0 ? (
           <div className="h-24">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={performanceMetrics}>
-                <XAxis dataKey="name" fontSize={8} />
+              <BarChart data={indicatorsData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+                <XAxis dataKey="indicator" fontSize={8} interval={0} tick={{width: 60}}/>
                 <YAxis hide />
-                <Tooltip />
-                <Bar dataKey="compliance" fill="#3b82f6" radius={[2, 2, 0, 0]} />
+                <Tooltip 
+                  formatter={(value: number, name: string, props: any) => [`${value} ${props.payload.unit || ''}`, 'Value']}
+                  labelStyle={{ display: 'none' }}
+                  contentStyle={{
+                    borderRadius: '0.5rem',
+                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: 'hsl(var(--background))'
+                  }}
+                />
+                <Bar dataKey="value" fill="#3b82f6" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         ) : (
           <div className="h-24 flex items-center justify-center bg-muted/20 rounded">
-            <p className="text-muted-foreground text-sm">No performance data available</p>
+            <p className="text-muted-foreground text-sm">No clinical indicator data available</p>
           </div>
         )}
 
@@ -235,7 +241,7 @@ export const ClinicalIndicatorsTile = () => {
             <div key={index} className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">{indicator.indicator}</span>
               <div className="flex items-center gap-2">
-                <span className="font-medium">{indicator.value}%</span>
+                <span className="font-medium">{indicator.value}{indicator.unit}</span>
                 {getTrendIcon(indicator.trend)}
               </div>
             </div>
@@ -248,19 +254,15 @@ export const ClinicalIndicatorsTile = () => {
               <AlertCircle className="h-3 w-3 text-orange-500" />
               <span className="font-semibold text-orange-600">{alerts.length} Active Alerts</span>
             </div>
-            <div className="text-muted-foreground">
-              {alerts[0].indicator}: {alerts[0].status}
+            <div className="text-muted-foreground truncate">
+              {alerts[0].indicator}: Below Target
             </div>
           </div>
         ) : (
-          <div className="bg-green-50 p-2 rounded text-xs">
-            <div className="text-green-600">All clinical indicators within target range</div>
+          <div className="bg-green-50 p-2 rounded text-xs text-center text-green-700">
+            All clinical indicators on target
           </div>
         )}
-
-        <div className="text-xs text-muted-foreground bg-blue-50 p-2 rounded">
-          <strong>Real-time Data:</strong> Connected to hospital quality management system for live clinical indicator tracking.
-        </div>
       </CardContent>
     </Card>
   );

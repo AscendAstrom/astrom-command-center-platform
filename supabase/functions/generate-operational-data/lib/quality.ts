@@ -17,7 +17,11 @@ async function ensureQualityIndicators(supabase: SupabaseClient) {
           { name: 'Patient Falls Rate', category: 'patient_safety', target_value: 0.5, unit: 'per 1000 patient-days', description: 'Rate of patient falls per 1000 patient-days.', data_source: 'Incident Reports' },
           { name: 'Medication Error Rate', category: 'patient_safety', target_value: 1.0, unit: '%', description: 'Percentage of medication administrations with errors.', data_source: 'Pharmacy Records' },
           { name: 'Patient Satisfaction', category: 'satisfaction', target_value: 4.5, unit: 'out of 5', description: 'Average patient satisfaction score.', data_source: 'Patient Surveys' },
-          { name: 'Hand Hygiene Compliance', category: 'safety', target_value: 95.0, unit: '%', description: 'Compliance rate of hand hygiene protocols.', data_source: 'Direct Observation' }
+          { name: 'Hand Hygiene Compliance', category: 'safety', target_value: 95.0, unit: '%', description: 'Compliance rate of hand hygiene protocols.', data_source: 'Direct Observation' },
+          { name: 'Sepsis Care Bundle Compliance', category: 'clinical', target_value: 90.0, unit: '%', description: 'Compliance with sepsis care bundle protocols.', data_source: 'EHR Records' },
+          { name: 'Catheter-Associated UTI Rate', category: 'clinical', target_value: 1.0, unit: 'per 1000 catheter-days', description: 'Rate of CAUTI per 1000 catheter-days.', data_source: 'Infection Control Surveillance' },
+          { name: 'Readmission Rate (30-day)', category: 'clinical', target_value: 15.0, unit: '%', description: 'Percentage of patients readmitted within 30 days.', data_source: 'Hospital Discharge Data' },
+          { name: 'Pressure Ulcer Rate', category: 'clinical', target_value: 2.0, unit: '%', description: 'Percentage of patients developing new pressure ulcers.', data_source: 'Nursing Audits' }
       ];
       const { error: insertError } = await supabase.from('quality_indicators').insert(indicatorsToInsert);
       if (insertError) {
