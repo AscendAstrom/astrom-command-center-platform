@@ -1,4 +1,5 @@
 
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // A simple mapping dictionary to guess target fields from common source field names.
@@ -32,11 +33,10 @@ export const autoDetectAndMapFields = async (type: string, config: any): Promise
     dataType: string;
     required: boolean;
   }>> => {
-    // Simulate network delay for fetching schema/sample data
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
     let detectedSourceFields: string[] = [];
 
+    // Step 1: Detect source fields based on data source type
     switch (type) {
         case 'EPIC':
             detectedSourceFields = ['patient.id', 'patient.name.family', 'patient.name.given', 'observation.code.text', 'observation.valueQuantity.value', 'encounter.status'];
@@ -52,35 +52,67 @@ export const autoDetectAndMapFields = async (type: string, config: any): Promise
             detectedSourceFields = ['user_id', 'record_id', 'timestamp', 'data_value', 'event_type', 'status'];
             break;
         case 'CSV':
-            // In a real scenario, this would parse the header of the uploaded file/file at path
-            detectedSourceFields = ['entity_id', 'record_number', 'event_timestamp', 'description', 'current_status', 'priority'];
+            if (config.csvHeaders && config.csvHeaders.length > 0) {
+                detectedSourceFields = config.csvHeaders;
+            } else {
+                toast.info("No headers found in CSV configuration. Please upload a file with headers or define mappings manually.");
+                return [];
+            }
             break;
         default:
             detectedSourceFields = [];
     }
     
-    if (detectedSourceFields.length > 0) {
-      toast.success(`${detectedSourceFields.length} source fields detected automatically.`);
-    } else {
-      toast.info(`No fields were automatically detected for ${type}. Please add mappings manually.`);
+    if (detectedSourceFields.length === 0) {
+      toast.info(`No source fields were detected for ${type}. Please add mappings manually.`);
+      return [];
     }
 
-    // Attempt to map detected fields to common business fields
-    return detectedSourceFields.map(sourceField => {
-        let targetField = '';
-        const lowerSource = sourceField.toLowerCase();
-        for (const hint in MAPPING_HINTS) {
-            if (lowerSource.includes(hint)) {
-                targetField = MAPPING_HINTS[hint];
-                break;
-            }
+    toast.info(`Detected ${detectedSourceFields.length} source fields. Asking AI for mapping suggestions...`);
+
+    // Step 2: Use AI to map the fields
+    try {
+        const { data: mappings, error } = await supabase.functions.invoke('ai-field-mapper', {
+            body: { sourceFields: detectedSourceFields },
+        });
+
+        if (error) {
+            throw error;
         }
 
-        return {
-            sourceField: sourceField,
-            targetField: targetField, // can be empty if no hint found
-            dataType: getDataType(lowerSource),
-            required: false
-        };
-    });
+        if (!mappings || !Array.isArray(mappings)) {
+            throw new Error("AI mapper returned an invalid format.");
+        }
+        
+        const finalMappings = mappings.map((m: any) => ({
+            ...m,
+            required: false // Add default required property
+        }));
+
+        toast.success("AI has successfully suggested field mappings.");
+        return finalMappings;
+
+    } catch (err: any) {
+        console.error("AI mapping failed:", err);
+        toast.error(`AI mapping failed: ${err.message}. Falling back to basic mapping.`);
+
+        // Fallback to simple hint-based mapping
+        return detectedSourceFields.map(sourceField => {
+            let targetField = '';
+            const lowerSource = sourceField.toLowerCase();
+            for (const hint in MAPPING_HINTS) {
+                if (lowerSource.includes(hint)) {
+                    targetField = MAPPING_HINTS[hint];
+                    break;
+                }
+            }
+
+            return {
+                sourceField: sourceField,
+                targetField: targetField,
+                dataType: getDataType(lowerSource),
+                required: false
+            };
+        });
+    }
 };

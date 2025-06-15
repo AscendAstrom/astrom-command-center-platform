@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -98,7 +97,7 @@ export const DataSourceWizard = ({ onClose, onDataSourceAdded }: DataSourceWizar
       case 'API':
         return !!config.endpoint;
       case 'CSV':
-        return !!config.filePath || !!config.uploadedFile;
+        return !!config.filePath || !!config.uploadedFileName;
       case 'MANUAL':
         return true;
       default:
