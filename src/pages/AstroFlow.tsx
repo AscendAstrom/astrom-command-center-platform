@@ -4,7 +4,8 @@ import {
   Workflow, 
   Bot, 
   Bell,
-  Zap
+  Zap,
+  HeartPulse
 } from "lucide-react";
 import AlertSubscriptions from "@/components/astro-flow/AlertSubscriptions";
 import AIFlowRolesSection from "@/components/astro-flow/sections/AIFlowRolesSection";
@@ -17,6 +18,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import EnhancedRuleBuilder from "@/components/astro-flow/EnhancedRuleBuilder";
 import AdvancedWorkflowAutomation from "@/components/ai-ecosystem/AdvancedWorkflowAutomation";
+import ClinicalIntelligenceEngine from "@/components/ai-ecosystem/ClinicalIntelligenceEngine";
 
 // Helper function to map UserRole to FlowUserRole
 const mapUserRoleToFlowUserRole = (userRole: UserRole): FlowUserRole => {
@@ -72,7 +74,7 @@ const AstroFlow = () => {
         <AstroFlowHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
             <TabsTrigger 
               value="ai-automation" 
               className="data-[state=active]:bg-purple-500/20 transition-all duration-200 hover:bg-purple-500/10"
@@ -86,6 +88,13 @@ const AstroFlow = () => {
             >
               <Workflow className="h-4 w-4 mr-2" />
               AI Workflow
+            </TabsTrigger>
+            <TabsTrigger
+              value="clinical-intel"
+              className="data-[state=active]:bg-green-500/20 transition-all duration-200 hover:bg-green-500/10"
+            >
+              <HeartPulse className="h-4 w-4 mr-2" />
+              Clinical Intel
             </TabsTrigger>
             <TabsTrigger 
               value="aiRoles" 
@@ -109,6 +118,10 @@ const AstroFlow = () => {
 
           <TabsContent value="workflow" className="space-y-6">
             <AdvancedWorkflowAutomation />
+          </TabsContent>
+
+          <TabsContent value="clinical-intel">
+            <ClinicalIntelligenceEngine />
           </TabsContent>
 
           <TabsContent value="aiRoles" className="space-y-6">
