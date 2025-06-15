@@ -1691,6 +1691,44 @@ export type Database = {
           },
         ]
       }
+      medication_adherence_log: {
+        Row: {
+          created_at: string
+          dose_time: string
+          id: string
+          is_critical: boolean
+          medication_name: string
+          patient_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          dose_time: string
+          id?: string
+          is_critical?: boolean
+          medication_name: string
+          patient_id?: string | null
+          status: string
+        }
+        Update: {
+          created_at?: string
+          dose_time?: string
+          id?: string
+          is_critical?: boolean
+          medication_name?: string
+          patient_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_adherence_log_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medication_safety_alerts: {
         Row: {
           alert_details: string
@@ -3240,6 +3278,57 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surgical_outcomes: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          duration_minutes: number | null
+          id: string
+          on_time_start: boolean | null
+          outcome: string | null
+          patient_id: string | null
+          procedure_name: string
+          surgery_date: string
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          duration_minutes?: number | null
+          id?: string
+          on_time_start?: boolean | null
+          outcome?: string | null
+          patient_id?: string | null
+          procedure_name: string
+          surgery_date: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          duration_minutes?: number | null
+          id?: string
+          on_time_start?: boolean | null
+          outcome?: string | null
+          patient_id?: string | null
+          procedure_name?: string
+          surgery_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "surgical_outcomes_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "surgical_outcomes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
         ]

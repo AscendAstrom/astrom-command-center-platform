@@ -1,4 +1,3 @@
-
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { faker } from 'https://esm.sh/@faker-js/faker@8.4.1';
@@ -13,6 +12,78 @@ import { ensureQualityData, manageQualityAndSafety } from './lib/quality.ts'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+async function manageSurgicalOutcomes(supabase: SupabaseClient) {
+  const { count, error } = await supabase.from('surgical_outcomes').select('*', { count: 'exact', head: true });
+  if (error) {
+    console.error('Error counting surgical_outcomes', error);
+    return;
+  }
+
+  if (count === 0) {
+    console.log('Populating surgical_outcomes...');
+    const { data: departments, error: deptError } = await supabase.from('departments').select('id').eq('type', 'SURGICAL');
+    if (deptError || !departments || departments.length === 0) {
+      console.error('Error fetching surgical departments', deptError);
+      return;
+    }
+    const { data: patients, error: patError } = await supabase.from('patients').select('id').limit(50);
+     if (patError || !patients) {
+      console.error('Error fetching patients', patError);
+      return;
+    }
+
+    const outcomes = [];
+    const procedureNames = ['Appendectomy', 'Coronary Artery Bypass', 'Knee Replacement', 'Hip Replacement', 'Cesarean Section'];
+    for (let i = 0; i < 150; i++) {
+      outcomes.push({
+        patient_id: faker.helpers.arrayElement(patients).id,
+        department_id: faker.helpers.arrayElement(departments).id,
+        procedure_name: faker.helpers.arrayElement(procedureNames),
+        surgery_date: faker.date.past({ months: 3 }),
+        duration_minutes: faker.number.int({ min: 60, max: 240 }),
+        outcome: faker.helpers.arrayElement(['Successful', 'Complication', 'Cancelled']),
+        on_time_start: faker.datatype.boolean(0.85),
+      });
+    }
+    const { error: insertError } = await supabase.from('surgical_outcomes').insert(outcomes);
+    if (insertError) console.error('Error inserting surgical_outcomes', insertError);
+    else console.log(`Inserted ${outcomes.length} surgical outcomes.`);
+  }
+}
+
+async function manageMedicationAdherence(supabase: SupabaseClient) {
+  const { count, error } = await supabase.from('medication_adherence_log').select('*', { count: 'exact', head: true });
+  if (error) {
+    console.error('Error counting medication_adherence_log', error);
+    return;
+  }
+  
+  if (count === 0) {
+    console.log('Populating medication_adherence_log...');
+    const { data: patients, error: patError } = await supabase.from('patients').select('id').limit(100);
+    if (patError || !patients) {
+      console.error('Error fetching patients for medication log', patError);
+      return;
+    }
+
+    const logs = [];
+    const medications = ['Lisinopril', 'Metformin', 'Atorvastatin', 'Amlodipine', 'Warfarin (Critical)'];
+    for (let i = 0; i < 500; i++) {
+      const medName = faker.helpers.arrayElement(medications);
+      logs.push({
+        patient_id: faker.helpers.arrayElement(patients).id,
+        medication_name: medName.replace(' (Critical)', ''),
+        is_critical: medName.includes('Critical'),
+        dose_time: faker.date.past({ days: 90 }),
+        status: faker.helpers.arrayElement(['Administered', 'Administered', 'Administered', 'Missed', 'Intervention Required']),
+      });
+    }
+    const { error: insertError } = await supabase.from('medication_adherence_log').insert(logs);
+    if (insertError) console.error('Error inserting medication_adherence_log', insertError);
+    else console.log(`Inserted ${logs.length} medication adherence logs.`);
+  }
 }
 
 async function manageHospitalExpenses(supabase: SupabaseClient) {
@@ -146,6 +217,8 @@ serve(async (req) => {
     await manageHospitalExpenses(supabaseClient);
     await manageBudgetAllocations(supabaseClient);
     await manageFinancialForecasts(supabaseClient);
+    await manageSurgicalOutcomes(supabaseClient);
+    await manageMedicationAdherence(supabaseClient);
 
     await Promise.all([
       updateBedStatuses(supabaseClient),
@@ -169,4 +242,3 @@ serve(async (req) => {
     })
   }
 })
-
