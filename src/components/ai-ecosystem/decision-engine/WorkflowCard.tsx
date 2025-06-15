@@ -17,6 +17,24 @@ interface WorkflowCardProps {
 const WorkflowCard = ({ workflow, retrainMutation, onRetrain }: WorkflowCardProps) => {
   const isRetrainingThis = retrainMutation.isPending && retrainMutation.variables?.id === workflow.id;
   
+  const isQueued = workflow.nodes.some(node => node.status === 'learning');
+  const isOptimizing = workflow.nodes.some(node => node.status === 'optimizing');
+
+  const getButtonState = () => {
+    if (isRetrainingThis) {
+      return { text: "Starting...", disabled: true, spin: true };
+    }
+    if (isOptimizing) {
+      return { text: "Training...", disabled: true, spin: true };
+    }
+    if (isQueued) {
+      return { text: "Queued", disabled: true, spin: true };
+    }
+    return { text: "Retrain", disabled: false, spin: false };
+  };
+
+  const buttonState = getButtonState();
+  
   return (
     <Card className="bg-card/80 border-border backdrop-blur-sm">
       <CardHeader className="pb-3">
@@ -92,10 +110,10 @@ const WorkflowCard = ({ workflow, retrainMutation, onRetrain }: WorkflowCardProp
             size="sm" 
             className="flex-1"
             onClick={() => onRetrain(workflow)}
-            disabled={isRetrainingThis}
+            disabled={buttonState.disabled}
           >
-            <RefreshCw className={`h-3 w-3 mr-1 ${isRetrainingThis ? 'animate-spin' : ''}`} />
-            {isRetrainingThis ? 'Starting...' : 'Retrain'}
+            <RefreshCw className={`h-3 w-3 mr-1 ${buttonState.spin ? 'animate-spin' : ''}`} />
+            {buttonState.text}
           </Button>
         </div>
       </CardContent>
