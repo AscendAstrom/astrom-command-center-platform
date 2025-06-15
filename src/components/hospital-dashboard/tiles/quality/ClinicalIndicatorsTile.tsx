@@ -1,10 +1,10 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, TrendingUp, AlertCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useState, useEffect } from "react";
 import { supabase } from '@/integrations/supabase/client';
-import { faker } from '@faker-js/faker';
 
 export const ClinicalIndicatorsTile = () => {
   const [indicatorsData, setIndicatorsData] = useState<any[]>([]);
