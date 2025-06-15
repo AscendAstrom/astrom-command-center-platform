@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -114,52 +115,86 @@ const CognitiveAnalyticsPlatform = () => {
     const fetchPlatformData = async () => {
       setLoading(true);
 
-      // Fetch metrics
-      const { count: docCount } = await supabase.from('medical_records').select('*', { count: 'exact', head: true });
-      // Other metrics are placeholders until their tables exist
-      setPlatformMetrics({
-        documentsProcessed: docCount || 0,
-        imagesAnalyzed: 0,
-        entitiesExtracted: 0,
-        searchQueries: 0,
-        avgProcessingTime: 0,
-        accuracyScore: 0
-      });
+      // Fetch all data concurrently
+      const [
+        { count: docCount },
+        { data: nlpData, error: nlpError },
+        { data: visionData, error: visionError },
+        { data: graphData, error: graphError }
+      ] = await Promise.all([
+        supabase.from('medical_records').select('*', { count: 'exact', head: true }),
+        supabase.from('nlp_tasks').select('*'),
+        supabase.from('vision_tasks').select('*'),
+        supabase.from('knowledge_graph_nodes').select('*').limit(5)
+      ]);
+      
+      // Process NLP tasks
+      let formattedNlpTasks: NLPTask[] = [];
+      let totalEntities = 0;
+      let totalNlpTime = 0;
+      let nlpTimeCount = 0;
 
-      // Fetch tasks - will be empty as tables don't exist
-      const { data: nlpData, error: nlpError } = await supabase.from('nlp_tasks').select('*').limit(3);
       if (nlpData) {
-        const formattedTasks = nlpData.map(task => ({
-          id: task.id,
-          type: task.type as NLPTask['type'],
-          status: task.status as NLPTask['status'],
-          confidence: task.confidence,
-          entities: task.entities,
-          processingTime: task.processing_time,
-        }));
-        setNlpTasks(formattedTasks);
+        formattedNlpTasks = nlpData.map(task => {
+          if (task.entities) totalEntities += task.entities;
+          if (task.processing_time) {
+            const time = parseFloat(task.processing_time);
+            if (!isNaN(time)) {
+              totalNlpTime += time;
+              nlpTimeCount++;
+            }
+          }
+          return {
+            id: task.id,
+            type: task.type as NLPTask['type'],
+            status: task.status as NLPTask['status'],
+            confidence: task.confidence,
+            entities: task.entities,
+            processingTime: task.processing_time,
+          };
+        });
+        setNlpTasks(formattedNlpTasks.slice(0, 3)); // Show top 3 tasks
       } else {
         if (nlpError) console.error("Error fetching nlp_tasks:", nlpError);
         setNlpTasks([]);
       }
 
-      const { data: visionData, error: visionError } = await supabase.from('vision_tasks').select('*').limit(2);
+      // Process Vision tasks
+      let formattedVisionTasks: VisionTask[] = [];
+      let totalVisionAccuracy = 0;
+      let visionAccuracyCount = 0;
+      let totalVisionTime = 0;
+      let visionTimeCount = 0;
+
       if (visionData) {
-        const formattedTasks = visionData.map(task => ({
-          id: task.id,
-          type: task.type as VisionTask['type'],
-          status: task.status as VisionTask['status'],
-          accuracy: task.accuracy,
-          objectsDetected: task.objects_detected,
-          processingTime: task.processing_time,
-        }));
-        setVisionTasks(formattedTasks);
+        formattedVisionTasks = visionData.map(task => {
+          if (task.accuracy) {
+            totalVisionAccuracy += task.accuracy;
+            visionAccuracyCount++;
+          }
+          if (task.processing_time) {
+            const time = parseFloat(task.processing_time);
+            if (!isNaN(time)) {
+              totalVisionTime += time;
+              visionTimeCount++;
+            }
+          }
+          return {
+            id: task.id,
+            type: task.type as VisionTask['type'],
+            status: task.status as VisionTask['status'],
+            accuracy: task.accuracy,
+            objectsDetected: task.objects_detected,
+            processingTime: task.processing_time,
+          };
+        });
+        setVisionTasks(formattedVisionTasks.slice(0, 2)); // Show top 2 tasks
       } else {
         if (visionError) console.error("Error fetching vision_tasks:", visionError);
         setVisionTasks([]);
       }
       
-      const { data: graphData, error: graphError } = await supabase.from('knowledge_graph_nodes').select('*').limit(5);
+      // Process Knowledge Graph
       if (graphData) {
         const formattedNodes = graphData.map(node => ({
           id: node.id,
@@ -173,6 +208,22 @@ const CognitiveAnalyticsPlatform = () => {
         if (graphError) console.error("Error fetching knowledge_graph_nodes:", graphError);
         setKnowledgeGraph([]);
       }
+      
+      // Calculate aggregated metrics
+      const totalProcessingTime = totalNlpTime + totalVisionTime;
+      const totalTimeCount = nlpTimeCount + visionTimeCount;
+      const avgProcessingTime = totalTimeCount > 0 ? parseFloat((totalProcessingTime / totalTimeCount).toFixed(1)) : 0;
+      const avgAccuracyScore = visionAccuracyCount > 0 ? parseFloat((totalVisionAccuracy / visionAccuracyCount).toFixed(1)) : 0;
+
+      // Set platform metrics
+      setPlatformMetrics({
+        documentsProcessed: docCount || 0,
+        imagesAnalyzed: visionData?.length || 0,
+        entitiesExtracted: totalEntities,
+        searchQueries: 0, // Placeholder
+        avgProcessingTime: avgProcessingTime,
+        accuracyScore: avgAccuracyScore
+      });
 
       setLoading(false);
     };
