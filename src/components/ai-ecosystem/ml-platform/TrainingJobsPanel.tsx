@@ -33,27 +33,33 @@ const TrainingJobsPanel = ({ jobs }: TrainingJobsPanelProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {jobs.map((job) => (
-          <div key={job.id} className="p-3 bg-muted/50 rounded-lg border border-border/50">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-sm text-foreground">{job.modelName}</span>
-              <Badge variant="outline" className={`text-xs ${getStatusColor(job.status)}`}>
-                {job.status}
-              </Badge>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-medium text-foreground">{job.progress}%</span>
+        {jobs.length > 0 ? (
+          jobs.map((job) => (
+            <div key={job.id} className="p-3 bg-muted/50 rounded-lg border border-border/50">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-medium text-sm text-foreground">{job.modelName}</span>
+                <Badge variant="outline" className={`text-xs ${getStatusColor(job.status)}`}>
+                  {job.status}
+                </Badge>
               </div>
-              <Progress value={job.progress} className="h-2" />
-              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                <div>ETA: {job.estimatedTime}</div>
-                <div>GPU: {job.gpuUtilization}%</div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Progress</span>
+                  <span className="font-medium text-foreground">{job.progress ?? 0}%</span>
+                </div>
+                <Progress value={job.progress ?? 0} className="h-2" />
+                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                  <div>ETA: {job.estimatedTime}</div>
+                  <div>GPU: {job.gpuUtilization ?? 0}%</div>
+                </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="text-center text-muted-foreground py-10">
+            No active training jobs.
           </div>
-        ))}
+        )}
       </CardContent>
     </Card>
   );

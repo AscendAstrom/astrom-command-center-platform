@@ -1276,41 +1276,142 @@ export type Database = {
           },
         ]
       }
+      ml_federated_sites: {
+        Row: {
+          created_at: string
+          data_contribution_records: number | null
+          id: string
+          last_sync: string | null
+          location: string | null
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_contribution_records?: number | null
+          id?: string
+          last_sync?: string | null
+          location?: string | null
+          name: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_contribution_records?: number | null
+          id?: string
+          last_sync?: string | null
+          location?: string | null
+          name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ml_models: {
         Row: {
           accuracy: number | null
           confidence: number | null
           created_at: string
+          created_by: string | null
+          data_points: number | null
           id: string
           last_trained: string | null
           name: string
+          parameters: Json | null
           status: string | null
           target: string
           type: string
+          updated_at: string
+          version: string
         }
         Insert: {
           accuracy?: number | null
           confidence?: number | null
           created_at?: string
+          created_by?: string | null
+          data_points?: number | null
           id?: string
           last_trained?: string | null
           name: string
+          parameters?: Json | null
           status?: string | null
           target: string
           type: string
+          updated_at?: string
+          version?: string
         }
         Update: {
           accuracy?: number | null
           confidence?: number | null
           created_at?: string
+          created_by?: string | null
+          data_points?: number | null
           id?: string
           last_trained?: string | null
           name?: string
+          parameters?: Json | null
           status?: string | null
           target?: string
           type?: string
+          updated_at?: string
+          version?: string
         }
         Relationships: []
+      }
+      ml_training_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          estimated_time_remaining_mins: number | null
+          gpu_utilization: number | null
+          id: string
+          logs: Json | null
+          model_id: string | null
+          model_name: string
+          progress: number | null
+          started_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          estimated_time_remaining_mins?: number | null
+          gpu_utilization?: number | null
+          id?: string
+          logs?: Json | null
+          model_id?: string | null
+          model_name: string
+          progress?: number | null
+          started_at?: string | null
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          estimated_time_remaining_mins?: number | null
+          gpu_utilization?: number | null
+          id?: string
+          logs?: Json | null
+          model_id?: string | null
+          model_name?: string
+          progress?: number | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ml_training_jobs_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ml_models"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       nlp_tasks: {
         Row: {

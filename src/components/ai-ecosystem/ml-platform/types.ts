@@ -4,20 +4,19 @@ export interface MLModel {
   name: string;
   type: 'prediction' | 'classification' | 'optimization' | 'nlp' | 'vision';
   status: 'training' | 'deployed' | 'testing' | 'updating';
-  accuracy: number;
+  accuracy: number | null;
   version: string;
   lastTrained: string;
-  dataPoints: number;
-  computeHours: number;
+  dataPoints: number | null;
 }
 
 export interface TrainingJob {
   id: string;
   modelName: string;
-  progress: number;
+  progress: number | null;
   estimatedTime: string;
-  status: 'running' | 'queued' | 'completed' | 'failed';
-  gpuUtilization: number;
+  status: 'running' | 'queued' | 'completed' | 'failed' | 'updating' | 'testing' | 'deployed';
+  gpuUtilization: number | null;
 }
 
 export interface FederatedSite {

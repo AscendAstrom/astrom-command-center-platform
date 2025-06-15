@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -7,6 +6,7 @@ import AstroScanHeader from "@/components/astro-scan/AstroScanHeader";
 import SourcesTabContent from "@/components/astro-scan/SourcesTabContent";
 import IngestionTabContent from "@/components/astro-scan/IngestionTabContent";
 import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
+import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSection";
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 import { toast } from "sonner";
@@ -66,8 +66,9 @@ const AstroScan = () => {
           <TabsContent value="monitoring" className="space-y-6">
             <MonitoringTabContent />
             
-            {/* Enhanced Phase 4 & Phase 5 Sections */}
+            {/* Enhanced Phase 3, 4 & 5 Sections */}
             <div className="space-y-6 mt-8">
+              <PhaseThreeSection />
               <PhaseFourSection />
               <PhaseFiveSection />
             </div>

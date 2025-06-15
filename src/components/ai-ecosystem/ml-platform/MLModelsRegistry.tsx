@@ -53,34 +53,40 @@ const MLModelsRegistry = ({ models }: MLModelsRegistryProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {models.map((model) => (
-          <div key={model.id} className="p-3 bg-muted/50 rounded-lg border border-border/50">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                {getTypeIcon(model.type)}
-                <span className="font-medium text-sm text-foreground">{model.name}</span>
+        {models.length > 0 ? (
+          models.map((model) => (
+            <div key={model.id} className="p-3 bg-muted/50 rounded-lg border border-border/50">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {getTypeIcon(model.type)}
+                  <span className="font-medium text-sm text-foreground">{model.name}</span>
+                </div>
+                <Badge variant="outline" className={`text-xs ${getStatusColor(model.status)}`}>
+                  {model.status}
+                </Badge>
               </div>
-              <Badge variant="outline" className={`text-xs ${getStatusColor(model.status)}`}>
-                {model.status}
-              </Badge>
+              <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-2">
+                <div>Accuracy: {model.accuracy ? `${model.accuracy.toFixed(1)}%` : 'N/A'}</div>
+                <div>Version: {model.version}</div>
+                <div>Data: {model.dataPoints ? `${(model.dataPoints / 1000000).toFixed(1)}M` : 'N/A'}</div>
+              </div>
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm" className="flex-1 text-xs">
+                  <Play className="h-3 w-3 mr-1" />
+                  Deploy
+                </Button>
+                <Button variant="outline" size="sm" className="flex-1 text-xs">
+                  <RotateCcw className="h-3 w-3 mr-1" />
+                  Retrain
+                </Button>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground mb-2">
-              <div>Accuracy: {model.accuracy}%</div>
-              <div>Version: {model.version}</div>
-              <div>Data: {(model.dataPoints / 1000000).toFixed(1)}M</div>
-            </div>
-            <div className="flex gap-1">
-              <Button variant="outline" size="sm" className="flex-1 text-xs">
-                <Play className="h-3 w-3 mr-1" />
-                Deploy
-              </Button>
-              <Button variant="outline" size="sm" className="flex-1 text-xs">
-                <RotateCcw className="h-3 w-3 mr-1" />
-                Retrain
-              </Button>
-            </div>
+          ))
+        ) : (
+          <div className="text-center text-muted-foreground py-10">
+            No models found in the registry.
           </div>
-        ))}
+        )}
       </CardContent>
     </Card>
   );
