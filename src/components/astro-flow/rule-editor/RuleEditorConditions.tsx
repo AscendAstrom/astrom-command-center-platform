@@ -14,7 +14,7 @@ interface RuleEditorConditionsProps {
 }
 
 export const RuleEditorConditions = ({ selectedRule, onUpdateRule, canEdit }: RuleEditorConditionsProps) => {
-  const conditionLogic = (selectedRule as any).conditionLogic || 'AND';
+  const { conditionLogic = 'AND' } = selectedRule;
   
   const addCondition = () => {
     const newCondition: RuleCondition = {
@@ -44,7 +44,7 @@ export const RuleEditorConditions = ({ selectedRule, onUpdateRule, canEdit }: Ru
     onUpdateRule({
       ...selectedRule,
       conditionLogic: logic,
-    } as AutomationRule);
+    });
   };
 
   return (

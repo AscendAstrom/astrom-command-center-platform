@@ -55,6 +55,7 @@ export type AutomationRule = Omit<AutomationRuleDAO, 'trigger_conditions' | 'act
   priority: 'low' | 'medium' | 'high' | 'critical';
   triggerType: TriggerType;
   last_executed: string | null;
+  conditionLogic: 'AND' | 'OR';
 };
 
 export type FlowUserRole = 'ADMIN' | 'OPS_MANAGER' | 'EXEC' | 'EDITOR' | 'VIEWER' | 'ANALYST';

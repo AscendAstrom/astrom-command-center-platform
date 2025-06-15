@@ -29,7 +29,7 @@ const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
             conditions: rule.conditions,
             priority: rule.priority,
             triggerType: rule.triggerType,
-            logic: (rule as any).conditionLogic,
+            logic: rule.conditionLogic,
         } as any,
         actions: { actions: rule.actions } as any,
         status: status,
