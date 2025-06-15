@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,17 +68,51 @@ const PredictiveAnalyticsEngine = () => {
         .limit(3);
 
       if (forecastsData) {
-        const formattedPredictions = forecastsData.map((p, i) => ({
-          id: p.id,
-          modelId: p.model_version || `model-${i}`,
-          target: p.forecast_type,
-          currentValue: p.predicted_value - (p.predicted_value * 0.1), // Placeholder for current value
-          predictedValue: p.predicted_value,
-          confidence: p.confidence_interval ? (100 - p.confidence_interval) : 85,
-          timeHorizon: '24 hours',
-          riskLevel: 'medium', // Placeholder
-          recommendation: `Monitor ${p.forecast_type} based on prediction.` // Placeholder
-        })) as Prediction[];
+        const formattedPredictions = await Promise.all(
+          forecastsData.map(async (p) => {
+            const { data: latestMetric } = await supabase
+              .from('metrics_snapshots')
+              .select('metric_value')
+              .eq('metric_name', p.forecast_type)
+              .order('timestamp', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+            const currentValue = latestMetric?.metric_value ?? 0;
+            const predictedValue = p.predicted_value;
+            const confidence = p.confidence_interval ? (100 - p.confidence_interval) : 85;
+
+            let riskLevel: 'low' | 'medium' | 'high' = 'medium';
+            if (confidence < 80) riskLevel = 'high';
+            else if (confidence > 95) riskLevel = 'low';
+
+            let recommendation: string;
+            const change = predictedValue - currentValue;
+            const percentageChange = currentValue !== 0 ? (change / currentValue) * 100 : 0;
+
+            if (riskLevel === 'high') {
+              recommendation = `High forecast uncertainty for ${p.forecast_type}. Use caution with this prediction.`;
+            } else if (Math.abs(percentageChange) > 15) {
+              recommendation = `Significant change of ${percentageChange.toFixed(1)}% predicted for ${p.forecast_type}. Review contributing factors.`;
+            } else if (change > 0) {
+              recommendation = `Upward trend predicted for ${p.forecast_type}. Plan for increased volume/activity.`;
+            } else {
+              recommendation = `Stable or downward trend predicted for ${p.forecast_type}. Current operations seem adequate.`;
+            }
+            
+            return {
+              id: p.id,
+              modelId: p.model_version || `model-${p.id}`,
+              target: p.forecast_type,
+              currentValue: currentValue,
+              predictedValue: predictedValue,
+              confidence: confidence,
+              timeHorizon: '24 hours',
+              riskLevel: riskLevel,
+              recommendation: recommendation,
+            } as Prediction;
+          })
+        );
         setPredictions(formattedPredictions);
       }
       
@@ -249,15 +282,15 @@ const PredictiveAnalyticsEngine = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Current:</span>
-                      <span className="text-foreground font-medium">{prediction.currentValue}</span>
+                      <span className="text-foreground font-medium">{prediction.currentValue.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Predicted ({prediction.timeHorizon}):</span>
-                      <span className="text-foreground font-medium">{prediction.predictedValue}</span>
+                      <span className="text-foreground font-medium">{prediction.predictedValue.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Confidence:</span>
-                      <span className="text-foreground font-medium">{prediction.confidence}%</span>
+                      <span className="text-foreground font-medium">{prediction.confidence.toFixed(1)}%</span>
                     </div>
                     <div className="mt-3 p-2 bg-blue-500/10 rounded border border-blue-500/20">
                       <div className="text-xs text-blue-600 font-medium mb-1">AI Recommendation:</div>
@@ -280,7 +313,7 @@ const PredictiveAnalyticsEngine = () => {
         <CardHeader>
           <CardTitle className="text-foreground flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-cyan-400" />
-            Prediction Trends & Model Performance
+            Historical Trend
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -302,20 +335,11 @@ const PredictiveAnalyticsEngine = () => {
                   />
                   <Area
                     type="monotone"
-                    dataKey="predicted"
-                    stackId="1"
-                    stroke="#3B82F6"
-                    fill="#3B82F6"
-                    fillOpacity={0.1}
-                    strokeWidth={2}
-                    name="Predicted"
-                  />
-                  <Line
-                    type="monotone"
                     dataKey="actual"
                     stroke="#10B981"
+                    fill="#10B981"
+                    fillOpacity={0.1}
                     strokeWidth={2}
-                    dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
                     name="Actual"
                   />
                 </AreaChart>
@@ -328,12 +352,8 @@ const PredictiveAnalyticsEngine = () => {
           )}
           <div className="flex items-center justify-center gap-6 mt-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
               <span>Actual Values</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span>Predicted Values</span>
             </div>
           </div>
         </CardContent>

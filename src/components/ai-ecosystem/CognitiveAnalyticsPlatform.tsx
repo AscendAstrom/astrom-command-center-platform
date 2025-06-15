@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -59,7 +58,6 @@ const CognitiveAnalyticsPlatform = () => {
     documentsProcessed: 0,
     imagesAnalyzed: 0,
     entitiesExtracted: 0,
-    searchQueries: 0,
     avgProcessingTime: 0,
     accuracyScore: 0
   });
@@ -104,7 +102,6 @@ const CognitiveAnalyticsPlatform = () => {
       const results = data.map(item => ({
         title: item.title,
         type: item.record_type,
-        relevance: 90 // Placeholder relevance
       }));
       setSearchResults(results);
     }
@@ -115,7 +112,6 @@ const CognitiveAnalyticsPlatform = () => {
     const fetchPlatformData = async () => {
       setLoading(true);
 
-      // Fetch all data concurrently
       const [
         { count: docCount },
         { data: nlpData, error: nlpError },
@@ -128,7 +124,6 @@ const CognitiveAnalyticsPlatform = () => {
         supabase.from('knowledge_graph_nodes').select('*').limit(5)
       ]);
       
-      // Process NLP tasks
       let formattedNlpTasks: NLPTask[] = [];
       let totalEntities = 0;
       let totalNlpTime = 0;
@@ -153,13 +148,12 @@ const CognitiveAnalyticsPlatform = () => {
             processingTime: task.processing_time,
           };
         });
-        setNlpTasks(formattedNlpTasks.slice(0, 3)); // Show top 3 tasks
+        setNlpTasks(formattedNlpTasks.slice(0, 3));
       } else {
         if (nlpError) console.error("Error fetching nlp_tasks:", nlpError);
         setNlpTasks([]);
       }
 
-      // Process Vision tasks
       let formattedVisionTasks: VisionTask[] = [];
       let totalVisionAccuracy = 0;
       let visionAccuracyCount = 0;
@@ -188,13 +182,12 @@ const CognitiveAnalyticsPlatform = () => {
             processingTime: task.processing_time,
           };
         });
-        setVisionTasks(formattedVisionTasks.slice(0, 2)); // Show top 2 tasks
+        setVisionTasks(formattedVisionTasks.slice(0, 2));
       } else {
         if (visionError) console.error("Error fetching vision_tasks:", visionError);
         setVisionTasks([]);
       }
       
-      // Process Knowledge Graph
       if (graphData) {
         const formattedNodes = graphData.map(node => ({
           id: node.id,
@@ -209,18 +202,15 @@ const CognitiveAnalyticsPlatform = () => {
         setKnowledgeGraph([]);
       }
       
-      // Calculate aggregated metrics
       const totalProcessingTime = totalNlpTime + totalVisionTime;
       const totalTimeCount = nlpTimeCount + visionTimeCount;
       const avgProcessingTime = totalTimeCount > 0 ? parseFloat((totalProcessingTime / totalTimeCount).toFixed(1)) : 0;
       const avgAccuracyScore = visionAccuracyCount > 0 ? parseFloat((totalVisionAccuracy / visionAccuracyCount).toFixed(1)) : 0;
 
-      // Set platform metrics
       setPlatformMetrics({
         documentsProcessed: docCount || 0,
         imagesAnalyzed: visionData?.length || 0,
         entitiesExtracted: totalEntities,
-        searchQueries: 0, // Placeholder
         avgProcessingTime: avgProcessingTime,
         accuracyScore: avgAccuracyScore
       });
@@ -246,7 +236,7 @@ const CognitiveAnalyticsPlatform = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-400">{loading ? <Skeleton className="h-8 w-20 mx-auto" /> : platformMetrics.documentsProcessed.toLocaleString()}</div>
               <div className="text-xs text-muted-foreground">Documents</div>
@@ -258,10 +248,6 @@ const CognitiveAnalyticsPlatform = () => {
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-400">{loading ? <Skeleton className="h-8 w-20 mx-auto" /> : `${(platformMetrics.entitiesExtracted / 1000).toFixed(0)}K`}</div>
               <div className="text-xs text-muted-foreground">Entities</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-400">{loading ? <Skeleton className="h-8 w-20 mx-auto" /> : platformMetrics.searchQueries}</div>
-              <div className="text-xs text-muted-foreground">Searches</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-cyan-400">{loading ? <Skeleton className="h-8 w-20 mx-auto" /> : `${platformMetrics.avgProcessingTime}s`}</div>
@@ -393,7 +379,7 @@ const CognitiveAnalyticsPlatform = () => {
             <CardContent>
               <div className="flex gap-2 mb-4">
                 <Input
-                  placeholder="Search medical records, protocols, analytics..."
+                  placeholder="Search across all healthcare data..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1"
@@ -420,7 +406,6 @@ const CognitiveAnalyticsPlatform = () => {
                           <div className="font-medium text-foreground">{result.title}</div>
                           <div className="text-sm text-muted-foreground">{result.type}</div>
                         </div>
-                        <div className="text-xs text-purple-400">{result.relevance}% match</div>
                       </div>
                     </div>
                   ))}
