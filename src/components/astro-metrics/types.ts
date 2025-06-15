@@ -1,4 +1,3 @@
-
 export interface KPIDefinition {
   id: string;
   name: string;
@@ -45,8 +44,8 @@ export interface SLAConfiguration {
   unit: 'minutes' | 'hours' | 'percentage' | 'count';
   timeWindow: 'real_time' | 'hourly' | 'daily' | 'weekly' | 'monthly';
   alertEnabled: boolean;
-  escalationRules: EscalationRule[];
-  status: 'active' | 'paused' | 'disabled';
+  escalationRules: any;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }

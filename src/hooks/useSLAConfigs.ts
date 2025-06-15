@@ -53,7 +53,7 @@ const createSLAConfig = async (newSla: SLAConfig): Promise<SLAConfig> => {
     return fromSnakeCase(data);
 };
 
-const updateSLAStatus = async ({ slaId, status }: { slaId: string, status: 'active' | 'paused' }): Promise<SLAConfig> => {
+const updateSLAStatus = async ({ slaId, status }: { slaId: string, status: string }): Promise<SLAConfig> => {
     const { data, error } = await supabase
         .from('sla_configurations')
         .update({ status, updated_at: new Date().toISOString() })

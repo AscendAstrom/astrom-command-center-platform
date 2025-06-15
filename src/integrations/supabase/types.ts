@@ -3049,6 +3049,57 @@ export type Database = {
           },
         ]
       }
+      sla_configurations: {
+        Row: {
+          alert_enabled: boolean
+          created_at: string
+          description: string | null
+          escalation_rules: Json
+          id: string
+          metric_type: string
+          name: string
+          status: string
+          threshold: number
+          time_window: string
+          unit: string
+          updated_at: string
+          zone_id: string | null
+          zone_name: string | null
+        }
+        Insert: {
+          alert_enabled?: boolean
+          created_at?: string
+          description?: string | null
+          escalation_rules?: Json
+          id?: string
+          metric_type: string
+          name: string
+          status?: string
+          threshold: number
+          time_window: string
+          unit: string
+          updated_at?: string
+          zone_id?: string | null
+          zone_name?: string | null
+        }
+        Update: {
+          alert_enabled?: boolean
+          created_at?: string
+          description?: string | null
+          escalation_rules?: Json
+          id?: string
+          metric_type?: string
+          name?: string
+          status?: string
+          threshold?: number
+          time_window?: string
+          unit?: string
+          updated_at?: string
+          zone_id?: string | null
+          zone_name?: string | null
+        }
+        Relationships: []
+      }
       slas: {
         Row: {
           created_at: string
