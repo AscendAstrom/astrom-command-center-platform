@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +27,7 @@ export const PipelineStepsCard = ({ pipeline }: PipelineStepsCardProps) => {
           {pipeline.steps
             .sort((a, b) => a.order - b.order)
             .map((step, index) => (
-              <div key={step.id} className="flex items-center gap-4">
+              <div key={index} className="flex items-center gap-4">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-sm font-medium text-foreground">
                     {index + 1}

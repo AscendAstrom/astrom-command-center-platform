@@ -1,17 +1,16 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AutomationRule } from '../types';
-import { definitions } from '@/integrations/supabase/types';
+import { Database } from '@/integrations/supabase/types';
 
-type AutomationRuleDAO = definitions['automation_rules'];
+type AutomationRuleDAO = Database['public']['Tables']['automation_rules']['Row'];
 
 const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
   ...dao,
   id: dao.id,
   description: dao.description || '',
   conditions: (dao.trigger_conditions as any)?.conditions || [],
-  actions: (dao.actions as any) || [],
+  actions: (dao.actions as any)?.actions || [],
   isActive: dao.status === 'ACTIVE',
   executionCount: dao.execution_count || 0,
   createdBy: dao.created_by || 'system',
@@ -25,7 +24,7 @@ const toAutomationRuleDAO = (rule: Partial<AutomationRule>): Partial<AutomationR
     name: rule.name,
     description: rule.description,
     trigger_conditions: { conditions: rule.conditions } as any,
-    actions: rule.actions as any,
+    actions: { actions: rule.actions } as any,
     status: rule.isActive ? 'ACTIVE' : 'DRAFT',
 });
 
