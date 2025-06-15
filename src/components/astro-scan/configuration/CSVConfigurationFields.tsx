@@ -25,8 +25,10 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("File upload event triggered.");
     const file = event.target.files?.[0];
     if (file) {
+      console.log(`File selected: ${file.name}`);
       updateConfig('isReadingFile', true);
       updateConfig('uploadedFileName', file.name);
       updateConfig('filePath', ''); // Clear the path when file is uploaded
@@ -42,6 +44,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
           
           updateConfig('csvHeaders', headers);
           toast.success(`Parsed ${headers.length} headers from ${file.name}.`);
+          console.log("File read successfully, headers parsed:", headers);
         } catch (error) {
           console.error("Error parsing CSV header:", error);
           toast.error("Could not parse headers from the uploaded file.");
@@ -49,12 +52,14 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
           clearUploadedFile();
         } finally {
           updateConfig('isReadingFile', false);
+          console.log("Finished reading file.");
         }
       };
       reader.onerror = () => {
         toast.error("Failed to read the uploaded file.");
         updateConfig('isReadingFile', false);
         clearUploadedFile();
+        console.error("FileReader error.");
       };
       reader.readAsText(file);
     }
@@ -69,6 +74,7 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
   };
 
   const isReadingFile = !!config.isReadingFile;
+  console.log("CSVFields render state:", { isReadingFile, uploadedFileName: config.uploadedFileName, filePath: config.filePath });
 
   return (
     <>
@@ -96,18 +102,20 @@ export const CSVConfigurationFields = ({ config, updateConfig }: CSVConfiguratio
               onChange={handleFileUpload}
               className="hidden"
             />
-            {config.uploadedFileName && !isReadingFile && (
+            {config.uploadedFileName && (
               <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-md">
                 <span className="text-sm text-foreground">{config.uploadedFileName}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearUploadedFile}
-                  className="h-auto p-1"
-                >
-                  <X className="h-3 w-3" />
-                </Button>
+                {!isReadingFile && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearUploadedFile}
+                    className="h-auto p-1"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
               </div>
             )}
           </div>
