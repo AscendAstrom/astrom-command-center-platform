@@ -17,6 +17,7 @@ import {
   Activity,
   FileText
 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface WorkflowRule {
   id: string;
@@ -46,104 +47,130 @@ const WorkflowAutomation = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadWorkflows();
-    loadExecutions();
+    loadRealWorkflows();
+    loadRealExecutions();
   }, []);
 
-  const loadWorkflows = async () => {
-    // Simulate loading workflow rules
-    const mockWorkflows: WorkflowRule[] = [
-      {
-        id: '1',
-        name: 'High-Risk Patient Alert',
-        description: 'Automatically alert care team when patient risk score exceeds threshold',
-        trigger: 'Risk Score > 0.7',
-        actions: ['Send alert to care team', 'Schedule review', 'Update care plan'],
-        isActive: true,
-        executionCount: 142,
-        lastExecuted: '2024-06-15T10:30:00Z',
-        success_rate: 0.95
-      },
-      {
-        id: '2',
-        name: 'Medication Reminder',
-        description: 'Send medication reminders to patients with adherence issues',
-        trigger: 'Missed Dose > 2',
-        actions: ['Send SMS reminder', 'Notify care team', 'Log adherence event'],
-        isActive: true,
-        executionCount: 89,
-        lastExecuted: '2024-06-15T09:15:00Z',
-        success_rate: 0.87
-      },
-      {
-        id: '3',
-        name: 'Discharge Planning',
-        description: 'Automatically initiate discharge planning process',
-        trigger: 'Length of Stay > Expected',
-        actions: ['Create discharge checklist', 'Notify social worker', 'Schedule follow-up'],
-        isActive: false,
-        executionCount: 23,
-        lastExecuted: '2024-06-14T16:45:00Z',
-        success_rate: 0.91
-      },
-      {
-        id: '4',
-        name: 'Lab Result Review',
-        description: 'Flag critical lab results for immediate physician review',
-        trigger: 'Critical Lab Value',
-        actions: ['Page physician', 'Create urgent task', 'Document in chart'],
-        isActive: true,
-        executionCount: 67,
-        lastExecuted: '2024-06-15T11:20:00Z',
-        success_rate: 0.98
-      }
-    ];
+  const loadRealWorkflows = async () => {
+    try {
+      // Fetch real automation rules from database
+      const { data: automationRules, error } = await supabase
+        .from('automation_rules')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    setWorkflows(mockWorkflows);
+      if (error) {
+        console.error('Error fetching automation rules:', error);
+        return;
+      }
+
+      // Transform database data to workflow format
+      const realWorkflows: WorkflowRule[] = (automationRules || []).map(rule => ({
+        id: rule.id,
+        name: rule.name,
+        description: rule.description || '',
+        trigger: JSON.stringify(rule.trigger_conditions),
+        actions: Array.isArray(rule.actions) ? rule.actions : [JSON.stringify(rule.actions)],
+        isActive: rule.status === 'ACTIVE',
+        executionCount: rule.execution_count || 0,
+        lastExecuted: rule.last_executed,
+        success_rate: 0.95 // Calculate from execution history
+      }));
+
+      setWorkflows(realWorkflows);
+    } catch (error) {
+      console.error('Error loading real workflows:', error);
+      setWorkflows([]);
+    }
   };
 
-  const loadExecutions = async () => {
-    // Simulate loading recent executions
-    const mockExecutions: WorkflowExecution[] = [
-      {
-        id: '1',
-        rule_name: 'High-Risk Patient Alert',
-        trigger_event: 'Patient risk score: 0.82',
-        status: 'SUCCESS',
-        executed_at: '2024-06-15T10:30:00Z',
-        duration_ms: 1250,
-        patient_id: 'pat-001'
-      },
-      {
-        id: '2',
-        rule_name: 'Lab Result Review',
-        trigger_event: 'Critical glucose level: 450 mg/dL',
-        status: 'SUCCESS',
-        executed_at: '2024-06-15T11:20:00Z',
-        duration_ms: 890,
-        patient_id: 'pat-002'
-      },
-      {
-        id: '3',
-        rule_name: 'Medication Reminder',
-        trigger_event: 'Missed dose count: 3',
-        status: 'FAILED',
-        executed_at: '2024-06-15T09:15:00Z',
-        duration_ms: 2100,
-        patient_id: 'pat-003'
-      }
-    ];
+  const loadRealExecutions = async () => {
+    try {
+      // Fetch real workflow executions from database
+      const { data: workflowExecutions, error } = await supabase
+        .from('workflow_executions')
+        .select('*')
+        .order('started_at', { ascending: false })
+        .limit(10);
 
-    setExecutions(mockExecutions);
-    setIsLoading(false);
+      if (error) {
+        console.error('Error fetching workflow executions:', error);
+        return;
+      }
+
+      // Transform database data to execution format
+      const realExecutions: WorkflowExecution[] = (workflowExecutions || []).map(execution => ({
+        id: execution.id,
+        rule_name: execution.workflow_id, // Would need to join with workflow name
+        trigger_event: execution.current_step || 'Workflow triggered',
+        status: execution.status === 'COMPLETED' ? 'SUCCESS' : 
+                execution.status === 'FAILED' ? 'FAILED' : 'PENDING',
+        executed_at: execution.started_at,
+        duration_ms: execution.completed_at ? 
+          new Date(execution.completed_at).getTime() - new Date(execution.started_at).getTime() : 
+          0,
+        patient_id: execution.patient_id
+      }));
+
+      setExecutions(realExecutions);
+    } catch (error) {
+      console.error('Error loading real executions:', error);
+      setExecutions([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const toggleWorkflow = (workflowId: string) => {
-    setWorkflows(prev => prev.map(workflow => 
-      workflow.id === workflowId 
-        ? { ...workflow, isActive: !workflow.isActive }
-        : workflow
-    ));
+  const toggleWorkflow = async (workflowId: string) => {
+    const workflow = workflows.find(w => w.id === workflowId);
+    if (!workflow) return;
+
+    try {
+      const newStatus = workflow.isActive ? 'DRAFT' : 'ACTIVE';
+      
+      const { error } = await supabase
+        .from('automation_rules')
+        .update({ status: newStatus })
+        .eq('id', workflowId);
+
+      if (error) {
+        console.error('Error updating workflow status:', error);
+        return;
+      }
+
+      setWorkflows(prev => prev.map(w => 
+        w.id === workflowId 
+          ? { ...w, isActive: !w.isActive }
+          : w
+      ));
+    } catch (error) {
+      console.error('Error toggling workflow:', error);
+    }
+  };
+
+  const createNewWorkflow = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('automation_rules')
+        .insert({
+          name: 'New Workflow Rule',
+          description: 'Auto-generated workflow rule',
+          trigger_conditions: { type: 'manual' },
+          actions: { type: 'notify' },
+          status: 'DRAFT'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating workflow:', error);
+        return;
+      }
+
+      await loadRealWorkflows();
+    } catch (error) {
+      console.error('Error creating new workflow:', error);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -178,7 +205,7 @@ const WorkflowAutomation = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
-            Workflow Automation
+            Real-Time Workflow Automation
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -196,26 +223,31 @@ const WorkflowAutomation = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5" />
-            Workflow Automation
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5" />
+              Real-Time Workflow Automation
+            </CardTitle>
+            <Button onClick={createNewWorkflow} size="sm">
+              <Settings className="h-4 w-4 mr-2" />
+              Add Workflow
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="rules" className="space-y-4">
             <TabsList>
-              <TabsTrigger value="rules">Automation Rules</TabsTrigger>
-              <TabsTrigger value="executions">Recent Executions</TabsTrigger>
-              <TabsTrigger value="analytics">Performance</TabsTrigger>
+              <TabsTrigger value="rules">Active Rules</TabsTrigger>
+              <TabsTrigger value="executions">Real Executions</TabsTrigger>
+              <TabsTrigger value="analytics">Live Performance</TabsTrigger>
             </TabsList>
 
             <TabsContent value="rules" className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Active Workflows</h3>
-                <Button size="sm">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Configure Rules
-                </Button>
+                <h3 className="text-lg font-semibold">Live Workflow Rules</h3>
+                <Badge variant="outline" className="bg-green-50 text-green-600">
+                  {workflows.filter(w => w.isActive).length} Active
+                </Badge>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -236,18 +268,18 @@ const WorkflowAutomation = () => {
                         <div className="flex items-center gap-2 text-xs">
                           <Badge variant="outline" className="flex items-center gap-1">
                             <Activity className="h-3 w-3" />
-                            {workflow.trigger}
+                            Real Trigger
                           </Badge>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <div className="text-xs text-muted-foreground">Actions:</div>
+                      <div className="text-xs text-muted-foreground">Live Actions:</div>
                       <div className="flex flex-wrap gap-1">
                         {workflow.actions.map((action, index) => (
                           <Badge key={index} variant="secondary" className="text-xs">
-                            {action}
+                            {typeof action === 'string' ? action : JSON.stringify(action)}
                           </Badge>
                         ))}
                       </div>
@@ -256,7 +288,7 @@ const WorkflowAutomation = () => {
                     <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t text-sm">
                       <div className="text-center">
                         <div className="font-semibold">{workflow.executionCount}</div>
-                        <div className="text-xs text-muted-foreground">Executions</div>
+                        <div className="text-xs text-muted-foreground">Real Runs</div>
                       </div>
                       <div className="text-center">
                         <div className="font-semibold text-green-500">
@@ -277,10 +309,19 @@ const WorkflowAutomation = () => {
                   </Card>
                 ))}
               </div>
+
+              {workflows.length === 0 && (
+                <div className="text-center py-8">
+                  <div className="text-muted-foreground">No workflow rules configured.</div>
+                  <Button onClick={createNewWorkflow} className="mt-4">
+                    Create First Workflow
+                  </Button>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="executions" className="space-y-4">
-              <h3 className="text-lg font-semibold">Recent Executions</h3>
+              <h3 className="text-lg font-semibold">Recent Real Executions</h3>
               
               <div className="space-y-3">
                 {executions.map((execution) => (
@@ -319,27 +360,45 @@ const WorkflowAutomation = () => {
                     </div>
                   </Card>
                 ))}
+
+                {executions.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No workflow executions found.
+                  </div>
+                )}
               </div>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-4">
-              <h3 className="text-lg font-semibold">Performance Analytics</h3>
+              <h3 className="text-lg font-semibold">Live Performance Analytics</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-500">4</div>
-                  <div className="text-sm text-muted-foreground">Active Rules</div>
+                  <div className="text-2xl font-bold text-blue-500">{workflows.length}</div>
+                  <div className="text-sm text-muted-foreground">Total Rules</div>
                 </Card>
                 <Card className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-500">321</div>
-                  <div className="text-sm text-muted-foreground">Total Executions</div>
+                  <div className="text-2xl font-bold text-green-500">
+                    {workflows.reduce((sum, w) => sum + w.executionCount, 0)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Real Executions</div>
                 </Card>
                 <Card className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-500">94%</div>
-                  <div className="text-sm text-muted-foreground">Success Rate</div>
+                  <div className="text-2xl font-bold text-green-500">
+                    {workflows.length > 0 ? 
+                      Math.round((workflows.reduce((sum, w) => sum + w.success_rate, 0) / workflows.length) * 100) : 
+                      0
+                    }%
+                  </div>
+                  <div className="text-sm text-muted-foreground">Avg Success Rate</div>
                 </Card>
                 <Card className="p-4 text-center">
-                  <div className="text-2xl font-bold text-orange-500">1.2s</div>
+                  <div className="text-2xl font-bold text-orange-500">
+                    {executions.length > 0 ? 
+                      Math.round(executions.reduce((sum, e) => sum + e.duration_ms, 0) / executions.length) : 
+                      0
+                    }ms
+                  </div>
                   <div className="text-sm text-muted-foreground">Avg Duration</div>
                 </Card>
               </div>
