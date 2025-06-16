@@ -1,96 +1,69 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+
+import { useState, useEffect } from 'react';
 import { AutomationRule } from '../types';
-import { Database } from '@/integrations/supabase/types';
-
-type AutomationRuleDAO = Database['public']['Tables']['automation_rules']['Row'];
-
-const fromAutomationRuleDAO = (dao: AutomationRuleDAO): AutomationRule => ({
-  ...dao,
-  id: dao.id,
-  description: dao.description || '',
-  conditions: (dao.trigger_conditions as any)?.conditions || [],
-  actions: (dao.actions as any)?.actions || [],
-  isActive: dao.status === 'ACTIVE',
-  executionCount: dao.execution_count || 0,
-  createdBy: dao.created_by || 'system',
-  last_executed: dao.last_executed,
-  priority: (dao.trigger_conditions as any)?.priority || 'medium',
-  triggerType: (dao.trigger_conditions as any)?.triggerType || 'threshold_exceeded',
-  conditionLogic: (dao.trigger_conditions as any)?.logic || 'AND',
-} as AutomationRule);
-
-const toAutomationRuleDAO = (rule: Partial<AutomationRule>) => {
-    const status: 'ACTIVE' | 'DRAFT' = rule.isActive ? 'ACTIVE' : 'DRAFT';
-    return {
-        name: rule.name,
-        description: rule.description,
-        trigger_conditions: {
-            conditions: rule.conditions,
-            priority: rule.priority,
-            triggerType: rule.triggerType,
-            logic: rule.conditionLogic,
-        } as any,
-        actions: { actions: rule.actions } as any,
-        status: status,
-    }
-};
-
+import { sampleAutomationRules } from '../data/sampleAutomationRules';
 
 export const useAutomationRules = () => {
-  const queryClient = useQueryClient();
+  const [rules, setRules] = useState<AutomationRule[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { data: rules = [], isLoading, error, refetch } = useQuery<AutomationRule[]>({
-    queryKey: ['automation_rules'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('automation_rules').select('*');
-      if (error) throw error;
-      return data.map(fromAutomationRuleDAO);
-    },
-  });
+  useEffect(() => {
+    // Simulate API call
+    const loadRules = async () => {
+      setIsLoading(true);
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setRules(sampleAutomationRules);
+      setIsLoading(false);
+    };
 
-  const createRuleMutation = useMutation({
-    mutationFn: async (newRule: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at' | 'executionCount' | 'createdBy' | 'last_executed'>) => {
-      const dao = toAutomationRuleDAO(newRule);
-      const { data, error } = await supabase.from('automation_rules').insert(dao).select().single();
-      if (error) throw error;
-      return fromAutomationRuleDAO(data as AutomationRuleDAO);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['automation_rules'] });
-    },
-  });
+    loadRules();
+  }, []);
 
-  const updateRuleMutation = useMutation({
-    mutationFn: async (rule: AutomationRule) => {
-      const dao = toAutomationRuleDAO(rule);
-      const { data, error } = await supabase.from('automation_rules').update(dao).eq('id', rule.id).select().single();
-      if (error) throw error;
-      return fromAutomationRuleDAO(data as AutomationRuleDAO);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['automation_rules'] });
-    },
-  });
+  const createRule = async (rule: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at' | 'execution_count'>) => {
+    const newRule: AutomationRule = {
+      ...rule,
+      id: `rule_${Date.now()}`,
+      execution_count: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    setRules(prev => [...prev, newRule]);
+    return newRule;
+  };
 
-  const deleteRuleMutation = useMutation({
-    mutationFn: async (ruleId: string) => {
-      const { error } = await supabase.from('automation_rules').delete().eq('id', ruleId);
-      if (error) throw error;
-      return ruleId;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['automation_rules'] });
-    },
-  });
+  const updateRule = async (id: string, updates: Partial<AutomationRule>) => {
+    setRules(prev => prev.map(rule => 
+      rule.id === id 
+        ? { ...rule, ...updates, updated_at: new Date().toISOString() }
+        : rule
+    ));
+  };
+
+  const deleteRule = async (id: string) => {
+    setRules(prev => prev.filter(rule => rule.id !== id));
+  };
+
+  const executeRule = async (id: string) => {
+    setRules(prev => prev.map(rule => 
+      rule.id === id 
+        ? { 
+            ...rule, 
+            execution_count: rule.execution_count + 1,
+            last_executed: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        : rule
+    ));
+  };
 
   return {
     rules,
     isLoading,
-    error,
-    createRule: createRuleMutation.mutateAsync,
-    updateRule: updateRuleMutation.mutateAsync,
-    deleteRule: deleteRuleMutation.mutateAsync,
-    refetchRules: refetch,
+    createRule,
+    updateRule,
+    deleteRule,
+    executeRule
   };
 };

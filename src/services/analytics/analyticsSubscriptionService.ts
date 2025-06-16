@@ -1,27 +1,31 @@
 
 import { AnalyticsData } from './types';
 
-export class AnalyticsSubscriptionService {
-  private subscribers: ((data: AnalyticsData | null) => void)[] = [];
+type SubscriptionCallback = (data: AnalyticsData | null) => void;
 
-  subscribe(callback: (data: AnalyticsData | null) => void): () => void {
-    this.subscribers.push(callback);
+class AnalyticsSubscriptionService {
+  private subscribers: Set<SubscriptionCallback> = new Set();
+
+  subscribe(callback: SubscriptionCallback): () => void {
+    this.subscribers.add(callback);
     
     return () => {
-      this.subscribers = this.subscribers.filter(sub => sub !== callback);
+      this.subscribers.delete(callback);
     };
   }
 
   notifySubscribers(data: AnalyticsData | null): void {
-    this.subscribers.forEach(callback => callback(data));
+    this.subscribers.forEach(callback => {
+      try {
+        callback(data);
+      } catch (error) {
+        console.error('Error in analytics subscription callback:', error);
+      }
+    });
   }
 
   getSubscriberCount(): number {
-    return this.subscribers.length;
-  }
-
-  clearSubscribers(): void {
-    this.subscribers = [];
+    return this.subscribers.size;
   }
 }
 
