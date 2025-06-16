@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Bell, BellOff, Settings } from "lucide-react";
-import { useAlertMonitoring } from '@/hooks/useAlertMonitoring';
 import { useState } from 'react';
 
 interface AlertStatusWidgetProps {
@@ -11,33 +10,11 @@ interface AlertStatusWidgetProps {
 }
 
 const AlertStatusWidget = ({ onOpenManagement }: AlertStatusWidgetProps) => {
-  const { recentAlerts, isMonitoring, toggleMonitoring } = useAlertMonitoring();
+  const [isMonitoring, setIsMonitoring] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const criticalAlertsCount = recentAlerts.filter(
-    alert => alert.priority === 'CRITICAL' || alert.priority === 'HIGH'
-  ).length;
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'CRITICAL': return 'bg-red-500 text-white';
-      case 'HIGH': return 'bg-orange-500 text-white';
-      case 'MEDIUM': return 'bg-yellow-500 text-white';
-      case 'LOW': return 'bg-blue-500 text-white';
-      default: return 'bg-gray-500 text-white';
-    }
-  };
-
-  const formatTimestamp = (timestamp: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - timestamp.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m`;
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h`;
-    return `${Math.floor(diffHours / 24)}d`;
+  const toggleMonitoring = () => {
+    setIsMonitoring(prev => !prev);
   };
 
   return (
@@ -81,11 +58,11 @@ const AlertStatusWidget = ({ onOpenManagement }: AlertStatusWidgetProps) => {
         {/* Status Summary */}
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="text-lg font-bold text-foreground">{recentAlerts.length}</div>
+            <div className="text-lg font-bold text-foreground">0</div>
             <div className="text-xs text-muted-foreground">Total</div>
           </div>
           <div>
-            <div className="text-lg font-bold text-red-600">{criticalAlertsCount}</div>
+            <div className="text-lg font-bold text-muted-foreground">0</div>
             <div className="text-xs text-muted-foreground">Critical</div>
           </div>
           <div>
@@ -100,31 +77,11 @@ const AlertStatusWidget = ({ onOpenManagement }: AlertStatusWidgetProps) => {
         {isExpanded && (
           <div className="space-y-2">
             <div className="text-sm font-medium text-foreground">Recent Alerts</div>
-            {recentAlerts.length === 0 ? (
-              <div className="text-center py-4 text-muted-foreground">
-                <Bell className="h-6 w-6 mx-auto mb-1 opacity-50" />
-                <p className="text-xs">No recent alerts</p>
-              </div>
-            ) : (
-              <div className="space-y-2 max-h-32 overflow-y-auto">
-                {recentAlerts.slice(0, 5).map((alert, index) => (
-                  <div
-                    key={`${alert.ruleId}-${alert.timestamp.getTime()}`}
-                    className="p-2 bg-muted/50 rounded text-xs"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge className={`${getPriorityColor(alert.priority)} text-xs px-1`}>
-                        {alert.priority}
-                      </Badge>
-                      <span className="text-muted-foreground">
-                        {formatTimestamp(alert.timestamp)}
-                      </span>
-                    </div>
-                    <p className="text-foreground line-clamp-2">{alert.message}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="text-center py-4 text-muted-foreground">
+              <Bell className="h-6 w-6 mx-auto mb-1 opacity-50" />
+              <p className="text-xs">No recent alerts</p>
+              <p className="text-xs">Configure data sources to enable monitoring</p>
+            </div>
           </div>
         )}
 
@@ -159,16 +116,14 @@ const AlertStatusWidget = ({ onOpenManagement }: AlertStatusWidgetProps) => {
           </Button>
         </div>
 
-        {criticalAlertsCount > 0 && (
-          <div className="p-2 bg-red-500/10 border border-red-500/20 rounded-lg">
-            <div className="flex items-center gap-2 text-red-600">
-              <AlertTriangle className="h-4 w-4" />
-              <span className="text-sm font-medium">
-                {criticalAlertsCount} critical alert{criticalAlertsCount > 1 ? 's' : ''} require attention
-              </span>
-            </div>
+        <div className="p-2 bg-muted/30 border border-muted-foreground/20 rounded-lg">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <AlertTriangle className="h-4 w-4" />
+            <span className="text-sm">
+              Configure data sources to enable alert monitoring
+            </span>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
