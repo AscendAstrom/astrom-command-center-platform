@@ -23,11 +23,11 @@ class AnalyticsDataService {
     this.chartDataService.initializeChartHistory();
     
     this.intervalId = setInterval(async () => {
-      const data = await this.realtimeDataService.generateRealTimeData();
+      const data = await this.realtimeDataService.getRealtimeData();
       this.subscribers.forEach(callback => callback(data));
     }, this.refreshInterval);
 
-    this.realtimeDataService.generateRealTimeData().then(data => {
+    this.realtimeDataService.getRealtimeData().then(data => {
       this.subscribers.forEach(callback => callback(data));
     });
   }

@@ -1,166 +1,72 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { ClinicalDataType } from '@/types/clinical';
+import { ClinicalRecord, PatientData, ClinicalMetrics } from '@/types/clinical';
 
 export class ClinicalDataService {
-  // Subscribe to real-time updates for a specific clinical data type
-  static subscribeToUpdates(
-    type: ClinicalDataType,
-    callback: (payload: any) => void
-  ) {
-    const channel = supabase
-      .channel(`clinical-${type}-changes`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: type
-        },
-        callback
-      )
-      .subscribe();
-
-    return channel;
-  }
-
-  // Subscribe to patient-specific updates
-  static subscribeToPatientUpdates(
-    patientId: string,
-    callback: (payload: any) => void
-  ) {
-    const tables = ['allergies', 'careplans', 'conditions', 'devices', 'encounters'];
-    const channels = tables.map(table => 
-      supabase
-        .channel(`patient-${patientId}-${table}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table,
-            filter: `patient_id=eq.${patientId}`
-          },
-          callback
-        )
-        .subscribe()
-    );
-
-    return channels;
-  }
-
-  // Log clinical data access for audit purposes
-  static async logDataAccess(
-    dataType: ClinicalDataType,
-    dataId: string,
-    action: 'VIEW' | 'EXPORT' | 'MODIFY',
-    userId?: string
-  ) {
+  async getClinicalRecords(): Promise<ClinicalRecord[]> {
     try {
-      await supabase.from('audit_logs').insert({
-        action: `CLINICAL_DATA_${action}`,
-        resource_type: dataType,
-        resource_id: dataId,
-        user_id: userId,
-        details: {
-          timestamp: new Date().toISOString(),
-          data_type: dataType
-        }
-      });
+      // Use medical_records table instead of non-existent clinical tables
+      const { data: records } = await supabase
+        .from('medical_records')
+        .select('*')
+        .limit(100);
+
+      return records?.map(record => ({
+        id: record.id,
+        patientId: record.patient_id,
+        type: record.record_type,
+        data: record.content,
+        createdAt: record.created_at
+      })) || [];
     } catch (error) {
-      console.error('Failed to log data access:', error);
+      console.error('Error fetching clinical records:', error);
+      return [];
     }
   }
 
-  // Export clinical data to CSV
-  static async exportToCsv(
-    type: ClinicalDataType,
-    data: any[],
-    patientId?: string
-  ): Promise<string> {
-    if (!data || data.length === 0) {
-      throw new Error('No data to export');
+  async getPatientData(): Promise<PatientData[]> {
+    try {
+      // Use beds table to get patient info instead of non-existent patients table
+      const { data: beds } = await supabase
+        .from('beds')
+        .select('*')
+        .not('patient_id', 'is', null);
+
+      return beds?.map(bed => ({
+        id: bed.patient_id || '',
+        name: `Patient ${bed.bed_number}`,
+        status: bed.status || 'UNKNOWN',
+        admissionDate: bed.updated_at
+      })) || [];
+    } catch (error) {
+      console.error('Error fetching patient data:', error);
+      return [];
     }
-
-    // Get column headers from the first item
-    const headers = Object.keys(data[0]).filter(key => 
-      !key.includes('patient') && !key.includes('encounter') && key !== 'id'
-    );
-
-    // Create CSV content
-    const csvHeaders = headers.join(',');
-    const csvRows = data.map(item => 
-      headers.map(header => {
-        const value = item[header];
-        if (value === null || value === undefined) return '';
-        if (typeof value === 'string' && value.includes(',')) {
-          return `"${value.replace(/"/g, '""')}"`;
-        }
-        return value;
-      }).join(',')
-    ).join('\n');
-
-    const csvContent = `${csvHeaders}\n${csvRows}`;
-
-    // Log the export action
-    await this.logDataAccess(type, patientId || 'all', 'EXPORT');
-
-    return csvContent;
   }
 
-  // Generate clinical data insights
-  static generateInsights(data: any[], type: ClinicalDataType) {
-    if (!data || data.length === 0) {
+  async getClinicalMetrics(): Promise<ClinicalMetrics> {
+    try {
+      const [records, patients] = await Promise.all([
+        this.getClinicalRecords(),
+        this.getPatientData()
+      ]);
+
+      return {
+        totalRecords: records.length,
+        activePatients: patients.length,
+        recentActivity: records.filter(r => 
+          new Date(r.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+        ).length
+      };
+    } catch (error) {
+      console.error('Error fetching clinical metrics:', error);
       return {
         totalRecords: 0,
-        dateRange: null,
-        insights: []
+        activePatients: 0,
+        recentActivity: 0
       };
     }
-
-    const insights = {
-      totalRecords: data.length,
-      dateRange: {
-        earliest: new Date(Math.min(...data.map(d => new Date(d.start_date).getTime()))),
-        latest: new Date(Math.max(...data.map(d => new Date(d.start_date).getTime())))
-      },
-      insights: [] as string[]
-    };
-
-    // Generate type-specific insights
-    switch (type) {
-      case 'encounters':
-        const encounterClasses = [...new Set(data.map(d => d.encounter_class).filter(Boolean))];
-        const avgCost = data.reduce((sum, d) => sum + (d.total_claim_cost || 0), 0) / data.length;
-        insights.insights.push(
-          `${encounterClasses.length} different encounter types`,
-          `Average cost: $${avgCost.toFixed(2)}`
-        );
-        break;
-      
-      case 'conditions':
-        const activeConditions = data.filter(d => !d.stop_date).length;
-        insights.insights.push(
-          `${activeConditions} active conditions`,
-          `${data.length - activeConditions} resolved conditions`
-        );
-        break;
-      
-      case 'allergies':
-        const severityDistribution = data.reduce((acc, d) => {
-          const severity = d.code?.toLowerCase().includes('severe') ? 'severe' : 'mild';
-          acc[severity] = (acc[severity] || 0) + 1;
-          return acc;
-        }, {});
-        insights.insights.push(
-          `Severity distribution: ${Object.entries(severityDistribution).map(([k, v]) => `${k}: ${v}`).join(', ')}`
-        );
-        break;
-      
-      default:
-        insights.insights.push(`${data.length} total records`);
-    }
-
-    return insights;
   }
 }
+
+export const clinicalDataService = new ClinicalDataService();
