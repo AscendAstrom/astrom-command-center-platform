@@ -33,6 +33,11 @@ const AstroScan = () => {
     toast.info(`Switched to ${value} module`);
   };
 
+  const handleAddDataSource = () => {
+    setIsWizardOpen(true);
+    toast.info("Opening data source wizard");
+  };
+
   return (
     <div className="h-full bg-background">
       <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
@@ -55,7 +60,7 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
-            <SourcesTabContent />
+            <SourcesTabContent onAddDataSource={handleAddDataSource} />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">

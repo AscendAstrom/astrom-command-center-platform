@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Database, Activity, AlertTriangle, CheckCircle, Plus, Settings } from "lucide-react";
 import { sampleDataSources } from "./data/sampleDataSources";
 
-export const DataSourceList = () => {
+interface DataSourceListProps {
+  onAddDataSource?: () => void;
+}
+
+export const DataSourceList = ({ onAddDataSource }: DataSourceListProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE': return 'text-green-400 border-green-400 bg-green-400/10';
@@ -44,7 +48,7 @@ export const DataSourceList = () => {
             Manage and monitor your healthcare data integration points
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={onAddDataSource}>
           <Plus className="h-4 w-4" />
           Add Data Source
         </Button>

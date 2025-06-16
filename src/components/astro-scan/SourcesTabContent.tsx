@@ -1,16 +1,19 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Plus, RefreshCw, Activity, AlertTriangle, CheckCircle } from "lucide-react";
+import { Database, RefreshCw, Activity, AlertTriangle, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from '@/integrations/supabase/client';
 import { DataSourceList } from "./DataSourceList";
 import { IngestionDashboard } from "./IngestionDashboard";
 import MonitoringTabContent from "./MonitoringTabContent";
 
-const SourcesTabContent = () => {
+interface SourcesTabContentProps {
+  onAddDataSource?: () => void;
+}
+
+const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
   const [bedData, setBedData] = useState({
     total: 0,
     occupied: 0,
@@ -207,7 +210,7 @@ const SourcesTabContent = () => {
         </TabsList>
 
         <TabsContent value="sources" className="space-y-4">
-          <DataSourceList />
+          <DataSourceList onAddDataSource={onAddDataSource} />
         </TabsContent>
 
         <TabsContent value="ingestion" className="space-y-4">
