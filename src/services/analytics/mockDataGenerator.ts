@@ -1,4 +1,3 @@
-
 import { AnalyticsData, ChartDataPoint } from './types';
 
 export class MockDataGenerator {
@@ -15,6 +14,7 @@ export class MockDataGenerator {
       const timeOfDayFactor = this.getTimeOfDayFactor(time.getHours());
       
       return {
+        timestamp: time.toISOString(),
         time: time.toISOString(),
         value: Math.max(0, Math.round(baseValue + variation + (baseValue * timeOfDayFactor * 0.3))),
         label: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })

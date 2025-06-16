@@ -15,7 +15,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             metricType: 'response_time',
             threshold: 30,
             unit: 'minutes',
-            timeWindow: '1h',
+            timeWindow: 'hourly',
             status: 'active',
             alertEnabled: true,
             escalationRules: [
@@ -23,9 +23,9 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
                 { level: 2, delay: 30, action: 'page_manager' }
             ],
             zoneName: 'Emergency Department',
-            createdAt: new Date('2024-01-15'),
-            updatedAt: new Date('2024-06-01'),
-            lastBreach: new Date(Date.now() - 7200000), // 2 hours ago
+            createdAt: '2024-01-15T00:00:00Z',
+            updatedAt: '2024-06-01T00:00:00Z',
+            lastBreach: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
             breachCount: 3,
             complianceRate: 87.5
         },
@@ -33,10 +33,10 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             id: 'sla-2',
             name: 'ICU Bed Availability',
             description: 'Minimum available ICU beds at any time',
-            metricType: 'bed_availability',
+            metricType: 'utilization',
             threshold: 5,
-            unit: 'beds',
-            timeWindow: '24h',
+            unit: 'count',
+            timeWindow: 'daily',
             status: 'active',
             alertEnabled: true,
             escalationRules: [
@@ -44,9 +44,9 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
                 { level: 2, delay: 15, action: 'executive_notification' }
             ],
             zoneName: 'Intensive Care Unit',
-            createdAt: new Date('2024-01-20'),
-            updatedAt: new Date('2024-05-28'),
-            lastBreach: new Date(Date.now() - 21600000), // 6 hours ago
+            createdAt: '2024-01-20T00:00:00Z',
+            updatedAt: '2024-05-28T00:00:00Z',
+            lastBreach: new Date(Date.now() - 21600000).toISOString(), // 6 hours ago
             breachCount: 1,
             complianceRate: 95.2
         },
@@ -54,10 +54,10 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             id: 'sla-3',
             name: 'Lab Result Turnaround',
             description: 'Maximum time for routine lab results',
-            metricType: 'turnaround_time',
+            metricType: 'response_time',
             threshold: 45,
             unit: 'minutes',
-            timeWindow: '4h',
+            timeWindow: 'hourly',
             status: 'active',
             alertEnabled: true,
             escalationRules: [
@@ -65,8 +65,8 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
                 { level: 2, delay: 25, action: 'department_head_notification' }
             ],
             zoneName: 'Laboratory',
-            createdAt: new Date('2024-02-01'),
-            updatedAt: new Date('2024-06-10'),
+            createdAt: '2024-02-01T00:00:00Z',
+            updatedAt: '2024-06-10T00:00:00Z',
             lastBreach: null,
             breachCount: 0,
             complianceRate: 98.7
@@ -75,10 +75,10 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             id: 'sla-4',
             name: 'Surgery Scheduling',
             description: 'Maximum delay for non-emergency surgical procedures',
-            metricType: 'scheduling_delay',
+            metricType: 'wait_time',
             threshold: 72,
             unit: 'hours',
-            timeWindow: '7d',
+            timeWindow: 'weekly',
             status: 'warning',
             alertEnabled: true,
             escalationRules: [
@@ -86,9 +86,9 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
                 { level: 2, delay: 60, action: 'surgery_director' }
             ],
             zoneName: 'Operating Rooms',
-            createdAt: new Date('2024-02-15'),
-            updatedAt: new Date('2024-06-15'),
-            lastBreach: new Date(Date.now() - 43200000), // 12 hours ago
+            createdAt: '2024-02-15T00:00:00Z',
+            updatedAt: '2024-06-15T00:00:00Z',
+            lastBreach: new Date(Date.now() - 43200000).toISOString(), // 12 hours ago
             breachCount: 2,
             complianceRate: 92.1
         },
@@ -96,19 +96,19 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             id: 'sla-5',
             name: 'Pharmacy Order Processing',
             description: 'Maximum time for medication order verification',
-            metricType: 'order_processing',
+            metricType: 'throughput',
             threshold: 20,
             unit: 'minutes',
-            timeWindow: '2h',
+            timeWindow: 'hourly',
             status: 'active',
             alertEnabled: false,
             escalationRules: [
                 { level: 1, delay: 15, action: 'pharmacist_alert' }
             ],
             zoneName: 'Pharmacy',
-            createdAt: new Date('2024-03-01'),
-            updatedAt: new Date('2024-06-12'),
-            lastBreach: new Date(Date.now() - 172800000), // 2 days ago
+            createdAt: '2024-03-01T00:00:00Z',
+            updatedAt: '2024-06-12T00:00:00Z',
+            lastBreach: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
             breachCount: 5,
             complianceRate: 89.8
         }
@@ -121,8 +121,8 @@ const createSLAConfig = async (newSla: SLAConfig): Promise<SLAConfig> => {
     return {
         ...newSla,
         id: `sla-${Date.now()}`,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         breachCount: 0,
         complianceRate: 100,
         lastBreach: null
@@ -141,13 +141,13 @@ const updateSLAStatus = async ({ slaId, status }: { slaId: string, status: strin
         metricType: 'response_time',
         threshold: 30,
         unit: 'minutes',
-        timeWindow: '1h',
+        timeWindow: 'hourly',
         status: status as 'active' | 'inactive' | 'warning',
         alertEnabled: true,
         escalationRules: [],
         zoneName: 'Updated Zone',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date(),
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: new Date().toISOString(),
         breachCount: 0,
         complianceRate: 100,
         lastBreach: null

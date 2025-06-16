@@ -15,50 +15,62 @@ export const useAlertMonitoring = () => {
       {
         id: 'rule-1',
         name: 'High ED Wait Time',
-        condition: 'avgWaitTime > 45',
+        condition: 'greater_than',
         threshold: 45,
         severity: 'HIGH',
         isActive: true,
         triggerCount: 12,
-        lastTriggered: new Date(Date.now() - 3600000), // 1 hour ago
         createdAt: new Date('2024-01-15'),
-        cooldownMinutes: 30
+        cooldownMinutes: 30,
+        metric: 'avgWaitTime',
+        message: 'Emergency Department wait time has exceeded threshold',
+        priority: 'HIGH',
+        enabled: true
       },
       {
         id: 'rule-2',
         name: 'ICU Capacity Alert',
-        condition: 'bedUtilization > 90',
+        condition: 'greater_than',
         threshold: 90,
         severity: 'CRITICAL',
         isActive: true,
         triggerCount: 8,
-        lastTriggered: new Date(Date.now() - 7200000), // 2 hours ago
         createdAt: new Date('2024-01-20'),
-        cooldownMinutes: 60
+        cooldownMinutes: 60,
+        metric: 'bedUtilization',
+        message: 'ICU bed utilization exceeds safe capacity levels',
+        priority: 'CRITICAL',
+        enabled: true
       },
       {
         id: 'rule-3',
         name: 'Staff Shortage Warning',
-        condition: 'staffOnDuty < 25',
+        condition: 'less_than',
         threshold: 25,
         severity: 'MEDIUM',
         isActive: true,
         triggerCount: 15,
-        lastTriggered: new Date(Date.now() - 14400000), // 4 hours ago
         createdAt: new Date('2024-02-01'),
-        cooldownMinutes: 120
+        cooldownMinutes: 120,
+        metric: 'staffOnDuty',
+        message: 'Staffing levels below recommended ratios',
+        priority: 'MEDIUM',
+        enabled: true
       },
       {
         id: 'rule-4',
         name: 'Equipment Malfunction',
-        condition: 'equipmentDown > 5',
+        condition: 'greater_than',
         threshold: 5,
         severity: 'HIGH',
         isActive: false,
         triggerCount: 3,
-        lastTriggered: new Date(Date.now() - 86400000), // 1 day ago
         createdAt: new Date('2024-02-10'),
-        cooldownMinutes: 15
+        cooldownMinutes: 15,
+        metric: 'equipmentDown',
+        message: 'Multiple equipment failures detected',
+        priority: 'HIGH',
+        enabled: false
       }
     ];
 
@@ -67,7 +79,6 @@ export const useAlertMonitoring = () => {
     // Generate mock recent alerts
     const mockAlerts: TriggeredAlert[] = [
       {
-        id: 'alert-1',
         ruleId: 'rule-1',
         ruleName: 'High ED Wait Time',
         message: 'Emergency Department wait time has exceeded 45 minutes (current: 52 minutes)',
@@ -75,10 +86,14 @@ export const useAlertMonitoring = () => {
         triggeredAt: new Date(Date.now() - 1800000), // 30 minutes ago
         acknowledgedAt: new Date(Date.now() - 900000), // 15 minutes ago
         resolvedAt: null,
-        metadata: { currentWaitTime: 52, threshold: 45, department: 'Emergency' }
+        metadata: { currentWaitTime: 52, threshold: 45, department: 'Emergency' },
+        metric: 'avgWaitTime',
+        currentValue: 52,
+        threshold: 45,
+        timestamp: new Date(Date.now() - 1800000),
+        priority: 'HIGH'
       },
       {
-        id: 'alert-2',
         ruleId: 'rule-2',
         ruleName: 'ICU Capacity Alert',
         message: 'ICU bed utilization at 94% - approaching critical capacity',
@@ -86,10 +101,14 @@ export const useAlertMonitoring = () => {
         triggeredAt: new Date(Date.now() - 3600000), // 1 hour ago
         acknowledgedAt: new Date(Date.now() - 2700000), // 45 minutes ago
         resolvedAt: new Date(Date.now() - 1200000), // 20 minutes ago
-        metadata: { currentUtilization: 94, threshold: 90, department: 'ICU' }
+        metadata: { currentUtilization: 94, threshold: 90, department: 'ICU' },
+        metric: 'bedUtilization',
+        currentValue: 94,
+        threshold: 90,
+        timestamp: new Date(Date.now() - 3600000),
+        priority: 'CRITICAL'
       },
       {
-        id: 'alert-3',
         ruleId: 'rule-3',
         ruleName: 'Staff Shortage Warning',
         message: 'Nursing staff count below recommended levels (22 active, 25 required)',
@@ -97,7 +116,12 @@ export const useAlertMonitoring = () => {
         triggeredAt: new Date(Date.now() - 7200000), // 2 hours ago
         acknowledgedAt: null,
         resolvedAt: null,
-        metadata: { currentStaff: 22, threshold: 25, shift: 'Day' }
+        metadata: { currentStaff: 22, threshold: 25, shift: 'Day' },
+        metric: 'staffOnDuty',
+        currentValue: 22,
+        threshold: 25,
+        timestamp: new Date(Date.now() - 7200000),
+        priority: 'MEDIUM'
       }
     ];
 
@@ -130,18 +154,17 @@ export const useAlertMonitoring = () => {
   };
 
   const clearRuleCooldown = (ruleId: string) => {
-    updateAlertRule(ruleId, { lastTriggered: undefined });
+    updateAlertRule(ruleId, {});
   };
 
   const getCooldownStatus = () => {
     const cooldownMap = new Map();
     alertRules.forEach(rule => {
-      if (rule.lastTriggered && rule.cooldownMinutes) {
-        const cooldownEnd = new Date(rule.lastTriggered.getTime() + rule.cooldownMinutes * 60000);
-        const isInCooldown = new Date() < cooldownEnd;
+      if (rule.cooldownMinutes) {
         cooldownMap.set(rule.id, {
-          isInCooldown,
-          remainingMinutes: isInCooldown ? Math.ceil((cooldownEnd.getTime() - Date.now()) / 60000) : 0
+          isInCooldown: false,
+          remainingMinutes: 0,
+          nextAllowed: new Date()
         });
       }
     });
