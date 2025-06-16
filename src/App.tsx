@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AuthGuard } from "@/components/auth/AuthGuard";
-import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AstroScanPage from "./pages/AstroScan";
 import AstroBricksPage from "./pages/AstroBricks";
@@ -29,7 +28,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/auth" replace />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/index" element={<Index />} />
             <Route
               path="/dashboard"
               element={
