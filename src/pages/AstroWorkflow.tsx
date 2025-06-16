@@ -8,13 +8,15 @@ import {
   Crown, 
   Activity,
   Zap,
-  Network
+  Network,
+  TrendingUp
 } from "lucide-react";
 import WorkflowOrchestrator from "@/components/workflow/WorkflowOrchestrator";
 import AIIntelligenceDashboard from "@/components/workflow/AIIntelligenceDashboard";
 import ExecutiveCommandCenter from "@/components/workflow/ExecutiveCommandCenter";
 import EnhancedAutomationPanel from "@/components/workflow/EnhancedAutomationPanel";
 import CrossModuleIntegrationDashboard from "@/components/workflow/CrossModuleIntegrationDashboard";
+import PredictiveAnalyticsDashboard from "@/components/workflow/PredictiveAnalyticsDashboard";
 import { toast } from "sonner";
 
 const AstroWorkflow = () => {
@@ -32,12 +34,12 @@ const AstroWorkflow = () => {
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-foreground mb-2">AstroWorkflow AI</h1>
           <p className="text-muted-foreground">
-            End-to-end AI-driven workflow automation and intelligence platform with cross-module integration
+            End-to-end AI-driven workflow automation and intelligence platform with predictive analytics and cross-module integration
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-6 bg-muted/50">
             <TabsTrigger 
               value="orchestrator" 
               className="data-[state=active]:bg-blue-500/20 transition-all duration-200 hover:bg-blue-500/10"
@@ -65,6 +67,13 @@ const AstroWorkflow = () => {
             >
               <Network className="h-4 w-4 mr-2" />
               Module Integration
+            </TabsTrigger>
+            <TabsTrigger 
+              value="predictive" 
+              className="data-[state=active]:bg-orange-500/20 transition-all duration-200 hover:bg-orange-500/10"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Predictive Analytics
             </TabsTrigger>
             <TabsTrigger 
               value="executive" 
@@ -139,6 +148,23 @@ const AstroWorkflow = () => {
               </CardHeader>
               <CardContent>
                 <CrossModuleIntegrationDashboard />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="predictive" className="space-y-6">
+            <Card className="bg-card border-border backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-orange-400" />
+                  Predictive Analytics & Intelligence
+                </CardTitle>
+                <CardDescription>
+                  Advanced machine learning for workflow optimization, resource allocation, and performance forecasting
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PredictiveAnalyticsDashboard />
               </CardContent>
             </Card>
           </TabsContent>
