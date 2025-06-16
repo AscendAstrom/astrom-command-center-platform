@@ -1,3 +1,4 @@
+
 import { AnalyticsData } from './types';
 import { ChartDataService } from './chartDataService';
 import { RealtimeDataService } from './realtimeDataService';
@@ -23,6 +24,7 @@ class AnalyticsDataService {
     
     this.intervalId = setInterval(async () => {
       const realtimeData = await this.realtimeDataService.getRealtimeData();
+      const currentDate = new Date();
       const analyticsData: AnalyticsData = {
         chartData: {
           waitTimes: [],
@@ -43,7 +45,7 @@ class AnalyticsDataService {
           triageQueue: 3,
           criticalPatients: 1,
           criticalAlerts: 0,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate.toISOString()
         },
         beds: {
           total: realtimeData.beds.length,
@@ -104,7 +106,7 @@ class AnalyticsDataService {
           resourceUtilization: 0,
           avgProcedureTime: 0,
           equipmentStatus: 'optimal',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         quality: {
           overallScore: 0,
@@ -135,7 +137,7 @@ class AnalyticsDataService {
           memoryUsage: 62,
           networkLatency: 12,
           securityScore: 95,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         dataPipeline: {
           activeSources: 3,
@@ -143,7 +145,7 @@ class AnalyticsDataService {
           errorRate: 0.5,
           dataQuality: 95.2,
           syncStatus: 'healthy',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         business: {
           revenue: 12000,
@@ -151,7 +153,7 @@ class AnalyticsDataService {
           patientSatisfaction: 4.2,
           operationalEfficiency: 87,
           costPerPatient: 2500,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         aiMetrics: {
           modelAccuracy: 92.5,
@@ -159,7 +161,7 @@ class AnalyticsDataService {
           decisionsSupported: 23,
           mlModelsActive: 5,
           predictionConfidence: 88,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         }
       };
       
@@ -167,6 +169,7 @@ class AnalyticsDataService {
     }, this.refreshInterval);
 
     this.realtimeDataService.getRealtimeData().then(realtimeData => {
+      const currentDate = new Date();
       const analyticsData: AnalyticsData = {
         chartData: {
           waitTimes: [],
@@ -187,7 +190,7 @@ class AnalyticsDataService {
           triageQueue: 3,
           criticalPatients: 1,
           criticalAlerts: 0,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate.toISOString()
         },
         beds: {
           total: realtimeData.beds.length,
@@ -248,7 +251,7 @@ class AnalyticsDataService {
           resourceUtilization: 0,
           avgProcedureTime: 0,
           equipmentStatus: 'optimal',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         quality: {
           overallScore: 0,
@@ -279,7 +282,7 @@ class AnalyticsDataService {
           memoryUsage: 62,
           networkLatency: 12,
           securityScore: 95,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         dataPipeline: {
           activeSources: 3,
@@ -287,7 +290,7 @@ class AnalyticsDataService {
           errorRate: 0.5,
           dataQuality: 95.2,
           syncStatus: 'healthy',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         business: {
           revenue: 12000,
@@ -295,7 +298,7 @@ class AnalyticsDataService {
           patientSatisfaction: 4.2,
           operationalEfficiency: 87,
           costPerPatient: 2500,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         },
         aiMetrics: {
           modelAccuracy: 92.5,
@@ -303,7 +306,7 @@ class AnalyticsDataService {
           decisionsSupported: 23,
           mlModelsActive: 5,
           predictionConfidence: 88,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: currentDate
         }
       };
       
