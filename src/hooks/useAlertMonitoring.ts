@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { alertMonitoringService, TriggeredAlert, AlertRule } from '@/services/alerts/alertMonitoringService';
 import { analyticsService } from '@/services/analytics';
@@ -60,7 +61,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-1',
         message: 'Emergency Department wait time has exceeded 45 minutes (current: 52 minutes)',
-        metadata: { currentWaitTime: 52, threshold: 45, department: 'Emergency' },
         metric: 'avgWaitTime',
         currentValue: 52,
         threshold: 45,
@@ -70,7 +70,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-2',
         message: 'ICU bed utilization at 94% - approaching critical capacity',
-        metadata: { currentUtilization: 94, threshold: 90, department: 'ICU' },
         metric: 'bedUtilization',
         currentValue: 94,
         threshold: 90,
@@ -80,7 +79,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-3',
         message: 'Nursing staff count below recommended levels (22 active, 25 required)',
-        metadata: { currentStaff: 22, threshold: 25, shift: 'Day' },
         metric: 'staffOnDuty',
         currentValue: 22,
         threshold: 25,

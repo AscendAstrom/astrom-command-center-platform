@@ -8,7 +8,7 @@ import { Settings, Users, Shield, Database, Server, AlertTriangle, CheckCircle, 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 const AdminDashboard = () => {
-  const [adminData, setAdminData] = useState(null);
+  const [adminData, setAdminData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     };
 
     loadAdminData();
-    const interval = setInterval(loadAdminData, 180000); // Update every 3 minutes
+    const interval = setInterval(loadAdminData, 180000);
 
     return () => clearInterval(interval);
   }, []);
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
         totalUsers: 1247,
         activeUsers: 342,
         systemUptime: 99.7,
-        dataProcessed: 24.7, // TB
+        dataProcessed: 24.7,
         alertsGenerated: 156,
         tasksCompleted: 2847
       },
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
         recordsProcessed: 45600,
         dataQuality: 94.2,
         backupStatus: 'COMPLETED',
-        lastBackup: new Date(Date.now() - 3600000) // 1 hour ago
+        lastBackup: new Date(Date.now() - 3600000)
       },
       activityLogs: [
         {
@@ -113,15 +113,6 @@ const AdminDashboard = () => {
         { name: 'Other', value: 7, color: '#8b5cf6' }
       ]
     };
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'SUCCESS': return 'text-green-600';
-      case 'FAILED': return 'text-red-600';
-      case 'WARNING': return 'text-yellow-600';
-      default: return 'text-gray-600';
-    }
   };
 
   if (isLoading) {
@@ -254,7 +245,7 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {adminData?.userManagement.map((role, index) => (
+                  {adminData?.userManagement.map((role: any, index: number) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                       <div>
                         <div className="font-medium">{role.role}</div>
@@ -284,9 +275,9 @@ const AdminDashboard = () => {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {adminData?.departmentUsage.map((entry, index) => (
+                      {adminData?.departmentUsage.map((entry: any, index: number) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -306,22 +297,25 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(adminData?.systemHealth || {}).map(([resource, value]) => (
-                    <div key={resource} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="capitalize">{resource}</span>
-                        <span>{value}%</span>
+                  {Object.entries(adminData?.systemHealth || {}).map(([resource, value]) => {
+                    const numValue = Number(value);
+                    return (
+                      <div key={resource} className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="capitalize">{resource}</span>
+                          <span>{numValue}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              numValue > 80 ? 'bg-red-500' : numValue > 60 ? 'bg-yellow-500' : 'bg-green-500'
+                            }`}
+                            style={{ width: `${numValue}%` }}
+                          ></div>
+                        </div>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            value > 80 ? 'bg-red-500' : value > 60 ? 'bg-yellow-500' : 'bg-green-500'
-                          }`}
-                          style={{ width: `${value}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -495,7 +489,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {adminData?.activityLogs.map((log, index) => (
+                {adminData?.activityLogs.map((log: any, index: number) => (
                   <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${
