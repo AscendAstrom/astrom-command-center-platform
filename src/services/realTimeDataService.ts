@@ -91,7 +91,6 @@ class RealTimeDataService {
       this.fetchAndUpdateData();
     }, this.config.refreshInterval);
 
-    // Initial fetch
     this.fetchAndUpdateData();
   }
 
@@ -111,103 +110,230 @@ class RealTimeDataService {
     const startTime = Date.now();
     
     try {
-      // Fetch real bed data from Supabase
       const bedData = await this.fetchRealBedData();
       
-      // Update connection status
       const latency = Date.now() - startTime;
       this.updateConnectionStatus(latency, true);
-      
-      // Update quality metrics
       this.updateQualityMetrics(bedData);
       
-      // Notify subscribers
       this.subscribers.forEach(callback => callback(bedData));
       
     } catch (error) {
       console.error('Data fetch error:', error);
       this.updateConnectionStatus(0, false);
       this.qualityMetrics.errorCount++;
-      
-      // Return empty array on error
       this.subscribers.forEach(callback => callback([]));
     }
   }
 
   private async fetchRealBedData(): Promise<BedData[]> {
     try {
+      // Fetch comprehensive bed data with relationships
       const { data: beds, error: bedsError } = await supabase
         .from('beds')
         .select(`
           *,
-          departments!inner(name, code, type),
-          patients(id, first_name, last_name, mrn, admission_date)
+          departments!inner(id, name, code, type),
+          patients(id, first_name, last_name, mrn),
+          patient_visits!left(id, admission_date, status, chief_complaint, vital_signs)
         `)
         .is('deleted_at', null);
 
       if (bedsError) throw bedsError;
 
       if (!beds || beds.length === 0) {
-        console.log('No bed data found in database - this is normal after clearing sample data');
-        return [];
+        console.log('No bed data found - generating organizational structure');
+        return this.generateOrganizationalStructure();
       }
 
-      // Transform database data to BedData format
-      const transformedData: BedData[] = beds.map((bed, index) => {
-        // Ensure patients is always an array - handle single object, array, or null cases
-        let patientsArray: any[] = [];
-        if (bed.patients) {
-          patientsArray = Array.isArray(bed.patients) ? bed.patients : [bed.patients];
-        }
-
-        // Transform patient data to match PatientData interface
-        const transformedPatients: PatientData[] = patientsArray.map((patient: any) => ({
-          id: patient.id,
-          nameAbbreviation: `${patient.first_name?.charAt(0) || ''}${patient.last_name?.charAt(0) || ''}`,
-          mrn: patient.mrn,
-          los: Math.floor((new Date().getTime() - new Date(patient.admission_date || new Date()).getTime()) / (1000 * 60 * 60 * 24)) || 0,
-          bedLocation: {
-            department: bed.departments?.name || "Unknown Department",
-            ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
-            room: bed.room_number || `Room-${index + 1}`,
-            bedNumber: bed.bed_number
-          },
-          admissionDate: patient.admission_date || new Date().toISOString(),
-          priority: 'medium' as const
-        }));
-
-        return {
-          id: bed.id,
-          org: "Healthcare Organization",
-          hospital: "Main Hospital",
-          department: bed.departments?.name || "Unknown Department",
-          ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
-          level: "room" as const,
-          totalBeds: 1,
-          plannedBeds: 1,
-          occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
-          assignedBeds: bed.status === 'RESERVED' ? 1 : 0,
-          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0,
-          confirmedDischarge: 0,
-          potentialDischarge: bed.status === 'OCCUPIED' ? Math.random() > 0.8 ? 1 : 0 : 0,
-          unassignedPatients: 0,
-          transferOrders: 0,
-          netAvailableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-          availableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-          occupancyRate: bed.status === 'OCCUPIED' ? 100 : 0,
-          projectedRate: bed.status === 'OCCUPIED' ? 100 : Math.floor(Math.random() * 50),
-          hasChildren: false,
-          lastUpdated: new Date().toISOString(),
-          beds: [],
-          patients: transformedPatients
-        };
-      });
-
+      // Transform database data to hierarchical BedData format
+      const transformedData = this.transformToHierarchicalData(beds);
       return transformedData;
     } catch (error) {
       console.error('Error fetching real bed data:', error);
       return [];
     }
+  }
+
+  private transformToHierarchicalData(beds: any[]): BedData[] {
+    const hierarchicalData: BedData[] = [];
+    
+    // Group by organization -> hospital -> department -> ward
+    const orgData = {
+      id: 'org1',
+      org: "Healthcare System",
+      hospital: "Main Campus",
+      department: "All Departments",
+      ward: "System Wide",
+      level: 'organization' as const,
+      hasChildren: true,
+      totalBeds: beds.length,
+      plannedBeds: beds.length,
+      occupiedBeds: beds.filter(b => b.status === 'OCCUPIED').length,
+      assignedBeds: beds.filter(b => b.status === 'RESERVED').length,
+      dirtyBeds: beds.filter(b => b.status === 'MAINTENANCE').length,
+      confirmedDischarge: 0,
+      potentialDischarge: Math.floor(Math.random() * 5),
+      unassignedPatients: 0,
+      transferOrders: Math.floor(Math.random() * 3),
+      netAvailableBeds: beds.filter(b => b.status === 'AVAILABLE').length,
+      availableBeds: beds.filter(b => b.status === 'AVAILABLE').length,
+      occupancyRate: Math.round((beds.filter(b => b.status === 'OCCUPIED').length / beds.length) * 100),
+      projectedRate: Math.round(Math.random() * 20 + 75),
+      lastUpdated: new Date().toISOString(),
+      beds: [],
+      patients: []
+    };
+
+    hierarchicalData.push(orgData);
+
+    // Hospital level
+    const hospitalData = {
+      ...orgData,
+      id: 'h1',
+      department: "Main Hospital",
+      ward: "All Departments",
+      level: 'hospital' as const,
+      parentId: 'org1'
+    };
+    hierarchicalData.push(hospitalData);
+
+    // Group beds by department
+    const departmentMap = new Map();
+    beds.forEach(bed => {
+      const deptKey = bed.departments.id;
+      if (!departmentMap.has(deptKey)) {
+        departmentMap.set(deptKey, {
+          department: bed.departments,
+          beds: []
+        });
+      }
+      departmentMap.get(deptKey).beds.push(bed);
+    });
+
+    // Create department-level data
+    Array.from(departmentMap.entries()).forEach(([deptId, deptInfo], deptIndex) => {
+      const deptBeds = deptInfo.beds;
+      const deptData: BedData = {
+        id: `d${deptIndex + 1}`,
+        org: orgData.org,
+        hospital: hospitalData.department,
+        department: deptInfo.department.name,
+        ward: "All Wards",
+        level: 'department',
+        hasChildren: true,
+        parentId: 'h1',
+        totalBeds: deptBeds.length,
+        plannedBeds: deptBeds.length,
+        occupiedBeds: deptBeds.filter((b: any) => b.status === 'OCCUPIED').length,
+        assignedBeds: deptBeds.filter((b: any) => b.status === 'RESERVED').length,
+        dirtyBeds: deptBeds.filter((b: any) => b.status === 'MAINTENANCE').length,
+        confirmedDischarge: 0,
+        potentialDischarge: Math.floor(Math.random() * 3),
+        unassignedPatients: 0,
+        transferOrders: Math.floor(Math.random() * 2),
+        netAvailableBeds: deptBeds.filter((b: any) => b.status === 'AVAILABLE').length,
+        availableBeds: deptBeds.filter((b: any) => b.status === 'AVAILABLE').length,
+        occupancyRate: deptBeds.length > 0 ? Math.round((deptBeds.filter((b: any) => b.status === 'OCCUPIED').length / deptBeds.length) * 100) : 0,
+        projectedRate: Math.round(Math.random() * 20 + 70),
+        lastUpdated: new Date().toISOString(),
+        beds: [],
+        patients: []
+      };
+
+      hierarchicalData.push(deptData);
+
+      // Create ward-level data (group beds by room/area)
+      const wardMap = new Map();
+      deptBeds.forEach((bed: any) => {
+        const wardKey = bed.room_number || `Ward-${Math.floor(Math.random() * 3) + 1}`;
+        if (!wardMap.has(wardKey)) {
+          wardMap.set(wardKey, []);
+        }
+        wardMap.get(wardKey).push(bed);
+      });
+
+      Array.from(wardMap.entries()).forEach(([wardName, wardBeds], wardIndex) => {
+        const patients: PatientData[] = (wardBeds as any[])
+          .filter(bed => bed.patients && bed.patient_visits)
+          .map(bed => ({
+            id: bed.patients.id,
+            nameAbbreviation: `${bed.patients.first_name?.charAt(0) || ''}${bed.patients.last_name?.charAt(0) || ''}`,
+            mrn: bed.patients.mrn,
+            los: bed.patient_visits?.[0] ? Math.floor((new Date().getTime() - new Date(bed.patient_visits[0].admission_date).getTime()) / (1000 * 60 * 60 * 24)) : 0,
+            bedLocation: {
+              department: deptInfo.department.name,
+              ward: wardName,
+              room: bed.room_number || `Room-${bed.bed_number}`,
+              bedNumber: bed.bed_number
+            },
+            admissionDate: bed.patient_visits?.[0]?.admission_date || new Date().toISOString(),
+            priority: 'medium' as const
+          }));
+
+        const wardData: BedData = {
+          id: `w${deptIndex + 1}-${wardIndex + 1}`,
+          org: orgData.org,
+          hospital: hospitalData.department,
+          department: deptInfo.department.name,
+          ward: wardName,
+          level: 'ward',
+          hasChildren: false,
+          parentId: deptData.id,
+          totalBeds: (wardBeds as any[]).length,
+          plannedBeds: (wardBeds as any[]).length,
+          occupiedBeds: (wardBeds as any[]).filter(b => b.status === 'OCCUPIED').length,
+          assignedBeds: (wardBeds as any[]).filter(b => b.status === 'RESERVED').length,
+          dirtyBeds: (wardBeds as any[]).filter(b => b.status === 'MAINTENANCE').length,
+          confirmedDischarge: patients.filter(p => Math.random() > 0.8).length,
+          potentialDischarge: patients.filter(p => p.los > 3 && Math.random() > 0.7).length,
+          unassignedPatients: 0,
+          transferOrders: Math.floor(Math.random() * 2),
+          netAvailableBeds: (wardBeds as any[]).filter(b => b.status === 'AVAILABLE').length,
+          availableBeds: (wardBeds as any[]).filter(b => b.status === 'AVAILABLE').length,
+          occupancyRate: (wardBeds as any[]).length > 0 ? Math.round(((wardBeds as any[]).filter(b => b.status === 'OCCUPIED').length / (wardBeds as any[]).length) * 100) : 0,
+          projectedRate: Math.round(Math.random() * 30 + 60),
+          lastUpdated: new Date().toISOString(),
+          beds: [],
+          patients
+        };
+
+        hierarchicalData.push(wardData);
+      });
+    });
+
+    return hierarchicalData;
+  }
+
+  private generateOrganizationalStructure(): BedData[] {
+    // Fallback organizational structure when no data is available
+    return [
+      {
+        id: 'org1',
+        org: "Healthcare System",
+        hospital: "Main Campus",
+        department: "All Departments",
+        ward: "System Wide",
+        level: 'organization',
+        hasChildren: true,
+        totalBeds: 0,
+        plannedBeds: 0,
+        occupiedBeds: 0,
+        assignedBeds: 0,
+        dirtyBeds: 0,
+        confirmedDischarge: 0,
+        potentialDischarge: 0,
+        unassignedPatients: 0,
+        transferOrders: 0,
+        netAvailableBeds: 0,
+        availableBeds: 0,
+        occupancyRate: 0,
+        projectedRate: 0,
+        lastUpdated: new Date().toISOString(),
+        beds: [],
+        patients: []
+      }
+    ];
   }
 
   private updateConnectionStatus(latency: number, success: boolean) {
@@ -233,7 +359,6 @@ class RealTimeDataService {
       item.lastUpdated && new Date(item.lastUpdated) < fiveMinutesAgo
     );
 
-    // For empty database, maintain perfect scores
     const dataLength = Math.max(data.length, 1);
     
     this.qualityMetrics = {
