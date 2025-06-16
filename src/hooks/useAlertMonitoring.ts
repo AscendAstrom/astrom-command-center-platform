@@ -16,7 +16,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-1',
         condition: 'greater_than',
         threshold: 45,
-        isActive: true,
         triggerCount: 12,
         createdAt: new Date('2024-01-15'),
         cooldownMinutes: 30,
@@ -29,7 +28,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-2',
         condition: 'greater_than',
         threshold: 90,
-        isActive: true,
         triggerCount: 8,
         createdAt: new Date('2024-01-20'),
         cooldownMinutes: 60,
@@ -42,7 +40,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-3',
         condition: 'less_than',
         threshold: 25,
-        isActive: true,
         triggerCount: 15,
         createdAt: new Date('2024-02-01'),
         cooldownMinutes: 120,
@@ -55,7 +52,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-4',
         condition: 'greater_than',
         threshold: 5,
-        isActive: false,
         triggerCount: 3,
         createdAt: new Date('2024-02-10'),
         cooldownMinutes: 15,
@@ -73,7 +69,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-1',
         message: 'Emergency Department wait time has exceeded 45 minutes (current: 52 minutes)',
-        triggeredAt: new Date(Date.now() - 1800000), // 30 minutes ago
         acknowledgedAt: new Date(Date.now() - 900000), // 15 minutes ago
         resolvedAt: null,
         metadata: { currentWaitTime: 52, threshold: 45, department: 'Emergency' },
@@ -86,7 +81,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-2',
         message: 'ICU bed utilization at 94% - approaching critical capacity',
-        triggeredAt: new Date(Date.now() - 3600000), // 1 hour ago
         acknowledgedAt: new Date(Date.now() - 2700000), // 45 minutes ago
         resolvedAt: new Date(Date.now() - 1200000), // 20 minutes ago
         metadata: { currentUtilization: 94, threshold: 90, department: 'ICU' },
@@ -99,7 +93,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-3',
         message: 'Nursing staff count below recommended levels (22 active, 25 required)',
-        triggeredAt: new Date(Date.now() - 7200000), // 2 hours ago
         acknowledgedAt: null,
         resolvedAt: null,
         metadata: { currentStaff: 22, threshold: 25, shift: 'Day' },
