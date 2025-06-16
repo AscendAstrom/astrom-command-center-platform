@@ -179,7 +179,7 @@ class RealDataService {
       const revenue = transactions?.reduce((sum, t) => 
         t.transaction_type === 'PAYMENT' ? sum + (t.amount || 0) : sum, 0) || 0;
       const costs = transactions?.reduce((sum, t) => 
-        t.transaction_type === 'EXPENSE' ? sum + (t.amount || 0) : sum, 0) || 0;
+        t.transaction_type === 'CHARGE' ? sum + (t.amount || 0) : sum, 0) || 0;
       const profit = revenue - costs;
       const claimsCount = claims?.length || 0;
 
