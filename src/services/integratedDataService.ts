@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface IntegratedSystemMetrics {
@@ -14,6 +13,22 @@ export interface IntegratedSystemMetrics {
   automationRules: number;
   workflowExecutions: number;
   aiDecisions: number;
+  hospitalOperations: {
+    totalPatients: number;
+    bedUtilization: number;
+    avgWaitTime: number;
+    staffEfficiency: number;
+  };
+  dataIntegration: {
+    syncStatus: string;
+    dataQuality: number;
+  };
+  aiIntelligence: {
+    accuracy: number;
+  };
+  businessIntelligence: {
+    reportingHealth: number;
+  };
 }
 
 export class IntegratedDataService {
@@ -83,7 +98,24 @@ export class IntegratedDataService {
         alertsTriggered: 2,
         automationRules: 8,
         workflowExecutions: 45,
-        aiDecisions: 23
+        aiDecisions: 23,
+        hospitalOperations: {
+          totalPatients: data.beds.filter(b => b.patient_id).length,
+          bedUtilization: data.beds.length > 0 ? 
+            (data.beds.filter(b => b.status === 'OCCUPIED').length / data.beds.length) * 100 : 0,
+          avgWaitTime: data.summary.avgWaitTime,
+          staffEfficiency: 85
+        },
+        dataIntegration: {
+          syncStatus: 'healthy',
+          dataQuality: 95
+        },
+        aiIntelligence: {
+          accuracy: 92
+        },
+        businessIntelligence: {
+          reportingHealth: 88
+        }
       };
     } catch (error) {
       console.error('Error fetching system overview:', error);
@@ -99,7 +131,23 @@ export class IntegratedDataService {
         alertsTriggered: 0,
         automationRules: 0,
         workflowExecutions: 0,
-        aiDecisions: 0
+        aiDecisions: 0,
+        hospitalOperations: {
+          totalPatients: 0,
+          bedUtilization: 0,
+          avgWaitTime: 0,
+          staffEfficiency: 0
+        },
+        dataIntegration: {
+          syncStatus: 'error',
+          dataQuality: 0
+        },
+        aiIntelligence: {
+          accuracy: 0
+        },
+        businessIntelligence: {
+          reportingHealth: 0
+        }
       };
     }
   }

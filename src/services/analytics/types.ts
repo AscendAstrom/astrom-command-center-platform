@@ -1,8 +1,8 @@
 
 export interface ChartDataPoint {
-  time: string;
+  timestamp: string;
   value: number;
-  [key: string]: any;
+  label?: string;
 }
 
 export interface ChartData {
@@ -22,10 +22,10 @@ export interface EmergencyDepartmentData {
   avgWaitTime: number;
   bedUtilization: number;
   staffOnDuty: number;
-  criticalAlerts: number;
   triageQueue: number;
   criticalPatients: number;
-  lastUpdated: Date;
+  criticalAlerts: number;
+  lastUpdated: string;
 }
 
 export interface BedData {
@@ -38,35 +38,11 @@ export interface BedData {
 
 export interface StaffingData {
   total: number;
-  active: number;
   onDuty: number;
+  active: number;
   onCall: number;
-  scheduledNext: number;
   overtime: number;
-}
-
-export interface ClinicalData {
-  surgeries: {
-    total: number;
-    scheduled: number;
-    completed: number;
-    avgDuration: number;
-  };
-  vitals: {
-    monitored: number;
-    critical: number;
-    abnormal: number;
-  };
-  medications: {
-    adherence: number;
-    criticalMeds: number;
-    missedDoses: number;
-  };
-  labs: {
-    totalTests: number;
-    avgTurnaround: number;
-    criticalAlerts: number;
-  };
+  scheduledNext: number;
 }
 
 export interface EquipmentData {
@@ -76,91 +52,46 @@ export interface EquipmentData {
   maintenance: number;
 }
 
+export interface ClinicalData {
+  totalPatients: number;
+  activeTreatments: number;
+  completedProcedures: number;
+  pendingDischarges: number;
+}
+
 export interface FinancialData {
-  revenue: number;
-  revenuePerPatient: number;
-  monthlyGrowth: number;
-  yearOverYear: number;
+  dailyRevenue: number;
+  pendingBilling: number;
+  insuranceClaims: number;
+  costCenter: number;
 }
 
 export interface PerformanceData {
   throughput: number;
   efficiency: number;
-  bottlenecks: number;
+  turnaroundTime: number;
+  resourceUtilization: number;
 }
 
 export interface ClinicalOperationsData {
-  activeStaff: number;
-  scheduledProcedures: number;
-  resourceUtilization: number;
-  avgProcedureTime: number;
-  equipmentStatus: string;
-  lastUpdated: Date;
+  activeCases: number;
+  surgicalSchedule: number;
+  labResults: number;
+  imagingStudies: number;
 }
 
-export interface DataPipelineData {
-  activeSources: number;
-  processingSpeed: number;
-  errorRate: number;
-  dataQuality: number;
-  syncStatus: string;
-  lastUpdated: Date;
-}
-
-export interface BusinessData {
-  revenue: number;
-  revenueGrowth: number;
+export interface QualityMetricsData {
   patientSatisfaction: number;
-  operationalEfficiency: number;
-  costPerPatient: number;
-  lastUpdated: Date;
-}
-
-export interface AIMetricsData {
-  modelAccuracy: number;
-  automationSuccess: number;
-  decisionsSupported: number;
-  mlModelsActive: number;
-  predictionConfidence: number;
-  lastUpdated: Date;
+  safetyIncidents: number;
+  complianceScore: number;
+  qualityIndicators: number;
 }
 
 export interface SystemHealthData {
-  cpuUsage: number;
-  memoryUsage: number;
-  networkLatency: number;
   uptime: number;
-  securityScore: number;
-  lastUpdated: Date;
-}
-
-export interface QualityData {
-  incidents: number;
-  satisfaction: number;
-  safety: number;
-  overallScore: number;
-  patientSafety: number;
-  accreditations: Array<{
-    name: string;
-    status: string;
-    expiry: string;
-    score: number;
-    lastReview: string;
-  }>;
-  complianceAreas: Array<{
-    area: string;
-    compliance: number;
-    target: number;
-  }>;
-  upcomingActivities: Array<{
-    activity: string;
-    date: string;
-    type: string;
-  }>;
-  totalAccreditations: number;
-  activeCompliance: number;
-  daysToExpiry: number;
-  upcomingActivitiesCount: number;
+  performance: number;
+  alerts: number;
+  connectivity: number;
 }
 
 export interface AnalyticsData {
@@ -168,14 +99,11 @@ export interface AnalyticsData {
   emergencyDepartment: EmergencyDepartmentData;
   beds: BedData;
   staffing: StaffingData;
-  clinical: ClinicalData;
   equipment: EquipmentData;
+  clinical: ClinicalData;
   financial: FinancialData;
   performance: PerformanceData;
   clinicalOperations: ClinicalOperationsData;
-  dataPipeline: DataPipelineData;
-  business: BusinessData;
-  aiMetrics: AIMetricsData;
+  qualityMetrics: QualityMetricsData;
   systemHealth: SystemHealthData;
-  quality: QualityData;
 }

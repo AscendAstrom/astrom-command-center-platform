@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface CrossModuleData {
@@ -6,10 +5,26 @@ export interface CrossModuleData {
   analytics: any[];
   qualityMetrics: any[];
   predictions: any[];
-  astroScan?: any[];
-  astroBricks?: any[];
-  astroMetrics?: any[];
-  astroFlow?: any[];
+  astroScan: {
+    connectedSources: number;
+    dataQuality: number;
+    activeIngestions: number;
+  };
+  astroBricks: {
+    activePipelines: number;
+    dataModels: number;
+    schemaValidation: number;
+  };
+  astroMetrics: {
+    activeKPIs: number;
+    slaCompliance: number;
+    alertsTriggered: number;
+  };
+  astroFlow: {
+    automationRules: number;
+    workflowExecutions: number;
+    aiDecisions: number;
+  };
 }
 
 class CrossModuleIntegrationService {
@@ -118,10 +133,26 @@ class CrossModuleIntegrationService {
         analytics,
         qualityMetrics,
         predictions,
-        astroScan: [], // Mock data for astro modules
-        astroBricks: [],
-        astroMetrics: [],
-        astroFlow: []
+        astroScan: {
+          connectedSources: 5,
+          dataQuality: 95,
+          activeIngestions: 12
+        },
+        astroBricks: {
+          activePipelines: 3,
+          dataModels: 5,
+          schemaValidation: 98
+        },
+        astroMetrics: {
+          activeKPIs: 12,
+          slaCompliance: 94,
+          alertsTriggered: 2
+        },
+        astroFlow: {
+          automationRules: 8,
+          workflowExecutions: 45,
+          aiDecisions: 23
+        }
       };
     } catch (error) {
       console.error('Error getting cross-module data:', error);
@@ -130,10 +161,26 @@ class CrossModuleIntegrationService {
         analytics: [],
         qualityMetrics: [],
         predictions: [],
-        astroScan: [],
-        astroBricks: [],
-        astroMetrics: [],
-        astroFlow: []
+        astroScan: {
+          connectedSources: 0,
+          dataQuality: 0,
+          activeIngestions: 0
+        },
+        astroBricks: {
+          activePipelines: 0,
+          dataModels: 0,
+          schemaValidation: 0
+        },
+        astroMetrics: {
+          activeKPIs: 0,
+          slaCompliance: 0,
+          alertsTriggered: 0
+        },
+        astroFlow: {
+          automationRules: 0,
+          workflowExecutions: 0,
+          aiDecisions: 0
+        }
       };
     }
   }
