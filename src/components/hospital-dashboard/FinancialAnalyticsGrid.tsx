@@ -1,27 +1,20 @@
 
-import { RevenueAnalyticsTile } from "./tiles/financial/RevenueAnalyticsTile";
-import { CostManagementTile } from "./tiles/financial/CostManagementTile";
-import { BillingEfficiencyTile } from "./tiles/financial/BillingEfficiencyTile";
-import { InsuranceClaimsTile } from "./tiles/financial/InsuranceClaimsTile";
-import { ProfitabilityTile } from "./tiles/financial/ProfitabilityTile";
-import { BudgetVarianceTile } from "./tiles/financial/BudgetVarianceTile";
-import { PayerMixTile } from "./tiles/financial/PayerMixTile";
-import { FinancialForecastTile } from "./tiles/financial/FinancialForecastTile";
-import { ClaimDenialAnalysisTile } from "./tiles/financial/ClaimDenialAnalysisTile";
+import { Card, CardContent } from "@/components/ui/card";
+import { DollarSign } from "lucide-react";
 
 const FinancialAnalyticsGrid = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <RevenueAnalyticsTile />
-      <CostManagementTile />
-      <BillingEfficiencyTile />
-      <InsuranceClaimsTile />
-      <ClaimDenialAnalysisTile />
-      <ProfitabilityTile />
-      <BudgetVarianceTile />
-      <PayerMixTile />
-      <FinancialForecastTile />
-    </div>
+    <Card>
+      <CardContent className="p-12">
+        <div className="text-center space-y-4">
+          <DollarSign className="h-16 w-16 mx-auto text-muted-foreground/30" />
+          <h3 className="text-lg font-semibold text-muted-foreground">Financial Analytics Unavailable</h3>
+          <p className="text-muted-foreground/70">
+            Revenue analytics, cost management, billing efficiency, and financial forecasting will be available once hospital data is initialized.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

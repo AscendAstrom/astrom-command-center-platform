@@ -1,23 +1,20 @@
 
-import { QualityMetricsTile } from "./tiles/quality/QualityMetricsTile";
-import { ComplianceTrackingTile } from "./tiles/quality/ComplianceTrackingTile";
-import { RiskManagementTile } from "./tiles/quality/RiskManagementTile";
-import { AccreditationTile } from "./tiles/quality/AccreditationTile";
-import { QualityImprovementTile } from "./tiles/quality/QualityImprovementTile";
-import { ClinicalIndicatorsTile } from "./tiles/quality/ClinicalIndicatorsTile";
-import { PatientExperienceTile } from "./tiles/quality/PatientExperienceTile";
+import { Card, CardContent } from "@/components/ui/card";
+import { Shield } from "lucide-react";
 
 const QualityAnalyticsGrid = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <QualityMetricsTile />
-      <ComplianceTrackingTile />
-      <RiskManagementTile />
-      <AccreditationTile />
-      <QualityImprovementTile />
-      <ClinicalIndicatorsTile />
-      <PatientExperienceTile />
-    </div>
+    <Card>
+      <CardContent className="p-12">
+        <div className="text-center space-y-4">
+          <Shield className="h-16 w-16 mx-auto text-muted-foreground/30" />
+          <h3 className="text-lg font-semibold text-muted-foreground">Quality Analytics Unavailable</h3>
+          <p className="text-muted-foreground/70">
+            Quality metrics, compliance tracking, risk management, and improvement initiatives will be available once hospital data is initialized.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
