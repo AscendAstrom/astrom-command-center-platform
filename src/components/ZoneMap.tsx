@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -18,27 +17,40 @@ const ZoneMap = () => {
     const fetchZoneData = async () => {
       setLoading(true);
       try {
-        const { data: departments, error } = await supabase
+        // First get departments
+        const { data: departments, error: deptError } = await supabase
           .from('departments')
-          .select(`
-            id,
-            name,
-            capacity,
-            beds!inner(id, status)
-          `)
+          .select('id, name, capacity')
           .eq('is_active', true);
 
-        if (error) throw error;
+        if (deptError) {
+          console.error('Error fetching departments:', deptError);
+          setZones([]);
+          return;
+        }
 
         if (!departments || departments.length === 0) {
           setZones([]);
           return;
         }
 
-        const zoneData: Zone[] = departments.map(dept => {
-          const beds = Array.isArray(dept.beds) ? dept.beds : [];
-          const totalBeds = beds.length;
-          const occupiedBeds = beds.filter(bed => bed.status === 'OCCUPIED').length;
+        // Then get beds for each department
+        const zoneData: Zone[] = [];
+        
+        for (const dept of departments) {
+          const { data: beds, error: bedsError } = await supabase
+            .from('beds')
+            .select('id, status')
+            .eq('department_id', dept.id)
+            .is('deleted_at', null);
+
+          if (bedsError) {
+            console.error('Error fetching beds for department:', dept.id, bedsError);
+            continue;
+          }
+
+          const totalBeds = beds?.length || 0;
+          const occupiedBeds = beds?.filter(bed => bed.status === 'OCCUPIED').length || 0;
           const capacity = dept.capacity || totalBeds;
           const occupancyRate = capacity > 0 ? (occupiedBeds / capacity) * 100 : 0;
 
@@ -46,14 +58,14 @@ const ZoneMap = () => {
           if (occupancyRate >= 90) status = 'critical';
           else if (occupancyRate >= 75) status = 'busy';
 
-          return {
+          zoneData.push({
             id: dept.id,
             name: dept.name,
             entities: occupiedBeds,
             capacity,
             status
-          };
-        });
+          });
+        }
 
         setZones(zoneData);
       } catch (error) {

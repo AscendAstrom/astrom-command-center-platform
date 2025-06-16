@@ -1,172 +1,224 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Database, Hospital, Plus } from "lucide-react";
-import { DataSourceList } from "@/components/astro-scan/DataSourceList";
-import EnhancedBedManagementTable from "@/components/shared/EnhancedBedManagementTable";
-import { occupancyThresholds, emptyStateMessages } from "@/config/constants";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Database, Plus, RefreshCw, Activity, AlertTriangle, CheckCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { BedData } from "@/types/bedManagement";
+import { supabase } from '@/integrations/supabase/client';
+import { DataSourceList } from "./DataSourceList";
+import { IngestionDashboard } from "./IngestionDashboard";
+import MonitoringTabContent from "./MonitoringTabContent";
 
-interface SourcesTabContentProps {
-  onAddSourceClick: () => void;
-  dataSourceVersion: number;
-}
-
-const SourcesTabContent = ({ onAddSourceClick, dataSourceVersion }: SourcesTabContentProps) => {
-  const [bedData, setBedData] = useState<BedData[]>([]);
+const SourcesTabContent = () => {
+  const [bedData, setBedData] = useState({
+    total: 0,
+    occupied: 0,
+    available: 0,
+    maintenance: 0,
+    utilization: 0
+  });
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchBedData();
-  }, []);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
   const fetchBedData = async () => {
     try {
       setLoading(true);
-      const { data: beds, error } = await supabase
+      
+      // Fetch beds with their department information
+      const { data: beds, error: bedsError } = await supabase
         .from('beds')
         .select(`
-          *,
-          departments(name, code, type),
-          patients(first_name, last_name, mrn)
+          id,
+          status,
+          bed_number,
+          room_number,
+          departments!inner(id, name)
         `)
-        .is('deleted_at', null)
-        .limit(20);
+        .is('deleted_at', null);
 
-      if (error) throw error;
-
-      if (beds && beds.length > 0) {
-        const transformedData: BedData[] = beds.map((bed, index) => ({
-          id: bed.id,
-          org: "Healthcare Organization",
-          hospital: "Main Hospital", 
-          department: bed.departments?.name || "Unknown Department",
-          ward: `${bed.departments?.name || "Ward"}-${Math.floor(index / 10) + 1}`,
-          level: "room" as const,
-          totalBeds: 1,
-          plannedBeds: 1,
-          occupiedBeds: bed.status === 'OCCUPIED' ? 1 : 0,
-          assignedBeds: bed.status === 'RESERVED' ? 1 : 0, // Use RESERVED instead of ASSIGNED
-          dirtyBeds: bed.status === 'MAINTENANCE' ? 1 : 0, // Use MAINTENANCE instead of DIRTY
-          confirmedDischarge: 0,
-          potentialDischarge: 0,
-          unassignedPatients: 0,
-          transferOrders: 0,
-          netAvailableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-          availableBeds: bed.status === 'AVAILABLE' ? 1 : 0,
-          occupancyRate: bed.status === 'OCCUPIED' ? 100 : 0,
-          projectedRate: bed.status === 'OCCUPIED' ? 100 : Math.floor(Math.random() * 50),
-          hasChildren: false,
-          lastUpdated: new Date().toISOString()
-        }));
-        setBedData(transformedData);
-      } else {
-        setBedData([]);
+      if (bedsError) {
+        console.error('Error fetching beds:', bedsError);
+        // Set empty state instead of throwing
+        setBedData({
+          total: 0,
+          occupied: 0,
+          available: 0,
+          maintenance: 0,
+          utilization: 0
+        });
+        return;
       }
+
+      if (!beds || beds.length === 0) {
+        console.log('No beds found in database');
+        setBedData({
+          total: 0,
+          occupied: 0,
+          available: 0,
+          maintenance: 0,
+          utilization: 0
+        });
+        return;
+      }
+
+      // Calculate bed statistics
+      const total = beds.length;
+      const occupied = beds.filter(bed => bed.status === 'OCCUPIED').length;
+      const available = beds.filter(bed => bed.status === 'AVAILABLE').length;
+      const maintenance = beds.filter(bed => bed.status === 'MAINTENANCE').length;
+      const utilization = total > 0 ? Math.round((occupied / total) * 100) : 0;
+
+      setBedData({
+        total,
+        occupied,
+        available,
+        maintenance,
+        utilization
+      });
+
+      setLastUpdate(new Date());
     } catch (error) {
-      console.error('Error fetching bed data:', error);
-      setBedData([]);
+      console.error('Error in fetchBedData:', error);
+      setBedData({
+        total: 0,
+        occupied: 0,
+        available: 0,
+        maintenance: 0,
+        utilization: 0
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchBedData();
+
+    // Set up real-time subscription for bed updates
+    const channel = supabase
+      .channel('bed-status-updates')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'beds' },
+        (payload) => {
+          console.log('Bed status change detected:', payload);
+          fetchBedData(); // Refetch data when beds change
+        }
+      )
+      .subscribe();
+
+    // Refresh data every 30 seconds
+    const interval = setInterval(fetchBedData, 30000);
+
+    return () => {
+      channel.unsubscribe();
+      clearInterval(interval);
+    };
+  }, []);
+
+  const getUtilizationColor = (utilization: number) => {
+    if (utilization >= 90) return 'text-red-600 border-red-200 bg-red-50';
+    if (utilization >= 75) return 'text-orange-600 border-orange-200 bg-orange-50';
+    return 'text-green-600 border-green-200 bg-green-50';
+  };
+
+  const getUtilizationIcon = (utilization: number) => {
+    if (utilization >= 90) return <AlertTriangle className="h-4 w-4" />;
+    if (utilization >= 75) return <Activity className="h-4 w-4" />;
+    return <CheckCircle className="h-4 w-4" />;
+  };
+
   return (
-    <Card className="bg-card/80 border-border backdrop-blur-sm">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <Database className="h-5 w-5 text-blue-400" />
-              Connected Data Sources
-            </CardTitle>
-            <CardDescription>
-              Manage and configure healthcare data sources with automated discovery
-            </CardDescription>
-          </div>
-          <Button onClick={onAddSourceClick}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Source
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <DataSourceList key={dataSourceVersion} />
-
-        {/* Real Bed Management Data Sources */}
-        <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
-          <div className="flex items-center gap-2 mb-4">
-            <Hospital className="h-5 w-5 text-green-400" />
-            <h3 className="text-lg font-semibold text-foreground">Connected Bed Management System</h3>
-            <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Live Data</Badge>
-          </div>
-          <p className="text-muted-foreground mb-6">
-            Real-time bed management data from your connected healthcare systems. 
-            Features live updates, status tracking, and comprehensive monitoring capabilities.
-          </p>
-
-          {/* Features Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-muted/50 rounded-lg border border-blue-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span className="font-medium text-foreground text-sm">Real-time Updates</span>
+    <div className="space-y-6">
+      {/* Connected Bed Management Status */}
+      <Card className="bg-gradient-to-r from-blue-500/10 to-green-500/10 border-blue-500/20">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-blue-500/10 rounded-lg">
+                <Database className="h-6 w-6 text-blue-500" />
               </div>
-              <div className="text-xs text-muted-foreground">
-                Live synchronization with your bed management database
+              <div>
+                <CardTitle className="text-foreground">Connected Bed Management System</CardTitle>
+                <CardDescription>Real-time bed occupancy and status monitoring</CardDescription>
               </div>
             </div>
-            <div className="p-4 bg-muted/50 rounded-lg border border-green-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="font-medium text-foreground text-sm">Status Monitoring</span>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Track bed availability, occupancy, and maintenance status
-              </div>
-            </div>
-            <div className="p-4 bg-muted/50 rounded-lg border border-orange-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
-                <span className="font-medium text-foreground text-sm">Quality Assurance</span>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Data validation and quality monitoring
-              </div>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400 mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading bed management data...</p>
-            </div>
-          ) : bedData.length > 0 ? (
-            <EnhancedBedManagementTable 
-              data={bedData} 
-              showArabicNames={true}
-              thresholds={occupancyThresholds}
-            />
-          ) : (
-            <div className="mt-4 p-6 bg-muted/30 rounded-lg text-center">
-              <div className="w-12 h-12 mx-auto rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                <Hospital className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <h4 className="font-semibold text-foreground mb-2">No Bed Data Available</h4>
-              <p className="text-muted-foreground text-sm mb-4">
-                {emptyStateMessages.noBedData}
-              </p>
-              <Button variant="outline" size="sm" onClick={fetchBedData}>
-                Retry Connection
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                Live Connected
+              </Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchBedData}
+                disabled={loading}
+                className="gap-2"
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
               </Button>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">{loading ? '...' : bedData.total}</div>
+              <div className="text-sm text-muted-foreground">Total Beds</div>
+            </div>
+            <div className="text-center p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
+              <div className="text-2xl font-bold text-red-600">{loading ? '...' : bedData.occupied}</div>
+              <div className="text-sm text-muted-foreground">Occupied</div>
+            </div>
+            <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">{loading ? '...' : bedData.available}</div>
+              <div className="text-sm text-muted-foreground">Available</div>
+            </div>
+            <div className="text-center p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">{loading ? '...' : bedData.maintenance}</div>
+              <div className="text-sm text-muted-foreground">Maintenance</div>
+            </div>
+            <div className="text-center p-4 rounded-lg">
+              <Badge variant="outline" className={getUtilizationColor(bedData.utilization)}>
+                {getUtilizationIcon(bedData.utilization)}
+                <span className="ml-1">{loading ? '...' : bedData.utilization}% Occupied</span>
+              </Badge>
+              <div className="text-sm text-muted-foreground mt-1">Utilization</div>
+            </div>
+          </div>
+          
+          <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+            <div className="text-sm text-muted-foreground">
+              <strong>System Status:</strong> Connected to live bed management database • 
+              Last updated: {lastUpdate.toLocaleTimeString()} • 
+              Real-time sync enabled
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Sources Management */}
+      <Tabs defaultValue="sources" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="sources">Data Sources</TabsTrigger>
+          <TabsTrigger value="ingestion">Ingestion</TabsTrigger>
+          <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="sources" className="space-y-4">
+          <DataSourceList />
+        </TabsContent>
+
+        <TabsContent value="ingestion" className="space-y-4">
+          <IngestionDashboard />
+        </TabsContent>
+
+        <TabsContent value="monitoring" className="space-y-4">
+          <MonitoringTabContent />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
