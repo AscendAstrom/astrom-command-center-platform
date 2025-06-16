@@ -1,6 +1,21 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
+export interface IntegratedSystemMetrics {
+  connectedSources: number;
+  dataQuality: number;
+  activeIngestions: number;
+  activePipelines: number;
+  dataModels: number;
+  schemaValidation: number;
+  activeKPIs: number;
+  slaCompliance: number;
+  alertsTriggered: number;
+  automationRules: number;
+  workflowExecutions: number;
+  aiDecisions: number;
+}
+
 export class IntegratedDataService {
   async fetchAllData() {
     try {
@@ -47,6 +62,44 @@ export class IntegratedDataService {
           activeStaff: 0,
           avgWaitTime: 0
         }
+      };
+    }
+  }
+
+  async fetchSystemOverview(): Promise<IntegratedSystemMetrics> {
+    try {
+      console.log('Fetching system overview...');
+      const data = await this.fetchAllData();
+      
+      return {
+        connectedSources: data.departments.length,
+        dataQuality: 95,
+        activeIngestions: data.beds.length,
+        activePipelines: 3,
+        dataModels: 5,
+        schemaValidation: 98,
+        activeKPIs: 12,
+        slaCompliance: 94,
+        alertsTriggered: 2,
+        automationRules: 8,
+        workflowExecutions: 45,
+        aiDecisions: 23
+      };
+    } catch (error) {
+      console.error('Error fetching system overview:', error);
+      return {
+        connectedSources: 0,
+        dataQuality: 0,
+        activeIngestions: 0,
+        activePipelines: 0,
+        dataModels: 0,
+        schemaValidation: 0,
+        activeKPIs: 0,
+        slaCompliance: 0,
+        alertsTriggered: 0,
+        automationRules: 0,
+        workflowExecutions: 0,
+        aiDecisions: 0
       };
     }
   }

@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface IntegratedData {
@@ -92,6 +91,44 @@ class DataIntegrationService {
     } catch (error) {
       console.error('Error processing real-time updates:', error);
       throw error;
+    }
+  }
+
+  async initializeHospitalSystem() {
+    try {
+      console.log('Initializing hospital system...');
+      
+      // Get basic hospital data
+      const [
+        { data: beds },
+        { data: staff },
+        { data: departments },
+        { data: equipment }
+      ] = await Promise.all([
+        supabase.from('beds').select('*').limit(50),
+        supabase.from('staff').select('*').eq('is_active', true).limit(30),
+        supabase.from('departments').select('*').eq('is_active', true),
+        supabase.from('equipment').select('*').limit(100)
+      ]);
+
+      return {
+        beds: beds || [],
+        staff: staff || [],
+        departments: departments || [],
+        equipment: equipment || [],
+        status: 'initialized',
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error initializing hospital system:', error);
+      return {
+        beds: [],
+        staff: [],
+        departments: [],
+        equipment: [],
+        status: 'error',
+        timestamp: new Date().toISOString()
+      };
     }
   }
 }
