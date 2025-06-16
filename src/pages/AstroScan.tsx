@@ -22,12 +22,10 @@ const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
-  const [dataSourceVersion, setDataSourceVersion] = useState(0);
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
     toast.success("Data source added successfully!");
-    setDataSourceVersion(v => v + 1);
   };
 
   const handleTabChange = (value: string) => {
@@ -57,13 +55,7 @@ const AstroScan = () => {
           </TabsList>
 
           <TabsContent value="sources" className="space-y-6">
-            <SourcesTabContent
-              dataSourceVersion={dataSourceVersion}
-              onAddSourceClick={() => {
-                setIsWizardOpen(true);
-                toast.info("Opening data source wizard...");
-              }} 
-            />
+            <SourcesTabContent />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
