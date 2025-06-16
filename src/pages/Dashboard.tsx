@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, BarChart3, Settings, Brain } from "lucide-react";
@@ -7,7 +8,6 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AISummaryPanel from "@/components/analytics/AISummaryPanel";
 import { dataPopulationService } from "@/services/dataPopulationService";
 import EmptyStateMessage from "@/components/hospital-dashboard/EmptyStateMessage";
-import DashboardLayout from "@/components/DashboardLayout";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("hospital");
@@ -34,73 +34,65 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-        </div>
-      </DashboardLayout>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+      </div>
     );
   }
 
   // Show empty state if no data exists
   if (dataStatus?.isEmpty || dataStatus?.totalRecords === 0) {
-    return (
-      <DashboardLayout>
-        <EmptyStateMessage onDataInitialized={checkDataStatus} />
-      </DashboardLayout>
-    );
+    return <EmptyStateMessage onDataInitialized={checkDataStatus} />;
   }
 
   return (
-    <DashboardLayout>
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Hospital Management Dashboard</h1>
-            <p className="text-muted-foreground">
-              Real-time monitoring and management of hospital operations
-            </p>
-          </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Hospital Management Dashboard</h1>
+          <p className="text-muted-foreground">
+            Real-time monitoring and management of hospital operations
+          </p>
         </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="hospital" className="flex items-center gap-2">
-              <Building2 className="h-4 w-4" />
-              Hospital Operations
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="ai-summary" className="flex items-center gap-2">
-              <Brain className="h-4 w-4" />
-              AI Insights
-            </TabsTrigger>
-            <TabsTrigger value="admin" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Administration
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="hospital" className="space-y-6">
-            <HospitalDashboard />
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-6">
-            <AnalyticsDashboard />
-          </TabsContent>
-
-          <TabsContent value="ai-summary" className="space-y-6">
-            <AISummaryPanel />
-          </TabsContent>
-
-          <TabsContent value="admin" className="space-y-6">
-            <AdminDashboard />
-          </TabsContent>
-        </Tabs>
       </div>
-    </DashboardLayout>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="hospital" className="flex items-center gap-2">
+            <Building2 className="h-4 w-4" />
+            Hospital Operations
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="ai-summary" className="flex items-center gap-2">
+            <Brain className="h-4 w-4" />
+            AI Insights
+          </TabsTrigger>
+          <TabsTrigger value="admin" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Administration
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="hospital" className="space-y-6">
+          <HospitalDashboard />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <AnalyticsDashboard />
+        </TabsContent>
+
+        <TabsContent value="ai-summary" className="space-y-6">
+          <AISummaryPanel />
+        </TabsContent>
+
+        <TabsContent value="admin" className="space-y-6">
+          <AdminDashboard />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
 import { UserRole } from "@/components/astro-bricks/types";
 import { MetricsUserRole } from "@/components/astro-metrics/types";
-import DashboardLayout from "@/components/DashboardLayout";
 
 // Helper function to map UserRole to MetricsUserRole
 const mapUserRoleToMetricsUserRole = (userRole: UserRole | null): MetricsUserRole | null => {
@@ -50,8 +49,8 @@ const AstroMetrics = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
-        <div className="p-6">
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto">
           <div className="animate-pulse">
             <div className="h-8 bg-muted rounded w-1/4 mb-4"></div>
             <div className="h-4 bg-muted rounded w-1/2 mb-8"></div>
@@ -61,69 +60,67 @@ const AstroMetrics = () => {
             </div>
           </div>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   const metricsUserRole = mapUserRoleToMetricsUserRole(userRole);
 
   return (
-    <DashboardLayout>
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto">
-          <AstroMetricsHeader />
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        <AstroMetricsHeader />
 
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 bg-muted/50">
-              <TabsTrigger value="kpi-builder" className="data-[state=active]:bg-orange-500/20">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                KPI Builder
-              </TabsTrigger>
-              <TabsTrigger value="dictionary" className="data-[state=active]:bg-blue-500/20">
-                <Target className="h-4 w-4 mr-2" />
-                KPI Dictionary
-              </TabsTrigger>
-              <TabsTrigger value="sla-config" className="data-[state=active]:bg-green-500/20">
-                <Target className="h-4 w-4 mr-2" />
-                SLA Configuration
-              </TabsTrigger>
-              <TabsTrigger value="alerts" className="data-[state=active]:bg-red-500/20">
-                <Bell className="h-4 w-4 mr-2" />
-                Alerts Manager
-              </TabsTrigger>
-              <TabsTrigger value="access" className="data-[state=active]:bg-purple-500/20">
-                <Shield className="h-4 w-4 mr-2" />
-                Access Control
-              </TabsTrigger>
-            </TabsList>
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+            <TabsTrigger value="kpi-builder" className="data-[state=active]:bg-orange-500/20">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              KPI Builder
+            </TabsTrigger>
+            <TabsTrigger value="dictionary" className="data-[state=active]:bg-blue-500/20">
+              <Target className="h-4 w-4 mr-2" />
+              KPI Dictionary
+            </TabsTrigger>
+            <TabsTrigger value="sla-config" className="data-[state=active]:bg-green-500/20">
+              <Target className="h-4 w-4 mr-2" />
+              SLA Configuration
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="data-[state=active]:bg-red-500/20">
+              <Bell className="h-4 w-4 mr-2" />
+              Alerts Manager
+            </TabsTrigger>
+            <TabsTrigger value="access" className="data-[state=active]:bg-purple-500/20">
+              <Shield className="h-4 w-4 mr-2" />
+              Access Control
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="kpi-builder" className="space-y-6">
-              <KPIBuilderTab userRole={metricsUserRole} />
-            </TabsContent>
+          <TabsContent value="kpi-builder" className="space-y-6">
+            <KPIBuilderTab userRole={metricsUserRole} />
+          </TabsContent>
 
-            <TabsContent value="dictionary" className="space-y-6">
-              <KPIDictionaryTab userRole={metricsUserRole} />
-            </TabsContent>
+          <TabsContent value="dictionary" className="space-y-6">
+            <KPIDictionaryTab userRole={metricsUserRole} />
+          </TabsContent>
 
-            <TabsContent value="sla-config" className="space-y-6">
-              <SLAConfigurationTab userRole={metricsUserRole} />
-            </TabsContent>
+          <TabsContent value="sla-config" className="space-y-6">
+            <SLAConfigurationTab userRole={metricsUserRole} />
+          </TabsContent>
 
-            <TabsContent value="alerts" className="space-y-6">
-              <AlertsManagerTab userRole={metricsUserRole} />
-            </TabsContent>
+          <TabsContent value="alerts" className="space-y-6">
+            <AlertsManagerTab userRole={metricsUserRole} />
+          </TabsContent>
 
-            <TabsContent value="access" className="space-y-6">
-              <AccessControlTab userRole={metricsUserRole} />
-            </TabsContent>
-          </Tabs>
+          <TabsContent value="access" className="space-y-6">
+            <AccessControlTab userRole={metricsUserRole} />
+          </TabsContent>
+        </Tabs>
 
-          <div className="mt-8">
-            <AIMetricsRolesSection />
-          </div>
+        <div className="mt-8">
+          <AIMetricsRolesSection />
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
