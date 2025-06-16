@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -28,9 +27,17 @@ const AstroScan = () => {
   const initializeSystem = async () => {
     setIsInitializing(true);
     try {
+      // Initialize hospital system with cross-module integration
       await dataIntegrationService.initializeHospitalSystem();
+      
+      // Initialize cross-module integration for Phase 3
+      const { integratedDataService } = await import('@/services/integratedDataService');
+      await integratedDataService.initializeFullSystemIntegration();
+      
+      toast.success('All systems integrated and operational!');
     } catch (error) {
       console.error('System initialization failed:', error);
+      toast.error('System initialization failed');
     } finally {
       setIsInitializing(false);
     }
@@ -53,10 +60,12 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         {isInitializing && (
-          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/50 to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
             <div className="flex items-center gap-2">
               <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-              <span className="text-blue-700 dark:text-blue-300">Initializing hospital management system with real data...</span>
+              <span className="text-blue-700 dark:text-blue-300">
+                Initializing integrated hospital management system with cross-module connectivity...
+              </span>
             </div>
           </div>
         )}
@@ -81,9 +90,10 @@ const AstroScan = () => {
             <SourcesTabContent
               dataSourceVersion={dataSourceVersion}
               onAddSourceClick={() => {
-              setIsWizardOpen(true);
-              toast.info("Opening data source wizard...");
-            }} />
+                setIsWizardOpen(true);
+                toast.info("Opening data source wizard...");
+              }} 
+            />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
@@ -92,6 +102,11 @@ const AstroScan = () => {
 
           <TabsContent value="monitoring" className="space-y-6">
             <MonitoringTabContent />
+            
+            {/* Add Integrated System Overview */}
+            <div className="mt-8">
+              <IntegratedSystemOverview />
+            </div>
             
             <div className="space-y-6 mt-8">
               <PhaseThreeSection />
