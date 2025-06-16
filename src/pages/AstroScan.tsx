@@ -25,13 +25,15 @@ const AstroScan = () => {
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
   const { initializeWorkflow } = useWorkflowIntegration();
 
-  const handleDataSourceAdded = async (sourceData: any) => {
+  const handleDataSourceAdded = async () => {
     setIsWizardOpen(false);
     
-    // Initialize AI workflow for the new data source
+    // Initialize AI workflow for the new data source with mock data
     try {
-      await initializeWorkflow(sourceData.id, sourceData.name);
-      console.log(`AI workflow initialized for ${sourceData.name}`);
+      const mockSourceId = `source_${Date.now()}`;
+      const mockSourceName = `Data Source ${new Date().toLocaleTimeString()}`;
+      await initializeWorkflow(mockSourceId, mockSourceName);
+      console.log(`AI workflow initialized for ${mockSourceName}`);
     } catch (error) {
       console.error('Failed to initialize AI workflow:', error);
     }
