@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,12 +9,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { DataSourceList } from "./DataSourceList";
 import { IngestionDashboard } from "./IngestionDashboard";
 import MonitoringTabContent from "./MonitoringTabContent";
+import { useDataSources } from "@/hooks/useDataSources";
 
 interface SourcesTabContentProps {
   onAddDataSource?: () => void;
 }
 
 const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
+  const { dataSources, loading: dataSourcesLoading, refetch } = useDataSources();
   const [bedData, setBedData] = useState({
     total: 0,
     occupied: 0,
@@ -42,7 +45,6 @@ const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
 
       if (bedsError) {
         console.error('Error fetching beds:', bedsError);
-        // Set empty state instead of throwing
         setBedData({
           total: 0,
           occupied: 0,
@@ -105,7 +107,7 @@ const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
         { event: '*', schema: 'public', table: 'beds' },
         (payload) => {
           console.log('Bed status change detected:', payload);
-          fetchBedData(); // Refetch data when beds change
+          fetchBedData();
         }
       )
       .subscribe();
@@ -131,6 +133,11 @@ const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
     return <CheckCircle className="h-4 w-4" />;
   };
 
+  const handleRefreshAll = () => {
+    fetchBedData();
+    refetch();
+  };
+
   return (
     <div className="space-y-6">
       {/* Connected Bed Management Status */}
@@ -154,11 +161,11 @@ const SourcesTabContent = ({ onAddDataSource }: SourcesTabContentProps) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={fetchBedData}
-                disabled={loading}
+                onClick={handleRefreshAll}
+                disabled={loading || dataSourcesLoading}
                 className="gap-2"
               >
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${(loading || dataSourcesLoading) ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
             </div>

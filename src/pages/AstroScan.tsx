@@ -22,10 +22,13 @@ const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
     toast.success("Data source added successfully!");
+    // Force a refresh of the data sources list
+    setRefreshKey(prev => prev + 1);
   };
 
   const handleTabChange = (value: string) => {
@@ -58,7 +61,7 @@ const AstroScan = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="sources" className="space-y-6">
+          <TabsContent value="sources" className="space-y-6" key={refreshKey}>
             <SourcesTabContent onAddDataSource={handleAddDataSource} />
           </TabsContent>
 

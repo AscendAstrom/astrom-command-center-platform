@@ -13,8 +13,8 @@ export const useDataSources = () => {
   const generateMockDataSources = (): DataSource[] => {
     return [
       {
-        id: '1',
-        name: 'Saudi MOH FHIR Gateway',
+        id: 'mock-1',
+        name: 'Saudi MOH FHIR Gateway (Demo)',
         type: 'FHIR',
         status: 'CONNECTED',
         ingestion_mode: 'REAL_TIME',
@@ -24,8 +24,8 @@ export const useDataSources = () => {
         last_error: null
       },
       {
-        id: '2',
-        name: 'Riyadh General Hospital EHR',
+        id: 'mock-2',
+        name: 'Riyadh General Hospital EHR (Demo)',
         type: 'EPIC',
         status: 'CONNECTED',
         ingestion_mode: 'BATCH',
@@ -35,8 +35,8 @@ export const useDataSources = () => {
         last_error: null
       },
       {
-        id: '3',
-        name: 'King Fahd Hospital Labs',
+        id: 'mock-3',
+        name: 'King Fahd Hospital Labs (Demo)',
         type: 'HL7',
         status: 'CONNECTED',
         ingestion_mode: 'REAL_TIME',
@@ -44,195 +44,22 @@ export const useDataSources = () => {
         records_count: 1250000,
         last_sync: new Date(Date.now() - 180000).toISOString(),
         last_error: null
-      },
-      {
-        id: '4',
-        name: 'PACS Imaging Network',
-        type: 'API',
-        status: 'ERROR',
-        ingestion_mode: 'BATCH',
-        health_score: 87,
-        records_count: 450000,
-        last_sync: new Date(Date.now() - 3600000).toISOString(),
-        last_error: 'Connection timeout after 30 seconds'
-      },
-      {
-        id: '5',
-        name: 'MOH Financial Data Export',
-        type: 'CSV',
-        status: 'CONNECTED',
-        ingestion_mode: 'BATCH',
-        health_score: 92,
-        records_count: 125000,
-        last_sync: new Date(Date.now() - 86400000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '6',
-        name: 'Pharmacy Management System',
-        type: 'API',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 91,
-        records_count: 680000,
-        last_sync: new Date(Date.now() - 900000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '7',
-        name: 'Emergency Services Network',
-        type: 'HL7',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 95,
-        records_count: 320000,
-        last_sync: new Date(Date.now() - 240000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '8',
-        name: 'Insurance Claims Portal',
-        type: 'API',
-        status: 'PAUSED',
-        ingestion_mode: 'BATCH',
-        health_score: 75,
-        records_count: 95000,
-        last_sync: new Date(Date.now() - 7200000).toISOString(),
-        last_error: 'Scheduled maintenance mode'
-      },
-      {
-        id: '9',
-        name: 'National Health ID Registry',
-        type: 'FHIR',
-        status: 'CONNECTED',
-        ingestion_mode: 'BATCH',
-        health_score: 99,
-        records_count: 5200000,
-        last_sync: new Date(Date.now() - 900000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '10',
-        name: 'Jeddah Medical Center EHR',
-        type: 'EPIC',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 93,
-        records_count: 720000,
-        last_sync: new Date(Date.now() - 450000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '11',
-        name: 'Dammam Regional Labs Network',
-        type: 'HL7',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 97,
-        records_count: 890000,
-        last_sync: new Date(Date.now() - 120000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '12',
-        name: 'Mecca Pilgrimage Health System',
-        type: 'API',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 94,
-        records_count: 1800000,
-        last_sync: new Date(Date.now() - 360000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '13',
-        name: 'Telemedicine Platform Data',
-        type: 'API',
-        status: 'CONNECTED',
-        ingestion_mode: 'BATCH',
-        health_score: 88,
-        records_count: 340000,
-        last_sync: new Date(Date.now() - 1800000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '14',
-        name: 'Mental Health Services DB',
-        type: 'CSV',
-        status: 'SYNCING',
-        ingestion_mode: 'BATCH',
-        health_score: 85,
-        records_count: 180000,
-        last_sync: new Date(Date.now() - 3600000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '15',
-        name: 'Blood Bank Management System',
-        type: 'HL7',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 96,
-        records_count: 450000,
-        last_sync: new Date(Date.now() - 240000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '16',
-        name: 'Oncology Centers Network',
-        type: 'FHIR',
-        status: 'CONNECTED',
-        ingestion_mode: 'BATCH',
-        health_score: 92,
-        records_count: 275000,
-        last_sync: new Date(Date.now() - 1200000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '17',
-        name: 'Cardiac Surgery Registry',
-        type: 'API',
-        status: 'ERROR',
-        ingestion_mode: 'BATCH',
-        health_score: 78,
-        records_count: 85000,
-        last_sync: new Date(Date.now() - 7200000).toISOString(),
-        last_error: 'Authentication token expired'
-      },
-      {
-        id: '18',
-        name: 'Maternal Health Monitoring',
-        type: 'HL7',
-        status: 'CONNECTED',
-        ingestion_mode: 'REAL_TIME',
-        health_score: 95,
-        records_count: 520000,
-        last_sync: new Date(Date.now() - 180000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '19',
-        name: 'Public Health Surveillance',
-        type: 'CSV',
-        status: 'CONNECTED',
-        ingestion_mode: 'BATCH',
-        health_score: 90,
-        records_count: 1200000,
-        last_sync: new Date(Date.now() - 86400000).toISOString(),
-        last_error: null
-      },
-      {
-        id: '20',
-        name: 'Mobile Health App Analytics',
-        type: 'API',
-        status: 'PAUSED',
-        ingestion_mode: 'BATCH',
-        health_score: 82,
-        records_count: 2800000,
-        last_sync: new Date(Date.now() - 14400000).toISOString(),
-        last_error: 'Rate limit exceeded - awaiting reset'
       }
     ];
+  };
+
+  const transformDatabaseDataSource = (dbSource: any): DataSource => {
+    return {
+      id: dbSource.id,
+      name: dbSource.name,
+      type: dbSource.type,
+      status: dbSource.status as SyncStatus,
+      ingestion_mode: dbSource.ingestion_mode,
+      health_score: dbSource.health_score || 85,
+      records_count: dbSource.records_count || 0,
+      last_sync: dbSource.last_sync,
+      last_error: dbSource.last_error
+    };
   };
 
   const fetchDataSources = async () => {
@@ -240,28 +67,70 @@ export const useDataSources = () => {
       setLoading(true);
       setError(null);
 
-      // Always return mock data for now
-      const mockData = generateMockDataSources();
-      setDataSources(mockData);
+      // Always try to fetch real data first
+      const { data: realData, error: fetchError } = await supabase
+        .from('data_sources')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (fetchError) {
+        console.error('Error fetching data sources:', fetchError);
+        setError(fetchError.message);
+        
+        // Only fall back to mock data if there's an error and no user is authenticated
+        if (!user) {
+          const mockData = generateMockDataSources();
+          setDataSources(mockData);
+        } else {
+          setDataSources([]);
+        }
+        return;
+      }
+
+      // Transform real data
+      const transformedRealData = realData ? realData.map(transformDatabaseDataSource) : [];
+      
+      // If we have real data, use it
+      if (transformedRealData.length > 0) {
+        setDataSources(transformedRealData);
+      } else {
+        // Only show mock data for demo purposes when no real data exists
+        const mockData = generateMockDataSources();
+        setDataSources([...transformedRealData, ...mockData]);
+      }
+
     } catch (err) {
-      console.error('Error fetching data sources:', err);
+      console.error('Error in fetchDataSources:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
-      setDataSources([]);
+      
+      // Only show mock data as ultimate fallback
+      if (!user) {
+        const mockData = generateMockDataSources();
+        setDataSources(mockData);
+      } else {
+        setDataSources([]);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const updateDataSourceStatus = async (id: string, status: SyncStatus) => {
+    // Optimistically update the UI
+    setDataSources(prev => 
+      prev.map(source => 
+        source.id === id ? { ...source, status } : source
+      )
+    );
+
+    // Skip database update for mock data
+    if (id.startsWith('mock-')) {
+      return;
+    }
+
     if (!user) return;
 
     try {
-      setDataSources(prev => 
-        prev.map(source => 
-          source.id === id ? { ...source, status } : source
-        )
-      );
-
       const { error: updateError } = await supabase
         .from('data_sources')
         .update({ status })
@@ -269,6 +138,7 @@ export const useDataSources = () => {
 
       if (updateError) {
         console.error('Error updating data source status:', updateError);
+        // Revert optimistic update on error
         fetchDataSources();
       }
     } catch (err) {
@@ -278,11 +148,17 @@ export const useDataSources = () => {
   };
 
   const deleteDataSource = async (id: string) => {
+    // Skip deletion for mock data
+    if (id.startsWith('mock-')) {
+      return;
+    }
+
     if (!user) return;
 
-    try {
-      setDataSources(prev => prev.filter(source => source.id !== id));
+    // Optimistically remove from UI
+    setDataSources(prev => prev.filter(source => source.id !== id));
 
+    try {
       const { error: deleteError } = await supabase
         .from('data_sources')
         .delete()
@@ -290,6 +166,7 @@ export const useDataSources = () => {
 
       if (deleteError) {
         console.error('Error deleting data source:', deleteError);
+        // Revert optimistic update on error
         fetchDataSources();
       }
     } catch (err) {
@@ -301,17 +178,25 @@ export const useDataSources = () => {
   useEffect(() => {
     fetchDataSources();
 
+    // Set up real-time subscription for data_sources table
     const channel = supabase
-      .channel('public-data_sources-changes')
+      .channel('data-sources-realtime')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'data_sources' },
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'data_sources' 
+        },
         (payload) => {
-          console.log('Data source change detected, refetching...', payload);
+          console.log('Data source change detected:', payload.eventType, payload);
+          // Refetch data when any change occurs
           fetchDataSources();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Realtime subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
