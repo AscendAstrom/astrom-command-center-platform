@@ -54,25 +54,51 @@ class DataPopulationService {
 
   async checkDataStatus() {
     try {
+      // Check multiple key tables to determine if system has data
       const [
         { count: bedsCount },
         { count: staffCount },
         { count: departmentsCount },
-        { count: equipmentCount }
+        { count: equipmentCount },
+        { count: patientsCount },
+        { count: alertsCount }
       ] = await Promise.all([
         supabase.from('beds').select('*', { count: 'exact', head: true }),
         supabase.from('staff_schedules').select('*', { count: 'exact', head: true }),
         supabase.from('departments').select('*', { count: 'exact', head: true }),
-        supabase.from('equipment').select('*', { count: 'exact', head: true })
+        supabase.from('equipment').select('*', { count: 'exact', head: true }),
+        supabase.from('patients').select('*', { count: 'exact', head: true }),
+        supabase.from('alerts').select('*', { count: 'exact', head: true })
       ]);
+
+      const totalRecords = (bedsCount || 0) + (staffCount || 0) + (departmentsCount || 0) + 
+                          (equipmentCount || 0) + (patientsCount || 0) + (alertsCount || 0);
+
+      const isEmpty = totalRecords === 0;
+      const isPopulated = totalRecords > 0;
+
+      console.log('Data status check:', {
+        beds: bedsCount || 0,
+        staff: staffCount || 0,
+        departments: departmentsCount || 0,
+        equipment: equipmentCount || 0,
+        patients: patientsCount || 0,
+        alerts: alertsCount || 0,
+        totalRecords,
+        isEmpty,
+        isPopulated
+      });
 
       return {
         beds: bedsCount || 0,
         staff: staffCount || 0,
         departments: departmentsCount || 0,
         equipment: equipmentCount || 0,
-        isPopulated: (bedsCount || 0) > 0 && (departmentsCount || 0) > 0,
-        isEmpty: (bedsCount || 0) === 0 && (departmentsCount || 0) === 0
+        patients: patientsCount || 0,
+        alerts: alertsCount || 0,
+        totalRecords,
+        isPopulated,
+        isEmpty
       };
     } catch (error) {
       console.error('Error checking data status:', error);
@@ -81,6 +107,9 @@ class DataPopulationService {
         staff: 0,
         departments: 0,
         equipment: 0,
+        patients: 0,
+        alerts: 0,
+        totalRecords: 0,
         isPopulated: false,
         isEmpty: true
       };
@@ -90,7 +119,7 @@ class DataPopulationService {
   async ensureDataExists() {
     const status = await this.checkDataStatus();
     
-    if (!status.isPopulated) {
+    if (status.isEmpty) {
       console.log('No data found, populating initial data...');
       await this.populateInitialData();
       return true;
@@ -122,7 +151,10 @@ class DataPopulationService {
         beds: status.beds,
         departments: status.departments,
         staff: status.staff,
-        equipment: status.equipment
+        equipment: status.equipment,
+        patients: status.patients,
+        alerts: status.alerts,
+        totalRecords: status.totalRecords
       }
     };
   }

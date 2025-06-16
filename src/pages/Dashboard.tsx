@@ -23,9 +23,10 @@ const Dashboard = () => {
       setIsLoading(true);
       const status = await dataPopulationService.checkDataStatus();
       setDataStatus(status);
+      console.log('Dashboard data status:', status);
     } catch (error) {
       console.error('Error checking data status:', error);
-      setDataStatus({ isEmpty: true, isPopulated: false });
+      setDataStatus({ isEmpty: true, isPopulated: false, totalRecords: 0 });
     } finally {
       setIsLoading(false);
     }
@@ -40,8 +41,8 @@ const Dashboard = () => {
   }
 
   // Show empty state if no data exists
-  if (dataStatus?.isEmpty) {
-    return <EmptyStateMessage />;
+  if (dataStatus?.isEmpty || dataStatus?.totalRecords === 0) {
+    return <EmptyStateMessage onDataInitialized={checkDataStatus} />;
   }
 
   return (

@@ -7,7 +7,11 @@ import { useState } from "react";
 import { dataPopulationService } from "@/services/dataPopulationService";
 import { toast } from "sonner";
 
-const EmptyStateMessage = () => {
+interface EmptyStateMessageProps {
+  onDataInitialized?: () => void;
+}
+
+const EmptyStateMessage = ({ onDataInitialized }: EmptyStateMessageProps) => {
   const [isInitializing, setIsInitializing] = useState(false);
 
   const handleInitializeData = async () => {
@@ -15,8 +19,13 @@ const EmptyStateMessage = () => {
     try {
       await dataPopulationService.populateInitialData();
       toast.success("Hospital data initialized successfully!");
-      // Trigger a page refresh to show the new data
-      window.location.reload();
+      // Trigger a callback to refresh the parent component
+      if (onDataInitialized) {
+        onDataInitialized();
+      } else {
+        // Fallback to page refresh if no callback provided
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Failed to initialize data:', error);
       toast.error("Failed to initialize hospital data");
@@ -32,16 +41,16 @@ const EmptyStateMessage = () => {
           <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
             <Database className="h-8 w-8 text-white" />
           </div>
-          <CardTitle className="text-2xl text-foreground">Clean System State</CardTitle>
+          <CardTitle className="text-2xl text-foreground">System Completely Cleared</CardTitle>
           <CardDescription className="text-lg">
-            The hospital management system has been reset to a clean state
+            All hospital operational data has been successfully removed from the system
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center space-y-4">
             <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50 px-4 py-2">
               <Sparkles className="h-4 w-4 mr-2" />
-              All Data Successfully Cleared
+              Complete Data Clearing Successful
             </Badge>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
@@ -65,23 +74,53 @@ const EmptyStateMessage = () => {
           </div>
 
           <div className="space-y-3">
-            <h3 className="font-semibold text-foreground">Next Steps:</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h3 className="font-semibold text-foreground">What was cleared:</h3>
+            <ul className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                Initialize with sample hospital data to begin operations
+                All patient records and visits
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                Configure departments, beds, and equipment inventory
+                Bed assignments and status
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                Set up staff schedules and operational workflows
+                Staff schedules and roles
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                Begin monitoring and analytics collection
+                Equipment and inventory
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                Financial transactions
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                Analytics and metrics
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold text-foreground">Ready for fresh start:</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                Initialize with new sample hospital data
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                Configure departments and operational workflows
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                Set up staff assignments and schedules
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                Begin real-time monitoring and analytics
               </li>
             </ul>
           </div>
@@ -100,7 +139,7 @@ const EmptyStateMessage = () => {
               ) : (
                 <>
                   <Database className="h-4 w-4 mr-2" />
-                  Initialize Hospital Data
+                  Initialize Fresh Hospital Data
                 </>
               )}
             </Button>
