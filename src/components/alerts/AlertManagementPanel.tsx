@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,6 @@ const AlertManagementPanel = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'URGENT': return 'bg-red-600 text-white border-red-600';
       case 'CRITICAL': return 'bg-red-500 text-white border-red-500';
       case 'HIGH': return 'bg-orange-500 text-white border-orange-500';
       case 'MEDIUM': return 'bg-yellow-500 text-white border-yellow-500';
@@ -35,7 +33,7 @@ const AlertManagementPanel = () => {
   };
 
   const getPriorityIcon = (priority: string) => {
-    if (priority === 'URGENT' || priority === 'CRITICAL') {
+    if (priority === 'CRITICAL' || priority === 'HIGH') {
       return <AlertTriangle className="h-4 w-4" />;
     }
     return <Bell className="h-4 w-4" />;
@@ -213,7 +211,6 @@ const AlertManagementPanel = () => {
                       <Switch
                         checked={rule.enabled}
                         onCheckedChange={(enabled) => handleToggleRule(rule.id, enabled)}
-                        size="sm"
                       />
                       <Button
                         variant="ghost"

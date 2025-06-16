@@ -1,4 +1,3 @@
-
 import { AnalyticsData } from '@/services/analytics/types';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +7,7 @@ export interface AlertRule {
   metric: string;
   condition: 'greater_than' | 'less_than' | 'equals' | 'not_equals';
   threshold: number;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | 'URGENT';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   message: string;
   enabled: boolean;
   cooldownMinutes: number;
@@ -19,7 +18,7 @@ export interface TriggeredAlert {
   metric: string;
   currentValue: number;
   threshold: number;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | 'URGENT';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   message: string;
   timestamp: Date;
 }
@@ -51,7 +50,7 @@ class AlertMonitoringService {
       metric: 'emergencyDepartment.criticalPatients',
       condition: 'greater_than',
       threshold: 5,
-      priority: 'URGENT',
+      priority: 'CRITICAL',
       message: 'High number of critical patients: {value}',
       enabled: true,
       cooldownMinutes: 5
@@ -150,8 +149,7 @@ class AlertMonitoringService {
       LOW: { duration: 3000, style: 'info' },
       MEDIUM: { duration: 5000, style: 'warning' },
       HIGH: { duration: 7000, style: 'error' },
-      CRITICAL: { duration: 10000, style: 'error' },
-      URGENT: { duration: 0, style: 'error' } // No auto-dismiss
+      CRITICAL: { duration: 0, style: 'error' } // No auto-dismiss
     };
 
     const config = priorityConfig[alert.priority];
@@ -177,7 +175,6 @@ class AlertMonitoringService {
   private async logAlert(alert: TriggeredAlert): Promise<void> {
     try {
       await supabase.from('alerts').insert({
-        title: `${alert.metric} Alert`,
         message: alert.message,
         severity: alert.priority,
         status: 'ACTIVE',
