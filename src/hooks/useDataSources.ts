@@ -99,6 +99,138 @@ export const useDataSources = () => {
         records_count: 95000,
         last_sync: new Date(Date.now() - 7200000).toISOString(),
         last_error: 'Scheduled maintenance mode'
+      },
+      {
+        id: '9',
+        name: 'National Health ID Registry',
+        type: 'FHIR',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
+        health_score: 99,
+        records_count: 5200000,
+        last_sync: new Date(Date.now() - 900000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '10',
+        name: 'Jeddah Medical Center EHR',
+        type: 'EPIC',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
+        health_score: 93,
+        records_count: 720000,
+        last_sync: new Date(Date.now() - 450000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '11',
+        name: 'Dammam Regional Labs Network',
+        type: 'HL7',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
+        health_score: 97,
+        records_count: 890000,
+        last_sync: new Date(Date.now() - 120000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '12',
+        name: 'Mecca Pilgrimage Health System',
+        type: 'API',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
+        health_score: 94,
+        records_count: 1800000,
+        last_sync: new Date(Date.now() - 360000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '13',
+        name: 'Telemedicine Platform Data',
+        type: 'API',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
+        health_score: 88,
+        records_count: 340000,
+        last_sync: new Date(Date.now() - 1800000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '14',
+        name: 'Mental Health Services DB',
+        type: 'CSV',
+        status: 'SYNCING',
+        ingestion_mode: 'BATCH',
+        health_score: 85,
+        records_count: 180000,
+        last_sync: new Date(Date.now() - 3600000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '15',
+        name: 'Blood Bank Management System',
+        type: 'HL7',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
+        health_score: 96,
+        records_count: 450000,
+        last_sync: new Date(Date.now() - 240000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '16',
+        name: 'Oncology Centers Network',
+        type: 'FHIR',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
+        health_score: 92,
+        records_count: 275000,
+        last_sync: new Date(Date.now() - 1200000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '17',
+        name: 'Cardiac Surgery Registry',
+        type: 'API',
+        status: 'ERROR',
+        ingestion_mode: 'BATCH',
+        health_score: 78,
+        records_count: 85000,
+        last_sync: new Date(Date.now() - 7200000).toISOString(),
+        last_error: 'Authentication token expired'
+      },
+      {
+        id: '18',
+        name: 'Maternal Health Monitoring',
+        type: 'HL7',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
+        health_score: 95,
+        records_count: 520000,
+        last_sync: new Date(Date.now() - 180000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '19',
+        name: 'Public Health Surveillance',
+        type: 'CSV',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
+        health_score: 90,
+        records_count: 1200000,
+        last_sync: new Date(Date.now() - 86400000).toISOString(),
+        last_error: null
+      },
+      {
+        id: '20',
+        name: 'Mobile Health App Analytics',
+        type: 'API',
+        status: 'PAUSED',
+        ingestion_mode: 'BATCH',
+        health_score: 82,
+        records_count: 2800000,
+        last_sync: new Date(Date.now() - 14400000).toISOString(),
+        last_error: 'Rate limit exceeded - awaiting reset'
       }
     ];
   };
