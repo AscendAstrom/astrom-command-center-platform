@@ -43,7 +43,7 @@ export const useAlertMonitoring = () => {
   };
 
   const getCooldownStatus = () => {
-    return {}; // No cooldown status
+    return new Map(); // Return empty Map instead of empty object
   };
 
   return {
