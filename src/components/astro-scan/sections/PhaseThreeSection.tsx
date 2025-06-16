@@ -11,7 +11,7 @@ const PhaseThreeSection = () => {
                     <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
                         <BrainCircuit className="h-6 w-6 text-white" />
                     </div>
-                    <span>Phase 3: Advanced ML Platform</span>
+                    <span>Advanced ML Platform</span>
                 </CardTitle>
                 <CardDescription>
                     A comprehensive platform to manage, train, and deploy machine learning models at scale, featuring a model registry, training job management, and a federated learning network.
