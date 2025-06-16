@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useDataSources } from "./hooks/useDataSources";
+import { useDataSources } from "@/hooks/useDataSources";
 import { DataSourceItem } from "./components/DataSourceItem";
 import { DataSourceLoadingSkeleton } from "./components/DataSourceLoadingSkeleton";
 import { Database, Plus } from "lucide-react";
