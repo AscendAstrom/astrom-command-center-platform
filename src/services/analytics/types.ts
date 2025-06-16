@@ -52,11 +52,40 @@ export interface EquipmentData {
   maintenance: number;
 }
 
+export interface VitalsData {
+  monitored: number;
+  critical: number;
+  abnormal: number;
+}
+
+export interface SurgeriesData {
+  total: number;
+  scheduled: number;
+  completed: number;
+  avgDuration: number;
+}
+
+export interface MedicationsData {
+  adherence: number;
+  criticalMeds: number;
+  missedDoses: number;
+}
+
+export interface LabsData {
+  totalTests: number;
+  avgTurnaround: number;
+  criticalAlerts: number;
+}
+
 export interface ClinicalData {
   totalPatients: number;
   activeTreatments: number;
   completedProcedures: number;
   pendingDischarges: number;
+  surgeries: SurgeriesData;
+  vitals: VitalsData;
+  medications: MedicationsData;
+  labs: LabsData;
 }
 
 export interface FinancialData {
@@ -64,6 +93,10 @@ export interface FinancialData {
   pendingBilling: number;
   insuranceClaims: number;
   costCenter: number;
+  revenue: number;
+  revenuePerPatient: number;
+  monthlyGrowth: number;
+  yearOverYear: number;
 }
 
 export interface PerformanceData {
@@ -71,6 +104,7 @@ export interface PerformanceData {
   efficiency: number;
   turnaroundTime: number;
   resourceUtilization: number;
+  bottlenecks: number;
 }
 
 export interface ClinicalOperationsData {
@@ -78,6 +112,27 @@ export interface ClinicalOperationsData {
   surgicalSchedule: number;
   labResults: number;
   imagingStudies: number;
+  activeStaff: number;
+  scheduledProcedures: number;
+  resourceUtilization: number;
+  avgProcedureTime: number;
+  equipmentStatus: string;
+  lastUpdated: Date;
+}
+
+export interface QualityData {
+  overallScore: number;
+  patientSafety: number;
+  satisfaction: number;
+  safety: number;
+  incidents: number;
+  accreditations: any[];
+  complianceAreas: any[];
+  upcomingActivities: any[];
+  totalAccreditations: number;
+  activeCompliance: number;
+  daysToExpiry: number;
+  upcomingActivitiesCount: number;
 }
 
 export interface QualityMetricsData {
@@ -92,6 +147,38 @@ export interface SystemHealthData {
   performance: number;
   alerts: number;
   connectivity: number;
+  cpuUsage: number;
+  memoryUsage: number;
+  networkLatency: number;
+  securityScore: number;
+  lastUpdated: Date;
+}
+
+export interface DataPipelineData {
+  activeSources: number;
+  processingSpeed: number;
+  errorRate: number;
+  dataQuality: number;
+  syncStatus: string;
+  lastUpdated: Date;
+}
+
+export interface BusinessData {
+  revenue: number;
+  revenueGrowth: number;
+  patientSatisfaction: number;
+  operationalEfficiency: number;
+  costPerPatient: number;
+  lastUpdated: Date;
+}
+
+export interface AIMetricsData {
+  modelAccuracy: number;
+  automationSuccess: number;
+  decisionsSupported: number;
+  mlModelsActive: number;
+  predictionConfidence: number;
+  lastUpdated: Date;
 }
 
 export interface AnalyticsData {
@@ -104,6 +191,10 @@ export interface AnalyticsData {
   financial: FinancialData;
   performance: PerformanceData;
   clinicalOperations: ClinicalOperationsData;
+  quality: QualityData;
   qualityMetrics: QualityMetricsData;
   systemHealth: SystemHealthData;
+  dataPipeline: DataPipelineData;
+  business: BusinessData;
+  aiMetrics: AIMetricsData;
 }

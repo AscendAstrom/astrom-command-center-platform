@@ -86,7 +86,7 @@ export class ChartDataService {
     // Update processing throughput
     this.chartHistory.processingThroughput.push({
       time: now,
-      throughput: newData.dataPipeline.processingSpeed,
+      throughput: newData.dataPipeline?.processingSpeed || 0,
       target: 1200
     });
     if (this.chartHistory.processingThroughput.length > maxPoints) {
@@ -96,7 +96,7 @@ export class ChartDataService {
     // Update data quality
     this.chartHistory.dataQuality.push({
       time: now,
-      quality: newData.dataPipeline.dataQuality,
+      quality: newData.dataPipeline?.dataQuality || 0,
       completeness: 97 + Math.random() * 3 - 1.5
     });
     if (this.chartHistory.dataQuality.length > maxPoints) {
@@ -108,7 +108,7 @@ export class ChartDataService {
         new Date().getHours() !== new Date(this.chartHistory.revenue[this.chartHistory.revenue.length - 1].time).getHours()) {
       this.chartHistory.revenue.push({
         time: now,
-        revenue: newData.business.revenue,
+        revenue: newData.business?.revenue || 0,
         target: 13000
       });
       if (this.chartHistory.revenue.length > maxPoints) {
@@ -119,9 +119,9 @@ export class ChartDataService {
     // Update system health
     this.chartHistory.systemHealth.push({
       time: now,
-      cpu: newData.systemHealth.cpuUsage,
-      memory: newData.systemHealth.memoryUsage,
-      network: newData.systemHealth.networkLatency
+      cpu: newData.systemHealth?.cpuUsage || 0,
+      memory: newData.systemHealth?.memoryUsage || 0,
+      network: newData.systemHealth?.networkLatency || 0
     });
     if (this.chartHistory.systemHealth.length > maxPoints) {
       this.chartHistory.systemHealth.shift();
@@ -132,8 +132,8 @@ export class ChartDataService {
         new Date().getHours() !== new Date(this.chartHistory.modelPerformance[this.chartHistory.modelPerformance.length - 1].time).getHours()) {
       this.chartHistory.modelPerformance.push({
         time: now,
-        accuracy: newData.aiMetrics.modelAccuracy,
-        confidence: newData.aiMetrics.predictionConfidence
+        accuracy: newData.aiMetrics?.modelAccuracy || 0,
+        confidence: newData.aiMetrics?.predictionConfidence || 0
       });
       if (this.chartHistory.modelPerformance.length > maxPoints) {
         this.chartHistory.modelPerformance.shift();

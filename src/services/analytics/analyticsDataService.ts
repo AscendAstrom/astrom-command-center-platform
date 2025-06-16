@@ -1,4 +1,3 @@
-
 import { AnalyticsData } from './types';
 import { ChartDataService } from './chartDataService';
 import { RealtimeDataService } from './realtimeDataService';
@@ -72,25 +71,54 @@ class AnalyticsDataService {
           totalPatients: realtimeData.beds.filter(b => b.patient_id).length,
           activeTreatments: 0,
           completedProcedures: 0,
-          pendingDischarges: 0
+          pendingDischarges: 0,
+          surgeries: { total: 0, scheduled: 0, completed: 0, avgDuration: 0 },
+          vitals: { monitored: 0, critical: 0, abnormal: 0 },
+          medications: { adherence: 0, criticalMeds: 0, missedDoses: 0 },
+          labs: { totalTests: 0, avgTurnaround: 0, criticalAlerts: 0 }
         },
         financial: {
           dailyRevenue: 0,
           pendingBilling: 0,
           insuranceClaims: 0,
-          costCenter: 0
+          costCenter: 0,
+          revenue: 0,
+          revenuePerPatient: 0,
+          monthlyGrowth: 0,
+          yearOverYear: 0
         },
         performance: {
           throughput: 0,
           efficiency: 0,
           turnaroundTime: 0,
-          resourceUtilization: 0
+          resourceUtilization: 0,
+          bottlenecks: 0
         },
         clinicalOperations: {
           activeCases: realtimeData.beds.filter(b => b.patient_id).length,
           surgicalSchedule: 0,
           labResults: 0,
-          imagingStudies: 0
+          imagingStudies: 0,
+          activeStaff: realtimeData.staff.filter(s => s.is_active).length,
+          scheduledProcedures: 0,
+          resourceUtilization: 0,
+          avgProcedureTime: 0,
+          equipmentStatus: 'optimal',
+          lastUpdated: new Date()
+        },
+        quality: {
+          overallScore: 0,
+          patientSafety: 0,
+          satisfaction: 0,
+          safety: 0,
+          incidents: 0,
+          accreditations: [],
+          complianceAreas: [],
+          upcomingActivities: [],
+          totalAccreditations: 0,
+          activeCompliance: 0,
+          daysToExpiry: 0,
+          upcomingActivitiesCount: 0
         },
         qualityMetrics: {
           patientSatisfaction: 0,
@@ -102,7 +130,36 @@ class AnalyticsDataService {
           uptime: 99.9,
           performance: 95,
           alerts: 0,
-          connectivity: 100
+          connectivity: 100,
+          cpuUsage: 35,
+          memoryUsage: 62,
+          networkLatency: 12,
+          securityScore: 95,
+          lastUpdated: new Date()
+        },
+        dataPipeline: {
+          activeSources: 3,
+          processingSpeed: 150,
+          errorRate: 0.5,
+          dataQuality: 95.2,
+          syncStatus: 'healthy',
+          lastUpdated: new Date()
+        },
+        business: {
+          revenue: 12000,
+          revenueGrowth: 12.5,
+          patientSatisfaction: 4.2,
+          operationalEfficiency: 87,
+          costPerPatient: 2500,
+          lastUpdated: new Date()
+        },
+        aiMetrics: {
+          modelAccuracy: 92.5,
+          automationSuccess: 89,
+          decisionsSupported: 23,
+          mlModelsActive: 5,
+          predictionConfidence: 88,
+          lastUpdated: new Date()
         }
       };
       
@@ -158,25 +215,54 @@ class AnalyticsDataService {
           totalPatients: realtimeData.beds.filter(b => b.patient_id).length,
           activeTreatments: 0,
           completedProcedures: 0,
-          pendingDischarges: 0
+          pendingDischarges: 0,
+          surgeries: { total: 0, scheduled: 0, completed: 0, avgDuration: 0 },
+          vitals: { monitored: 0, critical: 0, abnormal: 0 },
+          medications: { adherence: 0, criticalMeds: 0, missedDoses: 0 },
+          labs: { totalTests: 0, avgTurnaround: 0, criticalAlerts: 0 }
         },
         financial: {
           dailyRevenue: 0,
           pendingBilling: 0,
           insuranceClaims: 0,
-          costCenter: 0
+          costCenter: 0,
+          revenue: 0,
+          revenuePerPatient: 0,
+          monthlyGrowth: 0,
+          yearOverYear: 0
         },
         performance: {
           throughput: 0,
           efficiency: 0,
           turnaroundTime: 0,
-          resourceUtilization: 0
+          resourceUtilization: 0,
+          bottlenecks: 0
         },
         clinicalOperations: {
           activeCases: realtimeData.beds.filter(b => b.patient_id).length,
           surgicalSchedule: 0,
           labResults: 0,
-          imagingStudies: 0
+          imagingStudies: 0,
+          activeStaff: realtimeData.staff.filter(s => s.is_active).length,
+          scheduledProcedures: 0,
+          resourceUtilization: 0,
+          avgProcedureTime: 0,
+          equipmentStatus: 'optimal',
+          lastUpdated: new Date()
+        },
+        quality: {
+          overallScore: 0,
+          patientSafety: 0,
+          satisfaction: 0,
+          safety: 0,
+          incidents: 0,
+          accreditations: [],
+          complianceAreas: [],
+          upcomingActivities: [],
+          totalAccreditations: 0,
+          activeCompliance: 0,
+          daysToExpiry: 0,
+          upcomingActivitiesCount: 0
         },
         qualityMetrics: {
           patientSatisfaction: 0,
@@ -188,7 +274,36 @@ class AnalyticsDataService {
           uptime: 99.9,
           performance: 95,
           alerts: 0,
-          connectivity: 100
+          connectivity: 100,
+          cpuUsage: 35,
+          memoryUsage: 62,
+          networkLatency: 12,
+          securityScore: 95,
+          lastUpdated: new Date()
+        },
+        dataPipeline: {
+          activeSources: 3,
+          processingSpeed: 150,
+          errorRate: 0.5,
+          dataQuality: 95.2,
+          syncStatus: 'healthy',
+          lastUpdated: new Date()
+        },
+        business: {
+          revenue: 12000,
+          revenueGrowth: 12.5,
+          patientSatisfaction: 4.2,
+          operationalEfficiency: 87,
+          costPerPatient: 2500,
+          lastUpdated: new Date()
+        },
+        aiMetrics: {
+          modelAccuracy: 92.5,
+          automationSuccess: 89,
+          decisionsSupported: 23,
+          mlModelsActive: 5,
+          predictionConfidence: 88,
+          lastUpdated: new Date()
         }
       };
       

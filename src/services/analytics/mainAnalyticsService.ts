@@ -1,3 +1,4 @@
+
 import { AnalyticsData } from './types';
 import { bedMetricsService } from './bedMetricsService';
 import { patientMetricsService } from './patientMetricsService';
@@ -55,12 +56,25 @@ class MainAnalyticsService {
           triageQueue: patientMetrics.triageQueue,
           criticalPatients: patientMetrics.criticalPatients,
           criticalAlerts: patientMetrics.criticalPatients > 0 ? Math.floor(patientMetrics.criticalPatients * 0.1) : 0,
-          lastUpdated: currentDate
+          lastUpdated: currentDate.toISOString()
         },
         beds: bedMetrics,
         staffing: staffMetrics,
-        clinical: clinicalMetrics,
+        clinical: {
+          totalPatients: patientMetrics.activePatients,
+          activeTreatments: clinicalMetrics.surgeries.total,
+          completedProcedures: clinicalMetrics.surgeries.completed,
+          pendingDischarges: 0,
+          surgeries: clinicalMetrics.surgeries,
+          vitals: clinicalMetrics.vitals,
+          medications: clinicalMetrics.medications,
+          labs: clinicalMetrics.labs
+        },
         financial: {
+          dailyRevenue: revenue,
+          pendingBilling: 0,
+          insuranceClaims: 0,
+          costCenter: 0,
           revenue,
           revenuePerPatient,
           monthlyGrowth: patientMetrics.activePatients > 0 ? 12.5 : 0,
@@ -68,12 +82,24 @@ class MainAnalyticsService {
         },
         equipment: equipmentMetrics,
         quality: qualityMetrics,
+        qualityMetrics: {
+          patientSatisfaction: qualityMetrics.satisfaction,
+          safetyIncidents: qualityMetrics.incidents,
+          complianceScore: qualityMetrics.overallScore,
+          qualityIndicators: qualityMetrics.totalAccreditations
+        },
         performance: {
           throughput: patientMetrics.activePatients > 0 ? 32 : 0,
           efficiency: patientMetrics.activePatients > 0 ? 87 : 0,
+          turnaroundTime: 0,
+          resourceUtilization: 0,
           bottlenecks: patientMetrics.activePatients > 0 ? 3 : 0
         },
         clinicalOperations: {
+          activeCases: patientMetrics.activePatients,
+          surgicalSchedule: 0,
+          labResults: 0,
+          imagingStudies: 0,
           activeStaff: staffMetrics.active,
           scheduledProcedures: clinicalMetrics.surgeries.total,
           resourceUtilization: bedMetrics.utilization,
@@ -106,10 +132,13 @@ class MainAnalyticsService {
           lastUpdated: currentDate
         },
         systemHealth: {
+          uptime: 99.8,
+          performance: 95,
+          alerts: 0,
+          connectivity: 100,
           cpuUsage: 35,
           memoryUsage: 62,
           networkLatency: 12,
-          uptime: 99.8,
           securityScore: 95,
           lastUpdated: currentDate
         }
@@ -145,7 +174,7 @@ class MainAnalyticsService {
         triageQueue: 0,
         criticalPatients: 0,
         criticalAlerts: 0,
-        lastUpdated: currentDate
+        lastUpdated: currentDate.toISOString()
       },
       beds: {
         total: 0,
@@ -163,12 +192,20 @@ class MainAnalyticsService {
         scheduledNext: 0
       },
       clinical: {
+        totalPatients: 0,
+        activeTreatments: 0,
+        completedProcedures: 0,
+        pendingDischarges: 0,
         surgeries: { total: 0, scheduled: 0, completed: 0, avgDuration: 0 },
         vitals: { monitored: 0, critical: 0, abnormal: 0 },
         medications: { adherence: 0, criticalMeds: 0, missedDoses: 0 },
         labs: { totalTests: 0, avgTurnaround: 0, criticalAlerts: 0 }
       },
       financial: {
+        dailyRevenue: 0,
+        pendingBilling: 0,
+        insuranceClaims: 0,
+        costCenter: 0,
         revenue: 0,
         revenuePerPatient: 0,
         monthlyGrowth: 0,
@@ -194,12 +231,24 @@ class MainAnalyticsService {
         daysToExpiry: 0,
         upcomingActivitiesCount: 0
       },
+      qualityMetrics: {
+        patientSatisfaction: 0,
+        safetyIncidents: 0,
+        complianceScore: 0,
+        qualityIndicators: 0
+      },
       performance: {
         throughput: 0,
         efficiency: 0,
+        turnaroundTime: 0,
+        resourceUtilization: 0,
         bottlenecks: 0
       },
       clinicalOperations: {
+        activeCases: 0,
+        surgicalSchedule: 0,
+        labResults: 0,
+        imagingStudies: 0,
         activeStaff: 0,
         scheduledProcedures: 0,
         resourceUtilization: 0,
@@ -232,10 +281,13 @@ class MainAnalyticsService {
         lastUpdated: currentDate
       },
       systemHealth: {
+        uptime: 0,
+        performance: 0,
+        alerts: 0,
+        connectivity: 0,
         cpuUsage: 0,
         memoryUsage: 0,
         networkLatency: 0,
-        uptime: 0,
         securityScore: 0,
         lastUpdated: currentDate
       }
