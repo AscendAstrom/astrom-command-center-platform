@@ -299,8 +299,8 @@ const RealtimeDashboard = () => {
                     <span className="font-medium">{analyticsData?.emergencyDepartment?.totalPatients || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">Total Admissions</span>
-                    <span className="font-medium">{analyticsData?.emergencyDepartment?.totalAdmissions || 0}</span>
+                    <span className="text-sm">Triage Queue</span>
+                    <span className="font-medium">{analyticsData?.emergencyDepartment?.triageQueue || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Critical Patients</span>
