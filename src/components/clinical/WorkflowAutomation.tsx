@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -64,13 +63,15 @@ const WorkflowAutomation = () => {
         return;
       }
 
-      // Transform database data to workflow format
+      // Transform database data to workflow format with proper type conversion
       const realWorkflows: WorkflowRule[] = (automationRules || []).map(rule => ({
         id: rule.id,
         name: rule.name,
         description: rule.description || '',
         trigger: JSON.stringify(rule.trigger_conditions),
-        actions: Array.isArray(rule.actions) ? rule.actions : [JSON.stringify(rule.actions)],
+        actions: Array.isArray(rule.actions) 
+          ? rule.actions.map(action => typeof action === 'string' ? action : JSON.stringify(action))
+          : [JSON.stringify(rule.actions)],
         isActive: rule.status === 'ACTIVE',
         executionCount: rule.execution_count || 0,
         lastExecuted: rule.last_executed,
@@ -279,7 +280,7 @@ const WorkflowAutomation = () => {
                       <div className="flex flex-wrap gap-1">
                         {workflow.actions.map((action, index) => (
                           <Badge key={index} variant="secondary" className="text-xs">
-                            {typeof action === 'string' ? action : JSON.stringify(action)}
+                            {action}
                           </Badge>
                         ))}
                       </div>
