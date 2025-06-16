@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { DataPipeline } from '../types';
@@ -42,7 +41,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'epic-source-1',
     target_schema: { format: 'FHIR', version: 'R4' },
-    transformation_rules: { mappings: 'epic_to_fhir' },
     created_by: 'system',
     created_at: '2024-01-15T08:00:00Z',
     updated_at: '2024-06-15T14:30:00Z'
@@ -63,7 +61,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'lab-source-1',
     target_schema: { format: 'normalized', version: '1.0' },
-    transformation_rules: { quality_rules: 'lab_standards' },
     created_by: 'system',
     created_at: '2024-02-01T10:00:00Z',
     updated_at: '2024-06-14T16:45:00Z'
@@ -83,7 +80,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'billing-source-1',
     target_schema: { format: 'financial_metrics', version: '2.0' },
-    transformation_rules: { calculations: 'revenue_analytics' },
     created_by: 'admin',
     created_at: '2024-03-10T12:00:00Z',
     updated_at: '2024-06-16T09:15:00Z'
@@ -104,7 +100,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'bed-management-1',
     target_schema: { format: 'operational', version: '1.5' },
-    transformation_rules: { ml_predictions: 'capacity_model' },
     created_by: 'operations',
     created_at: '2024-01-20T14:00:00Z',
     updated_at: '2024-06-16T11:20:00Z'
@@ -124,7 +119,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'pharmacy-source-1',
     target_schema: { format: 'safety_monitoring', version: '1.0' },
-    transformation_rules: { safety_checks: 'comprehensive' },
     created_by: 'clinical_team',
     created_at: '2024-06-10T16:30:00Z',
     updated_at: '2024-06-15T14:00:00Z'
@@ -144,7 +138,6 @@ const samplePipelines: DataPipeline[] = [
     ],
     source_id: 'rtls-source-1',
     target_schema: { format: 'flow_analytics', version: '1.0' },
-    transformation_rules: { analytics: 'patient_flow' },
     created_by: 'analytics_team',
     created_at: '2024-01-05T09:00:00Z',
     updated_at: '2024-05-30T13:45:00Z'
