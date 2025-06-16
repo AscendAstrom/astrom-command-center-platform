@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Settings, Hospital, Brain, Shield, Zap, TrendingUp } from "lucide-react";
+import { Settings, Hospital, Brain, Shield, Zap, TrendingUp, CheckCircle } from "lucide-react";
 import AdvancedMonitoringPanel from "@/components/astro-scan/AdvancedMonitoringPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { emptyStateMessages } from "@/config/constants";

@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity } from "lucide-react";
+import { Activity, CheckCircle } from "lucide-react";
 import { IngestionDashboard } from "@/components/astro-scan/IngestionDashboard";
 import { AIPipelineGenerator } from "@/components/astro-scan/AIPipelineGenerator";
 import AIRolesSection from "@/components/astro-scan/sections/AIRolesSection";
