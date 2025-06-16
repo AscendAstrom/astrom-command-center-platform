@@ -123,7 +123,7 @@ export class RealtimeDataService {
     const { data: beds } = await supabase
       .from('beds')
       .select('status')
-      .eq('deleted_at', null);
+      .is('deleted_at', null);
 
     const total = beds?.length || 0;
     const occupied = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
@@ -260,7 +260,8 @@ export class RealtimeDataService {
       patientSatisfaction: 4.2 + Math.random() * 0.8,
       operationalEfficiency: 85 + Math.random() * 15,
       costPerPatient: 2500 + Math.random() * 1000,
-      revenueChart: []
+      revenueChart: [],
+      lastUpdated: new Date()
     };
   }
 
@@ -304,7 +305,8 @@ export class RealtimeDataService {
       .limit(24);
 
     return data?.map((item, index) => ({
-      time: new Date(item.arrival_time).getHours(),
+      time: new Date(item.arrival_time).getHours().toString(),
+      value: item.total_wait_minutes || 0,
       waitTime: item.total_wait_minutes || 0,
       patients: Math.floor(Math.random() * 10) + 1
     })) || [];
@@ -313,7 +315,8 @@ export class RealtimeDataService {
   private async fetchPatientFlowChart() {
     const hours = Array.from({ length: 24 }, (_, i) => i);
     return hours.map(hour => ({
-      time: hour,
+      time: hour.toString(),
+      value: Math.floor(Math.random() * 8) + 2,
       admissions: Math.floor(Math.random() * 8) + 2,
       discharges: Math.floor(Math.random() * 6) + 1
     }));
@@ -327,6 +330,8 @@ export class RealtimeDataService {
 
     const roles = ['NURSE', 'PHYSICIAN', 'RECEPTIONIST'];
     return roles.map(role => ({
+      time: role,
+      value: schedules?.filter(s => s.role === role).length || 0,
       role,
       scheduled: schedules?.filter(s => s.role === role).length || 0,
       actual: Math.floor(Math.random() * 5) + 8
@@ -336,31 +341,32 @@ export class RealtimeDataService {
   private async fetchBedChart() {
     const hours = Array.from({ length: 24 }, (_, i) => i);
     return hours.map(hour => ({
-      time: hour,
+      time: hour.toString(),
+      value: 65 + Math.floor(Math.random() * 25),
       occupied: 65 + Math.floor(Math.random() * 25),
       available: 35 - Math.floor(Math.random() * 25)
     }));
   }
 
   private async fetchSurgicalCount() {
-    const { data } = await supabase
+    const { count } = await supabase
       .from('surgical_outcomes')
-      .select('id', { count: 'exact', head: true });
-    return data || 0;
+      .select('*', { count: 'exact', head: true });
+    return count || 0;
   }
 
   private async fetchLabTestCount() {
-    const { data } = await supabase
+    const { count } = await supabase
       .from('lab_tests')
-      .select('id', { count: 'exact', head: true });
-    return data || 0;
+      .select('*', { count: 'exact', head: true });
+    return count || 0;
   }
 
   private async fetchDataSourceCount() {
-    const { data } = await supabase
+    const { count } = await supabase
       .from('data_sources')
-      .select('id', { count: 'exact', head: true });
-    return data || 0;
+      .select('*', { count: 'exact', head: true });
+    return count || 0;
   }
 
   private getEmptyAnalyticsData(): AnalyticsData {

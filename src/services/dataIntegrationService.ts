@@ -58,16 +58,52 @@ export class DataIntegrationService {
   }
 
   private async checkTableCount(tableName: string): Promise<number> {
-    const { count, error } = await supabase
-      .from(tableName)
-      .select('*', { count: 'exact', head: true });
-    
-    if (error) {
+    try {
+      // Use a more specific approach for table counting
+      let count = 0;
+      
+      switch (tableName) {
+        case 'departments':
+          const { count: deptCount } = await supabase.from('departments').select('*', { count: 'exact', head: true });
+          count = deptCount || 0;
+          break;
+        case 'beds':
+          const { count: bedCount } = await supabase.from('beds').select('*', { count: 'exact', head: true });
+          count = bedCount || 0;
+          break;
+        case 'patients':
+          const { count: patientCount } = await supabase.from('patients').select('*', { count: 'exact', head: true });
+          count = patientCount || 0;
+          break;
+        case 'staff':
+          const { count: staffCount } = await supabase.from('staff').select('*', { count: 'exact', head: true });
+          count = staffCount || 0;
+          break;
+        case 'equipment':
+          const { count: equipCount } = await supabase.from('equipment').select('*', { count: 'exact', head: true });
+          count = equipCount || 0;
+          break;
+        case 'patient_visits':
+          const { count: visitCount } = await supabase.from('patient_visits').select('*', { count: 'exact', head: true });
+          count = visitCount || 0;
+          break;
+        case 'wait_times':
+          const { count: waitCount } = await supabase.from('wait_times').select('*', { count: 'exact', head: true });
+          count = waitCount || 0;
+          break;
+        case 'alerts':
+          const { count: alertCount } = await supabase.from('alerts').select('*', { count: 'exact', head: true });
+          count = alertCount || 0;
+          break;
+        default:
+          count = 0;
+      }
+      
+      return count;
+    } catch (error) {
       console.error(`Error checking ${tableName}:`, error);
       return 0;
     }
-    
-    return count || 0;
   }
 
   async syncRealTimeData() {
