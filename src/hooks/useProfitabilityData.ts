@@ -5,7 +5,7 @@ import { useFinancialData, useCostData } from "./useFinancialData";
 export interface ProfitabilityData {
   netProfit: number;
   profitMargin: number;
-  roi: number; // Mocked for now
+  roi: number;
   profitabilityHistory: { month: string; profit: number }[];
   departmentProfitability: { department: string; profit: number; margin: number; }[];
 }
@@ -23,6 +23,9 @@ export const useProfitabilityData = () => {
 
       const netProfit = financialData.totalRevenue - costData.totalCosts;
       const profitMargin = financialData.totalRevenue > 0 ? (netProfit / financialData.totalRevenue) * 100 : 0;
+      
+      // Calculate ROI based on revenue and costs
+      const roi = costData.totalCosts > 0 ? (netProfit / costData.totalCosts) * 100 : 0;
       
       const profitabilityHistory = financialData.revenueHistory.map((rev, index) => {
         const cost = costData.costTrendData[index];
@@ -44,7 +47,7 @@ export const useProfitabilityData = () => {
       return {
         netProfit,
         profitMargin: parseFloat(profitMargin.toFixed(1)),
-        roi: 12.8, // Mock data
+        roi: parseFloat(roi.toFixed(1)),
         profitabilityHistory,
         departmentProfitability,
       };

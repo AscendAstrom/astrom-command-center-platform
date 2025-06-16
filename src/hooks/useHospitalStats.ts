@@ -32,35 +32,50 @@ export const useHospitalStats = () => {
       try {
         setIsLoading(true);
         
-        // Fetch data from existing tables only
+        // Fetch data from real tables
         const [
           { data: beds },
           { data: staff },
-          { data: waitTimes }
+          { data: waitTimes },
+          { data: activeVisits },
+          { data: surveys },
+          { data: safetyAlerts }
         ] = await Promise.all([
           supabase.from('beds').select('*').is('deleted_at', null),
           supabase.from('staff').select('*').eq('is_active', true),
-          supabase.from('wait_times').select('*').gte('arrival_time', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+          supabase.from('wait_times').select('*').gte('arrival_time', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+          supabase.from('patient_visits').select('*').eq('status', 'ACTIVE'),
+          supabase.from('patient_surveys').select('overall_rating').not('overall_rating', 'is', null),
+          supabase.from('medication_safety_alerts').select('*').eq('status', 'ACTIVE').in('severity', ['HIGH', 'CRITICAL'])
         ]);
 
         const totalBeds = beds?.length || 0;
         const occupiedBeds = beds?.filter(bed => bed.status === 'OCCUPIED').length || 0;
         const availableBeds = beds?.filter(bed => bed.status === 'AVAILABLE').length || 0;
         const staffCount = staff?.length || 0;
+        const totalPatients = activeVisits?.length || 0;
         
         // Calculate average wait time from today's data
         const avgWaitTime = waitTimes?.length 
           ? waitTimes.reduce((sum, wt) => sum + (wt.total_wait_minutes || 0), 0) / waitTimes.length
           : 0;
 
+        // Calculate patient satisfaction from surveys
+        const patientSatisfaction = surveys?.length
+          ? (surveys.reduce((sum, s) => sum + s.overall_rating, 0) / surveys.length)
+          : 0;
+
+        // Critical cases from safety alerts
+        const criticalCases = safetyAlerts?.length || 0;
+
         setStats({
-          totalPatients: occupiedBeds,
+          totalPatients,
           activeBeds: totalBeds,
           availableRooms: availableBeds,
-          criticalCases: Math.floor(occupiedBeds * 0.1), // Mock 10% critical
+          criticalCases,
           staffOnDuty: staffCount,
           averageWaitTime: Math.round(avgWaitTime),
-          patientSatisfaction: 4.2, // Mock data
+          patientSatisfaction: Number(patientSatisfaction.toFixed(1)),
           occupancyRate: totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0,
         });
       } catch (err) {
@@ -72,6 +87,17 @@ export const useHospitalStats = () => {
     };
 
     fetchHospitalStats();
+    
+    // Set up real-time subscriptions for live updates
+    const channel = supabase.channel('hospital-stats')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'beds' }, fetchHospitalStats)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'patient_visits' }, fetchHospitalStats)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'staff' }, fetchHospitalStats)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return { stats, isLoading, error };

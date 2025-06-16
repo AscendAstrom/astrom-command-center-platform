@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface QualityMetrics {
   overallScore: number;
@@ -9,25 +10,52 @@ export interface QualityMetrics {
 }
 
 const getQualityMetricsData = async (): Promise<QualityMetrics> => {
-  // Since patient_surveys table doesn't exist, return mock data
-  const satisfactionScore = 82.5; // Mock satisfaction score
-  const activeIncidents = 2; // Mock active incidents
-  const patientSafetyScore = 95.0; // Mock safety score
-  
-  const overallScore = Math.round((satisfactionScore + patientSafetyScore) / 2);
+  try {
+    // Get patient satisfaction from surveys
+    const { data: surveys } = await supabase
+      .from('patient_surveys')
+      .select('overall_rating')
+      .not('overall_rating', 'is', null);
 
-  return {
-    overallScore: parseFloat(overallScore.toFixed(1)),
-    patientSafetyScore: parseFloat(patientSafetyScore.toFixed(1)),
-    satisfactionScore: parseFloat(satisfactionScore.toFixed(1)),
-    activeIncidents: activeIncidents,
-  };
+    const satisfactionScore = surveys && surveys.length > 0
+      ? (surveys.reduce((sum, s) => sum + s.overall_rating, 0) / surveys.length) * 20 // Convert 1-5 to percentage
+      : 0;
+
+    // Get safety incidents from alerts
+    const { data: safetyAlerts } = await supabase
+      .from('medication_safety_alerts')
+      .select('severity, status')
+      .eq('status', 'ACTIVE');
+
+    const activeIncidents = safetyAlerts?.length || 0;
+    
+    // Calculate safety score based on incidents (inverse relationship)
+    const patientSafetyScore = Math.max(0, 100 - (activeIncidents * 5));
+
+    // Calculate overall score as average
+    const overallScore = (satisfactionScore + patientSafetyScore) / 2;
+
+    return {
+      overallScore: Number(overallScore.toFixed(1)),
+      patientSafetyScore: Number(patientSafetyScore.toFixed(1)),
+      satisfactionScore: Number(satisfactionScore.toFixed(1)),
+      activeIncidents
+    };
+  } catch (error) {
+    console.error('Error fetching quality metrics:', error);
+    return {
+      overallScore: 0,
+      patientSafetyScore: 0,
+      satisfactionScore: 0,
+      activeIncidents: 0
+    };
+  }
 };
 
 export const useQualityMetricsData = () => {
   return useQuery({
     queryKey: ["quality_metrics_data"],
     queryFn: getQualityMetricsData,
-    refetchInterval: 60000,
+    refetchInterval: 60000, // Refetch every minute for safety data
   });
 };
