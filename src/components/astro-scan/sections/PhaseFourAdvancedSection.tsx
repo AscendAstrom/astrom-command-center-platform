@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ const PhaseFourAdvancedSection = () => {
             </div>
             <p className="text-sm text-muted-foreground mb-4">
               Advanced ML models predict patient surges, equipment failures, and resource needs 
-              with 95%+ accuracy, enabling proactive healthcare management.
+              with 95% accuracy, enabling proactive healthcare management.
             </p>
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
@@ -108,7 +109,7 @@ const PhaseFourAdvancedSection = () => {
               </div>
               <div className="flex justify-between">
                 <span>Learning Rate</span>
-                <Badge variant="outline" className="text-xs">+15% monthly</Badge>
+                <Badge variant="outline" className="text-xs">15% monthly</Badge>
               </div>
               <div className="flex justify-between">
                 <span>Data Privacy</span>
@@ -133,15 +134,15 @@ const PhaseFourAdvancedSection = () => {
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
                 <span>Model Accuracy</span>
-                <Badge variant="outline" className="text-xs">+12% improvement</Badge>
+                <Badge variant="outline" className="text-xs">12% improvement</Badge>
               </div>
               <div className="flex justify-between">
                 <span>Response Time</span>
-                <Badge variant="outline" className="text-xs">-45% faster</Badge>
+                <Badge variant="outline" className="text-xs">45% faster</Badge>
               </div>
               <div className="flex justify-between">
                 <span>Resource Usage</span>
-                <Badge variant="outline" className="text-xs">-23% reduction</Badge>
+                <Badge variant="outline" className="text-xs">23% reduction</Badge>
               </div>
             </div>
           </CardContent>
@@ -195,7 +196,7 @@ const PhaseFourAdvancedSection = () => {
               </div>
               <div className="flex justify-between">
                 <span>Latency</span>
-                <Badge variant="outline" className="text-xs">< 50ms</Badge>
+                <Badge variant="outline" className="text-xs">50ms</Badge>
               </div>
               <div className="flex justify-between">
                 <span>Uptime</span>
