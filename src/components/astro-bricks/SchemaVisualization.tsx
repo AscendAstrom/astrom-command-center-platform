@@ -20,11 +20,11 @@ export const SchemaVisualization = () => {
       name: 'patients',
       type: 'fact' as const,
       fields: [
-        { name: 'id', type: 'uuid', isPrimaryKey: true },
-        { name: 'first_name', type: 'text' },
-        { name: 'last_name', type: 'text' },
-        { name: 'date_of_birth', type: 'date' },
-        { name: 'medical_record_number', type: 'text' }
+        { name: 'id', type: 'uuid', isPrimaryKey: true, isForeignKey: false },
+        { name: 'first_name', type: 'text', isPrimaryKey: false, isForeignKey: false },
+        { name: 'last_name', type: 'text', isPrimaryKey: false, isForeignKey: false },
+        { name: 'date_of_birth', type: 'date', isPrimaryKey: false, isForeignKey: false },
+        { name: 'medical_record_number', type: 'text', isPrimaryKey: false, isForeignKey: false }
       ]
     },
     {
@@ -32,11 +32,11 @@ export const SchemaVisualization = () => {
       name: 'patient_visits',
       type: 'fact' as const,
       fields: [
-        { name: 'id', type: 'uuid', isPrimaryKey: true },
-        { name: 'patient_id', type: 'uuid', isForeignKey: true },
-        { name: 'admission_date', type: 'timestamp' },
-        { name: 'discharge_date', type: 'timestamp' },
-        { name: 'visit_type', type: 'text' }
+        { name: 'id', type: 'uuid', isPrimaryKey: true, isForeignKey: false },
+        { name: 'patient_id', type: 'uuid', isPrimaryKey: false, isForeignKey: true },
+        { name: 'admission_date', type: 'timestamp', isPrimaryKey: false, isForeignKey: false },
+        { name: 'discharge_date', type: 'timestamp', isPrimaryKey: false, isForeignKey: false },
+        { name: 'visit_type', type: 'text', isPrimaryKey: false, isForeignKey: false }
       ]
     },
     {
@@ -44,10 +44,10 @@ export const SchemaVisualization = () => {
       name: 'departments',
       type: 'dimension' as const,
       fields: [
-        { name: 'id', type: 'uuid', isPrimaryKey: true },
-        { name: 'name', type: 'text' },
-        { name: 'code', type: 'text' },
-        { name: 'type', type: 'text' }
+        { name: 'id', type: 'uuid', isPrimaryKey: true, isForeignKey: false },
+        { name: 'name', type: 'text', isPrimaryKey: false, isForeignKey: false },
+        { name: 'code', type: 'text', isPrimaryKey: false, isForeignKey: false },
+        { name: 'type', type: 'text', isPrimaryKey: false, isForeignKey: false }
       ]
     }
   ];
