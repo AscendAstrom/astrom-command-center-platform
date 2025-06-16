@@ -18,7 +18,7 @@ export const sampleAutomationRules: AutomationRule[] = [
     actions: [
       {
         id: '1',
-        type: 'email_notification',
+        type: 'email_alert',
         config: {
           recipients: ['ed-manager@hospital.sa', 'charge-nurse@hospital.sa'],
           subject: 'ED Surge Alert - Immediate Action Required',
@@ -72,7 +72,7 @@ export const sampleAutomationRules: AutomationRule[] = [
       },
       {
         id: '4',
-        type: 'email_notification',
+        type: 'email_alert',
         config: {
           recipients: ['bed-management@hospital.sa'],
           subject: 'New Bed Assignment - {{patient_name}}',
@@ -150,7 +150,7 @@ export const sampleAutomationRules: AutomationRule[] = [
     actions: [
       {
         id: '7',
-        type: 'sms_notification',
+        type: 'sms_alert',
         config: {
           recipients: ['{{attending_physician_phone}}', '{{resident_phone}}'],
           message: 'CRITICAL LAB RESULT: {{test_name}} = {{result_value}} for patient {{patient_name}}. Normal range: {{normal_range}}'
@@ -158,7 +158,7 @@ export const sampleAutomationRules: AutomationRule[] = [
       },
       {
         id: '8',
-        type: 'email_notification',
+        type: 'email_alert',
         config: {
           recipients: ['{{attending_physician_email}}'],
           subject: 'URGENT: Critical Lab Result - {{patient_name}}',
@@ -258,7 +258,7 @@ export const sampleAutomationRules: AutomationRule[] = [
       },
       {
         id: '12',
-        type: 'email_notification',
+        type: 'email_alert',
         config: {
           recipients: ['maintenance@hospital.sa', 'biomedical@hospital.sa'],
           subject: 'Preventive Maintenance Required - {{equipment_name}}',
