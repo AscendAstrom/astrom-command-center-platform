@@ -6,11 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import AstroScanPage from "./pages/AstroScanPage";
-import AstroBricksPage from "./pages/AstroBricksPage";
-import AstroMetricsPage from "./pages/AstroMetricsPage";
-import AstroFlowPage from "./pages/AstroFlowPage";
-import AstroViewPage from "./pages/AstroViewPage";
+import AstroScanPage from "./pages/AstroScan";
+import AstroBricksPage from "./pages/AstroBricks";
+import AstroMetricsPage from "./pages/AstroMetrics";
+import AstroFlowPage from "./pages/AstroFlow";
+import AstroViewPage from "./pages/AstroView";
 
 const queryClient = new QueryClient();
 
