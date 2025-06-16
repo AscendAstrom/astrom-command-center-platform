@@ -15,12 +15,11 @@ const AlertStatusWidget = ({ onOpenManagement }: AlertStatusWidgetProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const criticalAlertsCount = recentAlerts.filter(
-    alert => alert.priority === 'CRITICAL' || alert.priority === 'URGENT'
+    alert => alert.priority === 'CRITICAL' || alert.priority === 'HIGH'
   ).length;
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'URGENT': return 'bg-red-600 text-white';
       case 'CRITICAL': return 'bg-red-500 text-white';
       case 'HIGH': return 'bg-orange-500 text-white';
       case 'MEDIUM': return 'bg-yellow-500 text-white';

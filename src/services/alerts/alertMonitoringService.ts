@@ -175,6 +175,7 @@ class AlertMonitoringService {
   private async logAlert(alert: TriggeredAlert): Promise<void> {
     try {
       await supabase.from('alerts').insert({
+        title: `${alert.metric} Alert`,
         message: alert.message,
         severity: alert.priority,
         status: 'ACTIVE',
