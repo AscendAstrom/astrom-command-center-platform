@@ -37,7 +37,7 @@ export const WizardNavigation = ({
         <Button
           onClick={onSubmit}
           disabled={!canProceed}
-          className="gradient-bg-green hover:shadow-lg"
+          className="bg-green-600 hover:bg-green-700 text-white hover:shadow-lg"
         >
           <Play className="h-4 w-4 mr-2" />
           Deploy Source
@@ -46,7 +46,7 @@ export const WizardNavigation = ({
         <Button
           onClick={onNext}
           disabled={!canProceed}
-          className="gradient-bg-blue hover:shadow-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg"
         >
           Next
           <ChevronRight className="h-4 w-4 ml-2" />
