@@ -1,3 +1,4 @@
+
 import { Database } from '@/integrations/supabase/types';
 
 export type DataPipelineDAO = Database['public']['Tables']['data_pipelines']['Row'];
@@ -30,9 +31,10 @@ export interface SchemaRelationship {
 export interface PipelineStep {
   id: string;
   name: string;
-  type: 'extract' | 'transform' | 'load';
+  type: 'extract' | 'transform' | 'load' | 'validate' | 'enrich' | 'quality' | 'aggregate' | 'predict' | 'alert' | 'monitor' | 'track' | 'analyze' | 'report';
   params: Record<string, any>;
   order: number;
+  config?: Record<string, any>;
 }
 
 export type DataPipeline = Omit<DataPipelineDAO, 'transformation_rules' | 'id'> & {

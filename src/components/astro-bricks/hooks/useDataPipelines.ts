@@ -35,10 +35,10 @@ const samplePipelines: DataPipeline[] = [
     version: 3,
     schedule_cron: '*/15 * * * *',
     steps: [
-      { id: '1', type: 'extract', name: 'Extract Patient Data', config: { source: 'Epic EHR API' } },
-      { id: '2', type: 'transform', name: 'FHIR Transformation', config: { format: 'FHIR R4' } },
-      { id: '3', type: 'validate', name: 'Data Validation', config: { rules: ['required_fields', 'data_types'] } },
-      { id: '4', type: 'load', name: 'Load to Data Lake', config: { destination: 'Clinical Data Lake' } }
+      { id: '1', type: 'extract', name: 'Extract Patient Data', params: {}, order: 1, config: { source: 'Epic EHR API' } },
+      { id: '2', type: 'transform', name: 'FHIR Transformation', params: {}, order: 2, config: { format: 'FHIR R4' } },
+      { id: '3', type: 'validate', name: 'Data Validation', params: {}, order: 3, config: { rules: ['required_fields', 'data_types'] } },
+      { id: '4', type: 'load', name: 'Load to Data Lake', params: {}, order: 4, config: { destination: 'Clinical Data Lake' } }
     ],
     source_id: 'epic-source-1',
     target_schema: { format: 'FHIR', version: 'R4' },
@@ -55,11 +55,11 @@ const samplePipelines: DataPipeline[] = [
     version: 2,
     schedule_cron: '0 */2 * * *',
     steps: [
-      { id: '1', type: 'extract', name: 'Lab System Extract', config: { source: 'LIS API' } },
-      { id: '2', type: 'transform', name: 'Normalize Lab Values', config: { units: 'standard' } },
-      { id: '3', type: 'enrich', name: 'Reference Range Mapping', config: { ranges: 'clinical_standards' } },
-      { id: '4', type: 'quality', name: 'Quality Scoring', config: { threshold: 0.95 } },
-      { id: '5', type: 'load', name: 'Clinical Data Store', config: { destination: 'analytics_db' } }
+      { id: '1', type: 'extract', name: 'Lab System Extract', params: {}, order: 1, config: { source: 'LIS API' } },
+      { id: '2', type: 'transform', name: 'Normalize Lab Values', params: {}, order: 2, config: { units: 'standard' } },
+      { id: '3', type: 'enrich', name: 'Reference Range Mapping', params: {}, order: 3, config: { ranges: 'clinical_standards' } },
+      { id: '4', type: 'quality', name: 'Quality Scoring', params: {}, order: 4, config: { threshold: 0.95 } },
+      { id: '5', type: 'load', name: 'Clinical Data Store', params: {}, order: 5, config: { destination: 'analytics_db' } }
     ],
     source_id: 'lab-source-1',
     target_schema: { format: 'normalized', version: '1.0' },
@@ -76,10 +76,10 @@ const samplePipelines: DataPipeline[] = [
     version: 1,
     schedule_cron: '0 6 * * *',
     steps: [
-      { id: '1', type: 'extract', name: 'Billing Data Extract', config: { source: 'Financial System' } },
-      { id: '2', type: 'aggregate', name: 'Revenue Calculations', config: { period: 'daily' } },
-      { id: '3', type: 'transform', name: 'KPI Generation', config: { metrics: 'financial_kpis' } },
-      { id: '4', type: 'load', name: 'Executive Dashboard', config: { destination: 'reporting_db' } }
+      { id: '1', type: 'extract', name: 'Billing Data Extract', params: {}, order: 1, config: { source: 'Financial System' } },
+      { id: '2', type: 'aggregate', name: 'Revenue Calculations', params: {}, order: 2, config: { period: 'daily' } },
+      { id: '3', type: 'transform', name: 'KPI Generation', params: {}, order: 3, config: { metrics: 'financial_kpis' } },
+      { id: '4', type: 'load', name: 'Executive Dashboard', params: {}, order: 4, config: { destination: 'reporting_db' } }
     ],
     source_id: 'billing-source-1',
     target_schema: { format: 'financial_metrics', version: '2.0' },
@@ -96,11 +96,11 @@ const samplePipelines: DataPipeline[] = [
     version: 4,
     schedule_cron: '*/5 * * * *',
     steps: [
-      { id: '1', type: 'extract', name: 'Bed Status Extract', config: { source: 'Hospital Management System' } },
-      { id: '2', type: 'transform', name: 'Status Normalization', config: { mapping: 'bed_status_codes' } },
-      { id: '3', type: 'predict', name: 'Occupancy Forecasting', config: { model: 'bed_demand_ml' } },
-      { id: '4', type: 'alert', name: 'Capacity Alerts', config: { threshold: 0.9 } },
-      { id: '5', type: 'load', name: 'Operations Dashboard', config: { destination: 'real_time_db' } }
+      { id: '1', type: 'extract', name: 'Bed Status Extract', params: {}, order: 1, config: { source: 'Hospital Management System' } },
+      { id: '2', type: 'transform', name: 'Status Normalization', params: {}, order: 2, config: { mapping: 'bed_status_codes' } },
+      { id: '3', type: 'predict', name: 'Occupancy Forecasting', params: {}, order: 3, config: { model: 'bed_demand_ml' } },
+      { id: '4', type: 'alert', name: 'Capacity Alerts', params: {}, order: 4, config: { threshold: 0.9 } },
+      { id: '5', type: 'load', name: 'Operations Dashboard', params: {}, order: 5, config: { destination: 'real_time_db' } }
     ],
     source_id: 'bed-management-1',
     target_schema: { format: 'operational', version: '1.5' },
@@ -117,10 +117,10 @@ const samplePipelines: DataPipeline[] = [
     version: 1,
     schedule_cron: null,
     steps: [
-      { id: '1', type: 'extract', name: 'Medication Data', config: { source: 'Pharmacy System' } },
-      { id: '2', type: 'validate', name: 'Drug Interaction Check', config: { database: 'drug_interactions' } },
-      { id: '3', type: 'monitor', name: 'Adverse Event Detection', config: { ml_model: 'adr_detection' } },
-      { id: '4', type: 'alert', name: 'Safety Alerts', config: { priority: 'high' } }
+      { id: '1', type: 'extract', name: 'Medication Data', params: {}, order: 1, config: { source: 'Pharmacy System' } },
+      { id: '2', type: 'validate', name: 'Drug Interaction Check', params: {}, order: 2, config: { database: 'drug_interactions' } },
+      { id: '3', type: 'monitor', name: 'Adverse Event Detection', params: {}, order: 3, config: { ml_model: 'adr_detection' } },
+      { id: '4', type: 'alert', name: 'Safety Alerts', params: {}, order: 4, config: { priority: 'high' } }
     ],
     source_id: 'pharmacy-source-1',
     target_schema: { format: 'safety_monitoring', version: '1.0' },
@@ -137,10 +137,10 @@ const samplePipelines: DataPipeline[] = [
     version: 2,
     schedule_cron: '0 */4 * * *',
     steps: [
-      { id: '1', type: 'extract', name: 'Patient Movement Data', config: { source: 'RTLS System' } },
-      { id: '2', type: 'track', name: 'Journey Mapping', config: { algorithm: 'path_analysis' } },
-      { id: '3', type: 'analyze', name: 'Bottleneck Detection', config: { threshold: 'statistical' } },
-      { id: '4', type: 'report', name: 'Flow Optimization', config: { recommendations: 'ai_generated' } }
+      { id: '1', type: 'extract', name: 'Patient Movement Data', params: {}, order: 1, config: { source: 'RTLS System' } },
+      { id: '2', type: 'track', name: 'Journey Mapping', params: {}, order: 2, config: { algorithm: 'path_analysis' } },
+      { id: '3', type: 'analyze', name: 'Bottleneck Detection', params: {}, order: 3, config: { threshold: 'statistical' } },
+      { id: '4', type: 'report', name: 'Flow Optimization', params: {}, order: 4, config: { recommendations: 'ai_generated' } }
     ],
     source_id: 'rtls-source-1',
     target_schema: { format: 'flow_analytics', version: '1.0' },
