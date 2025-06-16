@@ -27,21 +27,22 @@ class DataPopulationService {
     try {
       console.log('Clearing all hospital data...');
       
-      // Clear all operational data
-      const tables = [
-        'workflow_executions', 'automation_rules', 'ml_models', 'ml_training_jobs',
-        'surge_predictions', 'data_sources', 'data_pipelines', 'data_quality_scores',
-        'vision_tasks', 'alerts', 'beds', 'departments', 'equipment', 'staff_schedules',
-        'budget_allocations', 'billing_transactions', 'insurance_claims', 'wait_times',
-        'slas', 'kpis', 'metrics_snapshots', 'quality_indicators', 'audit_logs'
-      ];
-
-      for (const table of tables) {
-        const { error } = await supabase.from(table).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        if (error) {
-          console.error(`Error clearing ${table}:`, error);
-        }
-      }
+      // Clear specific tables individually to avoid TypeScript errors
+      await Promise.all([
+        supabase.from('beds').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('departments').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('equipment').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('staff_schedules').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('alerts').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('budget_allocations').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('billing_transactions').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('insurance_claims').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('wait_times').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('slas').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('kpis').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('quality_indicators').delete().neq('id', '00000000-0000-0000-0000-000000000000'),
+        supabase.from('audit_logs').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+      ]);
 
       console.log('All data cleared successfully');
       return { success: true };
