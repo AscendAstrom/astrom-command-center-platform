@@ -35,7 +35,6 @@ const AstroScan = () => {
 
   const handleAddDataSource = () => {
     setIsWizardOpen(true);
-    toast.info("Opening data source wizard");
   };
 
   return (
@@ -90,10 +89,7 @@ const AstroScan = () => {
 
       {isWizardOpen && (
         <DataSourceWizard 
-          onClose={() => {
-            setIsWizardOpen(false);
-            toast.info("Data source wizard closed");
-          }}
+          onClose={() => setIsWizardOpen(false)}
           onDataSourceAdded={handleDataSourceAdded}
         />
       )}
