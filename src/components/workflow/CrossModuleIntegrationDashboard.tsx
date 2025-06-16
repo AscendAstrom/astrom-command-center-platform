@@ -76,15 +76,15 @@ const CrossModuleIntegrationDashboard = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-400">
-                {crossModuleData?.metrics.activeDataFlows || 0}
+                {crossModuleData?.workflows?.length || 0}
               </div>
-              <div className="text-xs text-muted-foreground">Data Flows</div>
+              <div className="text-xs text-muted-foreground">Active Workflows</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-cyan-400">
-                {crossModuleData?.metrics.latency || 0}ms
+                {crossModuleData?.astroBricks?.activePipelines || 0}
               </div>
-              <div className="text-xs text-muted-foreground">Avg Latency</div>
+              <div className="text-xs text-muted-foreground">Data Pipelines</div>
             </div>
           </div>
           <div className="mt-4 flex justify-between items-center">
@@ -382,22 +382,28 @@ const CrossModuleIntegrationDashboard = () => {
                   
                   <div className="p-3 bg-muted rounded-lg">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-500">99.7%</div>
-                      <div className="text-sm text-muted-foreground">Data Sync Accuracy</div>
+                      <div className="text-2xl font-bold text-green-500">
+                        {crossModuleData?.astroMetrics?.slaCompliance || 95}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">SLA Compliance</div>
                     </div>
                   </div>
 
                   <div className="p-3 bg-muted rounded-lg">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-500">1.2ms</div>
-                      <div className="text-sm text-muted-foreground">Average Latency</div>
+                      <div className="text-2xl font-bold text-blue-500">
+                        {crossModuleData?.astroScan?.dataQuality || 98}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">Data Quality Score</div>
                     </div>
                   </div>
 
                   <div className="p-3 bg-muted rounded-lg">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-500">156</div>
-                      <div className="text-sm text-muted-foreground">Events/Second</div>
+                      <div className="text-2xl font-bold text-purple-500">
+                        {crossModuleData?.astroFlow?.workflowExecutions || 45}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Active Executions</div>
                     </div>
                   </div>
                 </div>

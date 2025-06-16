@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from "sonner";
-import { crossModuleIntegrationService } from '@/services/crossModuleIntegration';
+import { crossModuleIntegrationService, CrossModuleData } from '@/services/crossModuleIntegration';
 
 export interface ModuleConnection {
   moduleId: string;
@@ -10,19 +10,6 @@ export interface ModuleConnection {
   lastSync: Date | null;
   dataFlow: 'bidirectional' | 'inbound' | 'outbound';
   healthScore: number;
-}
-
-export interface CrossModuleData {
-  workflows: any[];
-  automationRules: any[];
-  dashboards: any[];
-  pipelines: any[];
-  metrics: {
-    totalConnections: number;
-    activeDataFlows: number;
-    syncAccuracy: number;
-    latency: number;
-  };
 }
 
 export const useCrossModuleIntegration = () => {
