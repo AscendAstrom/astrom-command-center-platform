@@ -5,44 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Settings, Hospital, Brain, Shield, Zap, TrendingUp, CheckCircle, Database } from "lucide-react";
 import AdvancedMonitoringPanel from "@/components/astro-scan/AdvancedMonitoringPanel";
-import { supabase } from "@/integrations/supabase/client";
 
 const MonitoringTabContent = () => {
-  const [systemMetrics, setSystemMetrics] = useState({
-    aiAccuracy: 0,
-    predictionsToday: 0,
-    activeSources: 0,
-    dataQuality: 0,
-    realTimeConnections: 0,
-    processingSpeed: 0
-  });
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Always return empty metrics
-    setSystemMetrics({
-      aiAccuracy: 0,
-      predictionsToday: 0,
-      activeSources: 0,
-      dataQuality: 0,
-      realTimeConnections: 0,
-      processingSpeed: 0
-    });
-    setLoading(false);
-  }, []);
 
   const fetchRealSystemMetrics = async () => {
     setLoading(true);
     // Return empty metrics
     setTimeout(() => {
-      setSystemMetrics({
-        aiAccuracy: 0,
-        predictionsToday: 0,
-        activeSources: 0,
-        dataQuality: 0,
-        realTimeConnections: 0,
-        processingSpeed: 0
-      });
       setLoading(false);
     }, 1000);
   };
@@ -138,7 +108,7 @@ const MonitoringTabContent = () => {
               <Hospital className="h-5 w-5 text-muted-foreground" />
               <h3 className="text-lg font-semibold text-foreground">Hospital Operations Intelligence</h3>
               <Badge className="bg-muted/10 text-muted-foreground border-muted-foreground/20">
-                Initializing
+                Not Configured
               </Badge>
             </div>
             <p className="text-muted-foreground mb-4">

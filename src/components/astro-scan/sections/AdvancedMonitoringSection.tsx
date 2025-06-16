@@ -11,10 +11,10 @@ const AdvancedMonitoringSection = () => {
         <div className="flex items-center gap-2 mb-4">
           <Shield className="h-5 w-5 text-orange-400" />
           <h3 className="text-lg font-semibold text-foreground">Advanced Monitoring</h3>
-          <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">Enhanced</Badge>
+          <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">Not Configured</Badge>
         </div>
         <p className="text-muted-foreground mb-4">
-          Intelligent alerting with SLA breach prediction and automated escalation workflows.
+          Configure data sources to enable intelligent alerting with SLA breach prediction and automated escalation workflows.
         </p>
         <AdvancedMonitoringPanel />
       </div>
@@ -23,10 +23,10 @@ const AdvancedMonitoringSection = () => {
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="h-5 w-5 text-cyan-400" />
           <h3 className="text-lg font-semibold text-foreground">Data Quality Intelligence</h3>
-          <Badge className="bg-cyan-500/10 text-cyan-600 border-cyan-500/20">AI-Powered</Badge>
+          <Badge className="bg-cyan-500/10 text-cyan-600 border-cyan-500/20">Not Configured</Badge>
         </div>
         <p className="text-muted-foreground mb-4">
-          Real-time data quality scoring with automated validation and enrichment processes.
+          Configure data sources to enable real-time data quality scoring with automated validation and enrichment processes.
         </p>
         <DataQualityScoring />
       </div>

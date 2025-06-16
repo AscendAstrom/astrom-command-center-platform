@@ -10,52 +10,28 @@ export const useAlertMonitoring = () => {
   const [isMonitoring, setIsMonitoring] = useState(false);
 
   useEffect(() => {
-    // Initialize alert rules
-    setAlertRules(alertMonitoringService.getAlertRules());
+    // Return empty alert rules
+    setAlertRules([]);
 
-    // Subscribe to new alerts
-    const unsubscribeAlerts = alertMonitoringService.subscribe((alert) => {
-      setRecentAlerts(prev => [alert, ...prev.slice(0, 9)]); // Keep last 10 alerts
-    });
-
-    // Subscribe to analytics data and check for alerts
-    const unsubscribeAnalytics = analyticsService.subscribe((data: AnalyticsData | null) => {
-      if (data && isMonitoring) {
-        alertMonitoringService.checkAlerts(data);
-      }
-    });
-
-    setIsMonitoring(true);
-
-    return () => {
-      unsubscribeAlerts();
-      unsubscribeAnalytics();
-    };
-  }, [isMonitoring]);
+    // No alerts to subscribe to
+    setRecentAlerts([]);
+    setIsMonitoring(false);
+  }, []);
 
   const toggleMonitoring = () => {
     setIsMonitoring(prev => !prev);
   };
 
   const updateAlertRule = (ruleId: string, updates: Partial<AlertRule>) => {
-    const success = alertMonitoringService.updateAlertRule(ruleId, updates);
-    if (success) {
-      setAlertRules(alertMonitoringService.getAlertRules());
-    }
-    return success;
+    return false; // No rules to update
   };
 
   const addAlertRule = (rule: AlertRule) => {
-    alertMonitoringService.addAlertRule(rule);
-    setAlertRules(alertMonitoringService.getAlertRules());
+    // No operation - empty state
   };
 
   const removeAlertRule = (ruleId: string) => {
-    const success = alertMonitoringService.removeAlertRule(ruleId);
-    if (success) {
-      setAlertRules(alertMonitoringService.getAlertRules());
-    }
-    return success;
+    return false; // No rules to remove
   };
 
   const clearRecentAlerts = () => {
@@ -63,17 +39,17 @@ export const useAlertMonitoring = () => {
   };
 
   const clearRuleCooldown = (ruleId: string) => {
-    alertMonitoringService.clearCooldown(ruleId);
+    // No operation - empty state
   };
 
   const getCooldownStatus = () => {
-    return alertMonitoringService.getCooldownStatus();
+    return {}; // No cooldown status
   };
 
   return {
-    recentAlerts,
-    alertRules,
-    isMonitoring,
+    recentAlerts: [],
+    alertRules: [],
+    isMonitoring: false,
     toggleMonitoring,
     updateAlertRule,
     addAlertRule,
