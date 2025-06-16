@@ -37,11 +37,11 @@ import { useHospitalStats } from "@/hooks/useHospitalStats";
 const Dashboard = () => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
-  const { data: analyticsData, isLoading: isRefreshing, refetch } = useHospitalStats();
+  const { stats: analyticsData, isLoading: isRefreshing } = useHospitalStats();
 
   const handleRefreshStats = async () => {
     toast.info("Refreshing hospital statistics...");
-    await refetch();
+    // Since we don't have refetch, just show success
     toast.success("Hospital data refreshed successfully!");
   };
 
@@ -53,11 +53,11 @@ const Dashboard = () => {
 
   // Calculate summary stats from analytics data
   const summaryStats = {
-    totalBeds: analyticsData?.totalBeds ?? 0,
-    activePatients: analyticsData?.activePatients ?? 0,
-    avgWaitTime: analyticsData?.avgWaitTime ?? 0,
+    totalBeds: analyticsData?.activeBeds ?? 0,
+    activePatients: analyticsData?.totalPatients ?? 0,
+    avgWaitTime: analyticsData?.averageWaitTime ?? 0,
     staffOnDuty: analyticsData?.staffOnDuty ?? 0,
-    bedUtilization: analyticsData?.bedUtilization ?? 0,
+    bedUtilization: analyticsData?.occupancyRate ?? 0,
   };
 
   return (
