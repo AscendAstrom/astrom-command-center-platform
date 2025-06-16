@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -10,6 +11,7 @@ import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSectio
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
 import PhaseFourAdvancedSection from "@/components/astro-scan/sections/PhaseFourAdvancedSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
+import PhaseFiveAdvancedSection from "@/components/astro-scan/sections/PhaseFiveAdvancedSection";
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
@@ -36,7 +38,7 @@ const AstroScan = () => {
       const { integratedDataService } = await import('@/services/integratedDataService');
       await integratedDataService.initializeFullSystemIntegration();
       
-      toast.success('All systems integrated and operational - Phase 4 AI Ecosystem Active!');
+      toast.success('Phase 5 Advanced AI Intelligence System Activated!');
     } catch (error) {
       console.error('System initialization failed:', error);
       toast.error('System initialization failed');
@@ -62,11 +64,11 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         {isInitializing && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/20 dark:to-indigo-950/20 border border-purple-200 dark:border-purple-800 rounded-lg">
             <div className="flex items-center gap-2">
               <div className="animate-spin h-4 w-4 border-2 border-purple-500 border-t-transparent rounded-full"></div>
               <span className="text-purple-700 dark:text-purple-300">
-                Initializing Phase 4 Advanced AI Ecosystem with autonomous decision-making capabilities...
+                Initializing Phase 5 Advanced AI Intelligence with autonomous predictive analytics...
               </span>
             </div>
           </div>
@@ -115,6 +117,7 @@ const AstroScan = () => {
               <PhaseFourAdvancedSection />
               <PhaseFourSection />
               <PhaseFiveSection />
+              <PhaseFiveAdvancedSection />
             </div>
           </TabsContent>
         </Tabs>
