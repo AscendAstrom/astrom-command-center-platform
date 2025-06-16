@@ -43,7 +43,7 @@ class AnalyticsDataService {
           triageQueue: 3,
           criticalPatients: 1,
           criticalAlerts: 0,
-          lastUpdated: realtimeData.timestamp
+          lastUpdated: new Date().toISOString()
         },
         beds: {
           total: realtimeData.beds.length,
@@ -104,7 +104,7 @@ class AnalyticsDataService {
           resourceUtilization: 0,
           avgProcedureTime: 0,
           equipmentStatus: 'optimal',
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         quality: {
           overallScore: 0,
@@ -135,7 +135,7 @@ class AnalyticsDataService {
           memoryUsage: 62,
           networkLatency: 12,
           securityScore: 95,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         dataPipeline: {
           activeSources: 3,
@@ -143,7 +143,7 @@ class AnalyticsDataService {
           errorRate: 0.5,
           dataQuality: 95.2,
           syncStatus: 'healthy',
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         business: {
           revenue: 12000,
@@ -151,7 +151,7 @@ class AnalyticsDataService {
           patientSatisfaction: 4.2,
           operationalEfficiency: 87,
           costPerPatient: 2500,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         aiMetrics: {
           modelAccuracy: 92.5,
@@ -159,7 +159,7 @@ class AnalyticsDataService {
           decisionsSupported: 23,
           mlModelsActive: 5,
           predictionConfidence: 88,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         }
       };
       
@@ -187,7 +187,7 @@ class AnalyticsDataService {
           triageQueue: 3,
           criticalPatients: 1,
           criticalAlerts: 0,
-          lastUpdated: realtimeData.timestamp
+          lastUpdated: new Date().toISOString()
         },
         beds: {
           total: realtimeData.beds.length,
@@ -248,7 +248,7 @@ class AnalyticsDataService {
           resourceUtilization: 0,
           avgProcedureTime: 0,
           equipmentStatus: 'optimal',
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         quality: {
           overallScore: 0,
@@ -279,7 +279,7 @@ class AnalyticsDataService {
           memoryUsage: 62,
           networkLatency: 12,
           securityScore: 95,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         dataPipeline: {
           activeSources: 3,
@@ -287,7 +287,7 @@ class AnalyticsDataService {
           errorRate: 0.5,
           dataQuality: 95.2,
           syncStatus: 'healthy',
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         business: {
           revenue: 12000,
@@ -295,7 +295,7 @@ class AnalyticsDataService {
           patientSatisfaction: 4.2,
           operationalEfficiency: 87,
           costPerPatient: 2500,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         },
         aiMetrics: {
           modelAccuracy: 92.5,
@@ -303,7 +303,7 @@ class AnalyticsDataService {
           decisionsSupported: 23,
           mlModelsActive: 5,
           predictionConfidence: 88,
-          lastUpdated: new Date()
+          lastUpdated: new Date().toISOString()
         }
       };
       
