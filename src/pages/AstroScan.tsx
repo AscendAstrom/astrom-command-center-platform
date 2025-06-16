@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, Activity, Settings } from "lucide-react";
@@ -9,6 +8,7 @@ import IngestionTabContent from "@/components/astro-scan/IngestionTabContent";
 import MonitoringTabContent from "@/components/astro-scan/MonitoringTabContent";
 import PhaseThreeSection from "@/components/astro-scan/sections/PhaseThreeSection";
 import PhaseFourSection from "@/components/astro-scan/sections/PhaseFourSection";
+import PhaseFourAdvancedSection from "@/components/astro-scan/sections/PhaseFourAdvancedSection";
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
 import { toast } from "sonner";
@@ -36,7 +36,7 @@ const AstroScan = () => {
       const { integratedDataService } = await import('@/services/integratedDataService');
       await integratedDataService.initializeFullSystemIntegration();
       
-      toast.success('All systems integrated and operational!');
+      toast.success('All systems integrated and operational - Phase 4 AI Ecosystem Active!');
     } catch (error) {
       console.error('System initialization failed:', error);
       toast.error('System initialization failed');
@@ -62,11 +62,11 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         {isInitializing && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/50 to-green-50/50 dark:from-blue-950/20 dark:to-green-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg">
             <div className="flex items-center gap-2">
-              <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-              <span className="text-blue-700 dark:text-blue-300">
-                Initializing integrated hospital management system with cross-module connectivity...
+              <div className="animate-spin h-4 w-4 border-2 border-purple-500 border-t-transparent rounded-full"></div>
+              <span className="text-purple-700 dark:text-purple-300">
+                Initializing Phase 4 Advanced AI Ecosystem with autonomous decision-making capabilities...
               </span>
             </div>
           </div>
@@ -112,6 +112,7 @@ const AstroScan = () => {
             
             <div className="space-y-6 mt-8">
               <PhaseThreeSection />
+              <PhaseFourAdvancedSection />
               <PhaseFourSection />
               <PhaseFiveSection />
             </div>
