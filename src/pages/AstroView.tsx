@@ -19,7 +19,7 @@ const AstroView = () => {
         <div>
           <h1 className="text-3xl font-bold">AstroView Dashboard</h1>
           <p className="text-muted-foreground">
-            Comprehensive hospital visualization and monitoring
+            Comprehensive hospital visualization and monitoring with real-time data
           </p>
         </div>
       </div>
