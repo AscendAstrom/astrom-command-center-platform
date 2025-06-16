@@ -16,97 +16,89 @@ export const useDataSources = () => {
         id: '1',
         name: 'Saudi MOH FHIR Gateway',
         type: 'FHIR',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
         health_score: 96,
         records_count: 2450000,
         last_sync: new Date(Date.now() - 300000).toISOString(),
-        created_at: new Date('2024-01-15').toISOString(),
-        description: 'Ministry of Health FHIR R4 compliant data gateway',
-        tags: ['production', 'moh', 'fhir', 'critical']
+        last_error: null
       },
       {
         id: '2',
         name: 'Riyadh General Hospital EHR',
         type: 'EPIC',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
         health_score: 94,
         records_count: 850000,
         last_sync: new Date(Date.now() - 600000).toISOString(),
-        created_at: new Date('2024-02-01').toISOString(),
-        description: 'Primary EHR system for Riyadh General Hospital',
-        tags: ['production', 'ehr', 'riyadh']
+        last_error: null
       },
       {
         id: '3',
         name: 'King Fahd Hospital Labs',
         type: 'HL7',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
         health_score: 98,
         records_count: 1250000,
         last_sync: new Date(Date.now() - 180000).toISOString(),
-        created_at: new Date('2024-01-20').toISOString(),
-        description: 'Laboratory Information System - HL7 v2.5',
-        tags: ['production', 'labs', 'hl7', 'real-time']
+        last_error: null
       },
       {
         id: '4',
         name: 'PACS Imaging Network',
         type: 'API',
-        status: 'WARNING',
+        status: 'ERROR',
+        ingestion_mode: 'BATCH',
         health_score: 87,
         records_count: 450000,
         last_sync: new Date(Date.now() - 3600000).toISOString(),
-        created_at: new Date('2024-02-10').toISOString(),
-        description: 'Radiology PACS system integration',
-        tags: ['production', 'imaging', 'pacs']
+        last_error: 'Connection timeout after 30 seconds'
       },
       {
         id: '5',
         name: 'MOH Financial Data Export',
         type: 'CSV',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'BATCH',
         health_score: 92,
         records_count: 125000,
         last_sync: new Date(Date.now() - 86400000).toISOString(),
-        created_at: new Date('2024-03-01').toISOString(),
-        description: 'Daily financial data exports from MOH systems',
-        tags: ['batch', 'financial', 'daily', 'moh']
+        last_error: null
       },
       {
         id: '6',
         name: 'Pharmacy Management System',
         type: 'API',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
         health_score: 91,
         records_count: 680000,
         last_sync: new Date(Date.now() - 900000).toISOString(),
-        created_at: new Date('2024-01-25').toISOString(),
-        description: 'Medication dispensing and inventory data',
-        tags: ['production', 'pharmacy', 'medications']
+        last_error: null
       },
       {
         id: '7',
         name: 'Emergency Services Network',
         type: 'HL7',
-        status: 'ACTIVE',
+        status: 'CONNECTED',
+        ingestion_mode: 'REAL_TIME',
         health_score: 95,
         records_count: 320000,
         last_sync: new Date(Date.now() - 240000).toISOString(),
-        created_at: new Date('2024-02-15').toISOString(),
-        description: 'Emergency department real-time data feed',
-        tags: ['production', 'emergency', 'real-time']
+        last_error: null
       },
       {
         id: '8',
         name: 'Insurance Claims Portal',
         type: 'API',
         status: 'PAUSED',
+        ingestion_mode: 'BATCH',
         health_score: 75,
         records_count: 95000,
         last_sync: new Date(Date.now() - 7200000).toISOString(),
-        created_at: new Date('2024-03-05').toISOString(),
-        description: 'Insurance claims processing integration',
-        tags: ['insurance', 'claims', 'batch']
+        last_error: 'Scheduled maintenance mode'
       }
     ];
   };
