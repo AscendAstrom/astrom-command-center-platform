@@ -12,9 +12,9 @@ class QualityMetricsService {
         { data: complianceAreas },
         { data: qualityImprovements }
       ] = await Promise.all([
-        supabase.from('accreditations').select('*').eq('status', 'ACTIVE'),
+        supabase.from('accreditations').select('*').eq('status', 'ACCREDITED'),
         supabase.from('compliance_areas').select('*').eq('status', 'IN_PROGRESS'),
-        supabase.from('quality_improvement_initiatives').select('*').eq('status', 'ACTIVE')
+        supabase.from('quality_improvement_initiatives').select('*').eq('status', 'IN_PROGRESS')
       ]);
 
       const totalAccreditations = accreditations?.length || 0;
