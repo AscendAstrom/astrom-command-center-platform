@@ -51,6 +51,17 @@ export class IntegratedDataService {
     }
   }
 
+  async initializeFullSystemIntegration() {
+    try {
+      console.log('Initializing full system integration...');
+      const data = await this.fetchAllData();
+      return data;
+    } catch (error) {
+      console.error('Error initializing full system integration:', error);
+      throw error;
+    }
+  }
+
   async getPatientVisitData() {
     try {
       // Use wait_times instead of patient_visits table

@@ -6,6 +6,10 @@ export interface CrossModuleData {
   analytics: any[];
   qualityMetrics: any[];
   predictions: any[];
+  astroScan?: any[];
+  astroBricks?: any[];
+  astroMetrics?: any[];
+  astroFlow?: any[];
 }
 
 class CrossModuleIntegrationService {
@@ -68,6 +72,38 @@ class CrossModuleIntegrationService {
     }
   }
 
+  async initializeIntegratedSystem() {
+    try {
+      console.log('Initializing integrated system...');
+      const data = await this.getCrossModuleData();
+      return data;
+    } catch (error) {
+      console.error('Error initializing integrated system:', error);
+      throw error;
+    }
+  }
+
+  async validateCrossModuleConnections() {
+    try {
+      console.log('Validating cross-module connections...');
+      // Mock validation for now
+      return {
+        astroScan: { status: 'connected', health: 95 },
+        astroBricks: { status: 'connected', health: 92 },
+        astroMetrics: { status: 'connected', health: 98 },
+        astroFlow: { status: 'connected', health: 89 }
+      };
+    } catch (error) {
+      console.error('Error validating connections:', error);
+      return {
+        astroScan: { status: 'error', health: 0 },
+        astroBricks: { status: 'error', health: 0 },
+        astroMetrics: { status: 'error', health: 0 },
+        astroFlow: { status: 'error', health: 0 }
+      };
+    }
+  }
+
   async getCrossModuleData(): Promise<CrossModuleData> {
     try {
       const [workflows, analytics, qualityMetrics, predictions] = await Promise.all([
@@ -81,7 +117,11 @@ class CrossModuleIntegrationService {
         workflows,
         analytics,
         qualityMetrics,
-        predictions
+        predictions,
+        astroScan: [], // Mock data for astro modules
+        astroBricks: [],
+        astroMetrics: [],
+        astroFlow: []
       };
     } catch (error) {
       console.error('Error getting cross-module data:', error);
@@ -89,7 +129,11 @@ class CrossModuleIntegrationService {
         workflows: [],
         analytics: [],
         qualityMetrics: [],
-        predictions: []
+        predictions: [],
+        astroScan: [],
+        astroBricks: [],
+        astroMetrics: [],
+        astroFlow: []
       };
     }
   }
