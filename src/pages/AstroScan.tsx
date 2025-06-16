@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Activity, Settings } from "lucide-react";
+import { Database, Activity, Settings, Workflow } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import AstroScanHeader from "@/components/astro-scan/AstroScanHeader";
 import SourcesTabContent from "@/components/astro-scan/SourcesTabContent";
@@ -15,22 +15,30 @@ import PhaseFiveAdvancedSection from "@/components/astro-scan/sections/PhaseFive
 import PhaseSixSection from "@/components/astro-scan/sections/PhaseSixSection";
 import PhaseSevenSection from "@/components/astro-scan/sections/PhaseSevenSection";
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
-import { toast } from "sonner";
+import WorkflowOrchestrator from "@/components/workflow/WorkflowOrchestrator";
+import { useWorkflowIntegration } from "@/components/workflow/hooks/useWorkflowIntegration";
 import { useSearchParams } from "react-router-dom";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
+  const { initializeWorkflow } = useWorkflowIntegration();
 
-  const handleDataSourceAdded = () => {
+  const handleDataSourceAdded = async (sourceData: any) => {
     setIsWizardOpen(false);
-    toast.success("Data source added successfully!");
+    
+    // Initialize AI workflow for the new data source
+    try {
+      await initializeWorkflow(sourceData.id, sourceData.name);
+      console.log(`AI workflow initialized for ${sourceData.name}`);
+    } catch (error) {
+      console.error('Failed to initialize AI workflow:', error);
+    }
   };
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    toast.info(`Switched to ${value} module`);
   };
 
   const handleAddDataSource = () => {
@@ -43,10 +51,14 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
               Data Sources
+            </TabsTrigger>
+            <TabsTrigger value="workflow" className="data-[state=active]:bg-purple-500/20">
+              <Workflow className="h-4 w-4 mr-2" />
+              AI Workflow
             </TabsTrigger>
             <TabsTrigger value="ingestion" className="data-[state=active]:bg-astrom-green/20">
               <Activity className="h-4 w-4 mr-2" />
@@ -60,6 +72,10 @@ const AstroScan = () => {
 
           <TabsContent value="sources" className="space-y-6">
             <SourcesTabContent onAddDataSource={handleAddDataSource} />
+          </TabsContent>
+
+          <TabsContent value="workflow" className="space-y-6">
+            <WorkflowOrchestrator />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">
