@@ -1,142 +1,92 @@
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useCallback } from 'react';
 import { toast } from "sonner";
 
 export interface WorkflowIntegration {
-  sourceId: string;
-  sourceName: string;
-  status: 'initializing' | 'active' | 'paused' | 'error';
-  currentPhase: number;
-  overallProgress: number;
-  lastUpdate: Date;
-  aiDecisions: number;
-  automatedActions: number;
+  id: string;
+  sourceModule: string;
+  targetModule: string;
+  dataMapping: Record<string, string>;
+  isActive: boolean;
+  lastSync: Date;
+  syncFrequency: number; // in seconds
 }
 
 export const useWorkflowIntegration = () => {
   const [integrations, setIntegrations] = useState<WorkflowIntegration[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isInitializing, setIsInitializing] = useState(false);
 
-  const initializeWorkflow = async (sourceId: string, sourceName: string) => {
+  // Initialize workflow for a new data source
+  const initializeWorkflow = useCallback(async (sourceId: string, sourceName: string) => {
+    setIsInitializing(true);
     try {
-      console.log(`Initializing AI workflow for source: ${sourceName}`);
+      // Simulate workflow initialization
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Create new workflow integration
       const newIntegration: WorkflowIntegration = {
-        sourceId,
-        sourceName,
-        status: 'initializing',
-        currentPhase: 1,
-        overallProgress: 0,
-        lastUpdate: new Date(),
-        aiDecisions: 0,
-        automatedActions: 0
+        id: `integration_${Date.now()}`,
+        sourceModule: 'astro-scan',
+        targetModule: 'astro-workflow',
+        dataMapping: {
+          'sourceId': sourceId,
+          'sourceName': sourceName,
+          'timestamp': new Date().toISOString()
+        },
+        isActive: true,
+        lastSync: new Date(),
+        syncFrequency: 60
       };
 
       setIntegrations(prev => [...prev, newIntegration]);
-
-      // Simulate AI workflow progression
-      setTimeout(() => {
-        setIntegrations(prev => 
-          prev.map(integration => 
-            integration.sourceId === sourceId 
-              ? { 
-                  ...integration, 
-                  status: 'active',
-                  currentPhase: 2,
-                  overallProgress: 15,
-                  aiDecisions: 1,
-                  automatedActions: 1
-                }
-              : integration
-          )
-        );
-        toast.success(`AI workflow activated for ${sourceName}`);
-      }, 2000);
-
+      
+      console.log(`Workflow initialized for ${sourceName} (${sourceId})`);
+      toast.success(`AI workflow initialized for ${sourceName}`);
+      
       return newIntegration;
-    } catch (err) {
-      console.error('Error initializing workflow:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      throw err;
+    } catch (error) {
+      console.error('Failed to initialize workflow:', error);
+      toast.error('Failed to initialize AI workflow');
+      throw error;
+    } finally {
+      setIsInitializing(false);
     }
-  };
+  }, []);
 
-  const progressWorkflow = (sourceId: string, phase: number, progress: number) => {
-    setIntegrations(prev => 
-      prev.map(integration => 
-        integration.sourceId === sourceId 
-          ? { 
-              ...integration, 
-              currentPhase: phase,
-              overallProgress: progress,
-              lastUpdate: new Date(),
-              aiDecisions: integration.aiDecisions + Math.floor(Math.random() * 3),
-              automatedActions: integration.automatedActions + Math.floor(Math.random() * 2)
-            }
-          : integration
-      )
-    );
-  };
+  // Connect workflow to automation rule
+  const connectToAutomation = useCallback(async (workflowId: string, ruleId: string) => {
+    try {
+      // Simulate connection
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      toast.success(`Workflow connected to automation rule`);
+      return true;
+    } catch (error) {
+      console.error('Failed to connect to automation:', error);
+      toast.error('Failed to connect to automation rule');
+      return false;
+    }
+  }, []);
 
-  const pauseWorkflow = (sourceId: string) => {
-    setIntegrations(prev => 
-      prev.map(integration => 
-        integration.sourceId === sourceId 
-          ? { ...integration, status: 'paused' }
-          : integration
-      )
-    );
-  };
-
-  const resumeWorkflow = (sourceId: string) => {
-    setIntegrations(prev => 
-      prev.map(integration => 
-        integration.sourceId === sourceId 
-          ? { ...integration, status: 'active' }
-          : integration
-      )
-    );
-  };
-
-  useEffect(() => {
-    // Simulate real-time workflow updates
-    const interval = setInterval(() => {
-      setIntegrations(prev => 
-        prev.map(integration => {
-          if (integration.status === 'active' && integration.overallProgress < 100) {
-            const progressIncrement = Math.random() * 5;
-            const newProgress = Math.min(100, integration.overallProgress + progressIncrement);
-            const newPhase = Math.ceil((newProgress / 100) * 6);
-            
-            return {
-              ...integration,
-              currentPhase: newPhase,
-              overallProgress: newProgress,
-              lastUpdate: new Date(),
-              aiDecisions: integration.aiDecisions + (Math.random() > 0.7 ? 1 : 0),
-              automatedActions: integration.automatedActions + (Math.random() > 0.8 ? 1 : 0)
-            };
-          }
-          return integration;
-        })
-      );
-    }, 3000);
-
-    setLoading(false);
-
-    return () => clearInterval(interval);
+  // Stream workflow data to dashboard
+  const streamToDashboard = useCallback(async (workflowId: string, dashboardType: string) => {
+    try {
+      // Simulate streaming setup
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      toast.success(`Workflow data now streaming to ${dashboardType} dashboard`);
+      return true;
+    } catch (error) {
+      console.error('Failed to setup dashboard streaming:', error);
+      toast.error('Failed to setup dashboard streaming');
+      return false;
+    }
   }, []);
 
   return {
     integrations,
-    loading,
-    error,
+    isInitializing,
     initializeWorkflow,
-    progressWorkflow,
-    pauseWorkflow,
-    resumeWorkflow
+    connectToAutomation,
+    streamToDashboard
   };
 };
