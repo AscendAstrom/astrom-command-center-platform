@@ -13,6 +13,7 @@ import PhaseFourAdvancedSection from "@/components/astro-scan/sections/PhaseFour
 import PhaseFiveSection from "@/components/astro-scan/sections/PhaseFiveSection";
 import PhaseFiveAdvancedSection from "@/components/astro-scan/sections/PhaseFiveAdvancedSection";
 import PhaseSixSection from "@/components/astro-scan/sections/PhaseSixSection";
+import PhaseSevenSection from "@/components/astro-scan/sections/PhaseSevenSection";
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
@@ -39,7 +40,7 @@ const AstroScan = () => {
       const { integratedDataService } = await import('@/services/integratedDataService');
       await integratedDataService.initializeFullSystemIntegration();
       
-      toast.success('Phase 6 Autonomous Hospital Orchestration System Activated!');
+      toast.success('Phase 7 Collective Intelligence Network Activated!');
     } catch (error) {
       console.error('System initialization failed:', error);
       toast.error('System initialization failed');
@@ -65,11 +66,11 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         {isInitializing && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-pink-50/50 to-purple-50/50 dark:from-pink-950/20 dark:to-purple-950/20 border border-pink-200 dark:border-pink-800 rounded-lg">
             <div className="flex items-center gap-2">
-              <div className="animate-spin h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
-              <span className="text-indigo-700 dark:text-indigo-300">
-                Initializing Phase 6 Autonomous Hospital Orchestration with self-healing systems and global intelligence...
+              <div className="animate-spin h-4 w-4 border-2 border-pink-500 border-t-transparent rounded-full"></div>
+              <span className="text-pink-700 dark:text-pink-300">
+                Initializing Phase 7 Collective Intelligence Network with global consciousness and inter-hospital collaboration...
               </span>
             </div>
           </div>
@@ -120,6 +121,7 @@ const AstroScan = () => {
               <PhaseFiveSection />
               <PhaseFiveAdvancedSection />
               <PhaseSixSection />
+              <PhaseSevenSection />
             </div>
           </TabsContent>
         </Tabs>
