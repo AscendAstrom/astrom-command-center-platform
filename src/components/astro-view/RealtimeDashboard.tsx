@@ -1,336 +1,269 @@
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ViewUserRole, RefreshInterval, ExportFormat } from './types';
-import { Play, Pause, Download, RefreshCw } from 'lucide-react';
-import ZoneTileWidget from './widgets/ZoneTileWidget';
-import PatientTimerWidget from './widgets/PatientTimerWidget';
-import ChartWidget from './widgets/ChartWidget';
-import MetricCardWidget from './widgets/MetricCardWidget';
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Activity, Users, Bed, TrendingUp, AlertTriangle, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-interface RealtimeDashboardProps {
-  userRole: ViewUserRole;
-}
-
-const RealtimeDashboard = ({ userRole }: RealtimeDashboardProps) => {
-  const [autoRefresh, setAutoRefresh] = useState<RefreshInterval>(30);
-  const [isRefreshing, setIsRefreshing] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
-  const [selectedDashboard, setSelectedDashboard] = useState('ed_operations');
-  const [metrics, setMetrics] = useState({
-    waitTime: 0,
-    bedUtilization: 0,
-    activePatients: 0,
-    staffOnDuty: 0
-  });
+const RealtimeDashboard = () => {
   const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [metrics, setMetrics] = useState({
+    totalBeds: 0,
+    occupiedBeds: 0,
+    availableBeds: 0,
+    occupancyRate: 0,
+    activeSources: 0,
+    systemHealth: "Optimal"
+  });
 
   useEffect(() => {
-    if (!isRefreshing) return;
+    fetchDashboardData();
+    
+    // Set up real-time subscription for beds
+    const channel = supabase
+      .channel('dashboard-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'beds' }, () => {
+        fetchDashboardData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'data_sources' }, () => {
+        fetchDashboardData();
+      })
+      .subscribe();
 
-    const interval = setInterval(() => {
-      setLastUpdated(new Date());
-      fetchMetrics();
-    }, autoRefresh * 1000);
-
-    return () => clearInterval(interval);
-  }, [autoRefresh, isRefreshing]);
-
-  useEffect(() => {
-    fetchMetrics();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  const fetchMetrics = async () => {
+  const fetchDashboardData = async () => {
     try {
       setLoading(true);
+      
       const [
-        { data: waitTimes },
         { data: beds },
-        { data: activePatients },
-        { data: staff }
+        { data: dataSources }
       ] = await Promise.all([
-        supabase.from('wait_times').select('total_wait_minutes').is('discharge_time', null),
-        supabase.from('beds').select('status'),
-        supabase.from('patients').select('id').eq('status', 'ACTIVE'),
-        supabase.from('staff').select('id').eq('is_active', true)
+        supabase.from('beds').select('*').is('deleted_at', null),
+        supabase.from('data_sources').select('*').eq('status', 'CONNECTED')
       ]);
 
-      // Calculate average wait time
-      const avgWaitTime = waitTimes && waitTimes.length > 0 
-        ? Math.round(waitTimes.reduce((sum, w) => sum + (w.total_wait_minutes || 0), 0) / waitTimes.length)
-        : 0;
-
-      // Calculate bed utilization
       const totalBeds = beds?.length || 0;
-      const occupiedBeds = beds?.filter(b => b.status === 'OCCUPIED').length || 0;
-      const bedUtilization = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+      const occupiedBeds = beds?.filter(bed => bed.status === 'OCCUPIED').length || 0;
+      const availableBeds = beds?.filter(bed => bed.status === 'AVAILABLE').length || 0;
+      const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+      const activeSources = dataSources?.length || 0;
 
       setMetrics({
-        waitTime: avgWaitTime,
-        bedUtilization,
-        activePatients: activePatients?.length || 0,
-        staffOnDuty: staff?.length || 0
+        totalBeds,
+        occupiedBeds,
+        availableBeds,
+        occupancyRate,
+        activeSources,
+        systemHealth: occupancyRate > 90 ? "High Load" : occupancyRate > 75 ? "Normal" : "Optimal"
       });
+
+      setLastUpdate(new Date());
     } catch (error) {
-      console.error('Error fetching metrics:', error);
-      setMetrics({
-        waitTime: 0,
-        bedUtilization: 0,
-        activePatients: 0,
-        staffOnDuty: 0
-      });
+      console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleExport = (format: ExportFormat) => {
-    console.log(`Exporting dashboard as ${format}`);
-  };
-
-  const dashboardOptions = [
-    { value: 'ed_operations', label: 'ED Operations', audience: 'ed_managers' },
-    { value: 'ops_summary', label: 'Operations Summary', audience: 'ops_staff' },
-    { value: 'executive_overview', label: 'Executive Overview', audience: 'executives' }
-  ];
-
-  const canViewDashboard = (audience: string) => {
-    if (userRole === 'ADMIN' || userRole === 'ANALYST') return true;
-    if (userRole === 'VIEWER' || userRole === 'DATA_ENGINEER') {
-      return audience !== 'executives';
-    }
-    return false;
+  const refreshData = () => {
+    fetchDashboardData();
   };
 
   return (
     <div className="space-y-6">
-      {/* Dashboard Controls */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-4">
-          <div className="space-y-1">
-            <label className="text-sm text-muted-foreground">Dashboard</label>
-            <Select value={selectedDashboard} onValueChange={setSelectedDashboard}>
-              <SelectTrigger className="w-48 bg-background border-border text-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border">
-                {dashboardOptions
-                  .filter(option => canViewDashboard(option.audience))
-                  .map(option => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+      <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-6 w-6 text-blue-400" />
+                Real-Time Hospital Dashboard
+              </CardTitle>
+              <CardDescription>
+                Live operational metrics and system status
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-green-500/10 text-green-600">
+                Live
+              </Badge>
+              <Button onClick={refreshData} size="sm" variant="outline">
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="beds">Bed Management</TabsTrigger>
+          <TabsTrigger value="operations">Operations</TabsTrigger>
+          <TabsTrigger value="alerts">Alerts</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="bg-card border-border">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Bed className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm font-medium">Total Beds</span>
+                </div>
+                <div className="text-2xl font-bold">{loading ? '-' : metrics.totalBeds}</div>
+                <div className="text-xs text-muted-foreground">System capacity</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm font-medium">Occupied</span>
+                </div>
+                <div className="text-2xl font-bold">{loading ? '-' : metrics.occupiedBeds}</div>
+                <div className="text-xs text-muted-foreground">Current patients</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  <span className="text-sm font-medium">Available</span>
+                </div>
+                <div className="text-2xl font-bold">{loading ? '-' : metrics.availableBeds}</div>
+                <div className="text-xs text-muted-foreground">Ready for admission</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="h-4 w-4 text-purple-500" />
+                  <span className="text-sm font-medium">Occupancy</span>
+                </div>
+                <div className="text-2xl font-bold">{loading ? '-' : `${metrics.occupancyRate}%`}</div>
+                <div className="text-xs text-muted-foreground">Current utilization</div>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm text-muted-foreground">Auto Refresh</label>
-            <Select 
-              value={autoRefresh.toString()} 
-              onValueChange={(value) => setAutoRefresh(parseInt(value) as RefreshInterval)}
-            >
-              <SelectTrigger className="w-32 bg-background border-border text-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border">
-                <SelectItem value="15">15s</SelectItem>
-                <SelectItem value="30">30s</SelectItem>
-                <SelectItem value="60">1m</SelectItem>
-                <SelectItem value="300">5m</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-lg">System Status</CardTitle>
+                <CardDescription>Real-time system health</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Data Sources</span>
+                    <Badge variant="secondary">{metrics.activeSources} Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">System Health</span>
+                    <Badge variant={metrics.systemHealth === 'Optimal' ? 'default' : 'secondary'}>
+                      {metrics.systemHealth}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Last Update</span>
+                    <span className="text-xs text-muted-foreground">
+                      {lastUpdate.toLocaleTimeString()}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+                <CardDescription>Common operational tasks</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button className="w-full justify-start" variant="outline">
+                    <Bed className="h-4 w-4 mr-2" />
+                    Manage Bed Assignments
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Review Alerts
+                  </Button>
+                  <Button className="w-full justify-start" variant="outline">
+                    <Activity className="h-4 w-4 mr-2" />
+                    System Diagnostics
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsRefreshing(!isRefreshing)}
-            className="border-border text-foreground"
-          >
-            {isRefreshing ? <Pause className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1" />}
-            {isRefreshing ? 'Pause' : 'Resume'}
-          </Button>
+        <TabsContent value="beds" className="space-y-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Bed Management Overview</CardTitle>
+              <CardDescription>Real-time bed status and allocation</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <Bed className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">
+                  Bed management data will be populated from real hospital systems
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setLastUpdated(new Date());
-              fetchMetrics();
-            }}
-            className="border-border text-foreground"
-          >
-            <RefreshCw className="h-4 w-4 mr-1" />
-            Refresh Now
-          </Button>
+        <TabsContent value="operations" className="space-y-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Operational Metrics</CardTitle>
+              <CardDescription>Key performance indicators</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">
+                  Operational metrics will be displayed once data sources are connected
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <Select onValueChange={(value: ExportFormat) => handleExport(value)}>
-            <SelectTrigger className="w-32 bg-background border-border text-foreground">
-              <SelectValue placeholder="Export" />
-            </SelectTrigger>
-            <SelectContent className="bg-background border-border">
-              <SelectItem value="pdf">
-                <Download className="h-4 w-4 mr-1 inline" />
-                PDF
-              </SelectItem>
-              <SelectItem value="csv">
-                <Download className="h-4 w-4 mr-1 inline" />
-                CSV
-              </SelectItem>
-              <SelectItem value="png">
-                <Download className="h-4 w-4 mr-1 inline" />
-                PNG
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Status Bar */}
-      <div className="flex items-center justify-between p-3 bg-card rounded-lg">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${isRefreshing ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
-            <span className="text-sm text-foreground">
-              {isRefreshing ? 'Live' : 'Paused'}
-            </span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Last updated: {lastUpdated.toLocaleTimeString()}
-          </div>
-        </div>
-        <Badge variant="outline" className="text-purple-400 border-purple-400">
-          {dashboardOptions.find(d => d.value === selectedDashboard)?.label}
-        </Badge>
-      </div>
-
-      {/* Dashboard Content */}
-      {selectedDashboard === 'ed_operations' && (
-        <EDOperationsDashboard metrics={metrics} loading={loading} />
-      )}
-      {selectedDashboard === 'ops_summary' && (
-        <OperationsSummaryDashboard metrics={metrics} loading={loading} />
-      )}
-      {selectedDashboard === 'executive_overview' && (
-        <ExecutiveOverviewDashboard metrics={metrics} loading={loading} />
-      )}
+        <TabsContent value="alerts" className="space-y-6">
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>System Alerts</CardTitle>
+              <CardDescription>Active alerts and notifications</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">
+                  No active alerts at this time
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
-
-const EDOperationsDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <div className="lg:col-span-2">
-      <ZoneTileWidget />
-    </div>
-    
-    <div className="lg:col-span-2">
-      <PatientTimerWidget />
-    </div>
-
-    <MetricCardWidget 
-      title="Current Wait Time" 
-      value={`${metrics.waitTime} min`} 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Bed Utilization" 
-      value={`${metrics.bedUtilization}%`} 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Active Patients" 
-      value={metrics.activePatients} 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Staff on Duty" 
-      value={metrics.staffOnDuty} 
-      trend="stable"
-      loading={loading}
-    />
-
-    <div className="lg:col-span-2">
-      <ChartWidget title="Wait Times by Hour" type="bar" />
-    </div>
-    <div className="lg:col-span-2">
-      <ChartWidget title="Patient Flow" type="line" />
-    </div>
-  </div>
-);
-
-const OperationsSummaryDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <MetricCardWidget 
-      title="Total Capacity" 
-      value={`${metrics.bedUtilization}%`} 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Average Wait" 
-      value={`${metrics.waitTime} min`} 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Active Staff" 
-      value={metrics.staffOnDuty} 
-      trend="stable"
-      loading={loading}
-    />
-    
-    <div className="lg:col-span-3">
-      <ChartWidget title="Departmental Performance" type="bar" />
-    </div>
-  </div>
-);
-
-const ExecutiveOverviewDashboard = ({ metrics, loading }: { metrics: any; loading: boolean }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <MetricCardWidget 
-      title="Patient Satisfaction" 
-      value="--" 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Revenue per Hour" 
-      value="--" 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Cost per Patient" 
-      value="--" 
-      trend="stable"
-      loading={loading}
-    />
-    <MetricCardWidget 
-      title="Quality Score" 
-      value="--" 
-      trend="stable"
-      loading={loading}
-    />
-    
-    <div className="lg:col-span-2">
-      <ChartWidget title="Monthly Trends" type="line" />
-    </div>
-    <div className="lg:col-span-2">
-      <ChartWidget title="Department Comparison" type="pie" />
-    </div>
-  </div>
-);
 
 export default RealtimeDashboard;
