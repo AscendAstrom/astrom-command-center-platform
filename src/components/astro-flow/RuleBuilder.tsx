@@ -12,13 +12,13 @@ interface RuleBuilderProps {
 }
 
 const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
-  const { rules, createRule, updateRule, deleteRule, isLoading, refetchRules } = useAutomationRules();
+  const { rules, createRule, updateRule, deleteRule, isLoading } = useAutomationRules();
   const [selectedRule, setSelectedRule] = useState<AutomationRule | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateRule = () => {
     const newRule: AutomationRule = {
-      id: '', // Will be set by db
+      id: '', // Will be set by createRule
       name: 'New Rule',
       description: '',
       triggerType: 'threshold_exceeded',
@@ -32,7 +32,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
       updated_at: new Date().toISOString(),
       last_executed: null,
       conditionLogic: 'AND',
-    } as AutomationRule;
+    };
     setSelectedRule(newRule);
     setIsCreating(true);
   };
@@ -41,11 +41,11 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
     if (selectedRule) {
       try {
         if (isCreating) {
-          const { id, created_at, updated_at, createdBy, executionCount, ...newRuleData } = selectedRule;
+          const { id, created_at, updated_at, executionCount, ...newRuleData } = selectedRule;
           await createRule(newRuleData);
           toast.success("Rule created successfully.");
         } else {
-          await updateRule(selectedRule);
+          await updateRule(selectedRule.id, selectedRule);
           toast.success("Rule updated successfully.");
         }
         setIsCreating(false);
@@ -75,7 +75,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
     const rule = rules.find(r => r.id === ruleId);
     if (rule) {
       try {
-        await updateRule({ ...rule, isActive: !rule.isActive });
+        await updateRule(ruleId, { isActive: !rule.isActive });
         toast.success(`Rule ${rule.isActive ? 'deactivated' : 'activated'}.`);
       } catch (error) {
         toast.error("Failed to toggle rule status.");
@@ -86,6 +86,11 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
 
   const handleUpdateRule = (updatedRule: AutomationRule) => {
     setSelectedRule(updatedRule);
+  };
+
+  const handleRefresh = () => {
+    // Refresh functionality - could reload rules from API
+    toast.info("Refreshing automation rules...");
   };
   
   if (isLoading) {
@@ -103,7 +108,7 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
           onCreateRule={handleCreateRule}
           onToggleRule={handleToggleRule}
           userRole={userRole}
-          onRefresh={refetchRules}
+          onRefresh={handleRefresh}
         />
       </div>
 

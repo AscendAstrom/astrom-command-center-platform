@@ -1,194 +1,282 @@
 
-import { AutomationRule } from '../types';
-
-export const sampleAutomationRules: AutomationRule[] = [
+export const sampleAutomationRules = [
   {
     id: '1',
     name: 'Emergency Department Surge Alert',
     description: 'Automatically alert staff when ED patient count exceeds capacity thresholds',
-    status: 'ACTIVE',
-    trigger_conditions: {
-      type: 'metric_threshold',
-      metric: 'ed_patient_count',
-      operator: 'greater_than',
-      value: 45,
-      time_window: '15_minutes'
-    },
-    actions: [
+    triggerType: 'threshold_exceeded' as const,
+    conditions: [
       {
-        type: 'notification',
-        recipients: ['ed_manager', 'charge_nurse'],
-        channels: ['sms', 'email'],
-        message: 'Emergency Department surge detected. Patient count: {{patient_count}}'
-      },
-      {
-        type: 'workflow_trigger',
-        workflow_id: 'surge_response_protocol',
-        parameters: { severity: 'high' }
+        id: '1',
+        field: 'ed_patient_count',
+        operator: 'greater_than',
+        value: 45,
+        dataSource: 'patient_tracking_system'
       }
     ],
-    execution_count: 23,
-    last_executed: '2024-06-15T14:30:00Z',
-    created_by: 'system_admin',
-    created_at: '2024-01-15T08:00:00Z',
-    updated_at: '2024-06-15T14:30:00Z'
+    actions: [
+      {
+        id: '1',
+        type: 'email_notification',
+        config: {
+          recipients: ['ed-manager@hospital.sa', 'charge-nurse@hospital.sa'],
+          subject: 'ED Surge Alert - Immediate Action Required',
+          template: 'surge_alert'
+        }
+      },
+      {
+        id: '2',
+        type: 'slack_notification',
+        config: {
+          channel: '#emergency-alerts',
+          message: 'ED patient count has exceeded capacity threshold. Current count: {{patient_count}}'
+        }
+      }
+    ],
+    isActive: true,
+    priority: 'critical',
+    executionCount: 12,
+    createdBy: 'admin',
+    created_at: '2024-01-15T00:00:00Z',
+    updated_at: '2024-06-15T10:30:00Z',
+    last_executed: '2024-06-16T08:45:00Z',
+    conditionLogic: 'AND'
   },
   {
     id: '2',
     name: 'Bed Assignment Optimization',
-    description: 'Automatically assign beds based on patient acuity and departmental capacity',
-    status: 'ACTIVE',
-    trigger_conditions: {
-      type: 'event',
-      event_type: 'patient_admission',
-      filters: {
-        department: 'emergency',
-        acuity_level: ['high', 'critical']
-      }
-    },
-    actions: [
+    description: 'Automatically assign beds based on patient acuity and unit specialization',
+    triggerType: 'event_based' as const,
+    conditions: [
       {
-        type: 'bed_assignment',
-        algorithm: 'acuity_based',
-        preferences: ['closest_to_nurses_station', 'monitoring_capable']
-      },
-      {
-        type: 'staff_notification',
-        role: 'attending_physician',
-        message: 'High acuity patient assigned to bed {{bed_number}}'
+        id: '2',
+        field: 'new_admission',
+        operator: 'equals',
+        value: true,
+        dataSource: 'admission_system'
       }
     ],
-    execution_count: 145,
-    last_executed: '2024-06-16T11:45:00Z',
-    created_by: 'bed_manager',
-    created_at: '2024-02-01T10:00:00Z',
-    updated_at: '2024-06-16T11:45:00Z'
+    actions: [
+      {
+        id: '3',
+        type: 'api_call',
+        config: {
+          endpoint: '/api/beds/assign',
+          method: 'POST',
+          payload: {
+            patient_id: '{{patient_id}}',
+            acuity_level: '{{acuity}}',
+            preferred_unit: '{{unit_preference}}'
+          }
+        }
+      },
+      {
+        id: '4',
+        type: 'email_notification',
+        config: {
+          recipients: ['bed-management@hospital.sa'],
+          subject: 'New Bed Assignment - {{patient_name}}',
+          template: 'bed_assignment'
+        }
+      }
+    ],
+    isActive: true,
+    priority: 'high',
+    executionCount: 89,
+    createdBy: 'bed-manager',
+    created_at: '2024-02-01T00:00:00Z',
+    updated_at: '2024-06-14T15:20:00Z',
+    last_executed: '2024-06-16T09:15:00Z',
+    conditionLogic: 'AND'
   },
   {
     id: '3',
     name: 'Medication Safety Check',
-    description: 'Automatically check for drug interactions and allergies during medication orders',
-    status: 'ACTIVE',
-    trigger_conditions: {
-      type: 'event',
-      event_type: 'medication_order',
-      filters: {}
-    },
-    actions: [
+    description: 'Verify medication interactions and allergies before administration',
+    triggerType: 'scheduled' as const,
+    conditions: [
       {
-        type: 'safety_check',
-        checks: ['drug_interactions', 'allergies', 'contraindications'],
-        block_on_failure: true
-      },
-      {
-        type: 'alert_generation',
-        severity: 'critical',
-        condition: 'safety_check_failed'
+        id: '3',
+        field: 'medication_order_pending',
+        operator: 'equals',
+        value: true,
+        dataSource: 'pharmacy_system'
       }
     ],
-    execution_count: 892,
-    last_executed: '2024-06-16T13:20:00Z',
-    created_by: 'pharmacy_director',
-    created_at: '2024-01-20T14:00:00Z',
-    updated_at: '2024-06-16T13:20:00Z'
+    actions: [
+      {
+        id: '5',
+        type: 'api_call',
+        config: {
+          endpoint: '/api/medications/safety-check',
+          method: 'POST',
+          payload: {
+            patient_id: '{{patient_id}}',
+            medication_list: '{{medications}}',
+            allergy_list: '{{allergies}}'
+          }
+        }
+      },
+      {
+        id: '6',
+        type: 'slack_notification',
+        config: {
+          channel: '#pharmacy-alerts',
+          message: 'Safety check completed for patient {{patient_name}}. Status: {{safety_status}}'
+        }
+      }
+    ],
+    isActive: true,
+    priority: 'high',
+    executionCount: 156,
+    createdBy: 'pharmacy-director',
+    created_at: '2024-03-01T00:00:00Z',
+    updated_at: '2024-06-13T11:45:00Z',
+    last_executed: '2024-06-16T09:30:00Z',
+    conditionLogic: 'AND'
   },
   {
     id: '4',
     name: 'Lab Result Critical Value Alert',
-    description: 'Immediately notify physicians of critical lab values requiring urgent attention',
-    status: 'ACTIVE',
-    trigger_conditions: {
-      type: 'data_condition',
-      source: 'lab_results',
-      condition: 'critical_value_detected'
-    },
-    actions: [
+    description: 'Immediately notify physicians of critical lab results requiring urgent attention',
+    triggerType: 'event_based' as const,
+    conditions: [
       {
-        type: 'urgent_notification',
-        recipients: ['attending_physician', 'resident_on_call'],
-        channels: ['pager', 'phone_call'],
-        escalation_time: '5_minutes'
-      },
-      {
-        type: 'documentation',
-        template: 'critical_value_notification',
-        auto_populate: true
+        id: '4',
+        field: 'lab_result_critical',
+        operator: 'equals',
+        value: true,
+        dataSource: 'laboratory_system'
       }
     ],
-    execution_count: 67,
-    last_executed: '2024-06-16T09:15:00Z',
-    created_by: 'lab_director',
-    created_at: '2024-03-10T12:00:00Z',
-    updated_at: '2024-06-16T09:15:00Z'
+    actions: [
+      {
+        id: '7',
+        type: 'sms_notification',
+        config: {
+          recipients: ['{{attending_physician_phone}}', '{{resident_phone}}'],
+          message: 'CRITICAL LAB RESULT: {{test_name}} = {{result_value}} for patient {{patient_name}}. Normal range: {{normal_range}}'
+        }
+      },
+      {
+        id: '8',
+        type: 'email_notification',
+        config: {
+          recipients: ['{{attending_physician_email}}'],
+          subject: 'URGENT: Critical Lab Result - {{patient_name}}',
+          template: 'critical_lab_result'
+        }
+      }
+    ],
+    isActive: true,
+    priority: 'critical',
+    executionCount: 23,
+    createdBy: 'lab-director',
+    created_at: '2024-03-15T00:00:00Z',
+    updated_at: '2024-06-12T14:20:00Z',
+    last_executed: '2024-06-16T07:22:00Z',
+    conditionLogic: 'AND'
   },
   {
     id: '5',
-    name: 'Discharge Planning Optimization',
-    description: 'Automatically initiate discharge planning based on length of stay and clinical indicators',
-    status: 'DRAFT',
-    trigger_conditions: {
-      type: 'combined',
-      conditions: [
-        {
-          type: 'metric_threshold',
-          metric: 'length_of_stay',
-          operator: 'greater_than',
-          value: 48,
-          unit: 'hours'
-        },
-        {
-          type: 'clinical_indicator',
-          indicator: 'stable_vitals',
-          duration: '24_hours'
-        }
-      ]
-    },
-    actions: [
+    name: 'Discharge Planning Workflow',
+    description: 'Coordinate discharge planning activities and follow-up appointments',
+    triggerType: 'scheduled' as const,
+    conditions: [
       {
-        type: 'workflow_trigger',
-        workflow_id: 'discharge_planning_protocol',
-        assign_to: 'case_manager'
-      },
-      {
-        type: 'task_creation',
-        task_type: 'discharge_assessment',
-        due_date: '+4_hours'
+        id: '5',
+        field: 'discharge_planned_within',
+        operator: 'less_than',
+        value: 24,
+        dataSource: 'patient_management_system'
       }
     ],
-    execution_count: 0,
-    last_executed: null,
-    created_by: 'case_manager',
-    created_at: '2024-06-10T16:30:00Z',
-    updated_at: '2024-06-15T14:00:00Z'
+    actions: [
+      {
+        id: '9',
+        type: 'api_call',
+        config: {
+          endpoint: '/api/discharge/prepare',
+          method: 'POST',
+          payload: {
+            patient_id: '{{patient_id}}',
+            discharge_date: '{{planned_discharge_date}}',
+            follow_up_required: '{{follow_up_needed}}'
+          }
+        }
+      },
+      {
+        id: '10',
+        type: 'webhook',
+        config: {
+          url: 'https://appointment-system.hospital.sa/api/schedule',
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer {{api_token}}',
+            'Content-Type': 'application/json'
+          },
+          payload: {
+            patient_id: '{{patient_id}}',
+            appointment_type: 'follow_up',
+            preferred_date: '{{follow_up_date}}'
+          }
+        }
+      }
+    ],
+    isActive: true,
+    priority: 'medium',
+    executionCount: 67,
+    createdBy: 'case-manager',
+    created_at: '2024-04-01T00:00:00Z',
+    updated_at: '2024-06-11T16:30:00Z',
+    last_executed: '2024-06-16T06:00:00Z',
+    conditionLogic: 'AND'
   },
   {
     id: '6',
     name: 'Equipment Maintenance Scheduler',
-    description: 'Automatically schedule preventive maintenance based on usage hours and manufacturer recommendations',
-    status: 'PAUSED',
-    trigger_conditions: {
-      type: 'scheduled',
-      schedule: 'daily',
-      time: '02:00',
-      conditions: {
-        equipment_usage_hours: 'exceeds_maintenance_threshold'
-      }
-    },
-    actions: [
+    description: 'Schedule preventive maintenance based on equipment usage and manufacturer recommendations',
+    triggerType: 'scheduled' as const,
+    conditions: [
       {
-        type: 'maintenance_scheduling',
-        priority: 'medium',
-        assign_to: 'biomedical_engineering'
-      },
-      {
-        type: 'equipment_status_update',
-        status: 'scheduled_maintenance'
+        id: '6',
+        field: 'equipment_usage_hours',
+        operator: 'greater_than',
+        value: 1000,
+        dataSource: 'equipment_monitoring_system'
       }
     ],
-    execution_count: 156,
-    last_executed: '2024-06-10T02:00:00Z',
-    created_by: 'facilities_manager',
-    created_at: '2024-01-05T09:00:00Z',
-    updated_at: '2024-06-10T08:30:00Z'
+    actions: [
+      {
+        id: '11',
+        type: 'api_call',
+        config: {
+          endpoint: '/api/maintenance/schedule',
+          method: 'POST',
+          payload: {
+            equipment_id: '{{equipment_id}}',
+            maintenance_type: 'preventive',
+            priority: '{{maintenance_priority}}'
+          }
+        }
+      },
+      {
+        id: '12',
+        type: 'email_notification',
+        config: {
+          recipients: ['maintenance@hospital.sa', 'biomedical@hospital.sa'],
+          subject: 'Preventive Maintenance Required - {{equipment_name}}',
+          template: 'maintenance_schedule'
+        }
+      }
+    ],
+    isActive: false,
+    priority: 'low',
+    executionCount: 34,
+    createdBy: 'biomedical-engineer',
+    created_at: '2024-05-01T00:00:00Z',
+    updated_at: '2024-06-10T13:15:00Z',
+    last_executed: '2024-06-15T22:00:00Z',
+    conditionLogic: 'OR'
   }
 ];

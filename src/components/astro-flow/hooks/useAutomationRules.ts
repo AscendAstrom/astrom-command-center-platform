@@ -20,11 +20,11 @@ export const useAutomationRules = () => {
     loadRules();
   }, []);
 
-  const createRule = async (rule: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at' | 'execution_count'>) => {
+  const createRule = async (rule: Omit<AutomationRule, 'id' | 'executionCount' | 'created_at' | 'updated_at'>) => {
     const newRule: AutomationRule = {
       ...rule,
       id: `rule_${Date.now()}`,
-      execution_count: 0,
+      executionCount: 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
@@ -50,7 +50,7 @@ export const useAutomationRules = () => {
       rule.id === id 
         ? { 
             ...rule, 
-            execution_count: rule.execution_count + 1,
+            executionCount: rule.executionCount + 1,
             last_executed: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
