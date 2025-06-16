@@ -1,17 +1,18 @@
 
-export const sampleAutomationRules = [
+import { AutomationRule } from '../types';
+
+export const sampleAutomationRules: AutomationRule[] = [
   {
     id: '1',
     name: 'Emergency Department Surge Alert',
     description: 'Automatically alert staff when ED patient count exceeds capacity thresholds',
-    triggerType: 'threshold_exceeded' as const,
+    triggerType: 'threshold_exceeded',
     conditions: [
       {
         id: '1',
         field: 'ed_patient_count',
-        operator: 'greater_than',
-        value: 45,
-        dataSource: 'patient_tracking_system'
+        operator: 'greaterThan',
+        value: 45
       }
     ],
     actions: [
@@ -46,14 +47,13 @@ export const sampleAutomationRules = [
     id: '2',
     name: 'Bed Assignment Optimization',
     description: 'Automatically assign beds based on patient acuity and unit specialization',
-    triggerType: 'event_based' as const,
+    triggerType: 'threshold_exceeded',
     conditions: [
       {
         id: '2',
         field: 'new_admission',
         operator: 'equals',
-        value: true,
-        dataSource: 'admission_system'
+        value: true
       }
     ],
     actions: [
@@ -93,14 +93,13 @@ export const sampleAutomationRules = [
     id: '3',
     name: 'Medication Safety Check',
     description: 'Verify medication interactions and allergies before administration',
-    triggerType: 'scheduled' as const,
+    triggerType: 'data_anomaly',
     conditions: [
       {
         id: '3',
         field: 'medication_order_pending',
         operator: 'equals',
-        value: true,
-        dataSource: 'pharmacy_system'
+        value: true
       }
     ],
     actions: [
@@ -139,14 +138,13 @@ export const sampleAutomationRules = [
     id: '4',
     name: 'Lab Result Critical Value Alert',
     description: 'Immediately notify physicians of critical lab results requiring urgent attention',
-    triggerType: 'event_based' as const,
+    triggerType: 'threshold_exceeded',
     conditions: [
       {
         id: '4',
         field: 'lab_result_critical',
         operator: 'equals',
-        value: true,
-        dataSource: 'laboratory_system'
+        value: true
       }
     ],
     actions: [
@@ -181,14 +179,13 @@ export const sampleAutomationRules = [
     id: '5',
     name: 'Discharge Planning Workflow',
     description: 'Coordinate discharge planning activities and follow-up appointments',
-    triggerType: 'scheduled' as const,
+    triggerType: 'time_based',
     conditions: [
       {
         id: '5',
         field: 'discharge_planned_within',
-        operator: 'less_than',
-        value: 24,
-        dataSource: 'patient_management_system'
+        operator: 'lessThan',
+        value: 24
       }
     ],
     actions: [
@@ -236,14 +233,13 @@ export const sampleAutomationRules = [
     id: '6',
     name: 'Equipment Maintenance Scheduler',
     description: 'Schedule preventive maintenance based on equipment usage and manufacturer recommendations',
-    triggerType: 'scheduled' as const,
+    triggerType: 'time_based',
     conditions: [
       {
         id: '6',
         field: 'equipment_usage_hours',
-        operator: 'greater_than',
-        value: 1000,
-        dataSource: 'equipment_monitoring_system'
+        operator: 'greaterThan',
+        value: 1000
       }
     ],
     actions: [

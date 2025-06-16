@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { AutomationRule, FlowUserRole } from './types';
 import RulesList from './RulesList';
@@ -88,9 +87,11 @@ const RuleBuilder = ({ userRole }: RuleBuilderProps) => {
     setSelectedRule(updatedRule);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     // Refresh functionality - could reload rules from API
     toast.info("Refreshing automation rules...");
+    // Return a resolved promise to match the expected return type
+    return Promise.resolve();
   };
   
   if (isLoading) {
