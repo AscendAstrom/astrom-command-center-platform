@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { alertMonitoringService, TriggeredAlert, AlertRule } from '@/services/alerts/alertMonitoringService';
 import { analyticsService } from '@/services/analytics';
@@ -16,7 +15,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-1',
         condition: 'greater_than',
         threshold: 45,
-        createdAt: new Date('2024-01-15'),
         cooldownMinutes: 30,
         metric: 'avgWaitTime',
         message: 'Emergency Department wait time has exceeded threshold',
@@ -27,7 +25,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-2',
         condition: 'greater_than',
         threshold: 90,
-        createdAt: new Date('2024-01-20'),
         cooldownMinutes: 60,
         metric: 'bedUtilization',
         message: 'ICU bed utilization exceeds safe capacity levels',
@@ -38,7 +35,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-3',
         condition: 'less_than',
         threshold: 25,
-        createdAt: new Date('2024-02-01'),
         cooldownMinutes: 120,
         metric: 'staffOnDuty',
         message: 'Staffing levels below recommended ratios',
@@ -49,7 +45,6 @@ export const useAlertMonitoring = () => {
         id: 'rule-4',
         condition: 'greater_than',
         threshold: 5,
-        createdAt: new Date('2024-02-10'),
         cooldownMinutes: 15,
         metric: 'equipmentDown',
         message: 'Multiple equipment failures detected',
@@ -65,7 +60,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-1',
         message: 'Emergency Department wait time has exceeded 45 minutes (current: 52 minutes)',
-        resolvedAt: null,
         metadata: { currentWaitTime: 52, threshold: 45, department: 'Emergency' },
         metric: 'avgWaitTime',
         currentValue: 52,
@@ -76,7 +70,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-2',
         message: 'ICU bed utilization at 94% - approaching critical capacity',
-        resolvedAt: new Date(Date.now() - 1200000), // 20 minutes ago
         metadata: { currentUtilization: 94, threshold: 90, department: 'ICU' },
         metric: 'bedUtilization',
         currentValue: 94,
@@ -87,7 +80,6 @@ export const useAlertMonitoring = () => {
       {
         ruleId: 'rule-3',
         message: 'Nursing staff count below recommended levels (22 active, 25 required)',
-        resolvedAt: null,
         metadata: { currentStaff: 22, threshold: 25, shift: 'Day' },
         metric: 'staffOnDuty',
         currentValue: 22,
