@@ -58,6 +58,15 @@ export class IntegratedDataService {
         clinicalDataService.getClinicalMetrics()
       ]);
 
+      const summary = {
+        totalBeds: beds?.length || 0,
+        occupiedBeds: beds?.filter(b => b.status === 'OCCUPIED').length || 0,
+        activeStaff: staff?.length || 0,
+        avgWaitTime: waitTimes?.reduce((sum, wt) => sum + (wt.total_wait_minutes || 0), 0) / (waitTimes?.length || 1) || 0,
+        activeAlerts: alerts?.length || 0,
+        totalPatients: clinicalMetrics.totalPatients
+      };
+
       return {
         beds: beds || [],
         staff: staff || [],
@@ -67,14 +76,7 @@ export class IntegratedDataService {
         activeVisits: activeVisits || [],
         alerts: alerts || [],
         clinicalMetrics,
-        summary: {
-          totalBeds: beds?.length || 0,
-          occupiedBeds: beds?.filter(b => b.status === 'OCCUPIED').length || 0,
-          activeStaff: staff?.length || 0,
-          avgWaitTime: waitTimes?.reduce((sum, wt) => sum + (wt.total_wait_minutes || 0), 0) / (waitTimes?.length || 1) || 0,
-          activeAlerts: alerts?.length || 0,
-          totalPatients: clinicalMetrics.totalPatients
-        }
+        summary
       };
     } catch (error) {
       console.error('Error fetching integrated data:', error);
@@ -129,7 +131,7 @@ export class IntegratedDataService {
         schemaValidation: 98,
         activeKPIs: kpis?.length || 0,
         slaCompliance: 94,
-        alertsTriggered: data.activeAlerts,
+        alertsTriggered: data.summary.activeAlerts,
         automationRules: automationRules?.length || 0,
         workflowExecutions: workflowExecutions?.length || 0,
         aiDecisions: 156,

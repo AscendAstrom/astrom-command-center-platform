@@ -18,6 +18,7 @@ export interface FinancialData {
   departmentRevenue: Array<{
     department: string;
     revenue: number;
+    percentage: number;
   }>;
 }
 
@@ -103,17 +104,19 @@ const getFinancialData = async (): Promise<FinancialData> => {
       });
     }
 
-    // Calculate department revenue
+    // Calculate department revenue with percentages
     const departmentRevenue = departments.map(dept => {
       const deptTransactions = transactions.filter(t => 
         t.transaction_type === 'PAYMENT' && 
         t.department_id === dept.id
       );
       const revenue = deptTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+      const percentage = totalRevenue > 0 ? (revenue / totalRevenue) * 100 : 0;
       
       return {
         department: dept.name,
-        revenue
+        revenue,
+        percentage: Number(percentage.toFixed(1))
       };
     }).sort((a, b) => b.revenue - a.revenue);
 
@@ -162,6 +165,8 @@ export const useFinancialData = () => {
 
 export interface CostData {
   totalCosts: number;
+  budgetVariance: number;
+  savingsThisMonth: number;
   costTrendData: Array<{
     month: string;
     total: number;
@@ -173,6 +178,15 @@ export interface CostData {
     department: string;
     cost: number;
   }>;
+  costCategories: Array<{
+    category: string;
+    amount: number;
+    variance: number;
+  }>;
+  costOptimizations: Array<{
+    initiative: string;
+    savings: number;
+  }>;
 }
 
 const getCostData = async (): Promise<CostData> => {
@@ -181,14 +195,39 @@ const getCostData = async (): Promise<CostData> => {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    // Get cost transactions (adjustments, refunds)
-    const { data: costTransactions } = await supabase
-      .from('billing_transactions')
-      .select('amount, transaction_type, transaction_date')
-      .in('transaction_type', ['ADJUSTMENT', 'REFUND'])
-      .gte('transaction_date', startOfMonth.toISOString());
+    // Get cost transactions and budget data
+    const [costTransactionsResult, budgetResult, expensesResult] = await Promise.all([
+      supabase
+        .from('billing_transactions')
+        .select('amount, transaction_type, transaction_date')
+        .in('transaction_type', ['ADJUSTMENT', 'REFUND'])
+        .gte('transaction_date', startOfMonth.toISOString()),
+      
+      supabase
+        .from('budget_allocations')
+        .select('budget_amount, category')
+        .gte('budget_period_start', startOfMonth.toISOString())
+        .lte('budget_period_end', new Date(startOfMonth.getFullYear(), startOfMonth.getMonth() + 1, 0).toISOString()),
+      
+      supabase
+        .from('hospital_expenses')
+        .select('amount, category')
+        .gte('expense_date', startOfMonth.toISOString())
+    ]);
 
-    const totalCosts = costTransactions?.reduce((sum, t) => sum + Math.abs(t.amount || 0), 0) || 0;
+    const costTransactions = costTransactionsResult.data || [];
+    const budgets = budgetResult.data || [];
+    const expenses = expensesResult.data || [];
+
+    const totalCosts = costTransactions.reduce((sum, t) => sum + Math.abs(t.amount || 0), 0) +
+                     expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+
+    // Calculate budget variance
+    const totalBudget = budgets.reduce((sum, b) => sum + (b.budget_amount || 0), 0);
+    const budgetVariance = totalBudget > 0 ? ((totalBudget - totalCosts) / totalBudget) * 100 : 0;
+
+    // Calculate savings (simplified - based on being under budget)
+    const savingsThisMonth = Math.max(0, totalBudget - totalCosts);
 
     // Generate cost trend for last 6 months
     const costTrendData = [];
@@ -227,17 +266,51 @@ const getCostData = async (): Promise<CostData> => {
       cost: totalCosts / (departments.length || 1) // Evenly distribute for now
     })) || [];
 
+    // Create cost categories from expenses
+    const categoryMap = new Map<string, number>();
+    expenses.forEach(expense => {
+      const current = categoryMap.get(expense.category) || 0;
+      categoryMap.set(expense.category, current + (expense.amount || 0));
+    });
+
+    const costCategories = Array.from(categoryMap.entries()).map(([category, amount]) => {
+      const budget = budgets.find(b => b.category === category);
+      const budgetAmount = budget?.budget_amount || 0;
+      const variance = budgetAmount > 0 ? ((amount - budgetAmount) / budgetAmount) * 100 : 0;
+      
+      return {
+        category,
+        amount,
+        variance: Number(variance.toFixed(1))
+      };
+    });
+
+    // Mock cost optimizations (in real scenario, this would come from optimization tracking)
+    const costOptimizations = [
+      { initiative: 'Energy Efficiency', savings: 15000 },
+      { initiative: 'Supply Chain Optimization', savings: 8500 },
+      { initiative: 'Process Automation', savings: 12000 }
+    ];
+
     return {
       totalCosts,
+      budgetVariance: Number(budgetVariance.toFixed(1)),
+      savingsThisMonth,
       costTrendData,
-      departmentCosts
+      departmentCosts,
+      costCategories,
+      costOptimizations
     };
   } catch (error) {
     console.error('Error fetching cost data:', error);
     return {
       totalCosts: 0,
+      budgetVariance: 0,
+      savingsThisMonth: 0,
       costTrendData: [],
-      departmentCosts: []
+      departmentCosts: [],
+      costCategories: [],
+      costOptimizations: []
     };
   }
 };
