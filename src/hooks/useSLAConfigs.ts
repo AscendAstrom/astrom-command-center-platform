@@ -24,10 +24,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             ],
             zoneName: 'Emergency Department',
             createdAt: '2024-01-15T00:00:00Z',
-            updatedAt: '2024-06-01T00:00:00Z',
-            lastBreach: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
-            breachCount: 3,
-            complianceRate: 87.5
+            updatedAt: '2024-06-01T00:00:00Z'
         },
         {
             id: 'sla-2',
@@ -45,10 +42,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             ],
             zoneName: 'Intensive Care Unit',
             createdAt: '2024-01-20T00:00:00Z',
-            updatedAt: '2024-05-28T00:00:00Z',
-            lastBreach: new Date(Date.now() - 21600000).toISOString(), // 6 hours ago
-            breachCount: 1,
-            complianceRate: 95.2
+            updatedAt: '2024-05-28T00:00:00Z'
         },
         {
             id: 'sla-3',
@@ -66,10 +60,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             ],
             zoneName: 'Laboratory',
             createdAt: '2024-02-01T00:00:00Z',
-            updatedAt: '2024-06-10T00:00:00Z',
-            lastBreach: null,
-            breachCount: 0,
-            complianceRate: 98.7
+            updatedAt: '2024-06-10T00:00:00Z'
         },
         {
             id: 'sla-4',
@@ -87,10 +78,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             ],
             zoneName: 'Operating Rooms',
             createdAt: '2024-02-15T00:00:00Z',
-            updatedAt: '2024-06-15T00:00:00Z',
-            lastBreach: new Date(Date.now() - 43200000).toISOString(), // 12 hours ago
-            breachCount: 2,
-            complianceRate: 92.1
+            updatedAt: '2024-06-15T00:00:00Z'
         },
         {
             id: 'sla-5',
@@ -107,10 +95,7 @@ const fetchSLAConfigs = async (): Promise<SLAConfig[]> => {
             ],
             zoneName: 'Pharmacy',
             createdAt: '2024-03-01T00:00:00Z',
-            updatedAt: '2024-06-12T00:00:00Z',
-            lastBreach: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-            breachCount: 5,
-            complianceRate: 89.8
+            updatedAt: '2024-06-12T00:00:00Z'
         }
     ];
 };
@@ -122,10 +107,7 @@ const createSLAConfig = async (newSla: SLAConfig): Promise<SLAConfig> => {
         ...newSla,
         id: `sla-${Date.now()}`,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        breachCount: 0,
-        complianceRate: 100,
-        lastBreach: null
+        updatedAt: new Date().toISOString()
     };
 };
 
@@ -147,10 +129,7 @@ const updateSLAStatus = async ({ slaId, status }: { slaId: string, status: strin
         escalationRules: [],
         zoneName: 'Updated Zone',
         createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: new Date().toISOString(),
-        breachCount: 0,
-        complianceRate: 100,
-        lastBreach: null
+        updatedAt: new Date().toISOString()
     };
     
     return mockUpdatedSla;

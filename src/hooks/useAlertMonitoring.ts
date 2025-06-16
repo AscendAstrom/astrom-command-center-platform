@@ -14,7 +14,6 @@ export const useAlertMonitoring = () => {
     const mockRules: AlertRule[] = [
       {
         id: 'rule-1',
-        name: 'High ED Wait Time',
         condition: 'greater_than',
         threshold: 45,
         severity: 'HIGH',
@@ -29,7 +28,6 @@ export const useAlertMonitoring = () => {
       },
       {
         id: 'rule-2',
-        name: 'ICU Capacity Alert',
         condition: 'greater_than',
         threshold: 90,
         severity: 'CRITICAL',
@@ -44,7 +42,6 @@ export const useAlertMonitoring = () => {
       },
       {
         id: 'rule-3',
-        name: 'Staff Shortage Warning',
         condition: 'less_than',
         threshold: 25,
         severity: 'MEDIUM',
@@ -59,7 +56,6 @@ export const useAlertMonitoring = () => {
       },
       {
         id: 'rule-4',
-        name: 'Equipment Malfunction',
         condition: 'greater_than',
         threshold: 5,
         severity: 'HIGH',
@@ -80,7 +76,6 @@ export const useAlertMonitoring = () => {
     const mockAlerts: TriggeredAlert[] = [
       {
         ruleId: 'rule-1',
-        ruleName: 'High ED Wait Time',
         message: 'Emergency Department wait time has exceeded 45 minutes (current: 52 minutes)',
         severity: 'HIGH',
         triggeredAt: new Date(Date.now() - 1800000), // 30 minutes ago
@@ -95,7 +90,6 @@ export const useAlertMonitoring = () => {
       },
       {
         ruleId: 'rule-2',
-        ruleName: 'ICU Capacity Alert',
         message: 'ICU bed utilization at 94% - approaching critical capacity',
         severity: 'CRITICAL',
         triggeredAt: new Date(Date.now() - 3600000), // 1 hour ago
@@ -110,7 +104,6 @@ export const useAlertMonitoring = () => {
       },
       {
         ruleId: 'rule-3',
-        ruleName: 'Staff Shortage Warning',
         message: 'Nursing staff count below recommended levels (22 active, 25 required)',
         severity: 'MEDIUM',
         triggeredAt: new Date(Date.now() - 7200000), // 2 hours ago
