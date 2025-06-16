@@ -34,8 +34,9 @@ export const generateAIPayload = async (formData: any) => {
     });
 
     if (error) throw error;
+    
     if (!data.payload) {
-        throw new Error(data.message || "AI generation failed: No payload returned.");
+      throw new Error(data.message || "AI generation failed: No payload returned.");
     }
 
     return {
@@ -44,9 +45,16 @@ export const generateAIPayload = async (formData: any) => {
     };
   } catch (error: any) {
     console.error("Error generating AI payload:", error);
+    
+    // Provide a helpful fallback message
+    let fallbackMessage = "Payload generation failed";
+    if (error.message.includes("Edge Function returned a non-2xx status code")) {
+      fallbackMessage = "AI service temporarily unavailable. The system will use a fallback generator for sample data.";
+    }
+    
     return {
       success: false,
-      message: `Payload generation failed: ${error.message || "An unknown error occurred."}`
+      message: `${fallbackMessage}: ${error.message || "An unknown error occurred."}`
     };
   }
 };
