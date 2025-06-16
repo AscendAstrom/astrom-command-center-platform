@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Activity, Settings, Workflow } from "lucide-react";
+import { Database, Activity, Settings, Workflow, Zap } from "lucide-react";
 import { DataSourceWizard } from "@/components/astro-scan/DataSourceWizard";
 import AstroScanHeader from "@/components/astro-scan/AstroScanHeader";
 import SourcesTabContent from "@/components/astro-scan/SourcesTabContent";
@@ -16,6 +15,7 @@ import PhaseSixSection from "@/components/astro-scan/sections/PhaseSixSection";
 import PhaseSevenSection from "@/components/astro-scan/sections/PhaseSevenSection";
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
 import WorkflowOrchestrator from "@/components/workflow/WorkflowOrchestrator";
+import EnhancedAutomationPanel from "@/components/workflow/EnhancedAutomationPanel";
 import { useWorkflowIntegration } from "@/components/workflow/hooks/useWorkflowIntegration";
 import { useSearchParams } from "react-router-dom";
 
@@ -53,7 +53,7 @@ const AstroScan = () => {
         <AstroScanHeader />
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-5 bg-muted/50">
             <TabsTrigger value="sources" className="data-[state=active]:bg-primary/20">
               <Database className="h-4 w-4 mr-2" />
               Data Sources
@@ -61,6 +61,10 @@ const AstroScan = () => {
             <TabsTrigger value="workflow" className="data-[state=active]:bg-purple-500/20">
               <Workflow className="h-4 w-4 mr-2" />
               AI Workflow
+            </TabsTrigger>
+            <TabsTrigger value="automation" className="data-[state=active]:bg-blue-500/20">
+              <Zap className="h-4 w-4 mr-2" />
+              Smart Automation
             </TabsTrigger>
             <TabsTrigger value="ingestion" className="data-[state=active]:bg-astrom-green/20">
               <Activity className="h-4 w-4 mr-2" />
@@ -78,6 +82,10 @@ const AstroScan = () => {
 
           <TabsContent value="workflow" className="space-y-6">
             <WorkflowOrchestrator />
+          </TabsContent>
+
+          <TabsContent value="automation" className="space-y-6">
+            <EnhancedAutomationPanel />
           </TabsContent>
 
           <TabsContent value="ingestion" className="space-y-6">

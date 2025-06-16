@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import {
 import WorkflowOrchestrator from "@/components/workflow/WorkflowOrchestrator";
 import AIIntelligenceDashboard from "@/components/workflow/AIIntelligenceDashboard";
 import ExecutiveCommandCenter from "@/components/workflow/ExecutiveCommandCenter";
+import EnhancedAutomationPanel from "@/components/workflow/EnhancedAutomationPanel";
 import { toast } from "sonner";
 
 const AstroWorkflow = () => {
@@ -34,13 +34,20 @@ const AstroWorkflow = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50">
             <TabsTrigger 
               value="orchestrator" 
               className="data-[state=active]:bg-blue-500/20 transition-all duration-200 hover:bg-blue-500/10"
             >
               <Workflow className="h-4 w-4 mr-2" />
               Workflow Orchestrator
+            </TabsTrigger>
+            <TabsTrigger 
+              value="automation" 
+              className="data-[state=active]:bg-green-500/20 transition-all duration-200 hover:bg-green-500/10"
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Smart Automation
             </TabsTrigger>
             <TabsTrigger 
               value="intelligence" 
@@ -71,6 +78,23 @@ const AstroWorkflow = () => {
               </CardHeader>
               <CardContent>
                 <WorkflowOrchestrator />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="automation" className="space-y-6">
+            <Card className="bg-card border-border backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-green-400" />
+                  Enhanced AI Automation
+                </CardTitle>
+                <CardDescription>
+                  Real-time AI decision making, smart workflow branching, and predictive optimization
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <EnhancedAutomationPanel />
               </CardContent>
             </Card>
           </TabsContent>
