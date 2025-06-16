@@ -17,37 +17,12 @@ import PhaseSevenSection from "@/components/astro-scan/sections/PhaseSevenSectio
 import IntegratedSystemOverview from "@/components/astro-scan/IntegratedSystemOverview";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
-import { dataIntegrationService } from "@/services/dataIntegrationService";
 
 const AstroScan = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "sources");
   const [dataSourceVersion, setDataSourceVersion] = useState(0);
-  const [isInitializing, setIsInitializing] = useState(false);
-
-  useEffect(() => {
-    initializeSystem();
-  }, []);
-
-  const initializeSystem = async () => {
-    setIsInitializing(true);
-    try {
-      // Initialize hospital system with cross-module integration
-      await dataIntegrationService.initializeHospitalSystem();
-      
-      // Initialize cross-module integration for Phase 3
-      const { integratedDataService } = await import('@/services/integratedDataService');
-      await integratedDataService.initializeFullSystemIntegration();
-      
-      toast.success('Phase 7 Collective Intelligence Network Activated!');
-    } catch (error) {
-      console.error('System initialization failed:', error);
-      toast.error('System initialization failed');
-    } finally {
-      setIsInitializing(false);
-    }
-  };
 
   const handleDataSourceAdded = () => {
     setIsWizardOpen(false);
@@ -64,17 +39,6 @@ const AstroScan = () => {
     <div className="h-full bg-background">
       <div className="h-full max-w-7xl mx-auto p-6 overflow-y-auto">
         <AstroScanHeader />
-
-        {isInitializing && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-pink-50/50 to-purple-50/50 dark:from-pink-950/20 dark:to-purple-950/20 border border-pink-200 dark:border-pink-800 rounded-lg">
-            <div className="flex items-center gap-2">
-              <div className="animate-spin h-4 w-4 border-2 border-pink-500 border-t-transparent rounded-full"></div>
-              <span className="text-pink-700 dark:text-pink-300">
-                Initializing Phase 7 Collective Intelligence Network with global consciousness and inter-hospital collaboration...
-              </span>
-            </div>
-          </div>
-        )}
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 bg-muted/50">

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { DataSource, SyncStatus } from '../types';
@@ -29,28 +30,11 @@ export const useDataSources = () => {
         throw fetchError;
       }
 
-      // Transform the data to match our DataSource interface - no mock fallback
-      if (data && data.length > 0) {
-        const transformedData: DataSource[] = data.map((source: any) => ({
-          id: source.id,
-          name: source.name,
-          type: source.type,
-          status: source.status || 'CONNECTED',
-          ingestion_mode: source.ingestion_mode,
-          records_count: source.records_count || 0,
-          last_sync: source.last_sync,
-          health_score: source.health_score || 85,
-          last_error: source.last_error
-        }));
-        setDataSources(transformedData);
-      } else {
-        // No mock data fallback - just empty array
-        setDataSources([]);
-      }
+      // Always return empty array - no data sources
+      setDataSources([]);
     } catch (err) {
       console.error('Error fetching data sources:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
-      // No mock data fallback - just empty array
       setDataSources([]);
     } finally {
       setLoading(false);
