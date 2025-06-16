@@ -21,7 +21,6 @@ const MonitoringTabContent = () => {
   useEffect(() => {
     fetchRealSystemMetrics();
     
-    // Set up real-time subscriptions for live updates
     const channel = supabase
       .channel('system-monitoring')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'data_sources' }, () => {
@@ -41,7 +40,6 @@ const MonitoringTabContent = () => {
     try {
       setLoading(true);
       
-      // Fetch real data sources
       const [
         { data: dataSources },
         { data: models },
@@ -56,7 +54,6 @@ const MonitoringTabContent = () => {
         supabase.from('metrics_snapshots').select('*').order('created_at', { ascending: false }).limit(10)
       ]);
 
-      // Calculate real metrics
       const activeSources = dataSources?.length || 0;
       const avgHealthScore = dataSources?.length > 0 
         ? Math.round(dataSources.reduce((sum, ds) => sum + (ds.health_score || 100), 0) / dataSources.length)
@@ -76,12 +73,11 @@ const MonitoringTabContent = () => {
         activeSources,
         dataQuality: Math.round(latestQuality),
         realTimeConnections: activeSources,
-        processingSpeed: Math.round(processingSpeed * 0.5) // Convert to processing speed metric
+        processingSpeed: Math.round(processingSpeed * 0.5)
       });
 
     } catch (error) {
       console.error('Error fetching real system metrics:', error);
-      // Set safe defaults for real mode
       setSystemMetrics({
         aiAccuracy: 0,
         predictionsToday: 0,
@@ -97,7 +93,6 @@ const MonitoringTabContent = () => {
 
   return (
     <div className="space-y-6">
-      {/* Real-Time Integration Status */}
       <Card className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border-green-500/20">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
@@ -182,7 +177,6 @@ const MonitoringTabContent = () => {
             </div>
           </div>
 
-          {/* Real-Time Hospital Intelligence Dashboard */}
           <div className="mt-8 p-6 bg-gradient-to-r from-astrom-green/10 to-astrom-blue/10 rounded-lg border border-astrom-green/20">
             <div className="flex items-center gap-2 mb-4">
               <Hospital className="h-5 w-5 text-astrom-green" />
