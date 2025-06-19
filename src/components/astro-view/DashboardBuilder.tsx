@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dashboard, DashboardWidget, ViewUserRole } from './types';
 import { Save, X, Plus, Grid, BarChart, Clock, MapPin } from 'lucide-react';
+import WidgetConfigurationPanel from './WidgetConfigurationPanel';
 
 interface DashboardBuilderProps {
   dashboard: Dashboard;
@@ -53,6 +54,14 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
     });
   };
 
+  const handleSaveWidget = (updatedWidget: DashboardWidget) => {
+    setEditedDashboard({
+      ...editedDashboard,
+      widgets: editedDashboard.widgets.map(w => w.id === updatedWidget.id ? updatedWidget : w)
+    });
+    setSelectedWidget(null);
+  };
+
   const getWidgetIcon = (type: DashboardWidget['type']) => {
     switch (type) {
       case 'zone_tile': return <MapPin className="h-4 w-4" />;
@@ -62,6 +71,17 @@ const DashboardBuilder = ({ dashboard, onSave, onCancel, userRole }: DashboardBu
       default: return <Grid className="h-4 w-4" />;
     }
   };
+
+  // Show configuration panel if a widget is selected
+  if (selectedWidget) {
+    return (
+      <WidgetConfigurationPanel
+        widget={selectedWidget}
+        onSave={handleSaveWidget}
+        onCancel={() => setSelectedWidget(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
